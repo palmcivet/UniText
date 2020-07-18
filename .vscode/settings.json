@@ -1,0 +1,75 @@
+{
+	"todo-tree.tree.showScanModeButton": false,
+	"todo-tree.filtering.excludeGlobs": ["**/*.md", "node_modules"],
+	"todo-tree.general.tags": [
+		"FIX", // 待修复 Bug
+		"TODO", // 待办
+		"ALTER", // 需要个性化修改
+		"DEV" // 开发时参数
+	],
+	"todo-tree.highlights.defaultHighlight": {
+		"background": "",
+		"type": "tag-comment",
+		"fontWeight": 600
+	},
+	"todo-tree.highlights.customHighlight": {
+		"FIX": {
+			"foreground": "#ff0a0a",
+			"iconColour": "#ff0a0a",
+			"icon": "alert"
+		},
+		"TODO": {
+			"foreground": "#a2ce3a",
+			"iconColour": "#a2ce3a",
+			"icon": "check"
+		},
+		"ALTER": {
+			"foreground": "#F9811F",
+			"iconColour": "#F9811F",
+			"icon": "pencil"
+		},
+		"DEV": {
+			"foreground": "#409dff",
+			"iconColour": "#409dff",
+			"icon": "git-merge"
+		}
+	},
+	"search.exclude": {
+		"**/.git": true,
+		"**/node_modules": true,
+		"**/build": true,
+		"**/dist": true,
+		"**/*.lock": true
+	},
+	"files.watcherExclude": {
+		"**/.git": true,
+		"**/node_modules": true,
+		"**/build": true,
+		"**/dist": true,
+		"**/*.lock": true
+	},
+	"[vue]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.tabSize": 2,
+	"eslint.packageManager": "yarn",
+	"eslint.format.enable": true,
+	"prettier.useTabs": false,
+	"prettier.tabWidth": 2,
+	"prettier.semi": true,
+	"prettier.endOfLine": "lf",
+	"prettier.singleQuote": false,
+	"prettier.quoteProps": "consistent",
+	"prettier.jsxBracketSameLine": false,
+	"prettier.jsxSingleQuote": false,
+	"prettier.trailingComma": "es5",
+	"prettier.arrowParens": "always",
+	"prettier.bracketSpacing": true,
+	"prettier.vueIndentScriptAndStyle": false,
+	"prettier.htmlWhitespaceSensitivity": "ignore",
+	"prettier.packageManager": "yarn",
+	"prettier.printWidth": 90,
+	"npm.packageManager": "yarn",
+	"npm.exclude": "dist_electron"
+}
