@@ -198,13 +198,6 @@
         >
           <a-input-number :min="0" :max="10000" v-model="form.feedCount" />
         </a-form-item>
-        <footer-box>
-          <div class="flex justify-end">
-            <a-button class="btn" type="primary" :disabled="invalid" @click="saveTheme">
-              {{ $t("save") }}
-            </a-button>
-          </div>
-        </footer-box>
       </a-form>
     </ValidationObserver>
   </div>
@@ -215,7 +208,6 @@ import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import { State } from "vuex-class";
-import FooterBox from "../../../components/FooterBox/Index.vue";
 import {
   UrlFormats,
   DEFAULT_POST_PAGE_SIZE,
@@ -235,7 +227,6 @@ import {
     },
     ValidationProvider,
     ValidationObserver,
-    FooterBox,
   },
 })
 export default class ThemeBasicSetting extends Vue {

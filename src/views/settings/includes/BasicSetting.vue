@@ -169,21 +169,6 @@
           <a-input v-model="form.remotePath" />
         </a-form-item>
       </template>
-      <footer-box>
-        <div class="flex justify-between">
-          <a-button
-            :disabled="!canSubmit"
-            :loading="detectLoading"
-            @click="remoteDetect"
-            style="margin-right: 16px;"
-          >
-            {{ $t("testConnection") }}
-          </a-button>
-          <a-button :disabled="!canSubmit" @click="submit" type="primary">
-            {{ $t("save") }}
-          </a-button>
-        </div>
-      </footer-box>
     </a-form>
   </div>
 </template>
@@ -192,14 +177,9 @@
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State } from "vuex-class";
-import FooterBox from "../../../components/FooterBox/Index.vue";
 import { ISetting } from "../../../interfaces/setting";
 
-@Component({
-  components: {
-    FooterBox,
-  },
-})
+@Component
 export default class BasicSetting extends Vue {
   @State("site") site!: any;
 

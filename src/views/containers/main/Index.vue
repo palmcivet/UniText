@@ -270,7 +270,7 @@ import shortcutKeys from "../../../helpers/shortcut-keys";
     EmojiCard,
   },
 })
-export default class ArticleUpdate extends Vue {
+export default class Workspace extends Vue {
   @Prop(String) articleFileName!: string;
   // @State("site") site!: Site;
 

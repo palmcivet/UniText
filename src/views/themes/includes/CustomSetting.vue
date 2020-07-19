@@ -369,16 +369,6 @@
           </div>
         </a-tab-pane>
       </a-tabs>
-      <footer-box>
-        <div class="flex justify-between">
-          <a-button @click="resetThemeCustomConfig">
-            <i class="zwicon-undo"></i>
-          </a-button>
-          <a-button @click="saveThemeCustomConfig" type="primary">
-            {{ $t("save") }}
-          </a-button>
-        </div>
-      </footer-box>
     </div>
     <div class="empty-container" v-else>
       <img class="icon" src="" alt />
@@ -393,7 +383,6 @@ import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 import urlJoin from "url-join";
 import MonacoMarkdownEditor from "../../../components/MonacoMarkdownEditor/Index.vue";
-import FooterBox from "../../../components/FooterBox/Index.vue";
 import ColorCard from "../../../components/ColorCard/Index.vue";
 import PostsCard from "../../../components/PostsCard/Index.vue";
 
@@ -401,7 +390,6 @@ import PostsCard from "../../../components/PostsCard/Index.vue";
   name: "ThemeCustomSetting",
   components: {
     MonacoMarkdownEditor,
-    FooterBox,
     ColorCard,
     PostsCard,
   },

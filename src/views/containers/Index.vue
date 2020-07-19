@@ -2,15 +2,13 @@
   <div>
     <!-- 顶栏 -->
     <header class="layout-header">
-      <span>
-        📝 UniText
-      </span>
+      <span>UniText</span>
     </header>
 
     <main class="layout-main">
       <!-- 左侧栏 -->
-      <aside class="container-left">
-        <a-menu class="left-bar" mode="vertical" :defaultSelectedKeys="['/files']">
+      <aside class="left-side-bar">
+        <a-menu class="left-column" mode="vertical" :defaultSelectedKeys="['/files']">
           <a-menu-item
             v-for="menu in sideMenus"
             :key="menu.router"
@@ -28,27 +26,34 @@
             </div>
           </a-menu-item>
         </a-menu>
+
+        <section
+          class="right-column"
+          v-show="isShowSide"
+          :style="{ width: `${finalLeftWidth}px` }"
+        >
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </section>
+
+        <span ref="leftResize" v-show="isShowSide" id="left"></span>
       </aside>
 
-      <DynamicBox :minWidth="200" :maxWidth="800" :defaultWidth="300">
-        <template #left>
-          <section class="left-manager">
-            <keep-alive>
-              <router-view></router-view>
-            </keep-alive>
-          </section>
-        </template>
-
-        <template #right>
-          <!-- 编辑区 -->
-          <section class="container-main">
-            <Workspace />
-          </section>
-        </template>
-      </DynamicBox>
+      <!-- 编辑区 -->
+      <section
+        class="center-container"
+        :style="{
+          width: `calc(100vw - 45px - ${finalLeftWidth}px - ${finalRightWidth}px`,
+        }"
+      >
+        <Workspace />
+      </section>
 
       <!-- 右侧栏 -->
-      <aside class="container-right"></aside>
+      <aside class="right-side-bar" :style="{ width: `${finalRightWidth}px` }">
+        <span ref="rightResize"></span>
+      </aside>
 
       <a-modal
         title="🔥 New Version"
@@ -64,7 +69,6 @@
           <a href="https://github.com/getgridea/gridea/releases">Github Releases</a>
           👈
         </div>
-        <h2>{{ newVersion }}</h2>
         <div class="version-info" v-html="updateContent"></div>
       </a-modal>
     </main>
@@ -77,10 +81,9 @@
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
-import axios from "axios";
 import { State, Action } from "vuex-class";
+import axios from "axios";
 import Workspace from "@/views/containers/main/Index.vue";
-import DynamicBox from "@/components/DynamicBox/Index.vue";
 import ISnackbar from "@/interfaces/snackbar";
 import markdown from "@/helpers/markdown";
 import * as pkg from "@/../package.json";
@@ -88,7 +91,6 @@ import * as pkg from "@/../package.json";
 @Component({
   components: {
     Workspace,
-    DynamicBox,
   },
 })
 export default class App extends Vue {
@@ -96,27 +98,32 @@ export default class App extends Vue {
 
   // @Action("site/updateSite") updateSite!: (siteData: Site) => void;
 
-  ipcRenderer = ipcRenderer;
-
   version = (pkg as any).version;
-
-  drawer = true;
 
   hasUpdate = false;
 
   newVersion = "";
 
-  syncErrorModalVisible = false;
-
   updateModalVisible = false;
-
-  systemModalVisible = false;
 
   updateContent = "";
 
-  logModalVisible = false;
+  public preview() {
+    ipcRenderer.send("html-render");
 
-  log: any = {};
+    ipcRenderer.once("html-rendered", (event: IpcRendererEvent, result: any) => {
+      this.$message.success(`🎉  ${this.$t("renderSuccess")}`);
+      ipcRenderer.send("app-preview-server-port-get");
+    });
+  }
+
+  // 以下为修改后
+  // TODO 以下收入 preference
+  isShowSide = true;
+
+  leftViewWidth = 200;
+
+  rightViewWidth = 200;
 
   get currentRouter() {
     return this.$route.path;
@@ -144,7 +151,7 @@ export default class App extends Vue {
         text: this.$t("tags"),
         router: "/tags",
       },
-      // TODO: 将设置的路径改为点击前，而非强制 /files
+      // TODO 将设置的路径改为点击前，而非强制 /files
       {
         icon: "ri-settings-line",
         text: this.$t("settings"),
@@ -153,25 +160,111 @@ export default class App extends Vue {
     ];
   }
 
+  get finalLeftWidth() {
+    return this.leftViewWidth;
+  }
+
+  set finalLeftWidth(value: number) {
+    this.leftViewWidth = value;
+  }
+
+  get finalRightWidth() {
+    return this.rightViewWidth;
+  }
+
+  set finalRightWidth(value: number) {
+    this.rightViewWidth = value;
+  }
+
+  clickMenu(e: { key: string }) {
+    if (this.currentRouter === e.key) {
+      this.isShowSide = !this.isShowSide;
+    } else {
+      this.$router.push(e.key);
+    }
+  }
+
   created() {
-    this.$bus.$on("site-reload", () => {});
+    this.$nextTick(() => {
+      const { leftResize, rightResize } = this.$refs;
 
-    ipcRenderer.on("log-error", (event: any, result: any) => {
-      this.log = result;
-      this.logModalVisible = true;
-    });
-  }
+      let leftSideBarWidth = +this.leftViewWidth;
+      let rightSideBarWidth = +this.rightViewWidth;
 
-  clickMenu(e: any) {
-    this.$router.push(e.key);
-  }
+      this.leftViewWidth = leftSideBarWidth;
+      this.rightViewWidth = rightSideBarWidth;
 
-  public preview() {
-    ipcRenderer.send("html-render");
+      let startX = 0;
+      let startWidth = leftSideBarWidth;
 
-    ipcRenderer.once("html-rendered", (event: IpcRendererEvent, result: any) => {
-      this.$message.success(`🎉  ${this.$t("renderSuccess")}`);
-      ipcRenderer.send("app-preview-server-port-get");
+      const mouseMoveHandlerL = (event: MouseEvent) => {
+        const offset = event.clientX - startX;
+        const flag = (event.target as HTMLElement).id;
+        leftSideBarWidth = startWidth + offset;
+        if (leftSideBarWidth < 150) {
+          this.leftViewWidth = 150;
+        } else if (leftSideBarWidth > 250) {
+          this.leftViewWidth = 250;
+        } else {
+          this.leftViewWidth = leftSideBarWidth;
+        }
+      };
+
+      const mouseMoveHandlerR = (event: MouseEvent) => {
+        const offset = event.clientX - startX;
+        const flag = (event.target as HTMLElement).id;
+        rightSideBarWidth = startWidth - offset;
+        if (rightSideBarWidth < 150) {
+          this.rightViewWidth = 150;
+        } else if (rightSideBarWidth > 250) {
+          this.rightViewWidth = 250;
+        } else {
+          this.rightViewWidth = rightSideBarWidth;
+        }
+      };
+
+      const mouseUpHandlerL = (event: MouseEvent) => {
+        document.removeEventListener("mousemove", mouseMoveHandlerL, false);
+        document.removeEventListener("mouseup", mouseUpHandlerL, false);
+        const flag = (event.target as HTMLElement).id;
+        // DEV @layout-leftSide-right-column;
+        if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
+          this.leftViewWidth = leftSideBarWidth;
+        }
+      };
+
+      const mouseUpHandlerR = (event: MouseEvent) => {
+        document.removeEventListener("mousemove", mouseMoveHandlerR, false);
+        document.removeEventListener("mouseup", mouseUpHandlerR, false);
+        const flag = (event.target as HTMLElement).id;
+        // DEV @layout-rightSide-bar;
+        if (rightSideBarWidth >= 150 && rightSideBarWidth <= 250) {
+          this.rightViewWidth = rightSideBarWidth;
+        }
+      };
+
+      const mouseDownHandlerL = (event: MouseEvent) => {
+        const flag = (event.target as HTMLElement).id;
+        startX = event.clientX;
+        startWidth = +this.leftViewWidth;
+        document.addEventListener("mousemove", mouseMoveHandlerL, false);
+        document.addEventListener("mouseup", mouseUpHandlerL, false);
+      };
+
+      const mouseDownHandlerR = (event: MouseEvent) => {
+        const flag = (event.target as HTMLElement).id;
+        startX = event.clientX;
+        startWidth = +this.rightViewWidth;
+        document.addEventListener("mousemove", mouseMoveHandlerR, false);
+        document.addEventListener("mouseup", mouseUpHandlerR, false);
+      };
+
+      (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandlerL, false);
+      (rightResize as HTMLElement).addEventListener(
+        "mousedown",
+        mouseDownHandlerR,
+        false
+      );
     });
   }
 
@@ -213,6 +306,8 @@ export default class App extends Vue {
 <style lang="less" scoped>
 @import "~@/assets/styles/var.less";
 
+/* 以下为布局 */
+
 .layout-header,
 .layout-main,
 .layout-footer {
@@ -236,20 +331,23 @@ export default class App extends Vue {
 .layout-main {
   height: calc(100vh - @layout-top-bar - @layout-bottom-bar);
   display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .layout-footer {
   height: @layout-bottom-bar;
 }
 
-.container-left,
-.container-main,
-.container-right {
-  display: flex;
+/* 以下为分区 */
+
+.left-side-bar,
+.center-container,
+.right-side-bar {
   height: calc(100vh - @layout-top-bar - @layout-bottom-bar);
 }
 
-.container-left {
+.left-side-bar {
   background: @primary-bg;
   left: 0;
   width: auto;
@@ -259,8 +357,8 @@ export default class App extends Vue {
     width: 0;
   }
 
-  .left-bar {
-    width: @layout-left-bar;
+  .left-column {
+    width: @layout-leftSide-left-column;
     height: 100%;
 
     /deep/ &.ant-menu {
@@ -281,18 +379,29 @@ export default class App extends Vue {
       bottom: 10px;
     }
   }
+}
 
-  .left-manager {
-    width: @layout-left-manager;
-    height: 100%;
+.center-container {
+  background-color: #ccdec7// DEV;
+}
+
+.right-side-bar {
+  position: absolute;
+  right: 0;
+  display: flex;
+
+  background-color: #f0f8ff// DEV;
+}
+
+/* 以下为 resize */
+
+.layout-main span {
+  width: 2px;
+  height: 100%;
+  cursor: col-resize;
+
+  &:hover {
+    border-left: 1px solid rgba(177, 177, 177, 0.7); // DEV
   }
-}
-
-.container-main {
-  width: calc(100vw - @layout-left-bar - @layout-right-bar);
-}
-
-.container-right {
-  min-width: @layout-right-bar;
 }
 </style>

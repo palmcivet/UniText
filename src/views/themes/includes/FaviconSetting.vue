@@ -16,11 +16,6 @@
       </div>
     </a-upload>
     <div class="tip-text" v-if="file">{{ file.path }}</div>
-    <footer-box>
-      <div class="flex justify-end">
-        <a-button type="primary" @click="submit">{{ $t("save") }}</a-button>
-      </div>
-    </footer-box>
   </div>
 </template>
 
@@ -29,11 +24,8 @@ import { ipcRenderer, IpcRendererEvent } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 import * as path from "path";
-import FooterBox from "../../../components/FooterBox/Index.vue";
 
-@Component({
-  components: { FooterBox },
-})
+@Component
 export default class FaviconSetting extends Vue {
   @State("site") site!: any;
 

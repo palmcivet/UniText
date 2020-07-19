@@ -28,11 +28,6 @@
         ref="disqusSetting"
         v-show="form.commentPlatform === 'disqus'"
       ></disqus-setting>
-      <footer-box>
-        <div class="flex justify-end">
-          <a-button @click="submit" type="primary">{{ $t("save") }}</a-button>
-        </div>
-      </footer-box>
     </a-form>
   </div>
 </template>
@@ -43,13 +38,11 @@ import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 import GitalkSetting from "./GitalkSetting.vue";
 import DisqusSetting from "./DisqusSetting.vue";
-import FooterBox from "../../../components/FooterBox/Index.vue";
 
 @Component({
   components: {
     GitalkSetting,
     DisqusSetting,
-    FooterBox,
   },
 })
 export default class CommentSetting extends Vue {
