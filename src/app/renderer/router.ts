@@ -3,10 +3,10 @@ import Router from "vue-router";
 
 import Index from "@/views/containers/Index.vue";
 import Loading from "@/views/animations/Loading.vue";
-import Files from "@/views/containers/left/Files.vue";
-import Search from "@/views/containers/left/Search.vue";
-import Bookmarks from "@/views/containers/left/Bookmarks.vue";
-import Tags from "@/views/containers/left/Tags.vue";
+import Files from "@/views/containers/SideBar/Files.vue";
+import Search from "@/views/containers/SideBar/Search.vue";
+import Bookmarks from "@/views/containers/SideBar/Bookmarks.vue";
+import Tags from "@/views/containers/SideBar/Tags.vue";
 import Settings from "@/views/settings/Index.vue";
 
 Vue.use(Router);

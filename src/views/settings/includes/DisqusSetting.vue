@@ -43,7 +43,7 @@
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import Vue from "vue";
-import Component from "vue-class-component";
+import { Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 @Component

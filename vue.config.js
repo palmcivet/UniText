@@ -4,6 +4,7 @@ const STATIC = path.join(__dirname, "public");
 const ASSETS = path.join(__dirname, "src", "assets");
 
 module.exports = {
+  runtimeCompiler: true,
   pages: {
     index: {
       entry: path.join(__dirname, "src/app/renderer/index.ts"),

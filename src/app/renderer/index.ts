@@ -1,16 +1,12 @@
-/* eslint-disable import/no-unresolved */
 import Vue from "vue";
-import moment from "moment";
 import Antd from "ant-design-vue";
 import VueI18n from "vue-i18n";
-import Prism from "prismjs";
 import VueShortkey from "vue-shortkey";
 import { ipcRenderer } from "electron";
 import { required } from "vee-validate/dist/rules";
 import { extend } from "vee-validate";
 import "remixicon/fonts/remixicon.css";
 
-import App from "@/views/Index.vue";
 import store from "@/store/index";
 import { PREFERENCE } from "@/helpers/ipcChannel";
 import { localesMessage } from "@/app/config/locales-message";
@@ -29,7 +25,6 @@ ipcRenderer.send(PREFERENCE.SEND, (locale: string, config: any) => {
 });
 
 // TODO 根据设置初始化 state
-// store.state.editor = defaultConfig.editor.layout;
 
 // i18n 设置语言
 Vue.use(VueI18n);
@@ -46,19 +41,16 @@ extend("required", {
   message: "此项是必填项",
 });
 
-Prism.highlightAll();
-
 Vue.use(Antd);
 Vue.use(VueBus);
 Vue.use(VueShortkey);
-Vue.prototype.$moment = moment;
 Vue.config.productionTip = false;
 
 new Vue({
   router,
   store,
   i18n,
-  render: (h) => h(App),
+  template: "<router-view class='view'></router-view>",
   mounted() {
     router.push("/");
   },

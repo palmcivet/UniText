@@ -22,7 +22,6 @@ declare module "markdown-it-imsize";
 declare module "markdown-it-emoji";
 declare module "markdown-it-implicit-figures";
 declare module "markdown-it-image-lazy-loading";
-declare module "macaddress";
 declare module "v-emoji-picker";
 declare module "vue-shortkey";
 declare module "vuedraggable" {

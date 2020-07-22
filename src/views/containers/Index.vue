@@ -47,7 +47,7 @@
           width: `calc(100vw - 45px - ${finalLeftWidth}px - ${finalRightWidth}px`,
         }"
       >
-        <Workspace />
+        <Editor />
       </section>
 
       <!-- 右侧栏 -->
@@ -83,14 +83,13 @@ import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import axios from "axios";
-import Workspace from "@/views/containers/main/Index.vue";
-import ISnackbar from "@/interfaces/snackbar";
+import Editor from "@/views/containers/Editor/Index.vue";
 import markdown from "@/helpers/markdown";
 import * as pkg from "@/../package.json";
 
 @Component({
   components: {
-    Workspace,
+    Editor,
   },
 })
 export default class App extends Vue {
@@ -108,22 +107,13 @@ export default class App extends Vue {
 
   updateContent = "";
 
-  public preview() {
-    ipcRenderer.send("html-render");
-
-    ipcRenderer.once("html-rendered", (event: IpcRendererEvent, result: any) => {
-      this.$message.success(`🎉  ${this.$t("renderSuccess")}`);
-      ipcRenderer.send("app-preview-server-port-get");
-    });
-  }
-
   // 以下为修改后
   // TODO 以下收入 preference
   isShowSide = true;
 
   leftViewWidth = 200;
 
-  rightViewWidth = 200;
+  rightViewWidth = 180;
 
   get currentRouter() {
     return this.$route.path;
@@ -197,9 +187,9 @@ export default class App extends Vue {
       let startX = 0;
       let startWidth = leftSideBarWidth;
 
-      const mouseMoveHandlerL = (event: MouseEvent) => {
-        const offset = event.clientX - startX;
-        const flag = (event.target as HTMLElement).id;
+      const mouseMoveHandlerL = (e: MouseEvent) => {
+        const offset = e.clientX - startX;
+        const flag = (e.target as HTMLElement).id;
         leftSideBarWidth = startWidth + offset;
         if (leftSideBarWidth < 150) {
           this.leftViewWidth = 150;
@@ -210,9 +200,9 @@ export default class App extends Vue {
         }
       };
 
-      const mouseMoveHandlerR = (event: MouseEvent) => {
-        const offset = event.clientX - startX;
-        const flag = (event.target as HTMLElement).id;
+      const mouseMoveHandlerR = (e: MouseEvent) => {
+        const offset = e.clientX - startX;
+        const flag = (e.target as HTMLElement).id;
         rightSideBarWidth = startWidth - offset;
         if (rightSideBarWidth < 150) {
           this.rightViewWidth = 150;
@@ -223,37 +213,37 @@ export default class App extends Vue {
         }
       };
 
-      const mouseUpHandlerL = (event: MouseEvent) => {
+      const mouseUpHandlerL = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandlerL, false);
         document.removeEventListener("mouseup", mouseUpHandlerL, false);
-        const flag = (event.target as HTMLElement).id;
+        const flag = (e.target as HTMLElement).id;
         // DEV @layout-leftSide-right-column;
         if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
           this.leftViewWidth = leftSideBarWidth;
         }
       };
 
-      const mouseUpHandlerR = (event: MouseEvent) => {
+      const mouseUpHandlerR = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandlerR, false);
         document.removeEventListener("mouseup", mouseUpHandlerR, false);
-        const flag = (event.target as HTMLElement).id;
+        const flag = (e.target as HTMLElement).id;
         // DEV @layout-rightSide-bar;
         if (rightSideBarWidth >= 150 && rightSideBarWidth <= 250) {
           this.rightViewWidth = rightSideBarWidth;
         }
       };
 
-      const mouseDownHandlerL = (event: MouseEvent) => {
-        const flag = (event.target as HTMLElement).id;
-        startX = event.clientX;
+      const mouseDownHandlerL = (e: MouseEvent) => {
+        const flag = (e.target as HTMLElement).id;
+        startX = e.clientX;
         startWidth = +this.leftViewWidth;
         document.addEventListener("mousemove", mouseMoveHandlerL, false);
         document.addEventListener("mouseup", mouseUpHandlerL, false);
       };
 
-      const mouseDownHandlerR = (event: MouseEvent) => {
-        const flag = (event.target as HTMLElement).id;
-        startX = event.clientX;
+      const mouseDownHandlerR = (e: MouseEvent) => {
+        const flag = (e.target as HTMLElement).id;
+        startX = e.clientX;
         startWidth = +this.rightViewWidth;
         document.addEventListener("mousemove", mouseMoveHandlerR, false);
         document.addEventListener("mouseup", mouseUpHandlerR, false);
@@ -401,7 +391,7 @@ export default class App extends Vue {
   cursor: col-resize;
 
   &:hover {
-    border-left: 1px solid rgba(177, 177, 177, 0.7); // DEV
+    border-right: 1px solid rgba(216, 216, 216, 0.4); // DEV
   }
 }
 </style>

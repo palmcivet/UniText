@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <div class="editor-wrapper">
-      <!-- ALTER 标题 -->
-      <a-input
-        class="post-title"
-        size="large"
-        v-model="form.title"
-        :placeholder="$t('title')"
-        @change="handleTitleChange"
-      ></a-input>
+  <div style="height: 100%">
+    <div class="editor-container">
+      <!-- tab 栏 -->
+      <tabs
+        :openedFile="currentFileIndex"
+        :tabGroup="currentTabs"
+        @newFile="NEW_FILE()"
+        @switchTabs="SWITCH_TABS($event)"
+        @selectTab="SELECT_TAB($event)"
+        @closeTab="CLOSE_TAB($event)"
+      />
 
       <monaco-markdown-editor
         class="post-editor"
@@ -72,9 +73,6 @@
       <div class="right-bottom-tool-container">
         <a-popover placement="leftBottom" trigger="click">
           <template slot="content">
-            <div class="keyboard-tip">
-              💁‍♂️ 编辑区域右键能弹出快捷菜单哦
-            </div>
             <div class="keyboard-container">
               <div class="item" v-for="(item, index) in shortcutKeys" :key="index">
                 <a-divider class="keyboard-group-title" orientation="left">
@@ -110,169 +108,61 @@
       </div>
     </div>
 
-    <a-drawer
-      :visible="previewVisible"
-      @close="previewVisible = false"
-      width="800"
-      :wrapStyle="{
-        height: 'calc(100% - 108px)',
-        overflow: 'auto',
-        paddingBottom: '108px',
-        zIndex: 1025,
-      }"
-      title=" "
-    >
-      <img
-        class="preview-feature-image"
-        v-if="featureType === 'DEFAULT' && form.featureImage.path"
-        :src="form.featureImage.path"
-        alt=""
-      />
-      <img
-        class="preview-feature-image"
-        v-if="featureType === 'EXTERNAL' && form.featureImagePath"
-        :src="form.featureImagePath"
-        alt=""
-      />
-      <h1 class="preview-title">{{ form.title }}</h1>
-      <div class="preview-date">
-        {{ form.date.format(site.themeConfig.dateFormat) }}
-      </div>
-      <div class="preview-tags">
-        <span class="tag" v-for="(tag, index) in form.tags" :key="index">
-          {{ tag }}
-        </span>
-      </div>
-      <div class="preview-container" ref="previewContainer"></div>
-    </a-drawer>
-
-    <a-drawer
-      :title="$t('postSettings')"
-      :visible="postSettingsVisible"
-      @close="postSettingsVisible = false"
-      width="400"
-      :wrapStyle="{
-        height: 'calc(100% - 108px)',
-        overflow: 'auto',
-        paddingBottom: '108px',
-        zIndex: 1025,
-      }"
-    >
-      <a-collapse v-model="activeKey" class="post-settings" :bordered="false">
-        <a-collapse-panel header="URL" key="1">
-          <a-input v-model="form.fileName" @change="handleFileNameChange"></a-input>
-        </a-collapse-panel>
-        <a-collapse-panel :header="$t('tag')" key="2">
-          <div>
-            <a-select mode="tags" style="width: 100%;" v-model="form.tags">
-              <a-select-option v-for="tag in tags" :key="tag" :value="tag">
-                {{ tag }}
-              </a-select-option>
-            </a-select>
-          </div>
-        </a-collapse-panel>
-        <a-collapse-panel :header="$t('createAt')" key="3">
-          <a-date-picker
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-            v-model="form.date"
-            style="width: 100%;"
-          />
-        </a-collapse-panel>
-
-        <a-collapse-panel :header="$t('featureImage')" key="4">
-          <a-radio-group
-            style="margin-bottom: 16px;"
-            defaultValue="a"
-            buttonStyle="solid"
-            v-model="featureType"
-            size="small"
-          >
-            <a-radio-button value="DEFAULT">{{ $t("default") }}</a-radio-button>
-            <a-radio-button value="EXTERNAL">{{ $t("external") }}</a-radio-button>
-          </a-radio-group>
-          <div v-if="featureType === 'DEFAULT'">
-            <a-upload
-              action=""
-              listType="picture-card"
-              class="feature-uploader"
-              :showUploadList="false"
-              :beforeUpload="beforeFeatureUpload"
-            >
-              <div v-if="form.featureImage.path">
-                <img
-                  class="feature-image"
-                  :src="`file://${form.featureImage.path}`"
-                  height="150"
-                />
-              </div>
-              <div v-else>
-                <img src="/public/images/image_upload.svg" class="upload-img" />
-                <i class="zwicon-upload upload-icon"></i>
-              </div>
-            </a-upload>
-            <a-button
-              v-if="form.featureImage.path"
-              type="danger"
-              block
-              icon="delete"
-              @click="form.featureImage = {}"
-            />
-          </div>
-          <div v-if="featureType === 'EXTERNAL'">
-            <a-input v-model="form.featureImagePath"></a-input>
-            <div class="tip-text">{{ $t("pathContainHttps") }}</div>
-            <div class="feature-image-container" v-if="form.featureImagePath">
-              <img class="feature-image" :src="form.featureImagePath" height="150" />
-            </div>
-          </div>
-        </a-collapse-panel>
-        <a-collapse-panel :header="$t('hideInList')" key="5">
-          <a-switch v-model="form.hideInList"></a-switch>
-        </a-collapse-panel>
-        <a-collapse-panel :header="$t('topArticles')" key="6">
-          <a-switch v-model="form.isTop"></a-switch>
-        </a-collapse-panel>
-      </a-collapse>
-    </a-drawer>
-
-    <!-- 编辑器点击图片上传用 -->
-    <input
-      ref="uploadInput"
-      class="upload-input"
-      type="file"
-      accept="image/*"
-      @change="fileChangeHandler"
-    />
-
-    <span class="save-tip">{{ postStatusTip }}</span>
+    <!-- 预览 -->
+    <div class="preview-container" ref="previewContainer"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, shell, clipboard, remote } from "electron";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { State } from "vuex-class";
+import { State, Getter, Action, Mutation, namespace } from "vuex-class";
+import { mapState, mapActions } from "vuex";
 import shortid from "shortid";
-import moment from "moment";
 import * as fse from "fs-extra";
 import * as monaco from "monaco-editor";
 import Prism from "prismjs";
-import { wordCount, timeCalc } from "../../../helpers/words-count";
-import MonacoMarkdownEditor from "../../../components/MonacoMarkdownEditor/Index.vue";
-import EmojiCard from "../../../components/EmojiCard/Index.vue";
-import markdown from "../../../helpers/markdown";
-import shortcutKeys from "../../../helpers/shortcut-keys";
+
+import MonacoMarkdownEditor from "@/components/MonacoMarkdownEditor/Index.vue";
+import EmojiCard from "@/components/EmojiCard/Index.vue";
+import Tabs from "@/views/containers/Editor/tabs.vue";
+import { IEditor } from "@/store/modules/editor";
+import { IDocument } from "@/interfaces/document";
+import { wordCount, timeCalc } from "@/helpers/words-count";
+import markdown from "@/helpers/markdown";
+import shortcutKeys from "@/helpers/shortcut-keys";
+
+const name = namespace("editor");
 
 @Component({
+  name: "Editor",
   components: {
     MonacoMarkdownEditor,
     EmojiCard,
+    Tabs,
   },
 })
-export default class Workspace extends Vue {
-  @Prop(String) articleFileName!: string;
-  // @State("site") site!: Site;
+export default class Editor extends Vue {
+  @name.State("currentFileIndex")
+  currentFileIndex!: number;
+
+  @name.State("currentTabs")
+  currentTabs!: Array<{ order: number; value: string }>;
+
+  @name.Getter("currentFile")
+  currentFile!: IDocument;
+
+  @name.Mutation("SWITCH_TABS")
+  SWITCH_TABS!: (state: IEditor, value: IDocument[]) => void;
+
+  @name.Mutation("SELECT_TAB")
+  SELECT_TAB!: (state: IEditor, id: number) => void;
+
+  @name.Action("CLOSE_TAB")
+  CLOSE_TAB!: (state: IEditor, id: number) => void;
+
+  @name.Action("NEW_FILE")
+  NEW_FILE!: (state: IEditor, title: string) => void;
 
   postSettingsVisible = false;
 
@@ -297,7 +187,6 @@ export default class Workspace extends Vue {
     title: "",
     fileName: "",
     tags: [] as string[],
-    date: moment(new Date()),
     content: "",
     published: false,
     hideInList: false,
@@ -314,8 +203,6 @@ export default class Workspace extends Vue {
   featureType: "DEFAULT" | "EXTERNAL" = "DEFAULT";
 
   activeKey = ["1"];
-
-  postStatusTip = "";
 
   get dateLocale() {
     return this.$root.$i18n.locale === "zhHans" ? "zh-cn" : "en-us";
@@ -402,21 +289,16 @@ export default class Workspace extends Vue {
     this.$emit("close");
   }
 
-  updatePostSavedStatus() {
-    this.postStatusTip = `${this.$t("savedIn")} ${moment().format("HH:mm:ss")}`;
-    this.changedAfterLastSave = false;
-  }
-
   handleFileNameChange(val: string) {
     this.fileNameChanged = !!val;
   }
 
-  preventDefault(event: any) {
-    if (event.target.tagName === "A") {
-      const href = event.target.getAttribute("href");
+  preventDefault(e: any) {
+    if (e.target.tagName === "A") {
+      const href = e.target.getAttribute("href");
       if (href && !href.startsWith("#")) {
         // ignore anchor link.
-        event.preventDefault();
+        e.preventDefault();
         shell.openExternal(href);
       }
     }
@@ -433,10 +315,7 @@ export default class Workspace extends Vue {
       this.form.deleteFileName = this.originalFileName;
     }
 
-    const form = {
-      ...this.form,
-      date: this.form.date.format("YYYY-MM-DD HH:mm:ss"),
-    };
+    const form = { ...this.form };
     if (this.featureType !== "EXTERNAL") {
       form.featureImagePath = "";
     }
@@ -459,7 +338,6 @@ export default class Workspace extends Vue {
 
     ipcRenderer.send("app-post-create", form);
     ipcRenderer.once("app-post-created", (event: IpcRendererEvent, data: any) => {
-      this.updatePostSavedStatus();
       this.$message.success(`🎉  ${this.$t("draftSuccess")}`);
       this.$emit("fetchData");
     });
@@ -471,7 +349,6 @@ export default class Workspace extends Vue {
 
     ipcRenderer.send("app-post-create", form);
     ipcRenderer.once("app-post-created", (event: IpcRendererEvent, data: any) => {
-      this.updatePostSavedStatus();
       this.$message.success(`🎉  ${this.$t("saveSuccess")}`);
       this.$emit("fetchData");
     });
@@ -483,7 +360,6 @@ export default class Workspace extends Vue {
 
     ipcRenderer.send("app-post-create", form);
     ipcRenderer.once("app-post-created", (event: IpcRendererEvent, data: any) => {
-      this.updatePostSavedStatus();
       this.$emit("fetchData");
     });
   }
@@ -632,10 +508,7 @@ export default class Workspace extends Vue {
 }
 
 .editor-container {
-  padding: 32px 89px 16px 24px;
-  border: 1px solid #e8e8e8;
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(115, 115, 115, 0.08);
 }
 
 .ant-drawer {
@@ -672,7 +545,7 @@ export default class Workspace extends Vue {
   }
 }
 
-.editor-wrapper {
+.editor-container {
   background: #fff;
   height: 100%;
   position: relative;
@@ -681,14 +554,14 @@ export default class Workspace extends Vue {
 
   .post-title {
     font-weight: 400;
-    background: #fff;
-    padding: 8px 0;
+    background: #eff3e5;
+    padding: 5px;
     font-size: 24px;
     color: #000;
     border: none;
     display: block;
     width: 728px;
-    margin: 12px auto 12px;
+    margin: 10px auto 10px;
     &:focus {
       box-shadow: none;
     }
@@ -713,8 +586,8 @@ export default class Workspace extends Vue {
 
 .right-tool-container,
 .right-bottom-tool-container {
-  position: fixed;
-  right: 12px;
+  position: absolute;
+  right: 5px;
   display: flex;
   flex-direction: column;
   color: #a0aec0;
@@ -762,7 +635,6 @@ export default class Workspace extends Vue {
 
 .preview-container {
   width: 100%;
-  flex-shrink: 0;
   font-family: "Droid Serif", "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback",
     "Microsoft YaHei", sans-serif;
   font-size: 15px;
