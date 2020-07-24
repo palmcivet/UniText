@@ -4,9 +4,9 @@
     ref="tabContainer"
     v-model="openedTabs"
     v-bind="dragOptions"
+    :component-data="getCompData()"
     @start="drag = true"
     @end="drag = false"
-    @dblclick="newFile()"
   >
     <transition-group type="transition" :name="!drag ? 'flip-list' : null">
       <li
@@ -46,6 +46,10 @@ export default class Tabs extends Vue {
   })
   tabGroup!: Array<{ order: number; value: string }> | null;
 
+  drag = false;
+
+  tabRef = this.$el as HTMLElement; // value for init
+
   get openedTabs() {
     return this.tabGroup;
   }
@@ -53,10 +57,6 @@ export default class Tabs extends Vue {
   set openedTabs(value) {
     this.$emit("switchTabs", value);
   }
-
-  drag = false;
-
-  tabRef = this.$el as HTMLElement; // value for init
 
   get dragOptions() {
     return {
@@ -66,8 +66,15 @@ export default class Tabs extends Vue {
     };
   }
 
-  newFile() {
-    this.$emit("newFile");
+  getCompData() {
+    return {
+      on: {
+        dblclick: (e: MouseEvent) => {
+          e.stopPropagation();
+          this.$emit("newFile");
+        },
+      },
+    };
   }
 
   selectTab(id: number) {
@@ -102,7 +109,7 @@ export default class Tabs extends Vue {
 </script>
 
 <style lang="less" scoped>
-@tab-height: 25px;
+@import "~@/assets/styles/var.less";
 
 ul {
   cursor: pointer;

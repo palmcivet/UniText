@@ -371,22 +371,17 @@ export default class App extends Vue {
   }
 }
 
-.center-container {
-  background-color: #ccdec7// DEV;
-}
-
 .right-side-bar {
   position: absolute;
   right: 0;
   display: flex;
-
   background-color: #f0f8ff// DEV;
 }
 
 /* 以下为 resize */
 
 .layout-main span {
-  width: 2px;
+  width: 1px;
   height: 100%;
   cursor: col-resize;
 

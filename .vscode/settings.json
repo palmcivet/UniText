@@ -23,7 +23,7 @@
 			"iconColour": "#a2ce3a",
 			"icon": "check"
 		},
-		"ALTER": {
+		"FEAT": {
 			"foreground": "#F9811F",
 			"iconColour": "#F9811F",
 			"icon": "pencil"

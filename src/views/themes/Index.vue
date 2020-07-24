@@ -7,9 +7,6 @@
       forceRender
       :animated="false"
     >
-      <a-tab-pane :tab="$t('customConfig')" key="custom">
-        <custom-setting></custom-setting>
-      </a-tab-pane>
       <a-tab-pane :tab="$t('faviconSetting')" key="favicon">
         <favicon-setting></favicon-setting>
       </a-tab-pane>
@@ -22,14 +19,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import CustomSetting from "./includes/CustomSetting.vue";
 import FaviconSetting from "./includes/FaviconSetting.vue";
 import AvatarSetting from "./includes/AvatarSetting.vue";
 
 @Component({
   name: "Theme",
   components: {
-    CustomSetting,
     FaviconSetting,
     AvatarSetting,
   },

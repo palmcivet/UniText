@@ -6,8 +6,9 @@
 import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interfaces/document";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
 
-interface IFile extends IDocument {
-  modify: boolean; // 是否改动
+export interface IFile extends IDocument {
+  title: string; // 文件名
+  needSave: boolean; // 是否改动
 }
 
 /**
@@ -32,21 +33,38 @@ export interface IEditor {
 const fileSelect = (stateTree: IEditor) =>
   stateTree.currentFileGroup[stateTree.currentFileIndex];
 
+let index = 0;
+
 const state: IEditor = {
   currentFileIndex: 0,
-  currentFileGroup: {},
-  currentTabs: [
-    { order: 1, value: "操作系统" },
-    { order: 2, value: "Node 参考" },
-    { order: 10, value: "从数据结构和算法看大数据与云计算：算法分析" },
-    { order: 20, value: "Rust 语法" },
-    { order: 4, value: "Go 指南" },
-    { order: 5, value: "TypeScript" },
-    { order: 16, value: "Flutter" },
-    { order: 7, value: "Babel 参考" },
-    { order: 8, value: "数据结构和算法" },
-    { order: 9, value: "MySQL 数据库" },
-  ],
+  currentFileGroup: {
+    "0": {
+      tag: "Untag",
+      comment: "this is comment",
+      metaInfo: {
+        createDate: new Date(),
+        modifyDate: new Date(),
+        wordCount: 12,
+        charCount: 12,
+        duration: 23,
+      },
+      format: {
+        indent: 2,
+        encoding: "UTF-8",
+        endOfLine: EEol.LF,
+      },
+      config: {
+        picStorage: "string",
+        autoSave: false,
+        autoSync: false,
+        complete: false,
+      },
+      content: "## Markdown\n### VSCode",
+      title: "操作系统",
+      needSave: true,
+    },
+  },
+  currentTabs: [],
   defaultDoc: {
     tag: "Untaged",
     category: "Uncategory",
@@ -68,11 +86,27 @@ const state: IEditor = {
 
 const getters: GetterTree<IEditor, any> = {
   currentFile: (moduleState: IEditor) => {
-    return fileSelect(moduleState);
+    return moduleState.currentFileGroup[moduleState.currentFileIndex];
   },
 };
 
 const mutations: MutationTree<IEditor> = {
+  /* 以下用于同步 */
+  SYNC_CONTENT: (moduleState: IEditor, value: string) => {
+    const curFile = fileSelect(moduleState);
+    curFile.content = value;
+  },
+  SYNC_TABS: (moduleState: IEditor) => {
+    const newTabs: Array<{ order: number; value: string }> = [];
+    const a = Object.keys(moduleState.currentFileGroup);
+    a.forEach((v, i) => {
+      newTabs.push({
+        order: Number(v),
+        value: moduleState.currentFileGroup[Number(v)].title,
+      });
+    });
+    moduleState.currentTabs = newTabs;
+  },
   /* 以下为编辑器设置 */
   SET_INDENT: (moduleState: IEditor, indent: 2 | 4) => {
     const curFile = fileSelect(moduleState);
@@ -102,27 +136,62 @@ const mutations: MutationTree<IEditor> = {
   SET_AUTO_SYNC: (moduleState: IEditor, comment: string) => {},
   SET_COMPLETE: (moduleState: IEditor, comment: string) => {},
   /* 以下为切换标签 */
-  SWITCH_TABS: (moduleState: IEditor, value: Array<{ order: number; value: string }>) => {
-    console.log(value);
-    moduleState.currentTabs = value;
-  },
   SELECT_TAB: (moduleState: IEditor, id: number) => {
-    console.log(id);
     moduleState.currentFileIndex = id;
+    console.log(id);
+  },
+  SWITCH_TABS: (moduleState: IEditor, value: Array<{ order: number; value: string }>) => {
+    moduleState.currentTabs = value;
   },
   TOGGLE_MODIFY: (moduleState: IEditor) => {
     const curFile = fileSelect(moduleState);
-    curFile.modify = !curFile.modify;
+    curFile.needSave = !curFile.needSave;
   },
 };
 
 const actions: ActionTree<IEditor, any> = {
-  NEW_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {},
+  NEW_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {
+    // TODO 同步默认设置
+    const untitled: IFile = {
+      tag: "Untag",
+      comment: "",
+      metaInfo: {
+        createDate: new Date(),
+        modifyDate: new Date(),
+        wordCount: 0,
+        charCount: 0,
+        duration: 0,
+      },
+      format: {
+        indent: 2,
+        encoding: "UTF-8",
+        endOfLine: EEol.LF,
+      },
+      config: {
+        picStorage: "string",
+        autoSave: false,
+        autoSync: false,
+        complete: false,
+      },
+      content: "## Markdown",
+      title: "Untitled",
+      needSave: true,
+    };
+    index += 1;
+    moduleState.state.currentFileGroup[index] = untitled;
+    moduleState.commit("SELECT_TAB", index);
+    moduleState.commit("SYNC_TABS");
+    // TODO 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建，前者需要写入磁盘
+    if (title) {
+      moduleState.dispatch("SAVE_FILE");
+    }
+    console.log("NEW_FILE");
+  },
   OPEN_FILE: (moduleState: ActionContext<IEditor, any>) => {},
   SAVE_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {},
   CLOSE_TAB: (moduleState: ActionContext<IEditor, any>, id: number) => {
-    moduleState.commit("SAVE_FILE");
-    delete moduleState.getters.currentFileGroup[id];
+    moduleState.dispatch("SAVE_FILE");
+    delete moduleState.state.currentFileGroup[id];
   },
   RENAME_FILE: (moduleState: ActionContext<IEditor, any>, title: string) => {},
 };
