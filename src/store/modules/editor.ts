@@ -6,19 +6,27 @@
 import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interfaces/document";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
 
+/**
+ * @type 打开的标签
+ */
+export type TTab = { order: number; value: string };
+
+/**
+ * @interface 打开的文件除自身属性外需附加在编辑器中的状态
+ */
 export interface IFile extends IDocument {
   title: string; // 文件名
   needSave: boolean; // 是否改动
 }
 
 /**
- * @interface 编辑器 state
+ * @interface 编辑器的 state
  */
 export interface IEditor {
   /* 以下为编辑器状态 */
   currentFileIndex: number;
   currentFileGroup: { [index: number]: IFile };
-  currentTabs: Array<{ order: number; value: string }>;
+  currentTabs: Array<TTab>;
   /* 以下继承自系统设置，作为文档设置的默认 */
   defaultDoc: {
     tag: string; // 默认标签
@@ -37,33 +45,7 @@ let index = 0;
 
 const state: IEditor = {
   currentFileIndex: 0,
-  currentFileGroup: {
-    "0": {
-      tag: "Untag",
-      comment: "this is comment",
-      metaInfo: {
-        createDate: new Date(),
-        modifyDate: new Date(),
-        wordCount: 12,
-        charCount: 12,
-        duration: 23,
-      },
-      format: {
-        indent: 2,
-        encoding: "UTF-8",
-        endOfLine: EEol.LF,
-      },
-      config: {
-        picStorage: "string",
-        autoSave: false,
-        autoSync: false,
-        complete: false,
-      },
-      content: "## Markdown\n### VSCode",
-      title: "操作系统",
-      needSave: true,
-    },
-  },
+  currentFileGroup: {},
   currentTabs: [],
   defaultDoc: {
     tag: "Untaged",
@@ -86,20 +68,19 @@ const state: IEditor = {
 
 const getters: GetterTree<IEditor, any> = {
   currentFile: (moduleState: IEditor) => {
-    return moduleState.currentFileGroup[moduleState.currentFileIndex];
+    return {
+      order: moduleState.currentFileIndex,
+      value: moduleState.currentFileGroup[moduleState.currentFileIndex],
+    };
   },
 };
 
 const mutations: MutationTree<IEditor> = {
   /* 以下用于同步 */
-  SYNC_CONTENT: (moduleState: IEditor, value: string) => {
-    const curFile = fileSelect(moduleState);
-    curFile.content = value;
-  },
   SYNC_TABS: (moduleState: IEditor) => {
-    const newTabs: Array<{ order: number; value: string }> = [];
-    const a = Object.keys(moduleState.currentFileGroup);
-    a.forEach((v, i) => {
+    const newTabs: Array<TTab> = [];
+    const group = Object.keys(moduleState.currentFileGroup);
+    group.forEach((v, i) => {
       newTabs.push({
         order: Number(v),
         value: moduleState.currentFileGroup[Number(v)].title,
@@ -138,9 +119,8 @@ const mutations: MutationTree<IEditor> = {
   /* 以下为切换标签 */
   SELECT_TAB: (moduleState: IEditor, id: number) => {
     moduleState.currentFileIndex = id;
-    console.log(id);
   },
-  SWITCH_TABS: (moduleState: IEditor, value: Array<{ order: number; value: string }>) => {
+  SWITCH_TABS: (moduleState: IEditor, value: Array<TTab>) => {
     moduleState.currentTabs = value;
   },
   TOGGLE_MODIFY: (moduleState: IEditor) => {
@@ -173,7 +153,7 @@ const actions: ActionTree<IEditor, any> = {
         autoSync: false,
         complete: false,
       },
-      content: "## Markdown",
+      content: "",
       title: "Untitled",
       needSave: true,
     };
@@ -183,15 +163,19 @@ const actions: ActionTree<IEditor, any> = {
     moduleState.commit("SYNC_TABS");
     // TODO 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建，前者需要写入磁盘
     if (title) {
-      moduleState.dispatch("SAVE_FILE");
+      moduleState.dispatch("SAVE_FILE", untitled);
+      console.log("SAVE_FILE");
     }
-    console.log("NEW_FILE");
   },
   OPEN_FILE: (moduleState: ActionContext<IEditor, any>) => {},
   SAVE_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {},
-  CLOSE_TAB: (moduleState: ActionContext<IEditor, any>, id: number) => {
-    moduleState.dispatch("SAVE_FILE");
+  CLOSE_FILE: (moduleState: ActionContext<IEditor, any>, id: number) => {
+    console.log(id);
+    if (moduleState.getters.currentFile.needSave) {
+      moduleState.dispatch("SAVE_FILE");
+    }
     delete moduleState.state.currentFileGroup[id];
+    moduleState.commit("SYNC_TABS");
   },
   RENAME_FILE: (moduleState: ActionContext<IEditor, any>, title: string) => {},
 };

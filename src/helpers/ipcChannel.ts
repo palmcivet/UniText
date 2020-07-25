@@ -1,4 +1,4 @@
 export enum PREFERENCE {
-  FETCH = "preference-fetch",
-  SEND = "preference-send",
+  FETCH = "FETCH_PREFERENCE",
+  SEND = "SEND_PREFERENCE",
 }

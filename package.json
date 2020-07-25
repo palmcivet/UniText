@@ -15,7 +15,7 @@
     "name": "Palm Civet",
     "email": "palmcivet_email@qq.com"
   },
-  "main": "src/app/index.ts",
+  "main": "dist_electron/index.js",
   "scripts": {
     "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve",
@@ -72,7 +72,6 @@
     "remixicon": "^2.5.0",
     "striptags": "^3.1.1",
     "v-emoji-picker": "^1.1.6",
-    "vee-validate": "^3.1.3",
     "vue": "^2.6.10",
     "vue-i18n": "^8.7.0",
     "vue-property-decorator": "^7.3.0",

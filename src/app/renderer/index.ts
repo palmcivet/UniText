@@ -3,8 +3,6 @@ import Antd from "ant-design-vue";
 import VueI18n from "vue-i18n";
 import VueShortkey from "vue-shortkey";
 import { ipcRenderer } from "electron";
-import { required } from "vee-validate/dist/rules";
-import { extend } from "vee-validate";
 import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
@@ -35,16 +33,10 @@ const i18n = new VueI18n({
   silentTranslationWarn: true,
 });
 
-// 表单验证
-extend("required", {
-  ...required,
-  message: "此项是必填项",
-});
-
 Vue.use(Antd);
-Vue.use(VueBus);
 Vue.use(VueShortkey);
 Vue.config.productionTip = false;
+Vue.prototype.$bus = VueBus;
 
 new Vue({
   router,

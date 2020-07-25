@@ -47,7 +47,7 @@
           width: `calc(100vw - 45px - ${finalLeftWidth}px - ${finalRightWidth}px`,
         }"
       >
-        <Editor />
+        <work-bench></work-bench>
       </section>
 
       <!-- 右侧栏 -->
@@ -83,13 +83,13 @@ import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import axios from "axios";
-import Editor from "@/views/containers/Editor/Index.vue";
+import WorkBench from "@/views/containers/WorkBench/Index.vue";
 import markdown from "@/helpers/markdown";
 import * as pkg from "@/../package.json";
 
 @Component({
   components: {
-    Editor,
+    WorkBench,
   },
 })
 export default class App extends Vue {
@@ -342,10 +342,6 @@ export default class App extends Vue {
   left: 0;
   width: auto;
   display: flex;
-
-  &::-webkit-scrollbar {
-    width: 0;
-  }
 
   .left-column {
     width: @layout-leftSide-left-column;

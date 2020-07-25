@@ -3,16 +3,32 @@
   "configurations": [
     {
       "type": "node",
+      "name": "Main",
       "request": "launch",
-      "name": "Electron Main",
+      "protocol": "inspector",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
-      "program": "${workspaceFolder}/src/app/main/app.ts",
+      "runtimeArgs": ["--remote-debugging-port=8081", "."],
+      "program": "${workspaceFolder}/dist_electron/index.js",
       "cwd": "${workspaceFolder}",
-      "args": [],
-      "protocol": "inspector"
+      "args": []
+    },
+    {
+      "type": "chrome",
+      "name": "Renderer",
+      "request": "attach",
+      "address": "localhost",
+      "port": 8081,
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All",
+      "configurations": ["Main", "Renderer"]
     }
   ]
 }

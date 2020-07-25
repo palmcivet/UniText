@@ -1,7 +1,7 @@
 <template>
-  <div @dblclick.stop="newFile()">
+  <article @dblclick.stop="newFile()">
     <span>双击新建文件</span>
-  </div>
+  </article>
 </template>
 
 <script>
@@ -16,7 +16,7 @@ export default class Blank extends Vue {
 </script>
 
 <style lang="less" scoped>
-div {
+article {
   display: flex;
   flex-direction: column;
   height: 100%;
