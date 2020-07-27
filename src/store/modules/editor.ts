@@ -110,7 +110,6 @@ const mutations: MutationTree<IEditor> = {
     const curFile = fileSelect(moduleState);
     curFile.comment = comment;
   },
-  // TODO
   /* 以下为设置附加属性 */
   SET_PIC_STORAGE: (moduleState: IEditor, comment: string) => {},
   SET_AUTO_SAVE: (moduleState: IEditor, comment: string) => {},

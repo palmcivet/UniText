@@ -122,10 +122,6 @@ ul {
     overflow: auto;
     line-height: @tab-height;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
     & > li {
       background-color: rgba(227, 233, 209, 0.5); // DEV
       border-left: 0.5px solid rgba(180, 180, 180, 0.5); // DEV

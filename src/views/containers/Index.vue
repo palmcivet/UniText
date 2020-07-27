@@ -8,36 +8,8 @@
     <main class="layout-main">
       <!-- 左侧栏 -->
       <aside class="left-side-bar">
-        <a-menu class="left-column" mode="vertical" :defaultSelectedKeys="['/files']">
-          <a-menu-item
-            v-for="menu in sideMenus"
-            :key="menu.router"
-            :title="menu.text"
-            @click="clickMenu($event)"
-          >
-            <div>
-              <i
-                class="ri-xl"
-                :class="menu.icon"
-                :style="{
-                  color: currentRouter === menu.router ? '#f9d757' : 'inherit',
-                }"
-              ></i>
-            </div>
-          </a-menu-item>
-        </a-menu>
-
-        <section
-          class="right-column"
-          v-show="isShowSide"
-          :style="{ width: `${finalLeftWidth}px` }"
-        >
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
-        </section>
-
-        <span ref="leftResize" v-show="isShowSide" id="left"></span>
+        <side-bar :isShowSide="isShowSide" :width="finalLeftWidth"></side-bar>
+        <span ref="leftResize" v-show="isShowSide"></span>
       </aside>
 
       <!-- 编辑区 -->
@@ -61,16 +33,7 @@
         :footer="null"
         @cancel="updateModalVisible = false"
         :maskClosable="false"
-      >
-        <div class="download-container">
-          👉
-          <a href="https://gridea.dev">Gridea Homepage</a>
-          |
-          <a href="https://github.com/getgridea/gridea/releases">Github Releases</a>
-          👈
-        </div>
-        <div class="version-info" v-html="updateContent"></div>
-      </a-modal>
+      ></a-modal>
     </main>
 
     <!-- 底栏 -->
@@ -83,12 +46,15 @@ import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import axios from "axios";
+
+import SideBar from "@/views/containers/SideBar/Index.vue";
 import WorkBench from "@/views/containers/WorkBench/Index.vue";
 import markdown from "@/helpers/markdown";
 import * as pkg from "@/../package.json";
 
 @Component({
   components: {
+    SideBar,
     WorkBench,
   },
 })
@@ -109,46 +75,14 @@ export default class App extends Vue {
 
   // 以下为修改后
   // TODO 以下收入 preference
+
   isShowSide = true;
+
+  // TODO isShowPanel
 
   leftViewWidth = 200;
 
   rightViewWidth = 180;
-
-  get currentRouter() {
-    return this.$route.path;
-  }
-
-  get sideMenus() {
-    return [
-      {
-        icon: "ri-folders-line",
-        text: this.$t("files"),
-        router: "/files",
-      },
-      {
-        icon: "ri-search-line",
-        text: this.$t("search"),
-        router: "/search",
-      },
-      {
-        icon: "ri-bookmark-3-line",
-        text: this.$t("bookmarks"),
-        router: "/bookmarks",
-      },
-      {
-        icon: "ri-price-tag-3-line",
-        text: this.$t("tags"),
-        router: "/tags",
-      },
-      // TODO 将设置的路径改为点击前，而非强制 /files
-      {
-        icon: "ri-settings-line",
-        text: this.$t("settings"),
-        router: "/",
-      },
-    ];
-  }
 
   get finalLeftWidth() {
     return this.leftViewWidth;
@@ -166,14 +100,6 @@ export default class App extends Vue {
     this.rightViewWidth = value;
   }
 
-  clickMenu(e: { key: string }) {
-    if (this.currentRouter === e.key) {
-      this.isShowSide = !this.isShowSide;
-    } else {
-      this.$router.push(e.key);
-    }
-  }
-
   created() {
     this.$nextTick(() => {
       const { leftResize, rightResize } = this.$refs;
@@ -189,7 +115,6 @@ export default class App extends Vue {
 
       const mouseMoveHandlerL = (e: MouseEvent) => {
         const offset = e.clientX - startX;
-        const flag = (e.target as HTMLElement).id;
         leftSideBarWidth = startWidth + offset;
         if (leftSideBarWidth < 150) {
           this.leftViewWidth = 150;
@@ -202,7 +127,6 @@ export default class App extends Vue {
 
       const mouseMoveHandlerR = (e: MouseEvent) => {
         const offset = e.clientX - startX;
-        const flag = (e.target as HTMLElement).id;
         rightSideBarWidth = startWidth - offset;
         if (rightSideBarWidth < 150) {
           this.rightViewWidth = 150;
@@ -216,7 +140,6 @@ export default class App extends Vue {
       const mouseUpHandlerL = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandlerL, false);
         document.removeEventListener("mouseup", mouseUpHandlerL, false);
-        const flag = (e.target as HTMLElement).id;
         // DEV @layout-leftSide-right-column;
         if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
           this.leftViewWidth = leftSideBarWidth;
@@ -226,7 +149,6 @@ export default class App extends Vue {
       const mouseUpHandlerR = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandlerR, false);
         document.removeEventListener("mouseup", mouseUpHandlerR, false);
-        const flag = (e.target as HTMLElement).id;
         // DEV @layout-rightSide-bar;
         if (rightSideBarWidth >= 150 && rightSideBarWidth <= 250) {
           this.rightViewWidth = rightSideBarWidth;
@@ -234,7 +156,6 @@ export default class App extends Vue {
       };
 
       const mouseDownHandlerL = (e: MouseEvent) => {
-        const flag = (e.target as HTMLElement).id;
         startX = e.clientX;
         startWidth = +this.leftViewWidth;
         document.addEventListener("mousemove", mouseMoveHandlerL, false);
@@ -242,7 +163,6 @@ export default class App extends Vue {
       };
 
       const mouseDownHandlerR = (e: MouseEvent) => {
-        const flag = (e.target as HTMLElement).id;
         startX = e.clientX;
         startWidth = +this.rightViewWidth;
         document.addEventListener("mousemove", mouseMoveHandlerR, false);
@@ -259,9 +179,7 @@ export default class App extends Vue {
   }
 
   public async checkUpdate() {
-    const res = await axios.get(
-      "https://api.github.com/repos/getgridea/gridea/releases/latest"
-    );
+    const res = await axios.get("");
     if (res.status === 200) {
       this.newVersion = res.data.name;
       const latestVersion = res.data.name
@@ -338,40 +256,16 @@ export default class App extends Vue {
 }
 
 .left-side-bar {
-  background: @primary-bg;
   left: 0;
   width: auto;
   display: flex;
-
-  .left-column {
-    width: @layout-leftSide-left-column;
-    height: 100%;
-
-    /deep/ &.ant-menu {
-      background: @primary-bg;
-      position: relative;
-    }
-
-    /deep/ .ant-menu-item {
-      padding: 11.5px;
-    }
-
-    /deep/ &.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-      background-color: @primary-bg;
-    }
-
-    /deep/ .ant-menu-item:last-child {
-      position: absolute;
-      bottom: 10px;
-    }
-  }
 }
 
 .right-side-bar {
   position: absolute;
   right: 0;
   display: flex;
-  background-color: #f0f8ff// DEV;
+  background-color: #f0f8ff; // DEV
 }
 
 /* 以下为 resize */
