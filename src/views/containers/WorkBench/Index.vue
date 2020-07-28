@@ -18,13 +18,13 @@
     <article class="workbench" v-else>
       <section
         id="markdown-editor"
-        :style="{ width: finalWidth ? `calc(100% - ${finalWidth}px` : '50%' }"
+        :style="{ width: finalWidth ? `${finalWidth}px` : '50%' }"
       ></section>
       <span ref="resize" v-show="isPreview"></span>
       <section
         id="markdown-preview"
         v-show="isPreview"
-        :style="{ width: finalWidth ? `${finalWidth}px` : '50%' }"
+        :style="{ width: finalWidth ? `calc(100% - ${finalWidth}px` : '50%' }"
       ></section>
     </article>
   </div>
@@ -123,14 +123,14 @@ export default class WorkBench extends Vue {
 
   isPreview = true;
 
-  previewWidth = 0;
+  editWidth = 0;
 
   get finalWidth() {
-    return this.previewWidth;
+    return this.editWidth;
   }
 
   set finalWidth(value: number) {
-    this.previewWidth = value;
+    this.editWidth = value;
   }
 
   getStatus() {
@@ -201,52 +201,72 @@ export default class WorkBench extends Vue {
     const extension = new monacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
 
-    // 修复 CSS 错误
-    // this.editor.onDidChangeModel(() => {
-    //   (document.querySelector(
-    //     ".lines-content, .monaco-editor-background"
-    //   ) as HTMLElement).setAttribute(
-    //     "style",
-    //     "width: 100%; height: 100%; position: absolute; overflow: hidden; transform: translate3d(0px, 0px, 0px); top: 0px; left: 0px;"
-    //   );
-    // });
+    /* TODO 修复 Monaco Editor 的 CSS 问题
+      this.editor.onDidChangeModel(() => {
+          (document.querySelector(
+              ".lines-content, .monaco-editor-background"
+        ) as HTMLElement).setAttribute(
+            "style",
+          "width: 100%; height: 100%; position: absolute; overflow: hidden; transform: translate3d(0px, 0px, 0px); top: 0px; left: 0px;"
+        );
+      });
+    */
 
     this.$nextTick(() => {
-      this.editor.onDidChangeModelContent(() => {
+      /* 实时渲染 */
+      // FEAT 内容分块，细粒度刷新
+      this.editor.onDidChangeModelContent(async () => {
         this.syncPreview(this.editor.getValue());
       });
 
-      this.editor.onKeyDown(() => {
-        // FEAT 监听快捷键
-      });
+      // FEAT 监听快捷键
+      this.editor.onKeyDown(() => {});
 
-      // TODO 优化边界
-      const { resize } = this.$refs;
-      let sideWidth = +this.previewWidth;
-      this.previewWidth = sideWidth;
+      /* 获取容器宽度，编辑区初始值为容器的 50% */
+      const parent = this.$el as HTMLElement;
+      let containerWidth = parent.offsetWidth;
+      this.editWidth = parent.offsetWidth / 2;
 
       let startX = 0;
-      let startWidth = sideWidth;
+      let leftSide = this.editWidth;
+      let startWidth = leftSide;
 
       const mouseMoveHandler = (e: MouseEvent) => {
         const offset = e.clientX - startX;
-        sideWidth = startWidth - offset;
-        this.previewWidth = sideWidth;
+        leftSide = startWidth + offset;
+        if (leftSide < containerWidth / 4) {
+          this.editWidth = containerWidth / 4;
+        } else if (leftSide > (containerWidth * 3) / 4) {
+          this.editWidth = (containerWidth * 3) / 4;
+        } else {
+          this.editWidth = leftSide;
+        }
       };
 
       const mouseUpHandler = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandler, false);
-        this.previewWidth = sideWidth;
+        if (
+          containerWidth - leftSide >= containerWidth / 4 &&
+          containerWidth - leftSide <= (containerWidth / 4) * 3
+        ) {
+          this.editWidth = leftSide;
+        }
       };
 
       const mouseDownHandler = (e: MouseEvent) => {
         startX = e.clientX;
-        startWidth = +this.previewWidth;
+        containerWidth = parent.offsetWidth;
+        startWidth = this.editWidth;
+
         document.addEventListener("mousemove", mouseMoveHandler, false);
         document.addEventListener("mouseup", mouseUpHandler, false);
       };
 
-      (resize as HTMLElement).addEventListener("mousedown", mouseDownHandler, false);
+      (this.$refs.resize as HTMLElement).addEventListener(
+        "mousedown",
+        mouseDownHandler,
+        false
+      );
     });
   }
 
