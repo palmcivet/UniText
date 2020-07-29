@@ -47,12 +47,13 @@ import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import axios from "axios";
 
-import SideBar from "@/views/containers/SideBar/Index.vue";
-import WorkBench from "@/views/containers/WorkBench/Index.vue";
-import markdown from "@/helpers/markdown";
+import SideBar from "@/view/Layout/SideBar/Index.vue";
+import WorkBench from "@/view/Layout/WorkBench/Index.vue";
+import markdown from "@/common/helpers/markdown";
 import * as pkg from "@/../package.json";
 
 @Component({
+  name: "App",
   components: {
     SideBar,
     WorkBench,
@@ -76,6 +77,7 @@ export default class App extends Vue {
   // 以下为修改后
   // TODO 以下收入 preference
 
+  // FIX 收起侧栏时，workbench 空出，且调整 pannel 时侧栏自动回复
   isShowSide = true;
 
   // TODO isShowPanel
@@ -212,7 +214,7 @@ export default class App extends Vue {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/styles/var.less";
+@import "~@/asset/styles/var.less";
 
 /* 以下为布局 */
 

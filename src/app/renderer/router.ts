@@ -1,13 +1,13 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import Index from "@/views/containers/Index.vue";
-import Loading from "@/views/animations/Loading.vue";
-import Files from "@/views/containers/SideBar/Files.vue";
-import Search from "@/views/containers/SideBar/Search.vue";
-import Bookmarks from "@/views/containers/SideBar/Bookmarks.vue";
-import Tags from "@/views/containers/SideBar/Tags.vue";
-import Settings from "@/views/settings/Index.vue";
+import Index from "@/view/Index.vue";
+import Loading from "@/view/Loading/Index.vue";
+import Files from "@/view/Layout/SideBar/Files.vue";
+import Search from "@/view/Layout/SideBar/Search.vue";
+import Marks from "@/view/Layout/SideBar/Marks.vue";
+import Tags from "@/view/Layout/SideBar/Tags.vue";
+import Settings from "@/view/Setting/Index.vue";
 
 Vue.use(Router);
 
@@ -31,7 +31,7 @@ export const router = new Router({
         {
           path: "/bookmarks",
           name: "bookmarks",
-          component: Bookmarks,
+          component: Marks,
         },
         {
           path: "/tags",

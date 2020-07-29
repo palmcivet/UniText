@@ -3,7 +3,7 @@
  * 由 state 维护打开的文件
  */
 
-import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interfaces/document";
+import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interface/document";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
 
 /**

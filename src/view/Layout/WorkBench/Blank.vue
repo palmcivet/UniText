@@ -7,7 +7,7 @@
 <script>
 import { Vue, Component } from "vue-property-decorator";
 
-@Component
+@Component({ name: "Blank" })
 export default class Blank extends Vue {
   newFile() {
     this.$emit("newFile");

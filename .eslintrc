@@ -6,16 +6,8 @@
   },
   "extends": ["plugin:vue/essential", "@vue/airbnb"],
   "rules": {
-    "keyword-spacing": ["warn", { "before": true }],
-    "max-len": 0,
-    "comma-dangle": 0,
     "comma-style": "warn",
     "comma-spacing": "warn",
-    "object-curly-newline": [0, { "multiline": true, "minProperties": 2 }],
-    "operator-linebreak": 0,
-    "function-paren-newline": 0,
-    "no-undef": 0,
-    "implicit-arrow-linebreak": 0,
     "no-restricted-syntax": ["warn", "WithStatement", "BinaryExpression[operator='in']"],
     "no-mixed-spaces-and-tabs": ["warn"],
     "spaced-comment": "warn",
@@ -23,7 +15,22 @@
     "semi": ["warn", "always"],
     "eqeqeq": ["warn", "always"],
     "quotes": ["warn", "double"],
+    "quote-props": ["warn", "consistent"],
+    "keyword-spacing": ["warn", { "before": true }],
+    "no-trailing-spaces": ["warn", { "skipBlankLines": true }],
+    "no-unused-expressions": [
+      "warn",
+      { "allowShortCircuit": true, "allowTernary": true }
+    ],
+    "max-len": 0,
+    "comma-dangle": 0,
+    "object-curly-newline": [0, { "multiline": true, "minProperties": 2 }],
+    "operator-linebreak": 0,
+    "function-paren-newline": 0,
+    "no-undef": 0,
+    "implicit-arrow-linebreak": 0,
     "global-require": 0,
+    "prefer-destructuring": 0,
     // 对象缩写
     "object-shorthand": 0,
     // 可以使用 console
@@ -31,7 +38,6 @@
     // 允许匿名函数
     "func-names": 0,
     "no-unneeded-ternary": 0,
-    "quote-props": ["warn", "consistent"],
     // 允许对函数的参数赋值
     "no-param-reassign": 0,
     "space-before-function-paren": 0,
@@ -40,17 +46,8 @@
     "no-else-return": 0,
     "no-continue": 0,
     // 未使用的表达式
-    "no-unused-expressions": [
-      "error",
-      {
-        "allowShortCircuit": true,
-        "allowTernary": true
-      }
-    ],
     // 允许箭头函数 return 对象
     "arrow-body-style": 0,
-    // 允许空行
-    "no-trailing-spaces": ["warn", { "skipBlankLines": true }],
     // 不用强制 export default
     "import/prefer-default-export": 0,
     "consistent-return": 0,
@@ -65,8 +62,7 @@
       }
     ],
     "import/no-extraneous-dependencies": 0,
-    "vue/script-indent": ["warn", 2, { "baseIndent": 0 }],
-    "vue/no-parsing-error": [2, { "invalid-first-character-of-tag-name": false }]
+    "vue/script-indent": ["warn", 2, { "baseIndent": 0 }]
   },
   "overrides": [
     {

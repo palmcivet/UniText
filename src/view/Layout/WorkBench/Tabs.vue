@@ -109,7 +109,7 @@ export default class Tabs extends Vue {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/styles/var.less";
+@import "~@/asset/styles/var.less";
 
 ul {
   cursor: pointer;

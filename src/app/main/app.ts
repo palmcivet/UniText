@@ -1,7 +1,7 @@
 import { app, protocol, BrowserWindow, Menu, shell, ipcMain } from "electron";
 import { createProtocol, installVueDevtools } from "vue-cli-plugin-electron-builder/lib";
 import { autoUpdater } from "electron-updater";
-import { PREFERENCE } from "@/helpers/ipcChannel";
+import { PREFERENCE } from "@/common/ipcChannel";
 import { localesMenu } from "../config/locales-menu";
 
 export class App {
@@ -163,7 +163,7 @@ export class App {
 
     // macOS
     app.on("activate", () => {
-      if (this.windowManager.filter((win) => !win)) {
+      if (this.windowManager.filter((win) => !win).length) {
         this.createWindow();
       }
     });

@@ -1,15 +1,16 @@
 <template>
-  <div>
-    Bookmarks
-  </div>
+  <div></div>
 </template>
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent } from "electron";
 import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
 
-@Component
-export default class Bookmarks extends Vue {}
+@Component({
+  name: "Setting",
+})
+export default class Setting extends Vue {}
 </script>
 
 <style lang="less" scoped></style>

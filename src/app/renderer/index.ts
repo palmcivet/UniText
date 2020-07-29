@@ -6,12 +6,12 @@ import { ipcRenderer } from "electron";
 import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
-import { PREFERENCE } from "@/helpers/ipcChannel";
+import { PREFERENCE } from "@/common/ipcChannel";
 import { localesMessage } from "@/app/config/locales-message";
 import { router } from "./router";
 import { VueBus } from "./bus";
-import "@/assets/styles/tailwind.css";
-import "@/assets/styles/main.less";
+import "@/asset/styles/tailwind.css";
+import "@/asset/styles/main.less";
 
 let defaultLocale = "";
 let defaultConfig = {};

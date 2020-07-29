@@ -40,13 +40,13 @@ import * as monacoMarkdown from "monaco-markdown";
 import * as monaco from "monaco-editor";
 import * as fse from "fs-extra";
 
-import EmojiCard from "@/components/EmojiCard/Index.vue";
-import Blank from "@/views/containers/WorkBench/Blank.vue";
-import Tabs from "@/views/containers/WorkBench/Tabs.vue";
+import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
+import Blank from "@/view/Layout/WorkBench/Blank.vue";
+import Tabs from "@/view/Layout/WorkBench/Tabs.vue";
 import { IEditor, IFile, TTab } from "@/store/modules/editor";
-import { IDocument } from "@/interfaces/document";
-import { wordCount, timeCalc } from "@/helpers/words-count";
-import markdown from "@/helpers/markdown";
+import { IDocument } from "@/interface/document";
+import { wordCount, timeCalc } from "@/common/helpers/words-count";
+import markdown from "@/common/helpers/markdown";
 import theme from "./theme";
 
 const name = namespace("editor");
@@ -278,7 +278,7 @@ export default class WorkBench extends Vue {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/styles/var.less";
+@import "~@/asset/styles/var.less";
 
 .workbench {
   height: calc(100% - @tab-height - @tab-boxshadow);
@@ -292,7 +292,7 @@ export default class WorkBench extends Vue {
     background-color: rgba(255, 255, 255, 0.6);
 
     &:hover {
-      border-right: 1px solid rgba(216, 216, 216, 0.4); // DEV
+      border-right: 1px solid rgba(230, 230, 230, 0.4); // DEV
     }
   }
 }
