@@ -3,14 +3,17 @@
     <header>
       <!-- 工具栏 -->
       <div v-if="folderDir === ''">无打开的文件/文件夹</div>
-      <div v-else>工具栏</div>
+      <div v-else>
+        <span>文件管理</span>
+        <button @click="toggleAll()">收</button>
+      </div>
     </header>
 
     <div v-if="folderDir === ''">
       <button @click="openDialog()">打开文件夹</button>
     </div>
     <div v-else>
-      <tree-view></tree-view>
+      <tree-view :data="fileData" :toggle="notCollapse"></tree-view>
     </div>
   </section>
 </template>
@@ -38,6 +41,61 @@ export default class Files extends Vue {
   targetFolder!: string;
 
   folderDir = this.targetFolder;
+
+  notCollapse = true;
+
+  fileData = [
+    {
+      name: "child 1",
+      children: [
+        {
+          name: "child 11",
+          children: [{ name: "hello.md" }, { name: "wat.md" }],
+        },
+        {
+          name: "child 22",
+          children: [
+            {
+              name: "child 11",
+              children: [{ name: "hello.md" }],
+            },
+            {
+              name: "child 22",
+              children: [{ name: "hello" }, { name: "wat" }],
+            },
+          ],
+        },
+        { name: "hello" },
+        { name: "wat" },
+      ],
+    },
+    {
+      name: "child 1",
+      children: [
+        {
+          name: "child 11",
+          children: [{ name: "hello.md" }],
+        },
+      ],
+    },
+    {
+      name: "child 1",
+      children: [
+        {
+          name: "child 11",
+          children: [{ name: "hello.md" }],
+        },
+      ],
+    },
+    { name: "hello.md" },
+  ];
+
+  toggleAll() {
+    this.notCollapse = false;
+    setTimeout(() => {
+      this.notCollapse = true;
+    }, 100);
+  }
 
   openDialog() {
     remote.dialog

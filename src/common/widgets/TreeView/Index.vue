@@ -1,10 +1,12 @@
 <template>
-  <ul>
+  <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
     <tree-item
-      v-for="(child, index) in treeData"
+      v-for="(child, index) in data"
       :key="index"
       :itemData="child"
-      :deepth="deepth + 1"
+      :treeDeepth="deepth"
+      :showIndent="indent"
+      :notCollapse="toggle"
     ></tree-item>
   </ul>
 </template>
@@ -24,14 +26,36 @@ export default class TreeView extends Vue {
     type: Array,
     required: true,
   })
-  treeData!: Array<ITreeItem>;
+  data!: Array<ITreeItem>;
 
   @Prop({
     type: Number,
-    default: 0,
+    default: 1,
   })
   deepth!: number;
+
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  toggle!: boolean;
+
+  indent = true;
+
+  handleMouseEnter() {
+    this.indent = true;
+  }
+
+  handleMouseLeave() {
+    this.indent = false;
+  }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+ul {
+  margin: 0;
+  height: 100%;
+  overflow: auto;
+}
+</style>

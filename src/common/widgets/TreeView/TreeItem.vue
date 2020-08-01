@@ -1,41 +1,54 @@
 <template>
   <li>
     <div class="file" v-if="isFile" @click.stop="openFile()">
-      <div class="indent" v-for="i in deepth - 1" :key="i"></div>
-
-      <div>
-        <pre class="icon"></pre>
-        <pre class="space"></pre>
-        <a-icon type="file" />
-        {{ itemData.name }}
-      </div>
+      <div
+        class="indent"
+        v-for="i in treeDeepth - 1"
+        :class="showIndent ? 'indent-show' : ''"
+        :key="i"
+      ></div>
+      <pre class="icon"></pre>
+      <pre class="space"></pre>
+      <a-icon type="file" />
+      <pre class="space"></pre>
+      {{ itemData.name }}
     </div>
 
-    <div class="folder" v-else @click.stop="toggleFolder()">
-      <div>
-        <div>
-          <i :class="isOpen ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'"></i>
-          <pre class="space"></pre>
-          <a-icon type="folder-open" v-if="isOpen" />
-          <a-icon type="folder" v-else />
-          {{ itemData.name }}
-        </div>
-
-        <ul v-show="isOpen">
-          <tree-item
-            v-for="(subChild, subIndex) in itemData.children"
-            :key="subIndex"
-            :itemData="subChild"
-            :deepth="deepth + 1"
-          ></tree-item>
-        </ul>
+    <div class="directory" v-else @click.stop="toggleFolder()">
+      <div class="folder">
+        <div
+          class="indent"
+          v-for="i in treeDeepth - 1"
+          :class="showIndent ? 'indent-show' : ''"
+          :key="i"
+        ></div>
+        <i
+          :class="
+            notCollapse && isOpen ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'
+          "
+        ></i>
+        <pre class="space"></pre>
+        <a-icon type="folder-open" v-if="notCollapse && isOpen" />
+        <a-icon type="folder" v-else />
+        <pre class="space"></pre>
+        {{ itemData.name }}
       </div>
+
+      <ul v-show="notCollapse && isOpen">
+        <tree-item
+          v-for="(subChild, subIndex) in itemData.children"
+          :key="subIndex"
+          :itemData="subChild"
+          :treeDeepth="treeDeepth + 1"
+          :showIndent="showIndent"
+        ></tree-item>
+      </ul>
     </div>
   </li>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 export interface ITreeItem {
   name: string;
@@ -63,12 +76,31 @@ export default class TreeItem extends Vue {
   itemData!: ITreeItem;
 
   @Prop({
+    type: Boolean,
+    default: true,
+  })
+  notCollapse!: boolean;
+
+  @Prop({
     type: Number,
     default: 1,
   })
-  deepth!: number;
+  treeDeepth!: number;
+
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  showIndent!: boolean;
+
+  @Watch("notCollapse")
+  collapse(value: boolean) {
+    if (!value) this.isOpen = false;
+  }
 
   isOpen = false;
+
+  isHover = false;
 
   get isFile() {
     return this.itemData.children === undefined;
@@ -87,52 +119,54 @@ export default class TreeItem extends Vue {
   -webkit-user-select: none;
 }
 
+@line-height: 1.3rem;
+
 li {
-  background-color: #f3eddb;
+  // background-color: #f3eddb; // DEV
   cursor: pointer;
-  display: flex;
+}
+
+pre {
+  display: inline-block;
+
+  &.icon {
+    width: 1em;
+  }
+
+  &.space {
+    width: 0.2em;
+  }
 }
 
 .file,
 .folder {
   width: 100%;
-  height: 100%;
   display: flex;
+  line-height: @line-height;
 
-  div:last-child {
-    width: 100%;
+  /deep/ i,
+  i {
+    line-height: @line-height;
   }
+}
 
-  pre {
-    height: 1em;
-    margin: 0;
-    display: inline-block;
-    vertical-align: middle;
-
-    &.icon {
-      width: 1em;
-    }
-
-    &.space {
-      width: 0.15em;
-    }
-  }
+.directory {
+  width: 100%;
 }
 
 .indent {
-  width: 0.45em;
-  padding-right: 0.1em;
-  border-right: 0.3px solid rgba(100, 100, 100, 0.9);
+  width: 0.5em;
+  margin-right: 0.2em;
 }
 
-.file:hover {
+.indent-show {
+  border-right: 0.3px solid rgba(126, 126, 126, 0.9);
+
+  transition: all 0.2s ease-in-out;
+}
+
+.file:hover,
+.folder:hover {
   background-color: #ecdeb4;
-  // background-color: #d1cbb8;
-}
-
-.folder {
-  div > i:first-child {
-    vertical-align: middle;
-  }
 }
 </style>
