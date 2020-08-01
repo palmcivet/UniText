@@ -808,7 +808,7 @@
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
-  resolved "https://registry.npm.taobao.org/@sindresorhus/is/download/@sindresorhus/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
+  resolved "https://registry.npm.taobao.org/@sindresorhus/is/download/@sindresorhus/is-0.14.0.tgz?cache=0&sync_timestamp=1595758259548&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40sindresorhus%2Fis%2Fdownload%2F%40sindresorhus%2Fis-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha1-n7OjzzEyMoFR81PeRjLgHlIQK+o=
 
 "@soda/friendly-errors-webpack-plugin@^1.7.1":
@@ -917,9 +917,9 @@
   integrity sha1-sPhvWFZPoCooto+LVdTN7ELjudY=
 
 "@types/node@^12.0.12":
-  version "12.12.51"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.12.51.tgz#446a67af8c5ff98947d7cef296484c6ad47ddb16"
-  integrity sha1-RGpnr4xf+YlH187ylkhMatR92xY=
+  version "12.12.53"
+  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.12.53.tgz?cache=0&sync_timestamp=1595999169935&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-12.12.53.tgz#be0d375933c3d15ef2380dafb3b0350ea7021129"
+  integrity sha1-vg03WTPD0V7yOA2vs7A1DqcCESk=
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -8336,7 +8336,7 @@ pump@^2.0.0, pump@^2.0.1:
 
 pump@^3.0.0:
   version "3.0.0"
-  resolved "https://registry.npm.taobao.org/pump/download/pump-3.0.0.tgz?cache=0&sync_timestamp=1567685412065&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fpump%2Fdownload%2Fpump-3.0.0.tgz#b4a2116815bde2f4e1ea602354e8c75565107a64"
+  resolved "https://registry.npm.taobao.org/pump/download/pump-3.0.0.tgz#b4a2116815bde2f4e1ea602354e8c75565107a64"
   integrity sha1-tKIRaBW94vTh6mAjVOjHVWUQemQ=
   dependencies:
     end-of-stream "^1.1.0"

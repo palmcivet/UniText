@@ -3,6 +3,7 @@
  * 由 state 维护打开的文件
  */
 
+import * as fse from "fs-extra";
 import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interface/document";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
 
@@ -166,7 +167,17 @@ const actions: ActionTree<IEditor, any> = {
       console.log("SAVE_FILE");
     }
   },
-  OPEN_FILE: (moduleState: ActionContext<IEditor, any>) => {},
+  OPEN_FILE: (moduleState: ActionContext<IEditor, any>, path: string) => {
+    fse
+      .readFile(path)
+      .then((res) => {
+        return res.toString();
+      })
+      .then((res) => {
+        console.log(res);
+        return res;
+      });
+  },
   SAVE_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {},
   CLOSE_FILE: (moduleState: ActionContext<IEditor, any>, id: number) => {
     console.log(id);

@@ -1,6 +1,6 @@
 <template>
   <li>
-    <div class="file" v-if="isFile" @click.stop="openFile()">
+    <div class="file" v-if="isFile" @click.stop="openFile(itemData.path)">
       <div
         class="indent"
         v-for="i in treeDeepth - 1"
@@ -11,11 +11,11 @@
       <pre class="space"></pre>
       <a-icon type="file" />
       <pre class="space"></pre>
-      {{ itemData.name }}
+      {{ itemData.name | trimSuffix }}
     </div>
 
-    <div class="directory" v-else @click.stop="toggleFolder()">
-      <div class="folder">
+    <div class="directory" v-else>
+      <div class="folder" @click.stop="toggleFolder()">
         <div
           class="indent"
           v-for="i in treeDeepth - 1"
@@ -36,7 +36,7 @@
 
       <ul v-show="notCollapse && isOpen">
         <tree-item
-          v-for="(subChild, subIndex) in itemData.children"
+          v-for="(subChild, subIndex) in itemData.file"
           :key="subIndex"
           :itemData="subChild"
           :treeDeepth="treeDeepth + 1"
@@ -49,11 +49,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-
-export interface ITreeItem {
-  name: string;
-  children?: Array<ITreeItem>;
-}
+import { ITreeItem } from "@/interface/view";
+import { FILE } from "@/common/busChannel";
 
 @Component({
   name: "TreeItem",
@@ -63,7 +60,7 @@ export interface ITreeItem {
       if (index !== -1) {
         return value.substring(0, index);
       } else {
-        return "";
+        return value;
       }
     },
   },
@@ -103,14 +100,16 @@ export default class TreeItem extends Vue {
   isHover = false;
 
   get isFile() {
-    return this.itemData.children === undefined;
+    return this.itemData.file === undefined;
   }
 
   toggleFolder() {
     this.isOpen = !this.isOpen;
   }
 
-  openFile() {}
+  openFile(value: string) {
+    this.$bus.$emit(FILE.OPEN_FILE, value);
+  }
 }
 </script>
 

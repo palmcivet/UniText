@@ -66,15 +66,14 @@ const state: IGeneral = {
   },
 };
 
-const getters = {
-  getNotesPath: (moduleState: IGeneral) => moduleState.notesPath,
-};
+const getters = {};
 
 const mutations = {};
 
 const actions = {};
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations,

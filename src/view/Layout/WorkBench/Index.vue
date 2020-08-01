@@ -167,7 +167,6 @@ export default class WorkBench extends Vue {
       this.modelStack[newValue.order] = mod;
     }
     this.editor.setModel(mod);
-    console.log(newValue);
   }
 
   syncContent(value: string) {}

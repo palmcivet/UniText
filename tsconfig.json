@@ -28,5 +28,5 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
-  "exclude": ["node_modules", "node_modules/gray-matter/gray-matter.d.ts"]
+  "exclude": ["node_modules"]
 }

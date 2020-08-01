@@ -13,7 +13,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import TreeItem, { ITreeItem } from "./TreeItem.vue";
+import { ITreeItem } from "@/interface/view";
+import TreeItem from "./TreeItem.vue";
 
 @Component({
   name: "TreeView",

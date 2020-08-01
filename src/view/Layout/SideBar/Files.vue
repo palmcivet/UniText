@@ -21,9 +21,17 @@
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, remote } from "electron";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { State, namespace } from "vuex-class";
 import draggable from "vuedraggable";
 import * as fse from "fs-extra";
+
+import { ITreeItem } from "@/interface/view";
 import TreeView from "@/common/widgets/TreeView/Index.vue";
+import { FILE } from "@/common/busChannel";
+
+const editor = namespace("editor");
+const general = namespace("general");
+const sideBar = namespace("sideBar");
 
 @Component({
   name: "File",
@@ -33,62 +41,25 @@ import TreeView from "@/common/widgets/TreeView/Index.vue";
   },
 })
 export default class Files extends Vue {
-  @Prop({
-    type: String,
-    required: false,
-    default: "/Users/palmcivet/Documents/Develop/Preparing/PKM/测试笔记", // DEV
-  })
-  targetFolder!: string;
+  @general.State("notesPath")
+  defaultFolder!: string;
 
-  folderDir = this.targetFolder;
+  folderDir = "/Users/palmcivet/Documents/Develop/Preparing/PKM/测试笔记";
+
+  @sideBar.State("files")
+  stateFiles!: {
+    folderTree: Array<ITreeItem>;
+    ignoreFile: Array<string>;
+  };
+
+  @Watch("folderDir")
+  handleFolder() {
+    this.fileData = this.buildFileTree("");
+  }
 
   notCollapse = true;
 
-  fileData = [
-    {
-      name: "child 1",
-      children: [
-        {
-          name: "child 11",
-          children: [{ name: "hello.md" }, { name: "wat.md" }],
-        },
-        {
-          name: "child 22",
-          children: [
-            {
-              name: "child 11",
-              children: [{ name: "hello.md" }],
-            },
-            {
-              name: "child 22",
-              children: [{ name: "hello" }, { name: "wat" }],
-            },
-          ],
-        },
-        { name: "hello" },
-        { name: "wat" },
-      ],
-    },
-    {
-      name: "child 1",
-      children: [
-        {
-          name: "child 11",
-          children: [{ name: "hello.md" }],
-        },
-      ],
-    },
-    {
-      name: "child 1",
-      children: [
-        {
-          name: "child 11",
-          children: [{ name: "hello.md" }],
-        },
-      ],
-    },
-    { name: "hello.md" },
-  ];
+  fileData: Array<ITreeItem> = [];
 
   toggleAll() {
     this.notCollapse = false;
@@ -107,23 +78,48 @@ export default class Files extends Vue {
       });
   }
 
-  @Watch("folderDir")
-  parseFile() {
+  @editor.Action("OPEN_FILE")
+  OPEN_FILE!: (path: string) => void;
+
+  buildFileTree(path: string) {
+    const fileTree: Array<ITreeItem> = [];
     fse
-      .readdir(this.folderDir)
+      .readdir(`${this.folderDir}/${path}`)
       .then((res) => {
         return res;
       })
       .then((res) => {
         res.forEach((item) => {
-          // console.log(item, fse.lstatSync(`${this.folderDir}/${item}`).isDirectory());
+          if (this.stateFiles.ignoreFile.indexOf(item) !== -1) {
+            return;
+          }
+
+          const subTree: ITreeItem = {
+            name: item,
+            path: `${path}/${item}`,
+          };
+
+          if (fse.lstatSync(`${this.folderDir}/${subTree.path}`).isDirectory()) {
+            fileTree.push({
+              file: this.buildFileTree(subTree.path),
+              ...subTree,
+            });
+          } else {
+            fileTree.push(subTree);
+          }
         });
       });
+    return fileTree;
   }
 
   mounted() {
-    // TODO 打开后，遍历当前目录
-    this.parseFile();
+    if (this.folderDir !== "") {
+      this.handleFolder();
+    }
+
+    this.$bus.$on(FILE.OPEN_FILE, (value: string) => {
+      this.OPEN_FILE(`${this.folderDir}${value}`);
+    });
   }
 }
 </script>
