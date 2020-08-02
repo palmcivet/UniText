@@ -167,6 +167,7 @@ export default class WorkBench extends Vue {
       this.modelStack[newValue.order] = mod;
     }
     this.editor.setModel(mod);
+    this.syncPreview(this.editor.getValue());
   }
 
   syncContent(value: string) {}
@@ -199,17 +200,6 @@ export default class WorkBench extends Vue {
     );
     const extension = new monacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
-
-    /* TODO 修复 Monaco Editor 的 CSS 问题
-      this.editor.onDidChangeModel(() => {
-          (document.querySelector(
-              ".lines-content, .monaco-editor-background"
-        ) as HTMLElement).setAttribute(
-            "style",
-          "width: 100%; height: 100%; position: absolute; overflow: hidden; transform: translate3d(0px, 0px, 0px); top: 0px; left: 0px;"
-        );
-      });
-    */
 
     this.$nextTick(() => {
       /* 实时渲染 */

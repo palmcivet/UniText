@@ -40,13 +40,19 @@ export interface IDocumentConfig {
 }
 
 /**
- * @interface 文章属性
+ * @interface Markdown 的 Front-Matter
  */
-export interface IDocument {
+export interface IDocumentFrontMatter {
   tag: string;
   comment: string;
   metaInfo: IDocumentMetaInfo;
   format: IDocumentFormat;
   config: IDocumentConfig;
+}
+
+/**
+ * @interface 文章属性
+ */
+export interface IDocument extends IDocumentFrontMatter {
   content: string;
 }

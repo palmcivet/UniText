@@ -6,6 +6,11 @@
 import * as fse from "fs-extra";
 import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interface/document";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
+import {
+  importFrontMatter,
+  exportFrontMatter,
+  metaInfo2Doc,
+} from "@/common/helpers/front-matter";
 
 /**
  * @type 打开的标签
@@ -157,30 +162,39 @@ const actions: ActionTree<IEditor, any> = {
       title: "Untitled",
       needSave: true,
     };
-    index += 1;
-    moduleState.state.currentFileGroup[index] = untitled;
-    moduleState.commit("SELECT_TAB", index);
-    moduleState.commit("SYNC_TABS");
+    moduleState.dispatch("LOAD_FILE", untitled);
     // TODO 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建，前者需要写入磁盘
     if (title) {
       moduleState.dispatch("SAVE_FILE", untitled);
       console.log("SAVE_FILE");
     }
   },
+  LOAD_FILE: (moduleState: ActionContext<IEditor, any>, payload: IFile) => {
+    index += 1;
+    moduleState.state.currentFileGroup[index] = payload;
+    moduleState.commit("SELECT_TAB", index);
+    moduleState.commit("SYNC_TABS");
+  },
   OPEN_FILE: (moduleState: ActionContext<IEditor, any>, path: string) => {
     fse
       .readFile(path)
+      .then((res) => res.toString())
+      .then((res) => importFrontMatter(res))
       .then((res) => {
-        return res.toString();
-      })
-      .then((res) => {
-        console.log(res);
-        return res;
+        const dirs = path.split("/");
+        return moduleState.dispatch("LOAD_FILE", {
+          title: dirs[dirs.length - 1],
+          needSave: false,
+          ...metaInfo2Doc(res),
+        });
       });
   },
-  SAVE_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {},
+  SAVE_FILE: (moduleState: ActionContext<IEditor, any>, newTitle?: string) => {
+    const { title, needSave, ...payload } = fileSelect(moduleState.state);
+    const markdown = exportFrontMatter(payload);
+    fse.writeFile(newTitle || title, markdown);
+  },
   CLOSE_FILE: (moduleState: ActionContext<IEditor, any>, id: number) => {
-    console.log(id);
     if (moduleState.getters.currentFile.needSave) {
       moduleState.dispatch("SAVE_FILE");
     }
