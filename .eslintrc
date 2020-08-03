@@ -43,6 +43,8 @@
     "space-before-function-paren": 0,
     // 函数的参数可以不使用
     "no-unused-vars": 0,
+    "no-bitwise": 0,
+    "no-lonely-if": 0,
     "no-else-return": 0,
     "no-continue": 0,
     // 未使用的表达式

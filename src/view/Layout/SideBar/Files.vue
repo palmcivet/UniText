@@ -138,6 +138,10 @@ section {
     > div {
       height: 25px;
       line-height: 25px;
+
+      > span {
+        -webkit-user-select: none;
+      }
     }
   }
 

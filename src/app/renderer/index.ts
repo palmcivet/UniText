@@ -42,7 +42,7 @@ new Vue({
   router,
   store,
   i18n,
-  template: "<router-view class='view'></router-view>",
+  template: "<router-view></router-view>",
   mounted() {
     router.push("/");
   },

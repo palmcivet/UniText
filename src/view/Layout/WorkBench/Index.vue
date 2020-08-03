@@ -5,17 +5,17 @@
       :tabGroup="currentTabs"
       @newFile="NEW_FILE()"
       @switchTabs="SWITCH_TABS($event)"
-      @selectTab="SELECT_TAB($event)"
+      @selectTab="SELECT_TAB({ cur: $event })"
       @closeTab="handleClose($event)"
     />
 
     <blank
       class="workbench"
-      v-if="currentTabs.length === 0"
+      v-show="currentTabs.length === 0"
       @newFile="NEW_FILE()"
     ></blank>
 
-    <article class="workbench" v-else>
+    <article class="workbench" v-show="currentTabs.length !== 0">
       <section
         id="markdown-editor"
         :style="{ width: finalWidth ? `${finalWidth}px` : '50%' }"
@@ -61,22 +61,22 @@ const name = namespace("editor");
 })
 export default class WorkBench extends Vue {
   @name.State("currentFileIndex")
-  currentFileIndex!: number;
+  currentFileIndex!: string;
 
   @name.State("currentTabs")
   currentTabs!: Array<TTab>;
 
   @name.Getter("currentFile")
-  currentFile!: { order: number; value: IFile };
+  currentFile!: { order: string; value: IFile };
 
   @name.Mutation("SWITCH_TABS")
   SWITCH_TABS!: (value: IDocument[]) => void;
 
   @name.Mutation("SELECT_TAB")
-  SELECT_TAB!: (id: number) => void;
+  SELECT_TAB!: (index: string) => void;
 
   @name.Action("CLOSE_FILE")
-  CLOSE_FILE!: (id: number) => void;
+  CLOSE_FILE!: (index: string) => void;
 
   @name.Action("NEW_FILE")
   NEW_FILE!: (title?: string) => void;
@@ -119,7 +119,7 @@ export default class WorkBench extends Vue {
 
   editor!: monaco.editor.IStandaloneCodeEditor;
 
-  modelStack: { [key: number]: monaco.editor.IModel | null } = {};
+  modelStack: { [key: string]: monaco.editor.IModel } = {};
 
   isPreview = true;
 
@@ -151,23 +151,23 @@ export default class WorkBench extends Vue {
     };
   }
 
-  handleClose(id: number) {
-    this.CLOSE_FILE(id);
-    // FEAT 添加历史记录，切换标签页的堆栈
-    this.SELECT_TAB(this.currentTabs[0].order);
-    (this.modelStack[id] as monaco.editor.ITextModel).dispose();
-    delete this.modelStack[id];
+  handleClose(index: string) {
+    this.CLOSE_FILE(index);
+    (this.modelStack[index] as monaco.editor.ITextModel).dispose();
+    delete this.modelStack[index];
   }
 
   @Watch("currentFile", { deep: true })
-  syncModel(newValue: { order: number; value: IFile }) {
+  syncModel(newValue: { order: string; value: IFile }) {
     let mod = this.modelStack[newValue.order];
+
     if (!mod) {
       mod = monaco.editor.createModel(newValue.value.content, "markdown-math");
       this.modelStack[newValue.order] = mod;
     }
+
     this.editor.setModel(mod);
-    this.syncPreview(this.editor.getValue());
+    this.isPreview && this.syncPreview(this.editor.getValue());
   }
 
   syncContent(value: string) {}
@@ -188,16 +188,14 @@ export default class WorkBench extends Vue {
 
     this.editor = monaco.editor.create(
       document.querySelector("#markdown-editor") as HTMLElement,
-      {
-        value: this.currentFile.value.content,
-        ...this.initOption,
-      }
+      this.initOption
     );
 
     this.modelStack[this.currentFileIndex] = monaco.editor.createModel(
       this.currentFile.value.content,
       "markdown-math"
     );
+
     const extension = new monacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
 

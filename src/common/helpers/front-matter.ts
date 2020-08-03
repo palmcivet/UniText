@@ -182,6 +182,7 @@ const split = (str: string): ISpilt => {
     };
   }
 
+  // FIX 修复 front-matter 出现在中间，尤其是代码中的错误
   if (rFrontMatterAfter.test(str)) {
     let match = str.match(rFrontMatterAfter);
     match = match as RegExpMatchArray;

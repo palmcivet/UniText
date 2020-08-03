@@ -35,16 +35,16 @@ import draggable from "vuedraggable";
 })
 export default class Tabs extends Vue {
   @Prop({
-    type: Number,
+    type: String,
     required: true,
   })
-  openedFile!: number;
+  openedFile!: string;
 
   @Prop({
     type: Array,
     required: true,
   })
-  tabGroup!: Array<{ order: number; value: string }> | null;
+  tabGroup!: Array<{ order: string; value: string }> | null;
 
   drag = false;
 
@@ -77,12 +77,12 @@ export default class Tabs extends Vue {
     };
   }
 
-  selectTab(id: number) {
-    this.$emit("selectTab", id);
+  selectTab(index: string) {
+    this.$emit("selectTab", index);
   }
 
-  closeTab(id: number) {
-    this.$emit("closeTab", id);
+  closeTab(index: string) {
+    this.$emit("closeTab", index);
   }
 
   handleTabScroll(e: WheelEvent) {
