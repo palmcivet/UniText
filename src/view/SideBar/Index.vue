@@ -3,7 +3,7 @@
     <a-menu class="left-column" mode="vertical" :defaultSelectedKeys="['/files']">
       <a-menu-item
         v-for="menu in sideMenus"
-        :key="menu.router"
+        :key="menu.item"
         :title="menu.text"
         @click="clickMenu($event)"
       >
@@ -12,16 +12,16 @@
             class="ri-xl"
             :class="menu.icon"
             :style="{
-              color: currentRouter === menu.router ? '#f9d757' : 'inherit',
+              color: activeItem === menu.item ? '#f9d757' : 'inherit',
             }"
-          ></i>
+          />
         </div>
       </a-menu-item>
     </a-menu>
 
-    <div class="right-column" v-show="isShowSide" :style="{ width: `${width}px` }">
+    <div v-show="isShowSide" class="right-column" :style="{ width: `${sideWidth}px` }">
       <keep-alive>
-        <router-view></router-view>
+        <component :is="activeItem" />
       </keep-alive>
     </div>
   </article>
@@ -29,61 +29,72 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import Tags from "@/view/SideBar/Tags/Index.vue";
+import Files from "@/view/SideBar/Files/Index.vue";
+import Marks from "@/view/SideBar/Marks/Index.vue";
+import Search from "@/view/SideBar/Search/Index.vue";
+import Setting from "@/view/SideBar/Setting/Index.vue";
 
-@Component({ name: "SideBar" })
+@Component({
+  name: "SideBar",
+  components: {
+    Tags,
+    Files,
+    Marks,
+    Search,
+    Setting,
+  },
+})
 export default class SideBar extends Vue {
   @Prop({
     type: Boolean,
     required: true,
   })
-  isShowSide!: Boolean;
+  isShowSide!: boolean;
 
   @Prop({
     type: Number,
     required: true,
   })
-  width!: number;
-
-  get currentRouter() {
-    return this.$route.path;
-  }
+  sideWidth!: number;
 
   get sideMenus() {
     return [
       {
         icon: "ri-folders-line",
         text: this.$t("files"),
-        router: "/files",
+        item: "Files",
       },
       {
         icon: "ri-search-line",
         text: this.$t("search"),
-        router: "/search",
+        item: "Search",
       },
       {
         icon: "ri-bookmark-3-line",
         text: this.$t("bookmarks"),
-        router: "/bookmarks",
+        item: "Marks",
       },
       {
         icon: "ri-price-tag-3-line",
         text: this.$t("tags"),
-        router: "/tags",
+        item: "Tags",
       },
-      // TODO 将设置的路径改为点击前，而非强制 /files
       {
         icon: "ri-settings-line",
-        text: this.$t("settings"),
-        router: "/",
+        text: this.$t("setting"),
+        item: "Setting",
       },
     ];
   }
 
+  activeItem = "Files";
+
   clickMenu(e: { key: string }) {
-    if (this.currentRouter === e.key) {
-      this.isShowSide = !this.isShowSide;
+    if (this.activeItem === e.key) {
+      this.$emit("toggleSide");
     } else {
-      this.$router.push(e.key);
+      this.activeItem = e.key;
     }
   }
 }

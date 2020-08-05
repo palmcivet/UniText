@@ -71,6 +71,7 @@ export default class Tabs extends Vue {
       on: {
         dblclick: (e: MouseEvent) => {
           e.stopPropagation();
+          e.preventDefault();
           this.$emit("newFile");
         },
       },

@@ -7,7 +7,7 @@
       :treeDeepth="deepth"
       :showIndent="indent"
       :notCollapse="toggle"
-    ></tree-item>
+    />
   </ul>
 </template>
 

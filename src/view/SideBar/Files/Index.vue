@@ -13,7 +13,7 @@
       <button @click="openDialog()">打开文件夹</button>
     </div>
     <div v-else>
-      <tree-view :data="fileData" :toggle="notCollapse"></tree-view>
+      <tree-view :data="fileData" :toggle="notCollapse" />
     </div>
   </section>
 </template>

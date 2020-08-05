@@ -6,7 +6,7 @@ export const localesMessage = {
     tags: "标签",
     sticky: "便签",
     schedule: "规划",
-    settings: "设置",
+    setting: "设置",
     //
     preview: "预 览",
     syncSite: "同 步",

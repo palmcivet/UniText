@@ -6,9 +6,9 @@ import { ipcRenderer } from "electron";
 import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
+import App from "@/view/Index.vue";
 import { PREFERENCE } from "@/common/ipcChannel";
 import { localesMessage } from "@/app/config/locales-message";
-import { router } from "./router";
 import { VueBus } from "./bus";
 import "@/asset/styles/tailwind.css";
 import "@/asset/styles/main.less";
@@ -39,11 +39,10 @@ Vue.config.productionTip = false;
 Vue.prototype.$bus = VueBus;
 
 new Vue({
-  router,
   store,
   i18n,
-  template: "<router-view></router-view>",
-  mounted() {
-    router.push("/");
+  components: {
+    App,
   },
+  template: "<App></App>",
 }).$mount("#app");

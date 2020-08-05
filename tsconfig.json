@@ -4,6 +4,7 @@
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
+    "noImplicitAny": true,
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -19,14 +20,14 @@
       "@/*": ["src/*"],
       "*": ["node_modules/*"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "scripthost"]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "test/**/*.ts",
+    "test/**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }

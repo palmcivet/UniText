@@ -9,40 +9,34 @@
       @closeTab="handleClose($event)"
     />
 
-    <blank
-      class="workbench"
-      v-show="currentTabs.length === 0"
-      @newFile="NEW_FILE()"
-    ></blank>
+    <blank v-show="currentTabs.length === 0" class="workbench" @newFile="NEW_FILE()" />
 
-    <article class="workbench" v-show="currentTabs.length !== 0">
+    <article v-show="currentTabs.length !== 0" class="workbench">
       <section
         id="markdown-editor"
-        :style="{ width: finalWidth ? `${finalWidth}px` : '50%' }"
-      ></section>
-      <span ref="resize" v-show="isPreview"></span>
+        :style="{ width: finalWidth ? `calc(100% - ${finalWidth}px` : '50%' }"
+      />
+      <span v-show="isPreview" ref="resize" />
       <section
         id="markdown-preview"
         v-show="isPreview"
-        :style="{ width: finalWidth ? `calc(100% - ${finalWidth}px` : '50%' }"
-      ></section>
+        :style="{ width: finalWidth ? `${finalWidth}px` : '50%' }"
+      />
     </article>
   </div>
 </template>
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, shell } from "electron";
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Getter, Action, Mutation, namespace } from "vuex-class";
-import { mapState, mapActions } from "vuex";
 import Prism from "prismjs";
 import * as monacoMarkdown from "monaco-markdown";
 import * as monaco from "monaco-editor";
-import * as fse from "fs-extra";
 
 import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
-import Blank from "@/view/Layout/WorkBench/Blank.vue";
-import Tabs from "@/view/Layout/WorkBench/Tabs.vue";
+import Blank from "@/view/WorkBench/Blank/Index.vue";
+import Tabs from "@/view/WorkBench/Tabs/Index.vue";
 import { IEditor, IFile, TTab } from "@/store/modules/editor";
 import { IDocument } from "@/interface/document";
 import { wordCount, timeCalc } from "@/common/helpers/words-count";
@@ -146,7 +140,7 @@ export default class WorkBench extends Vue {
     });
 
     return {
-      formatTime: formatTime,
+      formatTime,
       wordsNumber: Array.isArray(wordsNumber) ? 0 : wordsNumber,
     };
   }
@@ -220,7 +214,7 @@ export default class WorkBench extends Vue {
 
       const mouseMoveHandler = (e: MouseEvent) => {
         const offset = e.clientX - startX;
-        leftSide = startWidth + offset;
+        leftSide = startWidth - offset;
         if (leftSide < containerWidth / 4) {
           this.editWidth = containerWidth / 4;
         } else if (leftSide > (containerWidth * 3) / 4) {

@@ -1,36 +1,36 @@
 <template>
   <li>
-    <div class="file" v-if="isFile" @click.stop="openFile(itemData.path)">
+    <div v-if="isFile" class="file" @click.stop="openFile(itemData.path)">
       <div
-        class="indent"
         v-for="i in treeDeepth - 1"
+        class="indent"
         :class="showIndent ? 'indent-show' : ''"
         :key="i"
-      ></div>
-      <pre class="icon"></pre>
-      <pre class="space"></pre>
+      />
+      <pre class="icon" />
+      <pre class="space" />
       <a-icon type="file" />
-      <pre class="space"></pre>
+      <pre class="space" />
       {{ itemData.name | trimSuffix }}
     </div>
 
-    <div class="directory" v-else>
+    <div v-else class="directory">
       <div class="folder" @click.stop="toggleFolder()">
         <div
           class="indent"
           v-for="i in treeDeepth - 1"
           :class="showIndent ? 'indent-show' : ''"
           :key="i"
-        ></div>
+        />
         <i
           :class="
             notCollapse && isOpen ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'
           "
-        ></i>
-        <pre class="space"></pre>
-        <a-icon type="folder-open" v-if="notCollapse && isOpen" />
-        <a-icon type="folder" v-else />
-        <pre class="space"></pre>
+        />
+        <pre class="space" />
+        <a-icon v-if="notCollapse && isOpen" type="folder-open" />
+        <a-icon v-else type="folder" />
+        <pre class="space" />
         {{ itemData.name }}
       </div>
 
@@ -41,7 +41,7 @@
           :itemData="subChild"
           :treeDeepth="treeDeepth + 1"
           :showIndent="showIndent"
-        ></tree-item>
+        />
       </ul>
     </div>
   </li>

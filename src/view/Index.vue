@@ -8,36 +8,42 @@
     <main class="layout-main">
       <!-- 左侧栏 -->
       <aside class="left-side-bar">
-        <side-bar :isShowSide="isShowSide" :width="finalLeftWidth"></side-bar>
-        <span ref="leftResize" v-show="isShowSide"></span>
+        <side-bar
+          :isShowSide="isShowSide"
+          :sideWidth="finalLeftWidth"
+          @toggleSide="handleToggle()"
+        />
+        <span v-show="isShowSide" ref="leftResize" />
       </aside>
 
       <!-- 编辑区 -->
       <section
         class="center-container"
         :style="{
-          width: `calc(100vw - 45px - ${finalLeftWidth}px - ${finalRightWidth}px`,
+          width: isShowSide
+            ? `calc(100vw - 45px - ${finalLeftWidth}px - ${finalRightWidth}px`
+            : `calc(100vw - 45px - ${finalRightWidth}px`,
         }"
       >
-        <work-bench></work-bench>
+        <work-bench />
       </section>
 
       <!-- 右侧栏 -->
       <aside class="right-side-bar" :style="{ width: `${finalRightWidth}px` }">
-        <span ref="rightResize"></span>
+        <span ref="rightResize" />
       </aside>
 
       <a-modal
         title="🔥 New Version"
         :visible="updateModalVisible"
         :footer="null"
-        @cancel="updateModalVisible = false"
         :maskClosable="false"
-      ></a-modal>
+        @cancel="updateModalVisible = false"
+      />
     </main>
 
     <!-- 底栏 -->
-    <footer class="layout-footer"></footer>
+    <footer class="layout-footer" />
   </div>
 </template>
 
@@ -47,8 +53,8 @@ import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import axios from "axios";
 
-import SideBar from "@/view/Layout/SideBar/Index.vue";
-import WorkBench from "@/view/Layout/WorkBench/Index.vue";
+import SideBar from "@/view/SideBar/Index.vue";
+import WorkBench from "@/view/WorkBench/Index.vue";
 import markdown from "@/common/helpers/markdown";
 import * as pkg from "@/../package.json";
 
@@ -77,9 +83,7 @@ export default class App extends Vue {
   // 以下为修改后
   // TODO 以下收入 preference
 
-  // FIX 收起侧栏时，workbench 空出，且调整 pannel 时侧栏自动回复
   isShowSide = true;
-
   // TODO isShowPanel
 
   leftViewWidth = 200;
@@ -100,6 +104,10 @@ export default class App extends Vue {
 
   set finalRightWidth(value: number) {
     this.rightViewWidth = value;
+  }
+
+  handleToggle() {
+    this.isShowSide = !this.isShowSide;
   }
 
   created() {

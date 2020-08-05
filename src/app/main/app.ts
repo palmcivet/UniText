@@ -1,5 +1,6 @@
 import { app, protocol, BrowserWindow, Menu, shell, ipcMain } from "electron";
-import { createProtocol, installVueDevtools } from "vue-cli-plugin-electron-builder/lib";
+import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
+import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 import { PREFERENCE } from "@/common/ipcChannel";
 import { localesMenu } from "../config/locales-menu";
@@ -178,7 +179,7 @@ export class App {
        */
 
       if (this.isDev && !process.env.IS_TEST) {
-        await installVueDevtools();
+        await installExtension(VUEJS_DEVTOOLS);
       } else {
         autoUpdater.on("update-downloaded", () => {
           autoUpdater.quitAndInstall();
