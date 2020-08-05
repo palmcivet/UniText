@@ -9,9 +9,7 @@ import { IDocumentFrontMatter, IDocument } from "@/interface/document";
 
 const yaml = require("js-yaml");
 
-const rPrefixSep = /^(-{3,}|;{3,})/;
-const rFrontMatterBefore = /^(-{3,}|;{3,})\n([\s\S]+?)\n\1(?:$|\n([\s\S]*)$)/;
-const rFrontMatterAfter = /^([\s\S]+?)\n(-{3,}|;{3,})(?:$|\n([\s\S]*)$)/;
+const rFrontMatter = /^(-{3,}|;{3,})\n([\s\S]+?)\n\1(?:$|\n([\s\S]*)$)/;
 
 enum SCHEMA {
   FAILSAFE_SCHEMA = "FAILSAFE_SCHEMA",
@@ -170,8 +168,8 @@ const stringifyJSON = (obj: Object): string => {
  * @param str 文件总的字符串
  */
 const split = (str: string): ISpilt => {
-  if (rFrontMatterBefore.test(str)) {
-    let match = str.match(rFrontMatterBefore);
+  if (rFrontMatter.test(str)) {
+    let match = str.match(rFrontMatter);
     match = match as RegExpMatchArray;
 
     return {
@@ -179,19 +177,6 @@ const split = (str: string): ISpilt => {
       content: match[3],
       separator: match[1],
       prefix: true,
-    };
-  }
-
-  // FIX 修复 front-matter 出现在中间，尤其是代码中的错误
-  if (rFrontMatterAfter.test(str)) {
-    let match = str.match(rFrontMatterAfter);
-    match = match as RegExpMatchArray;
-
-    return {
-      data: match[1],
-      content: match[3],
-      separator: match[2],
-      prefix: false,
     };
   }
 
@@ -209,17 +194,17 @@ export function importFrontMatter(str: string, options?: ILoadOption): ISpilt {
     return splitData;
   }
 
-  const raw = splitData.data as string;
+  const data = splitData.data as string;
   const sep = splitData.separator as string;
 
   if (sep[0] === ";") {
     return {
-      data: parseJSON(raw) || "",
+      data: parseJSON(data) || "",
       ...splitData,
     };
   } else {
     return {
-      data: parseYAML(raw, options) || "",
+      data: parseYAML(data, options) || "",
       ...splitData,
     };
   }
