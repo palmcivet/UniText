@@ -1,10 +1,4 @@
-/**
- * 保存 settings 中 article 相关的副本
- * 由 state 维护打开的文件
- */
-
 import * as fse from "fs-extra";
-import { IDocument, IDocumentFormat, IDocumentConfig, EEol } from "@/interface/document";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
 import {
   importFrontMatter,
@@ -12,48 +6,15 @@ import {
   metaInfo2Doc,
 } from "@/common/helpers/front-matter";
 import { hashCode } from "@/common/helpers/utils";
+import { IEditorState, IFile, TTab } from "@/interface/editor";
+import { EEol } from "@/interface/document";
 
-/**
- * @type 标识打开的标签
- * @member order 索引，标题的哈希字符串
- * @member value 标题名称
- */
-export type TTab = { order: string; value: string };
-
-/**
- * @interface 打开的文件除自身属性外需附加在编辑器中的状态
- */
-export interface IFile extends IDocument {
-  title: string; // 文件名
-  needSave: boolean; // 是否改动
-}
-
-/**
- * @interface 编辑器的 state
- */
-export interface IEditor {
-  /* 以下为编辑器状态 */
-  historyFileIndex: string;
-  currentFileIndex: string;
-  currentFileGroup: { [index: string]: IFile };
-  currentTabs: Array<TTab>;
-  /* 以下继承自系统设置，作为文档设置的默认 */
-  defaultDoc: {
-    tag: string; // 默认标签
-    category: string; // 默认分类
-    format: IDocumentFormat;
-    config: IDocumentConfig;
-  };
-  lineNumber: true; // 显示行号
-  highlightLine: true; // 高亮当前行
-}
-
-const fileSelect = (stateTree: IEditor) =>
+const fileSelect = (stateTree: IEditorState) =>
   stateTree.currentFileGroup[stateTree.currentFileIndex];
 
 let titleId = 0;
 
-const state: IEditor = {
+const state: IEditorState = {
   historyFileIndex: "",
   currentFileIndex: "",
   currentFileGroup: {},
@@ -73,12 +34,10 @@ const state: IEditor = {
       complete: false,
     },
   },
-  lineNumber: true,
-  highlightLine: true,
 };
 
-const getters: GetterTree<IEditor, any> = {
-  currentFile: (moduleState: IEditor) => {
+const getters: GetterTree<IEditorState, any> = {
+  currentFile: (moduleState: IEditorState) => {
     return {
       order: moduleState.currentFileIndex,
       value: moduleState.currentFileGroup[moduleState.currentFileIndex],
@@ -86,42 +45,42 @@ const getters: GetterTree<IEditor, any> = {
   },
 };
 
-const mutations: MutationTree<IEditor> = {
+const mutations: MutationTree<IEditorState> = {
   /* 以下为编辑器设置 */
-  SET_INDENT: (moduleState: IEditor, indent: 2 | 4) => {
+  SET_INDENT: (moduleState: IEditorState, indent: 2 | 4) => {
     const curFile = fileSelect(moduleState);
     curFile.format.indent = indent;
   },
 
-  SET_ENCODING: (moduleState: IEditor, encoding: string) => {
+  SET_ENCODING: (moduleState: IEditorState, encoding: string) => {
     const curFile = fileSelect(moduleState);
     curFile.format.encoding = encoding;
   },
 
-  SET_END_OF_FILE: (moduleState: IEditor, eol: EEol) => {
+  SET_END_OF_FILE: (moduleState: IEditorState, eol: EEol) => {
     const curFile = fileSelect(moduleState);
     curFile.format.endOfLine = eol;
   },
 
   /* 以下为修改文档信息 */
-  SET_TAG: (moduleState: IEditor, tag: string) => {
+  SET_TAG: (moduleState: IEditorState, tag: string) => {
     const curFile = fileSelect(moduleState);
     curFile.tag = tag;
   },
 
-  SET_COMMENT: (moduleState: IEditor, comment: string) => {
+  SET_COMMENT: (moduleState: IEditorState, comment: string) => {
     const curFile = fileSelect(moduleState);
     curFile.comment = comment;
   },
 
   /* 以下为设置附加属性 */
-  SET_PIC_STORAGE: (moduleState: IEditor, comment: string) => {},
-  SET_AUTO_SAVE: (moduleState: IEditor, comment: string) => {},
-  SET_AUTO_SYNC: (moduleState: IEditor, comment: string) => {},
-  SET_COMPLETE: (moduleState: IEditor, comment: string) => {},
+  SET_PIC_STORAGE: (moduleState: IEditorState, comment: string) => {},
+  SET_AUTO_SAVE: (moduleState: IEditorState, comment: string) => {},
+  SET_AUTO_SYNC: (moduleState: IEditorState, comment: string) => {},
+  SET_COMPLETE: (moduleState: IEditorState, comment: string) => {},
 
   /* 更新标签组，更新体现为添加和删除 */
-  SYNC_TABS: (moduleState: IEditor) => {
+  SYNC_TABS: (moduleState: IEditorState) => {
     const newTabs: Array<TTab> = [];
     const group = Object.keys(moduleState.currentFileGroup);
     group.forEach((v) => {
@@ -134,26 +93,26 @@ const mutations: MutationTree<IEditor> = {
   },
 
   /* 切换标签页 */
-  SELECT_TAB: (moduleState: IEditor, payload: { cur: string; his?: string }) => {
+  SELECT_TAB: (moduleState: IEditorState, payload: { cur: string; his?: string }) => {
     moduleState.historyFileIndex =
       payload.his !== undefined ? payload.his : moduleState.currentFileIndex;
     moduleState.currentFileIndex = payload.cur;
   },
 
   /* 拖拽更改标签位置 */
-  SWITCH_TABS: (moduleState: IEditor, value: Array<TTab>) => {
+  SWITCH_TABS: (moduleState: IEditorState, value: Array<TTab>) => {
     moduleState.currentTabs = value;
   },
 
   /* 标记文件修改状态 */
-  TOGGLE_MODIFY: (moduleState: IEditor) => {
+  TOGGLE_MODIFY: (moduleState: IEditorState) => {
     const curFile = fileSelect(moduleState);
     curFile.needSave = !curFile.needSave;
   },
 };
 
-const actions: ActionTree<IEditor, any> = {
-  NEW_FILE: (moduleState: ActionContext<IEditor, any>, title?: string) => {
+const actions: ActionTree<IEditorState, any> = {
+  NEW_FILE: (moduleState: ActionContext<IEditorState, any>, title?: string) => {
     // TODO 同步默认设置
     const untitled: IFile = {
       tag: "Untag",
@@ -192,7 +151,7 @@ const actions: ActionTree<IEditor, any> = {
   },
 
   LOAD_FILE: (
-    moduleState: ActionContext<IEditor, any>,
+    moduleState: ActionContext<IEditorState, any>,
     payload: { file: IFile; index: string }
   ) => {
     moduleState.state.currentFileGroup[payload.index] = payload.file;
@@ -200,7 +159,7 @@ const actions: ActionTree<IEditor, any> = {
     moduleState.commit("SYNC_TABS");
   },
 
-  OPEN_FILE: (moduleState: ActionContext<IEditor, any>, path: string) => {
+  OPEN_FILE: (moduleState: ActionContext<IEditorState, any>, path: string) => {
     fse
       .readFile(path)
       .then((res) => res.toString())
@@ -219,7 +178,7 @@ const actions: ActionTree<IEditor, any> = {
       });
   },
 
-  SAVE_FILE: (moduleState: ActionContext<IEditor, any>, newTitle?: string) => {
+  SAVE_FILE: (moduleState: ActionContext<IEditorState, any>, newTitle?: string) => {
     const { title, needSave, ...payload } = fileSelect(moduleState.state);
     const markdown = exportFrontMatter(payload);
     fse.writeFile(newTitle || title, markdown);
@@ -233,7 +192,7 @@ const actions: ActionTree<IEditor, any> = {
    *
    * 下一个页标签为 `Math.abs(index - 1)`
    */
-  CLOSE_FILE: (moduleState: ActionContext<IEditor, any>, index: string) => {
+  CLOSE_FILE: (moduleState: ActionContext<IEditorState, any>, index: string) => {
     const selectState = moduleState.state;
 
     /* 保存标签页的内容 */
@@ -266,10 +225,10 @@ const actions: ActionTree<IEditor, any> = {
     }
   },
 
-  RENAME_FILE: (moduleState: ActionContext<IEditor, any>, title: string) => {},
+  RENAME_FILE: (moduleState: ActionContext<IEditorState, any>, title: string) => {},
 };
 
-const module: Module<IEditor, any> = {
+const module: Module<IEditorState, any> = {
   namespaced: true,
   state,
   getters,

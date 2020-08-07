@@ -2,7 +2,7 @@ import { app, protocol, BrowserWindow, Menu, shell, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
-import { PREFERENCE } from "@/common/ipcChannel";
+import { IPC_PREFERENCE } from "@/common/ipcChannel";
 import { localesMenu } from "../config/locales-menu";
 
 export class App {
@@ -31,14 +31,14 @@ export class App {
     this.windowManager = [];
   }
 
-  private createWindow() {
+  private async createWindow() {
     const winOption: any = {
       width: 1294,
       height: 800,
       minWidth: 1000,
       minHeight: 618,
       webPreferences: {
-        webSecurity: false, // cross-origin
+        webSecurity: true,
         nodeIntegration: true,
       },
       titleBarStyle: "hidden" as
@@ -61,7 +61,7 @@ export class App {
 
     // 开发工具
     if (process.env.WEBPACK_DEV_SERVER_URL) {
-      win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+      await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
       if (!process.env.IS_TEST) {
         win.webContents.openDevTools();
       }
@@ -74,8 +74,8 @@ export class App {
       win = null;
     });
 
-    ipcMain.on(PREFERENCE.FETCH, (event) => {
-      event.reply(PREFERENCE.SEND, this.locale, this.config);
+    ipcMain.on(IPC_PREFERENCE.FETCH, (event) => {
+      event.reply(IPC_PREFERENCE.SEND, this.locale, this.config);
     });
 
     this.windowManager.push(win);

@@ -25,9 +25,9 @@ import { State, namespace } from "vuex-class";
 import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
-import { ITreeItem } from "@/interface/view";
+import { ITreeItem } from "@/interface/sideBar";
 import TreeView from "@/common/widgets/TreeView/Index.vue";
-import { FILE } from "@/common/busChannel";
+import { BUS_FILE } from "@/common/busChannel";
 
 const editor = namespace("editor");
 const general = namespace("general");
@@ -117,9 +117,13 @@ export default class Files extends Vue {
       this.handleFolder();
     }
 
-    this.$bus.$on(FILE.OPEN_FILE, (value: string) => {
+    this.$bus.$on(BUS_FILE.OPEN_FILE, (value: string) => {
       this.OPEN_FILE(`${this.folderDir}${value}`);
     });
+  }
+
+  beforeDestroy() {
+    this.$bus.$off(BUS_FILE.OPEN_FILE);
   }
 }
 </script>

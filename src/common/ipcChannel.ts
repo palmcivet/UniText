@@ -1,4 +1,4 @@
-export enum PREFERENCE {
+export enum IPC_PREFERENCE {
   FETCH = "FETCH_PREFERENCE",
   SEND = "SEND_PREFERENCE",
 }

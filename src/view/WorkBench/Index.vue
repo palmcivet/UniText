@@ -37,9 +37,10 @@ import * as monaco from "monaco-editor";
 import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
 import Tabs from "@/view/WorkBench/Tabs/Index.vue";
-import { IEditor, IFile, TTab } from "@/store/modules/editor";
+import { IFile, TTab } from "@/interface/editor";
 import { IDocument } from "@/interface/document";
 import { wordCount, timeCalc } from "@/common/helpers/words-count";
+
 import markdown from "@/common/helpers/markdown";
 import theme from "./theme";
 
@@ -86,7 +87,7 @@ export default class WorkBench extends Vue {
     minimap: {
       enabled: false,
     },
-    wordWrap: "on",
+    wordWrap: "off",
     cursorWidth: 2,
     cursorSmoothCaretAnimation: true,
     cursorBlinking: "smooth",
@@ -118,6 +119,10 @@ export default class WorkBench extends Vue {
   isPreview = true;
 
   editWidth = 0;
+
+  refPreview!: HTMLElement;
+
+  refEditor!: HTMLElement;
 
   get finalWidth() {
     return this.editWidth;
@@ -161,16 +166,18 @@ export default class WorkBench extends Vue {
     }
 
     this.editor.setModel(mod);
-    this.isPreview && this.syncPreview(this.editor.getValue());
+
+    this.isPreview &&
+      (this.refPreview.innerHTML = markdown.render(this.editor.getValue())) &&
+      Prism.highlightAll();
   }
 
-  syncContent(value: string) {}
-
   syncPreview(value: string) {
-    (document.querySelector(
-      "#markdown-preview"
-    ) as HTMLElement).innerHTML = markdown.render(value);
-    Prism.highlightAll();
+    this.refPreview.innerHTML = markdown.render(value);
+  }
+
+  syncToc(value: string) {
+    markdown.render(value);
   }
 
   created() {
@@ -178,12 +185,12 @@ export default class WorkBench extends Vue {
   }
 
   mounted() {
+    this.refPreview = document.querySelector("#markdown-preview") as HTMLElement;
+    this.refEditor = document.querySelector("#markdown-editor") as HTMLElement;
+
     monaco.editor.defineTheme("GrideaLight", theme as monaco.editor.IStandaloneThemeData);
 
-    this.editor = monaco.editor.create(
-      document.querySelector("#markdown-editor") as HTMLElement,
-      this.initOption
-    );
+    this.editor = monaco.editor.create(this.refEditor, this.initOption);
 
     this.modelStack[this.currentFileIndex] = monaco.editor.createModel(
       this.currentFile.value.content,
@@ -196,9 +203,15 @@ export default class WorkBench extends Vue {
     this.$nextTick(() => {
       /* 实时渲染 */
       // FEAT 内容分块，细粒度刷新
-      this.editor.onDidChangeModelContent(async () => {
-        this.syncPreview(this.editor.getValue());
-      });
+      // FEAT 防抖
+      this.editor.onDidChangeModelContent(
+        (e: monaco.editor.IModelContentChangedEvent) => {
+          /* 两个函数都将执行渲染，二选一即可 */
+          this.isPreview
+            ? this.syncPreview(this.editor.getValue())
+            : this.syncToc(this.editor.getValue());
+        }
+      );
 
       // FEAT 监听快捷键
       this.editor.onKeyDown(() => {});
@@ -357,6 +370,7 @@ export default class WorkBench extends Vue {
   /deep/ p,
   /deep/ li {
     line-height: 1.62;
+
     code {
       font-family: "Source Code Pro", Consolas, Menlo, Monaco, "Courier New", monospace;
       line-height: initial;
@@ -375,9 +389,19 @@ export default class WorkBench extends Vue {
     background: #f7f6f3;
     padding: 16px;
     border-radius: 2px;
+
     code {
       color: #000;
       font-family: "Source Code Pro", Consolas, Menlo, Monaco, "Courier New", monospace;
+      background-color: unset;
+
+      .token.operator,
+      .token.entity,
+      .token.url,
+      .language-css .token.string,
+      .style .token.string {
+        background: unset;
+      }
     }
   }
 
@@ -386,6 +410,7 @@ export default class WorkBench extends Vue {
     position: relative;
     padding: 0.4em 0 0 2.2em;
     font-size: 0.96em;
+
     &:before {
       position: absolute;
       top: -4px;
@@ -400,12 +425,14 @@ export default class WorkBench extends Vue {
     border-collapse: collapse;
     margin: 1rem 0;
     width: 100%;
+
     tr {
       border-top: 1px solid #dfe2e5;
       &:nth-child(2n) {
         background-color: #f6f8fa;
       }
     }
+
     td,
     th {
       border: 1px solid #dfe2e5;
@@ -461,6 +488,7 @@ export default class WorkBench extends Vue {
     display: block;
     border: 0;
     margin: 2.24em auto 2.86em;
+
     &:before {
       color: rgba(0, 0, 0, 0.2);
       font-size: 1.1em;
@@ -476,6 +504,7 @@ export default class WorkBench extends Vue {
     max-width: 760px;
     padding-left: 18px;
     padding-right: 18px;
+
     &:before {
       content: "";
       display: block;
@@ -504,12 +533,15 @@ export default class WorkBench extends Vue {
     transform-origin: center;
     transform: rotate(-90deg);
     transition: all 0.2s ease;
+
     &:checked {
       transform: rotate(0);
+
       &:before {
         border: transparent;
         background-color: #9ae6b4;
       }
+
       &:after {
         transform: rotate(-45deg) scale(1);
       }
@@ -518,6 +550,7 @@ export default class WorkBench extends Vue {
         text-decoration: line-through;
       }
     }
+
     &:before {
       content: "";
       width: 16px;
@@ -532,6 +565,7 @@ export default class WorkBench extends Vue {
       left: 0;
       transition: all 0.2s ease;
     }
+
     &:after {
       content: "";
       transform: rotate(-45deg) scale(0);

@@ -7,7 +7,7 @@ import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
 import App from "@/view/Index.vue";
-import { PREFERENCE } from "@/common/ipcChannel";
+import { IPC_PREFERENCE } from "@/common/ipcChannel";
 import { localesMessage } from "@/app/config/locales-message";
 import { VueBus } from "./bus";
 import "@/asset/styles/tailwind.css";
@@ -17,7 +17,7 @@ let defaultLocale = "";
 let defaultConfig = {};
 
 // 与 main 进程通信获取数据
-ipcRenderer.send(PREFERENCE.SEND, (locale: string, config: any) => {
+ipcRenderer.send(IPC_PREFERENCE.SEND, (locale: string, config: any) => {
   defaultLocale = locale;
   defaultConfig = config;
 });

@@ -49,8 +49,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { ITreeItem } from "@/interface/view";
-import { FILE } from "@/common/busChannel";
+import { ITreeItem } from "@/interface/sideBar";
+import { BUS_FILE } from "@/common/busChannel";
 
 @Component({
   name: "TreeItem",
@@ -108,7 +108,7 @@ export default class TreeItem extends Vue {
   }
 
   openFile(value: string) {
-    this.$bus.$emit(FILE.OPEN_FILE, value);
+    this.$bus.$emit(BUS_FILE.OPEN_FILE, value);
   }
 }
 </script>

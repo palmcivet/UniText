@@ -10,19 +10,20 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
-      "runtimeArgs": ["--remote-debugging-port=8081", "."],
-      "program": "${workspaceFolder}/dist_electron/index.js",
-      "cwd": "${workspaceFolder}",
-      "args": []
+      "preLaunchTask": "Debug",
+      "args": ["--remote-debugging-port=8081", "./dist_electron"],
+      "outFiles": ["${workspaceFolder}/dist_electron/**/*.js"]
     },
     {
       "type": "chrome",
       "name": "Renderer",
       "request": "attach",
-      "address": "localhost",
       "port": 8081,
-      "webRoot": "${workspaceRoot}",
-      "sourceMaps": true
+      "urlFilter": "http://localhost:*",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMapPathOverrides": {
+        "webpack:///./src/*": "${webRoot}/*"
+      }
     }
   ],
   "compounds": [

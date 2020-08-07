@@ -31,6 +31,7 @@
       <!-- 右侧栏 -->
       <aside class="right-side-bar" :style="{ width: `${finalRightWidth}px` }">
         <span ref="rightResize" />
+        <pannel />
       </aside>
 
       <a-modal
@@ -55,7 +56,7 @@ import axios from "axios";
 
 import SideBar from "@/view/SideBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
-import markdown from "@/common/helpers/markdown";
+import Pannel from "@/view/Panel/Index.vue";
 import * as pkg from "@/../package.json";
 
 @Component({
@@ -63,6 +64,7 @@ import * as pkg from "@/../package.json";
   components: {
     SideBar,
     WorkBench,
+    Pannel,
   },
 })
 export default class App extends Vue {
@@ -77,8 +79,6 @@ export default class App extends Vue {
   newVersion = "";
 
   updateModalVisible = false;
-
-  updateContent = "";
 
   // 以下为修改后
   // TODO 以下收入 preference
@@ -199,7 +199,6 @@ export default class App extends Vue {
       const currentVersion = this.version
         .split(".")
         .map((item: string) => parseInt(item, 10));
-      this.updateContent = markdown.render(res.data.body);
 
       for (let i = 0; i < currentVersion.length; i += 1) {
         if (currentVersion[i] > latestVersion[i]) {

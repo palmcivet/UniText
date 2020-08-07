@@ -19,11 +19,14 @@
       </a-menu-item>
     </a-menu>
 
-    <div v-show="isShowSide" class="right-column" :style="{ width: `${sideWidth}px` }">
-      <keep-alive>
-        <component :is="activeItem" />
-      </keep-alive>
-    </div>
+    <keep-alive>
+      <component
+        class="right-column"
+        v-show="isShowSide"
+        :style="{ width: `${sideWidth}px` }"
+        :is="activeItem"
+      />
+    </keep-alive>
   </article>
 </template>
 

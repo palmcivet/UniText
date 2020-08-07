@@ -1,16 +1,6 @@
-import { ITreeItem } from "@/interface/view";
+import { ISideBarState } from "@/interface/sideBar";
 
-export interface ISideBar {
-  files: {
-    folderTree: Array<ITreeItem>;
-    ignoreFile: Array<string>;
-  };
-  marks: {};
-  search: {};
-  tags: {};
-}
-
-const state: ISideBar = {
+const state: ISideBarState = {
   files: {
     folderTree: [],
     ignoreFile: [".DS_Store", "node_modules", "desktop.ini"],
