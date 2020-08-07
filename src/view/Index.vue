@@ -274,7 +274,6 @@ export default class App extends Vue {
   position: absolute;
   right: 0;
   display: flex;
-  background-color: #f0f8ff; // DEV
 }
 
 /* 以下为 resize */

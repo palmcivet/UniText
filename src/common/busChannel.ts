@@ -4,4 +4,6 @@ export enum BUS_FILE {
 
 export enum BUS_TOC {
   SYNC_TOC = "SYNC_TOC",
+  REVEAL_SECTION = "REVEAL_SECTION",
+  SWITCH_SECTION = "SWITCH_SECTION",
 }

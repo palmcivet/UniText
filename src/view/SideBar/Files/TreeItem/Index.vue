@@ -160,7 +160,6 @@ pre {
 
 .indent-show {
   border-right: 0.3px solid rgba(126, 126, 126, 0.9);
-
   transition: all 0.2s ease-in-out;
 }
 

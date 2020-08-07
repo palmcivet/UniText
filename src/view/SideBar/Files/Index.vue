@@ -13,7 +13,16 @@
       <button @click="openDialog()">打开文件夹</button>
     </div>
     <div v-else>
-      <tree-view :data="fileData" :toggle="notCollapse" />
+      <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
+        <tree-item
+          v-for="(child, index) in fileData"
+          :key="index"
+          :itemData="child"
+          :treeDeepth="1"
+          :showIndent="showIndent"
+          :notCollapse="notCollapse"
+        />
+      </ul>
     </div>
   </section>
 </template>
@@ -25,8 +34,8 @@ import { State, namespace } from "vuex-class";
 import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
+import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
 import { ITreeItem } from "@/interface/sideBar";
-import TreeView from "@/common/widgets/TreeView/Index.vue";
 import { BUS_FILE } from "@/common/busChannel";
 
 const editor = namespace("editor");
@@ -37,14 +46,12 @@ const sideBar = namespace("sideBar");
   name: "File",
   components: {
     draggable,
-    TreeView,
+    TreeItem,
   },
 })
 export default class Files extends Vue {
   @general.State("notesPath")
   defaultFolder!: string;
-
-  folderDir = "/Users/palmcivet/Documents/Develop/Preparing/PKM/测试笔记";
 
   @sideBar.State("files")
   stateFiles!: {
@@ -52,10 +59,17 @@ export default class Files extends Vue {
     ignoreFile: Array<string>;
   };
 
+  @editor.Action("OPEN_FILE")
+  OPEN_FILE!: (path: string) => void;
+
+  folderDir = "/Users/palmcivet/Documents/Develop/Preparing/PKM/测试笔记";
+
   @Watch("folderDir")
   handleFolder() {
-    this.fileData = this.buildFileTree("");
+    this.fileData = this.buildTree("");
   }
+
+  showIndent = true;
 
   notCollapse = true;
 
@@ -78,10 +92,15 @@ export default class Files extends Vue {
       });
   }
 
-  @editor.Action("OPEN_FILE")
-  OPEN_FILE!: (path: string) => void;
+  handleMouseEnter() {
+    this.showIndent = true;
+  }
 
-  buildFileTree(path: string) {
+  handleMouseLeave() {
+    this.showIndent = false;
+  }
+
+  buildTree(path: string) {
     const fileTree: Array<ITreeItem> = [];
     fse
       .readdir(`${this.folderDir}/${path}`)
@@ -101,7 +120,7 @@ export default class Files extends Vue {
 
           if (fse.lstatSync(`${this.folderDir}/${subTree.path}`).isDirectory()) {
             fileTree.push({
-              file: this.buildFileTree(subTree.path),
+              file: this.buildTree(subTree.path),
               ...subTree,
             });
           } else {
@@ -164,6 +183,12 @@ section {
       box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
       border-radius: 2px;
       outline-style: none;
+    }
+
+    > ul {
+      margin: 0;
+      height: 100%;
+      overflow: auto;
     }
   }
 }

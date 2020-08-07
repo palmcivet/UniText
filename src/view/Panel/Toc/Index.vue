@@ -1,56 +1,38 @@
 <template>
   <section>
-    <ul>
-      <!-- <li v-for="(item, index) in tocTree" :key="index"></li> -->
-    </ul>
+    <li v-for="(item, index) in tocTree" :key="index" @click.stop="revealLine(item.line)">
+      <div v-for="i in item.level - firstLevel - 1" :key="i" />
+      <pre></pre>
+      {{ item.content }}
+    </li>
   </section>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+
 import { ITocList } from "@/common/helpers/create-toc";
-import { ITocTree } from "@/interface/pannel";
 import { BUS_TOC } from "@/common/busChannel";
 
 @Component({
   name: "Toc",
-  components: {},
 })
 export default class Toc extends Vue {
-  tocList!: Array<ITocList>;
+  @Prop({
+    type: Number,
+    default: 1,
+  })
+  firstLevel!: number;
 
-  levelStart = 2;
+  tocTree: Array<ITocList> = [];
 
-  levelEnd = 6;
-
-  getTree(list: Array<ITocList>): Array<ITocTree> {
-    const res: Array<ITocTree> = [];
-    res.push({ sub: [], ...list[0] });
-    const stack: Array<ITocTree[]> = [res];
-
-    for (let i = 1, l = list.length; i < l; i++) {
-      const element = list[i];
-      if (element.level < list[i - 1].level) {
-        /* 父标题，栈顶的数组出栈，插入到上一级 */
-        const t = stack.pop();
-        const s = stack[stack.length - 1];
-        s[s.length - 1].sub = t as ITocTree[];
-        /* 子标题，将当前父元素的 `sub` 入栈 */
-      } else if (element.level > list[i - 1].level) {
-        const s = stack[stack.length - 1];
-        s[s.length - 1].sub = [];
-        stack.push(s[s.length - 1].sub);
-      }
-      /* 插入到栈顶的元素 */
-      stack[stack.length - 1].push({ sub: [], ...element });
-    }
-
-    return res;
+  revealLine(value: Array<number>) {
+    this.$emit(BUS_TOC.REVEAL_SECTION, value);
   }
 
   mounted() {
     this.$bus.$on(BUS_TOC.SYNC_TOC, (value: Array<ITocList>) => {
-      this.getTree(value);
+      this.tocTree = value;
     });
   }
 
@@ -60,4 +42,44 @@ export default class Toc extends Vue {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+@import "~@/asset/styles/var.less";
+
+@line-height: 1em;
+
+* {
+  -webkit-user-select: none;
+  font-family: @edit-font-family;
+}
+
+section {
+  height: 100%;
+  width: 100%;
+  margin-bottom: 0;
+  overflow-y: auto;
+  padding: 0.2em 0.1em;
+  background-color: #f7f7f7; // DEV
+
+  li {
+    list-style: none;
+    cursor: pointer;
+    display: -webkit-box;
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:hover {
+      background-color: #e2dac3;
+    }
+
+    div {
+      width: 0.6em;
+      border-right: 0.3px solid rgba(126, 126, 126, 0.9);
+    }
+
+    pre {
+      margin: 0;
+      width: 0.3em;
+    }
+  }
+}
+</style>

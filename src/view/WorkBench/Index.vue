@@ -286,7 +286,7 @@ export default class WorkBench extends Vue {
     background-color: rgba(255, 255, 255, 0.6);
 
     &:hover {
-      border-right: 1px solid rgba(230, 230, 230, 0.4); // DEV
+      border-left: 1px solid rgba(230, 230, 230, 0.4); // DEV
     }
   }
 }
@@ -585,7 +585,6 @@ export default class WorkBench extends Vue {
   /deep/ .markdownIt-TOC {
     list-style: none;
     background: #f7fafc;
-    padding: 1.5rem;
     border-radius: 0.5rem;
     color: #4a5568;
   }
@@ -593,6 +592,7 @@ export default class WorkBench extends Vue {
   /deep/ .markdownIt-TOC ul {
     list-style: none;
     padding-left: 16px;
+    margin: 0;
   }
 
   /deep/ mark {

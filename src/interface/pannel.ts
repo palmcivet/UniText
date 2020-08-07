@@ -6,7 +6,3 @@ export interface IPannelState {
   };
   export: {};
 }
-
-export interface ITocTree extends ITocList {
-  sub: Array<ITocTree>;
-}
