@@ -27,12 +27,14 @@ export default class Toc extends Vue {
   tocTree: Array<ITocList> = [];
 
   revealLine(value: Array<number>) {
-    this.$emit(BUS_TOC.REVEAL_SECTION, value);
+    this.$bus.$emit(BUS_TOC.REVEAL_SECTION, value);
   }
 
   mounted() {
-    this.$bus.$on(BUS_TOC.SYNC_TOC, (value: Array<ITocList>) => {
-      this.tocTree = value;
+    this.$nextTick(() => {
+      this.$bus.$on(BUS_TOC.SYNC_TOC, (value: Array<ITocList>) => {
+        this.tocTree = value;
+      });
     });
   }
 

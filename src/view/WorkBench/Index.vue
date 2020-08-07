@@ -40,7 +40,8 @@ import Tabs from "@/view/WorkBench/Tabs/Index.vue";
 import { IFile, TTab } from "@/interface/editor";
 import { IDocument } from "@/interface/document";
 import { wordCount, timeCalc } from "@/common/helpers/words-count";
-
+import { BUS_TOC } from "@/common/busChannel";
+import { ITocList } from "@/common/helpers/create-toc";
 import markdown from "@/common/helpers/markdown";
 import theme from "./theme";
 
@@ -201,7 +202,8 @@ export default class WorkBench extends Vue {
     extension.activate(this.editor);
 
     this.$nextTick(() => {
-      /* 实时渲染 */
+      /* 以下为实时渲染 */
+
       // FEAT 内容分块，细粒度刷新
       // FEAT 防抖
       this.editor.onDidChangeModelContent(
@@ -213,8 +215,16 @@ export default class WorkBench extends Vue {
         }
       );
 
+      /* 以下为监听 */
+
       // FEAT 监听快捷键
       this.editor.onKeyDown(() => {});
+
+      this.$bus.$on(BUS_TOC.REVEAL_SECTION, (value: Array<number>) => {
+        this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
+      });
+
+      /* 以下为 resize */
 
       /* 获取容器宽度，编辑区初始值为容器的 50% */
       const parent = this.$el as HTMLElement;
@@ -267,6 +277,7 @@ export default class WorkBench extends Vue {
   beforeDestroy() {
     this.modelStack = {};
     this.editor.dispose();
+    this.$bus.$off(BUS_TOC.REVEAL_SECTION);
   }
 }
 </script>
