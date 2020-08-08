@@ -7816,6 +7816,11 @@ pend@~1.2.0:
   resolved "https://registry.npm.taobao.org/pend/download/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
+perfect-scrollbar@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.npm.taobao.org/perfect-scrollbar/download/perfect-scrollbar-1.5.0.tgz#821d224ed8ff61990c23f26db63048cdc75b6b83"
+  integrity sha1-gh0iTtj/YZkMI/JttjBIzcdba4M=
+
 performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/performance-now/download/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
@@ -10536,6 +10541,14 @@ vue-cli-plugin-electron-builder@~2.0.0-rc.4:
     webpack-merge "^4.2.2"
     yargs "^15.3.1"
 
+vue-custom-scrollbar@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/vue-custom-scrollbar/download/vue-custom-scrollbar-1.2.0.tgz#3579e1745016795c081e48f20a98a5d80d240626"
+  integrity sha1-NXnhdFAWeVwIHkjyCpil2A0kBiY=
+  dependencies:
+    perfect-scrollbar "^1.5.0"
+    vue "^2.6.11"
+
 vue-eslint-parser@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-5.0.0.tgz#00f4e4da94ec974b821a26ff0ed0f7a78402b8a1"
@@ -10622,7 +10635,7 @@ vue2-transitions@^0.2.3:
   resolved "https://registry.npm.taobao.org/vue2-transitions/download/vue2-transitions-0.2.3.tgz#69c9d75b1db05f231b80980c03459d68490ba27d"
   integrity sha1-acnXWx2wXyMbgJgMA0WdaEkLon0=
 
-vue@^2.6.10:
+vue@^2.6.10, vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha1-dllNh31LEiNEBuhONSdcbVFBJcU=

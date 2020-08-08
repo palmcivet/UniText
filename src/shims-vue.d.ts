@@ -25,6 +25,7 @@ declare module "@iktakahiro/markdown-it-katex";
 declare module "v-emoji-picker";
 declare module "vue-shortkey";
 declare module "vue2-transitions";
+declare module "vue-custom-scrollbar";
 declare module "vuedraggable" {
   export interface DraggedContext<T> {
     index: number;

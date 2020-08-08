@@ -1,11 +1,3 @@
-/**
- * Add single-quoted to string type field, in order to be compatible with many special characters
- * eg. true, false, 1, [, ], {, }, ,, #, <, >, @,
- */
-export function formatYamlString(string: any) {
-  return string.replace(/'/g, "''");
-}
-
 export const hashCode = (plain: string) => {
   let hash = 0;
   let chr;
@@ -16,3 +8,6 @@ export const hashCode = (plain: string) => {
   }
   return hash.toString();
 };
+
+export const updateStyle = (selector: string) =>
+  (document.querySelector(selector) as HTMLElement).style;

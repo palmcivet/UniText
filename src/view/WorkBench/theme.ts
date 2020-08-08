@@ -213,7 +213,7 @@ export default {
     "editor.foreground": "#333333",
     "editor.background": "#FFFFFF",
     "editor.selectionBackground": "#BDD5FC",
-    "editor.lineHighlightBackground": "#FFFBD1",
+    "editor.lineHighlightBackground": "#E5EFD8",
     "editorCursor.foreground": "#000000",
     "editorWhitespace.foreground": "#BFBFBF",
     "textLink.foreground": "#666",

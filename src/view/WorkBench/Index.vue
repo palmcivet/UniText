@@ -14,13 +14,15 @@
     <article v-show="currentTabs.length !== 0" class="workbench">
       <section
         id="markdown-editor"
-        :style="{ width: finalWidth ? `calc(100% - ${finalWidth}px` : '50%' }"
+        :style="{
+          width: finalWidth ? `calc(100% - ${finalWidth - 2}px` : '50%',
+        }"
       />
       <span v-show="isPreview" ref="resize" />
       <section
         id="markdown-preview"
         v-show="isPreview"
-        :style="{ width: finalWidth ? `${finalWidth}px` : '50%' }"
+        :style="{ width: finalWidth ? `${finalWidth}px` : 'clac(50% - 2px)' }"
       />
     </article>
   </div>
@@ -42,6 +44,7 @@ import { IDocument } from "@/interface/document";
 import { wordCount, timeCalc } from "@/common/helpers/words-count";
 import { BUS_TOC } from "@/common/busChannel";
 import { ITocList } from "@/common/helpers/create-toc";
+import { updateStyle } from "@/common/helpers/utils";
 import markdown from "@/common/helpers/markdown";
 import theme from "./theme";
 
@@ -94,16 +97,18 @@ export default class WorkBench extends Vue {
     cursorBlinking: "smooth",
     colorDecorators: true,
     folding: true,
-    highlightActiveIndentGuide: false,
+    highlightActiveIndentGuide: true,
     renderIndentGuides: false,
-    renderLineHighlight: "none",
+    renderLineHighlight: "all",
     scrollbar: {
       vertical: "auto",
       horizontal: "auto",
-      verticalScrollbarSize: 4,
+      verticalScrollbarSize: 6,
+      horizontalScrollbarSize: 6,
     },
-    lineHeight: 26.25,
+    lineHeight: 26,
     scrollBeyondLastLine: true,
+    smoothScrolling: true,
     wordBasedSuggestions: false,
     snippetSuggestions: "none",
     lineDecorationsWidth: 0,
@@ -192,6 +197,7 @@ export default class WorkBench extends Vue {
     monaco.editor.defineTheme("GrideaLight", theme as monaco.editor.IStandaloneThemeData);
 
     this.editor = monaco.editor.create(this.refEditor, this.initOption);
+    this.editor.updateOptions({});
 
     this.modelStack[this.currentFileIndex] = monaco.editor.createModel(
       this.currentFile.value.content,
@@ -222,6 +228,7 @@ export default class WorkBench extends Vue {
 
       this.$bus.$on(BUS_TOC.REVEAL_SECTION, (value: Array<number>) => {
         this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
+        this.editor.setPosition({ column: 1, lineNumber: value[1] });
       });
 
       /* 以下为 resize */
@@ -297,7 +304,7 @@ export default class WorkBench extends Vue {
     background-color: rgba(255, 255, 255, 0.6);
 
     &:hover {
-      border-left: 1px solid rgba(230, 230, 230, 0.4); // DEV
+      border-right: @resize-bar;
     }
   }
 }
@@ -332,10 +339,8 @@ export default class WorkBench extends Vue {
   }
 
   /deep/ .monaco-editor {
-    .scrollbar {
-      .slider {
-        background: #eee;
-      }
+    .scrollbar .slider {
+      background: #eee;
     }
 
     .scroll-decoration {
@@ -348,10 +353,8 @@ export default class WorkBench extends Vue {
   overflow: auto;
   padding: 1em;
   background-color: #fafafa;
-
-  font-family: "Source Code Pro", "STZhongSong", "PingFang SC", "Droid Sans Fallback",
-    "Microsoft YaHei", sans-serif;
-  font-size: 15px;
+  font-family: @normal-font-family;
+  font-size: @preview-font-size;
 
   /deep/ a {
     color: rgba(0, 0, 0, 0.98);
@@ -373,7 +376,7 @@ export default class WorkBench extends Vue {
   /deep/ p {
     line-height: 1.62;
     margin-bottom: 1.12em;
-    font-size: 15px;
+    font-size: @preview-font-size;
     letter-spacing: 0.05em;
     hyphens: auto;
   }
@@ -383,7 +386,7 @@ export default class WorkBench extends Vue {
     line-height: 1.62;
 
     code {
-      font-family: "Source Code Pro", Consolas, Menlo, Monaco, "Courier New", monospace;
+      font-family: @code-font-family;
       line-height: initial;
       word-wrap: break-word;
       border-radius: 0;
@@ -403,7 +406,7 @@ export default class WorkBench extends Vue {
 
     code {
       color: #000;
-      font-family: "Source Code Pro", Consolas, Menlo, Monaco, "Courier New", monospace;
+      font-family: @code-font-family;
       background-color: unset;
 
       .token.operator,
@@ -476,25 +479,32 @@ export default class WorkBench extends Vue {
     font-weight: 700;
     padding-top: 16px;
   }
+
   /deep/ h1 {
     font-size: 1.8em;
   }
+
   /deep/ h2 {
-    font-size: 1.42em;
+    font-size: 1.52em;
   }
+
   /deep/ h3 {
-    font-size: 1.17em;
+    font-size: 1.27em;
   }
+
   /deep/ h4 {
-    font-size: 1em;
+    font-size: 1.05em;
   }
+
   /deep/ h5 {
     font-size: 1em;
   }
+
   /deep/ h6 {
     font-size: 1em;
     font-weight: 500;
   }
+
   /deep/ hr {
     display: block;
     border: 0;
@@ -530,9 +540,11 @@ export default class WorkBench extends Vue {
     list-style-type: none;
     padding-left: 30px;
   }
+
   /deep/ .task-list-item {
     position: relative;
   }
+
   /deep/ .task-list-item-checkbox {
     position: absolute;
     cursor: pointer;
@@ -556,6 +568,7 @@ export default class WorkBench extends Vue {
       &:after {
         transform: rotate(-45deg) scale(1);
       }
+
       + .task-list-item-label {
         color: #999;
         text-decoration: line-through;
@@ -601,7 +614,6 @@ export default class WorkBench extends Vue {
   }
 
   /deep/ .markdownIt-TOC ul {
-    list-style: none;
     padding-left: 16px;
     margin: 0;
   }

@@ -1,14 +1,13 @@
-// @import "./custom.less";
 @import "~ant-design-vue/dist/antd.less";
 @import "./var.less";
 @import "./custom.less";
 @import "./zwicon.less";
 
 ::-webkit-scrollbar {
-  width: 0.5em;
-  height: 4px;
-  border-radius: 2px;
-  background-color: #fff;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 ::-webkit-scrollbar-button {
@@ -18,19 +17,32 @@
 ::-webkit-scroll-track {
   display: none;
 }
+
 ::-webkit-scrollbar-track-piece {
   display: none;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: #eee;
-  opacity: 0.7;
-  border-radius: 2px;
+  border-radius: 1px;
+
+  &:hover {
+    background-color: #999;
+  }
 }
 
 ::-webkit-scrollbar-corner {
   display: none;
 }
+
 ::-webkit-resizer {
   display: none;
+}
+
+ol,
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

@@ -14,14 +14,22 @@
     </div>
     <div v-else>
       <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
-        <tree-item
-          v-for="(child, index) in fileData"
-          :key="index"
-          :itemData="child"
-          :treeDeepth="1"
-          :showIndent="showIndent"
-          :notCollapse="notCollapse"
-        />
+        <vue-custom-scrollbar
+          tagname="ul"
+          :settings="{
+            swipeEasing: 'true',
+            scrollingThreshold: '300',
+          }"
+        >
+          <tree-item
+            v-for="(child, index) in fileData"
+            :key="index"
+            :itemData="child"
+            :treeDeepth="1"
+            :showIndent="showIndent"
+            :notCollapse="notCollapse"
+          />
+        </vue-custom-scrollbar>
       </ul>
     </div>
   </section>
@@ -31,6 +39,7 @@
 import { ipcRenderer, IpcRendererEvent, remote } from "electron";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
+import vueCustomScrollbar from "vue-custom-scrollbar";
 import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
@@ -46,6 +55,7 @@ const sideBar = namespace("sideBar");
   name: "File",
   components: {
     draggable,
+    vueCustomScrollbar,
     TreeItem,
   },
 })
@@ -148,6 +158,8 @@ export default class Files extends Vue {
 </script>
 
 <style lang="less" scoped>
+@import "~@/asset/styles/widget.less";
+
 section {
   height: 100%;
   display: flex;
@@ -186,9 +198,7 @@ section {
     }
 
     > ul {
-      margin: 0;
       height: 100%;
-      overflow: auto;
     }
   }
 }

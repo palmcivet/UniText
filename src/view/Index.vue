@@ -278,13 +278,19 @@ export default class App extends Vue {
 
 /* 以下为 resize */
 
-.layout-main span {
-  width: 1px;
-  height: 100%;
-  cursor: col-resize;
+.layout-main {
+  span {
+    width: 1.4px;
+    height: 100%;
+    cursor: col-resize;
+  }
 
-  &:hover {
-    border-right: 1px solid rgba(216, 216, 216, 0.4); // DEV
+  .left-side-bar span:hover {
+    border-right: @resize-bar;
+  }
+
+  .right-side-bar span:hover {
+    border-left: @resize-bar;
   }
 }
 </style>
