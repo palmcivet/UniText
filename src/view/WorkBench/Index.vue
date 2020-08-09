@@ -34,7 +34,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Getter, Action, Mutation, namespace } from "vuex-class";
 import Prism from "prismjs";
 import * as monacoMarkdown from "monaco-markdown";
-import * as monaco from "monaco-editor";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
@@ -44,7 +44,7 @@ import { IDocument } from "@/interface/document";
 import { wordCount, timeCalc } from "@/common/helpers/words-count";
 import { BUS_TOC } from "@/common/busChannel";
 import { ITocList } from "@/common/helpers/create-toc";
-import { updateStyle } from "@/common/helpers/utils";
+import { updateStyle, debounce } from "@/common/helpers/utils";
 import markdown from "@/common/helpers/markdown";
 import theme from "./theme";
 
@@ -126,6 +126,8 @@ export default class WorkBench extends Vue {
 
   editWidth = 0;
 
+  syncDelay = 400;
+
   refPreview!: HTMLElement;
 
   refEditor!: HTMLElement;
@@ -178,13 +180,12 @@ export default class WorkBench extends Vue {
       Prism.highlightAll();
   }
 
-  syncPreview(value: string) {
-    this.refPreview.innerHTML = markdown.render(value);
-  }
-
-  syncToc(value: string) {
-    markdown.render(value);
-  }
+  syncPreOrToc: Function = debounce((that: any) => {
+    /* 二选一即可，后者只更新 TOC */
+    that.isPreview
+      ? (that.refPreview.innerHTML = markdown.render(that.editor.getValue()))
+      : markdown.render(that.editor.getValue());
+  }, this.syncDelay);
 
   created() {
     this.NEW_FILE();
@@ -197,7 +198,6 @@ export default class WorkBench extends Vue {
     monaco.editor.defineTheme("GrideaLight", theme as monaco.editor.IStandaloneThemeData);
 
     this.editor = monaco.editor.create(this.refEditor, this.initOption);
-    this.editor.updateOptions({});
 
     this.modelStack[this.currentFileIndex] = monaco.editor.createModel(
       this.currentFile.value.content,
@@ -211,20 +211,18 @@ export default class WorkBench extends Vue {
       /* 以下为实时渲染 */
 
       // FEAT 内容分块，细粒度刷新
-      // FEAT 防抖
-      this.editor.onDidChangeModelContent(
-        (e: monaco.editor.IModelContentChangedEvent) => {
-          /* 两个函数都将执行渲染，二选一即可 */
-          this.isPreview
-            ? this.syncPreview(this.editor.getValue())
-            : this.syncToc(this.editor.getValue());
-        }
+      this.editor.onDidChangeModelContent((e: monaco.editor.IModelContentChangedEvent) =>
+        this.syncPreOrToc(this)
       );
 
       /* 以下为监听 */
 
       // FEAT 监听快捷键
       this.editor.onKeyDown(() => {});
+
+      this.editor.onDidScrollChange((e: monaco.IScrollEvent) => {
+        // 取 `scrollLeft` 和 `scrollTop` 为最左和最顶的高度
+      });
 
       this.$bus.$on(BUS_TOC.REVEAL_SECTION, (value: Array<number>) => {
         this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);

@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 export const hashCode = (plain: string) => {
   let hash = 0;
   let chr;
@@ -11,3 +12,26 @@ export const hashCode = (plain: string) => {
 
 export const updateStyle = (selector: string) =>
   (document.querySelector(selector) as HTMLElement).style;
+
+export function debounce(fn: Function, delay: number = 1000): Function {
+  let timeout: any;
+  return function(this: any, ...args: any[]) {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      fn.apply(this, args);
+      timeout = undefined;
+    }, delay);
+  };
+}
+
+export function throttle(fn: Function, delay: number = 1000): Function {
+  let canRun = true;
+  return function(this: any, ...args: any[]) {
+    if (!canRun) return;
+    canRun = false;
+    setTimeout(() => {
+      fn.apply(this, args);
+      canRun = true;
+    }, delay);
+  };
+}
