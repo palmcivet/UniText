@@ -52,7 +52,6 @@
 import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
-import axios from "axios";
 
 import SideBar from "@/view/SideBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
@@ -189,7 +188,7 @@ export default class App extends Vue {
   }
 
   public async checkUpdate() {
-    const res = await axios.get("");
+    const res: any = fetch("");
     if (res.status === 200) {
       this.newVersion = res.data.name;
       const latestVersion = res.data.name

@@ -208,7 +208,7 @@ const actions: ActionTree<IEditorState, any> = {
      * 数组特性，使得每个 `order` 唯一对应，且最后一次关闭时仍不为空
      * 传入非 `-1` 值表示删除
      */
-    const tIndex = selectState.currentTabs.findIndex((tab) => tab.order === index);
+    const tIndex = selectState.currentTabs.findIndex((tab: TTab) => tab.order === index);
     moduleState.commit("SYNC_TABS");
 
     /**

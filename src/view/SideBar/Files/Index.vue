@@ -72,7 +72,7 @@ export default class Files extends Vue {
   @editor.Action("OPEN_FILE")
   OPEN_FILE!: (path: string) => void;
 
-  folderDir = "/Users/palmcivet/Documents/Develop/Preparing/PKM/测试笔记";
+  folderDir = "";
 
   @Watch("folderDir")
   handleFolder() {

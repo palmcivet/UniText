@@ -4,7 +4,7 @@
   "parserOptions": {
     "parser": "@typescript-eslint/parser"
   },
-  "extends": ["plugin:vue/essential", "@vue/airbnb"],
+  "extends": ["plugin:vue/essential", "plugin:import/warnings"],
   "rules": {
     "comma-style": "warn",
     "comma-spacing": "warn",
@@ -51,16 +51,6 @@
     "no-param-reassign": 0,
     "no-unneeded-ternary": 0,
     "class-methods-use-this": 0,
-    "import/prefer-default-export": 0,
-    "import/extensions": [
-      "warn",
-      "always",
-      {
-        "js": "never",
-        "ts": "never"
-      }
-    ],
-    "import/no-extraneous-dependencies": 0,
     "vue/script-indent": ["warn", 2, { "baseIndent": 0 }]
   },
   "overrides": [

@@ -12,14 +12,14 @@
 import clone from "clone";
 import uslug from "uslug";
 import Token from "markdown-it/lib/token";
-import State from "markdown-it/lib/rules_core/state_core";
+import StateCore from "markdown-it/lib/rules_core/state_core";
 import MarkdownIt from "markdown-it";
 
 export interface ITocList {
   content: string;
   anchor: string;
   level: number;
-  line: number[];
+  line: [number, number] | null;
 }
 
 interface IToc {
@@ -28,19 +28,19 @@ interface IToc {
 }
 
 interface IToken {
-  attrs: string[][];
-  block: boolean;
-  children: IToken[];
-  content: string;
-  hidden: boolean;
-  info: string;
-  level: number;
-  map: number[];
-  markup: string;
-  meta: any;
-  nesting: number;
-  tag: string;
   type: string;
+  tag: string;
+  attrs: [string, string][] | null;
+  map: [number, number] | null;
+  nesting: 1 | 0 | -1;
+  level: number;
+  children: IToken[] | null;
+  content: string;
+  markup: string;
+  info: string;
+  meta: any;
+  block: boolean;
+  hidden: boolean;
 }
 
 interface ITokenToc extends IToken {
@@ -94,7 +94,7 @@ const space = () => {
   return { ...new Token("text", "", 0), content: " " };
 };
 
-const renderAnchorLinkSymbol = (options: IOption) => {
+const renderAnchorLinkSymbol = (options: IOption): IToken[] => {
   if (options.anchorLinkSymbolClassName) {
     return [
       {
@@ -123,7 +123,7 @@ const renderAnchorLink = (
   tokens: IToken[],
   idx: number
 ) => {
-  const attrs = [];
+  const attrs: Array<[string, string]> = [];
 
   if (options.anchorClassName !== null) {
     attrs.push(["class", options.anchorClassName]);
@@ -138,8 +138,8 @@ const renderAnchorLink = (
   const closeLinkToken = new Token("link_close", "a", -1);
 
   if (options.wrapHeadingTextInAnchor) {
-    tokens[idx + 1].children.unshift(openLinkToken);
-    tokens[idx + 1].children.push(closeLinkToken);
+    (tokens[idx + 1].children as IToken[]).unshift(openLinkToken);
+    (tokens[idx + 1].children as IToken[]).push(closeLinkToken);
   } else {
     const linkTokens = [
       openLinkToken,
@@ -155,8 +155,8 @@ const renderAnchorLink = (
     }
 
     options.anchorLinkBefore
-      ? tokens[idx + 1].children.unshift(...linkTokens)
-      : tokens[idx + 1].children.push(...linkTokens);
+      ? (tokens[idx + 1].children as IToken[]).unshift(...linkTokens)
+      : (tokens[idx + 1].children as IToken[]).push(...linkTokens);
   }
 };
 
@@ -233,7 +233,7 @@ export default function(md: MarkdownIt, opt: IOption) {
   // initialize key ids for each instance
   headingIds = {};
 
-  md.core.ruler.push("init_toc", (state: State) => {
+  md.core.ruler.push("init_toc", (state: StateCore): boolean => {
     const tokens: Array<ITokenToc> = state.tokens;
 
     // reset key ids for each document
@@ -267,7 +267,7 @@ export default function(md: MarkdownIt, opt: IOption) {
         } else {
           content = heading.content;
           heading._tocAnchor = makeSafe(
-            heading.children.reduce((acc, t) => acc + t.content, ""),
+            (heading.children as IToken[]).reduce((acc, t) => acc + t.content, ""),
             headingIds,
             options.sluglify
           );
@@ -307,6 +307,8 @@ export default function(md: MarkdownIt, opt: IOption) {
     } else if (typeof options.tocCallback === "function") {
       options.tocCallback.call(undefined, tocMarkdown, tocArray, tocHtml);
     }
+
+    return true;
   });
 
   md.inline.ruler.after("emphasis", "toc", (state, silent) => {

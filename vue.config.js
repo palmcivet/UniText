@@ -13,12 +13,9 @@ module.exports = {
   css: {
     loaderOptions: {
       less: {
-        import: [`${ASSETS}/styles/var.less"`],
-        modifyVars: {
-          "btn-height-base": "30px",
-          "input-height-base": "30px",
+        lessOptions: {
+          javascriptEnabled: true,
         },
-        javascriptEnabled: true,
       },
     },
   },

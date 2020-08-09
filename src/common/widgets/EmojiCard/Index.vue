@@ -12,7 +12,6 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch, Model } from "vue-property-decorator";
 import VEmojiPicker from "v-emoji-picker";
-import packData from "v-emoji-picker/data/emojis.json";
 
 @Component({
   components: {
@@ -20,8 +19,6 @@ import packData from "v-emoji-picker/data/emojis.json";
   },
 })
 export default class EmojiCard extends Vue {
-  pack = packData;
-
   handleSelect(emojiData: any) {
     this.$emit("select", emojiData.emoji);
   }
