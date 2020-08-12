@@ -43,12 +43,13 @@
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
-import { State, Action } from "vuex-class";
+import { State, Action, Mutation } from "vuex-class";
 
+import { IPC_PREFERENCE } from "@/common/ipcChannel";
+import { IBootCache } from "@/interface/boot";
 import SideBar from "@/view/SideBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
 import Pannel from "@/view/Panel/Index.vue";
-import { checkUpdate } from "@/common/main/utils";
 
 @Component({
   name: "App",
@@ -68,6 +69,9 @@ export default class App extends Vue {
   leftViewWidth = 200;
 
   rightViewWidth = 180;
+
+  @Action("CHECK_UPDATE")
+  CHECK_UPDATE!: () => void;
 
   get finalLeftWidth() {
     return this.leftViewWidth;
@@ -168,9 +172,10 @@ export default class App extends Vue {
   }
 
   mounted() {
-    // const newVersion = checkUpdate();
-    // if (newVersion !== "") {
-    // }
+    this.$nextTick(() => {
+      /* 检查更新 */
+      // this.CHECK_UPDATE();
+    });
   }
 }
 </script>

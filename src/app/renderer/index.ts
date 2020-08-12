@@ -17,18 +17,16 @@ import "@/asset/styles/main.less";
 let defaultLocale = "";
 
 // 与 main 进程通信获取数据
-ipcRenderer.send(IPC_PREFERENCE.FETCH);
 ipcRenderer.on(
   IPC_PREFERENCE.SEND,
   (event, message: { locale: string; setting: any; cache: IBootCache; error: any[] }) => {
     const { locale, setting, cache, error } = message;
     defaultLocale = locale;
-    /* 载入默认或自定义文件夹的设置，初始化 state */
     store.commit("SYNC_SETTING", setting);
   }
 );
+ipcRenderer.send(IPC_PREFERENCE.FETCH);
 
-// i18n 设置语言
 Vue.use(VueI18n);
 
 const i18n = new VueI18n({
@@ -43,8 +41,8 @@ Vue.config.productionTip = false;
 Vue.prototype.$bus = VueBus;
 
 new Vue({
-  store,
   i18n,
+  store,
   components: {
     App,
   },

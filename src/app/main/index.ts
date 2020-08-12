@@ -14,7 +14,7 @@ import { joinPath } from "@/common/main/files";
 const loadBootData = async () => {
   const initArgs: IBootArgs = {
     notesPath: "",
-    locale: app.getLocale(),
+    locale: app.getLocale() || "en-US",
   };
   const initCache: IBootCache = [];
 
