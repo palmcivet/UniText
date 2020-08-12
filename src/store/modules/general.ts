@@ -1,4 +1,10 @@
-import { IGeneralState, EPanelShow, EPanelType, ETypingMode } from "@/interface/general";
+import {
+  IGeneralState,
+  EPanelShow,
+  EPanelType,
+  ETypingMode,
+} from "@/interface/vuex/general";
+import { EEol } from "@/interface/document";
 
 const state: IGeneralState = {
   showTray: true,
@@ -7,16 +13,31 @@ const state: IGeneralState = {
   autoOpen: true,
   autoUpdate: true,
   language: "zh-CN",
-  notesPath: "~/.unitext",
+  notesPath: "",
   interface: {
-    showPanel: EPanelShow.side,
-    panelType: EPanelType.toc,
     showSideBar: true,
     showRender: false,
-    typeMode: ETypingMode.single,
+    panelShow: EPanelShow.side,
+    panelType: EPanelType.toc,
+    typingMode: ETypingMode.source,
     zenMode: false,
   },
   editor: {
+    defaultDoc: {
+      tag: "Untaged",
+      category: "Uncategory",
+      format: {
+        indent: 4,
+        encoding: "UTF-8",
+        endOfLine: EEol.LF,
+      },
+      config: {
+        picStorage: "",
+        autoSave: false,
+        autoSync: false,
+        complete: false,
+      },
+    },
     lineNumber: true,
     highlightLine: true,
   },

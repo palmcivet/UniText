@@ -4,7 +4,13 @@
   "parserOptions": {
     "parser": "@typescript-eslint/parser"
   },
-  "extends": ["plugin:vue/essential", "plugin:import/warnings"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/essential",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
   "rules": {
     "comma-style": "warn",
     "comma-spacing": "warn",
@@ -30,28 +36,39 @@
       "after",
       { "overrides": { "?": "before", ":": "before" } }
     ],
-    "max-len": 0,
-    "global-require": 0,
-    "object-curly-newline": 0,
-    "prefer-destructuring": 0,
-    "arrow-body-style": 0,
-    "consistent-return": 0,
-    "function-paren-newline": 0,
-    "implicit-arrow-linebreak": 0,
     "space-before-function-paren": [
       "warn",
       { "anonymous": "never", "named": "never", "asyncArrow": "always" }
     ],
     "no-console": [0, { "allow": ["info", "warn", "error"] }],
-    "no-undef": 0,
-    "no-bitwise": 0,
-    "no-lonely-if": 0,
-    "no-else-return": 0,
     "no-unused-vars": 0,
-    "no-param-reassign": 0,
-    "no-unneeded-ternary": 0,
-    "class-methods-use-this": 0,
-    "vue/script-indent": ["warn", 2, { "baseIndent": 0 }]
+    "no-param-reassign": ["warn", { "props": false }],
+    "vue/script-indent": ["warn", 2, { "baseIndent": 0 }],
+    "import/extensions": [
+      "warn",
+      "always",
+      {
+        "js": "never",
+        "ts": "never"
+      }
+    ],
+    "import/no-extraneous-dependencies": 0,
+    "import/prefer-default-export": 0
+  },
+  "settings": {
+    "import/external-module-folders": ["node_modules"],
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"]
+      },
+      "alias": {
+        "map": [["@", "./src"]],
+        "extensions": [".js", ".ts", ".vue"]
+      }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    }
   },
   "overrides": [
     {

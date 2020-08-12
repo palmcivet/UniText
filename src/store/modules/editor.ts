@@ -4,9 +4,10 @@ import {
   importFrontMatter,
   exportFrontMatter,
   metaInfo2Doc,
-} from "@/common/helpers/front-matter";
-import { hashCode } from "@/common/helpers/utils";
-import { IEditorState, IFile, TTab } from "@/interface/editor";
+} from "@/common/editor/front-matter";
+import { hashCode } from "@/common/editor/utils";
+import { IEditorState, IFile, TTab } from "@/interface/vuex/editor";
+import { IRootState } from "@/interface/rootStore";
 import { EEol } from "@/interface/document";
 
 const fileSelect = (stateTree: IEditorState) =>
@@ -19,24 +20,9 @@ const state: IEditorState = {
   currentFileIndex: "",
   currentFileGroup: {},
   currentTabs: [],
-  defaultDoc: {
-    tag: "Untaged",
-    category: "Uncategory",
-    format: {
-      indent: 4,
-      encoding: "UTF-8",
-      endOfLine: EEol.LF,
-    },
-    config: {
-      picStorage: "",
-      autoSave: false,
-      autoSync: false,
-      complete: false,
-    },
-  },
 };
 
-const getters: GetterTree<IEditorState, any> = {
+const getters: GetterTree<IEditorState, IRootState> = {
   currentFile: (moduleState: IEditorState) => {
     return {
       order: moduleState.currentFileIndex,
@@ -111,8 +97,8 @@ const mutations: MutationTree<IEditorState> = {
   },
 };
 
-const actions: ActionTree<IEditorState, any> = {
-  NEW_FILE: (moduleState: ActionContext<IEditorState, any>, title?: string) => {
+const actions: ActionTree<IEditorState, IRootState> = {
+  NEW_FILE: (moduleState: ActionContext<IEditorState, IRootState>, title?: string) => {
     // TODO 同步默认设置
     const untitled: IFile = {
       tag: "Untag",
@@ -151,7 +137,7 @@ const actions: ActionTree<IEditorState, any> = {
   },
 
   LOAD_FILE: (
-    moduleState: ActionContext<IEditorState, any>,
+    moduleState: ActionContext<IEditorState, IRootState>,
     payload: { file: IFile; index: string }
   ) => {
     moduleState.state.currentFileGroup[payload.index] = payload.file;
@@ -159,7 +145,7 @@ const actions: ActionTree<IEditorState, any> = {
     moduleState.commit("SYNC_TABS");
   },
 
-  OPEN_FILE: (moduleState: ActionContext<IEditorState, any>, path: string) => {
+  OPEN_FILE: (moduleState: ActionContext<IEditorState, IRootState>, path: string) => {
     fse
       .readFile(path)
       .then((res) => res.toString())
@@ -178,7 +164,10 @@ const actions: ActionTree<IEditorState, any> = {
       });
   },
 
-  SAVE_FILE: (moduleState: ActionContext<IEditorState, any>, newTitle?: string) => {
+  SAVE_FILE: (
+    moduleState: ActionContext<IEditorState, IRootState>,
+    newTitle?: string
+  ) => {
     const { title, needSave, ...payload } = fileSelect(moduleState.state);
     const markdown = exportFrontMatter(payload);
     fse.writeFile(newTitle || title, markdown);
@@ -192,7 +181,7 @@ const actions: ActionTree<IEditorState, any> = {
    *
    * 下一个页标签为 `Math.abs(index - 1)`
    */
-  CLOSE_FILE: (moduleState: ActionContext<IEditorState, any>, index: string) => {
+  CLOSE_FILE: (moduleState: ActionContext<IEditorState, IRootState>, index: string) => {
     const selectState = moduleState.state;
 
     /* 保存标签页的内容 */
@@ -225,10 +214,13 @@ const actions: ActionTree<IEditorState, any> = {
     }
   },
 
-  RENAME_FILE: (moduleState: ActionContext<IEditorState, any>, title: string) => {},
+  RENAME_FILE: (
+    moduleState: ActionContext<IEditorState, IRootState>,
+    title: string
+  ) => {},
 };
 
-const module: Module<IEditorState, any> = {
+const module: Module<IEditorState, IRootState> = {
   namespaced: true,
   state,
   getters,

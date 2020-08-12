@@ -30,17 +30,9 @@
 
       <!-- 右侧栏 -->
       <aside class="right-side-bar" :style="{ width: `${finalRightWidth}px` }">
-        <span ref="rightResize" />
+        <span v-show="isShowPannel" ref="rightResize" />
         <pannel />
       </aside>
-
-      <a-modal
-        title="🔥 New Version"
-        :visible="updateModalVisible"
-        :footer="null"
-        :maskClosable="false"
-        @cancel="updateModalVisible = false"
-      />
     </main>
 
     <!-- 底栏 -->
@@ -56,7 +48,7 @@ import { State, Action } from "vuex-class";
 import SideBar from "@/view/SideBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
 import Pannel from "@/view/Panel/Index.vue";
-import * as pkg from "@/../package.json";
+import { checkUpdate } from "@/common/main/utils";
 
 @Component({
   name: "App",
@@ -67,23 +59,11 @@ import * as pkg from "@/../package.json";
   },
 })
 export default class App extends Vue {
-  // @State("site") site!: Site;
-
-  // @Action("site/updateSite") updateSite!: (siteData: Site) => void;
-
-  version = (pkg as any).version;
-
-  hasUpdate = false;
-
-  newVersion = "";
-
-  updateModalVisible = false;
-
-  // 以下为修改后
   // TODO 以下收入 preference
 
   isShowSide = true;
-  // TODO isShowPanel
+
+  isShowPannel = true;
 
   leftViewWidth = 200;
 
@@ -187,34 +167,10 @@ export default class App extends Vue {
     });
   }
 
-  public async checkUpdate() {
-    const res: any = fetch("");
-    if (res.status === 200) {
-      this.newVersion = res.data.name;
-      const latestVersion = res.data.name
-        .substring(1)
-        .split(".")
-        .map((item: string) => parseInt(item, 10));
-      const currentVersion = this.version
-        .split(".")
-        .map((item: string) => parseInt(item, 10));
-
-      for (let i = 0; i < currentVersion.length; i += 1) {
-        if (currentVersion[i] > latestVersion[i]) {
-          this.hasUpdate = false;
-          break;
-        }
-        if (currentVersion[i] < latestVersion[i]) {
-          this.hasUpdate = true;
-          break;
-        }
-      }
-
-      if (this.hasUpdate) {
-        this.$message.success(`🔥  ${this.$t("newVersionTips")}`, 8);
-        this.updateModalVisible = true;
-      }
-    }
+  mounted() {
+    // const newVersion = checkUpdate();
+    // if (newVersion !== "") {
+    // }
   }
 }
 </script>
@@ -279,7 +235,7 @@ export default class App extends Vue {
 
 .layout-main {
   span {
-    width: 1.4px;
+    width: 1.5px;
     height: 100%;
     cursor: col-resize;
   }

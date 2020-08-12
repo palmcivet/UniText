@@ -44,7 +44,7 @@ import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
 import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
-import { ITreeItem } from "@/interface/sideBar";
+import { ITreeItem } from "@/interface/vuex/sideBar";
 import { BUS_FILE } from "@/common/busChannel";
 
 const editor = namespace("editor");
@@ -173,10 +173,10 @@ section {
     > div {
       height: 25px;
       line-height: 25px;
+    }
 
-      > span {
-        -webkit-user-select: none;
-      }
+    * {
+      -webkit-user-select: none;
     }
   }
 
@@ -195,6 +195,7 @@ section {
       box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
       border-radius: 2px;
       outline-style: none;
+      -webkit-user-select: none;
     }
 
     > ul {

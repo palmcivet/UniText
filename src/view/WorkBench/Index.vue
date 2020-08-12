@@ -39,13 +39,13 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
 import Tabs from "@/view/WorkBench/Tabs/Index.vue";
-import { IFile, TTab } from "@/interface/editor";
+import { IFile, TTab } from "@/interface/vuex/editor";
 import { IDocument } from "@/interface/document";
-import { wordCount, timeCalc } from "@/common/helpers/words-count";
 import { BUS_TOC } from "@/common/busChannel";
-import { ITocList } from "@/common/helpers/create-toc";
-import { updateStyle, debounce } from "@/common/helpers/utils";
-import markdown from "@/common/helpers/markdown";
+import { ITocList } from "@/common/editor/create-toc";
+import { wordCount, timeCalc } from "@/common/editor/words-count";
+import { updateStyle, debounce } from "@/common/editor/utils";
+import markdown from "@/common/editor/markdown";
 import theme from "./theme";
 
 const name = namespace("editor");
@@ -124,6 +124,8 @@ export default class WorkBench extends Vue {
 
   isPreview = true;
 
+  isToc = true;
+
   editWidth = 0;
 
   syncDelay = 400;
@@ -160,7 +162,7 @@ export default class WorkBench extends Vue {
 
   handleClose(index: string) {
     this.CLOSE_FILE(index);
-    (this.modelStack[index] as monaco.editor.ITextModel).dispose();
+    this.modelStack[index].dispose();
     delete this.modelStack[index];
   }
 
@@ -182,9 +184,11 @@ export default class WorkBench extends Vue {
 
   syncPreOrToc: Function = debounce((that: any) => {
     /* 二选一即可，后者只更新 TOC */
-    that.isPreview
-      ? (that.refPreview.innerHTML = markdown.render(that.editor.getValue()))
-      : markdown.render(that.editor.getValue());
+    if (that.isPreview) {
+      that.refPreview.innerHTML = markdown.render(that.editor.getValue());
+    } else if (that.isToc) {
+      markdown.render(that.editor.getValue());
+    }
   }, this.syncDelay);
 
   created() {

@@ -87,6 +87,7 @@ declare module "uslug" {
 
   export = uslug;
 }
+
 declare module "clone" {
   /**
    * @param val the value that you want to clone, any type allowed
@@ -103,10 +104,4 @@ declare module "clone" {
   }
 
   export = clone;
-}
-
-declare module "normalizePath" {
-  declare function normalizePath(path: string, stripTrailing?: boolean): string;
-
-  export = normalizePath;
 }

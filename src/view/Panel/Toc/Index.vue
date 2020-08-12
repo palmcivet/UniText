@@ -24,7 +24,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import vueCustomScrollbar from "vue-custom-scrollbar";
 
-import { ITocList } from "@/common/helpers/create-toc";
+import { ITocList } from "@/common/editor/create-toc";
 import { BUS_TOC } from "@/common/busChannel";
 
 @Component({

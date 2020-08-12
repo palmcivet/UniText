@@ -1,36 +1,45 @@
-/**
- * 启动步骤
- * 1. 寻找特定文件夹(`.unitext`)
- * 2. 加载配置文件；若不存在，加载默认配置
- * 3. 根据配置加载主题
- */
-
-import fs from "fs-extra";
+import * as fse from "fs-extra";
 import { app } from "electron";
+
 import { App } from "./app";
-import { devConfig } from "./dev_config";
+import { IBootArgs, IBootCache } from "@/interface/boot";
+import { joinPath } from "@/common/main/files";
 
-const path = require("path");
+/**
+ * 读取启动文件
+ * - 启动文件存在，读取文件，返回文件内容
+ * - 用户目录不存在或启动文件不存在，返回 `""`
+ * @function 获取 `notesPath`
+ */
+const loadBootData = async () => {
+  const initArgs: IBootArgs = {
+    notesPath: "",
+    locale: app.getLocale(),
+  };
+  const initCache: IBootCache = [];
 
-// const loadPreference = new Promise((resolve) => {
-//   const filePath = path.resolve("~/.unitext");
-//   fs.readFileSync(path.join(filePath, "_settings.json"));
-// });
+  const bootPath = joinPath(app.getPath("userData"), "unitext.json");
 
-const parseSettings = (settings: any = null) => {
-  if (settings === null) {
-    settings = devConfig;
+  if (await fse.pathExists(bootPath)) {
+    fse
+      .readJSON(bootPath)
+      .then((res) => {
+        initArgs.notesPath = res.notesPath;
+      })
+      .catch((err) => {
+        /* 无需处理 */
+      });
   }
 
   return {
-    locale: app.getLocale() || settings.general.language,
-    ...settings,
+    initArgs,
+    initCache,
   };
 };
 
-const initConfig = parseSettings();
-const initArgs: any = [];
-const fileCache: any = [];
+let unitext: App;
 
-const unitext = new App(initConfig, initArgs, fileCache);
-unitext.init();
+loadBootData().then((res) => {
+  unitext = new App(res);
+  unitext.init();
+});

@@ -9,20 +9,24 @@ import store from "@/store/index";
 import App from "@/view/Index.vue";
 import { IPC_PREFERENCE } from "@/common/ipcChannel";
 import { localesMessage } from "@/app/config/locales-message";
+import { IBootCache } from "@/interface/boot";
 import { VueBus } from "./bus";
 import "@/asset/styles/tailwind.css";
 import "@/asset/styles/main.less";
 
 let defaultLocale = "";
-let defaultConfig = {};
 
 // 与 main 进程通信获取数据
-ipcRenderer.send(IPC_PREFERENCE.SEND, (locale: string, config: any) => {
-  defaultLocale = locale;
-  defaultConfig = config;
-});
-
-// TODO 根据设置初始化 state
+ipcRenderer.send(IPC_PREFERENCE.FETCH);
+ipcRenderer.on(
+  IPC_PREFERENCE.SEND,
+  (event, message: { locale: string; setting: any; cache: IBootCache; error: any[] }) => {
+    const { locale, setting, cache, error } = message;
+    defaultLocale = locale;
+    /* 载入默认或自定义文件夹的设置，初始化 state */
+    store.commit("SYNC_SETTING", setting);
+  }
+);
 
 // i18n 设置语言
 Vue.use(VueI18n);

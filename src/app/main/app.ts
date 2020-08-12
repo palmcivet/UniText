@@ -1,18 +1,27 @@
-import { app, protocol, BrowserWindow, Menu, shell, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, Menu, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
+
+import { generateMenu } from "./menu";
+import { IBootArgs, IBootCache } from "@/interface/boot";
 import { IPC_PREFERENCE } from "@/common/ipcChannel";
-import { localesMenu } from "../config/locales-menu";
+import { loadSetting } from "@/common/main/utils";
 
 export class App {
-  private config: any;
+  /**
+   * @member 启动参数
+   */
+  private args: IBootArgs;
 
-  private args: any;
+  private cache: IBootCache;
 
-  private openFilesCache: any;
+  /**
+   * @member 默认语言，在启动时获取，用于设置菜单
+   */
+  private locale: string; // TODO i18n 接口
 
-  private locale: string;
+  private setting: any;
 
   private windowManager: Array<BrowserWindow | null>;
 
@@ -22,16 +31,18 @@ export class App {
 
   private isWin: boolean = process.platform === "win32";
 
-  constructor(argConfig: any, argArgs: any, argCache: any) {
-    const { locale, ...config } = argConfig;
-    this.locale = locale;
-    this.config = config;
-    this.args = argArgs;
-    this.openFilesCache = argCache;
+  constructor(bootData: { initArgs: IBootArgs; initCache: IBootCache }) {
+    this.args = bootData.initArgs;
+    this.cache = bootData.initCache;
+    this.locale = bootData.initArgs.locale;
     this.windowManager = [];
   }
 
   private async createWindow() {
+    /* 获取初始设置 */
+    [this.setting, this.args.error] = await loadSetting(this.args.notesPath);
+
+    /* 提取部分设置，用于创建窗口 */
     const winOption: any = {
       width: 1294,
       height: 800,
@@ -48,18 +59,20 @@ export class App {
         | "customButtonsOnHover",
     };
 
-    // 图标
+    /* 设置图标 */
     if (this.isOsx) {
       winOption.icon = `${__dirname}/app-icons/gridea.png`;
     }
 
+    /* 创建窗口 */
     let win: BrowserWindow | null = new BrowserWindow(winOption);
     win.setTitle("UniText");
 
-    const menu = this.generateMenu(win);
+    /* 生成菜单 */
+    const menu = generateMenu(win, this.locale);
     Menu.setApplicationMenu(menu);
 
-    // 开发工具
+    /* 加载开发工具 */
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
       if (!process.env.IS_TEST) {
@@ -72,10 +85,16 @@ export class App {
 
     win.on("closed", () => {
       win = null;
+      this.windowManager = this.windowManager.filter((win) => win !== null);
     });
 
     ipcMain.on(IPC_PREFERENCE.FETCH, (event) => {
-      event.reply(IPC_PREFERENCE.SEND, this.locale, this.config);
+      event.reply(IPC_PREFERENCE.SEND, {
+        setting: this.setting,
+        locale: this.locale,
+        cache: this.cache,
+        error: this.args.error,
+      });
     });
 
     this.windowManager.push(win);
@@ -103,55 +122,7 @@ export class App {
     // });
   }
 
-  private generateMenu(win: BrowserWindow) {
-    const menuLabels = localesMenu[this.locale] || localesMenu["zh-CN"];
-    const template: any = [
-      {
-        label: menuLabels.edit,
-        submenu: [
-          {
-            label: menuLabels.save,
-            accelerator: "CmdOrCtrl+S",
-            click: () => {
-              win.webContents.send("click-menu-save");
-            },
-          },
-          { type: "separator" },
-          { role: "undo", label: menuLabels.undo },
-          { role: "redo", label: menuLabels.redo },
-          { type: "separator" },
-          { role: "cut", label: menuLabels.cut },
-          { role: "copy", label: menuLabels.copy },
-          { role: "paste", label: menuLabels.paste },
-          { role: "delete", label: menuLabels.delete },
-          { role: "selectall", label: menuLabels.selectall },
-          { role: "toggledevtools", label: menuLabels.toggledevtools },
-          { type: "separator" },
-          { role: "close", label: menuLabels.close },
-          { role: "quit", label: menuLabels.quit },
-        ],
-      },
-      {
-        role: "windowMenu",
-      },
-      {
-        role: menuLabels.help,
-        submenu: [
-          {
-            label: "Learn More",
-            click() {
-              shell.openExternal("https://github.com/getgridea/gridea");
-            },
-          },
-        ],
-      },
-    ];
-
-    return Menu.buildFromTemplate(template);
-  }
-
   public init() {
-    // Standard scheme must be registered before the app is ready
     protocol.registerSchemesAsPrivileged([
       { scheme: "app", privileges: { secure: true, standard: true } },
     ]);
@@ -164,7 +135,7 @@ export class App {
 
     // macOS
     app.on("activate", () => {
-      if (this.windowManager.filter((win) => !win).length) {
+      if (this.windowManager.length === 0) {
         this.createWindow();
       }
     });
@@ -177,7 +148,6 @@ export class App {
        * support auto updating. Code Signing with a valid certificate is required.
        * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
        */
-
       if (this.isDev && !process.env.IS_TEST) {
         await installExtension(VUEJS_DEVTOOLS);
       } else {
@@ -190,7 +160,6 @@ export class App {
       this.createWindow();
     });
 
-    // Exit cleanly on request from parent process in development mode.
     if (this.isDev) {
       if (this.isWin) {
         process.on("message", (data) => {

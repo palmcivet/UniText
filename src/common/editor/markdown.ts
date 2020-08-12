@@ -11,7 +11,7 @@ import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 import { VueBus } from "@/app/renderer/bus";
 import { BUS_TOC } from "@/common/busChannel";
-import markdownItTocAndAnchor, { ITocList } from "@/common/helpers/create-toc";
+import markdownItTocAndAnchor, { ITocList } from "@/common/editor/create-toc";
 
 const markdownIt = new MarkdownIt({
   html: true,
@@ -23,8 +23,8 @@ const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
 const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
 markdownIt.validateLink = (url) => {
-  url = url.trim().toLowerCase();
-  return BAD_PROTO_RE.test(url) ? !!GOOD_DATA_RE.test(url) : true;
+  let str = url.trim().toLowerCase();
+  return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
 };
 
 markdownIt.use(MarkdownItKatex);

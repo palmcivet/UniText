@@ -19,7 +19,7 @@ export interface IDocumentMetaInfo {
 }
 
 /**
- * @interface 文章的编辑器相关属性
+ * @interface 编辑器格式相关属性
  */
 export interface IDocumentFormat {
   indent: 2 | 4; // 缩进
@@ -29,7 +29,7 @@ export interface IDocumentFormat {
 }
 
 /**
- * @interface 文章的附加属性
+ * @interface 文件设置相关属性
  */
 export interface IDocumentConfig {
   // TODO 完善图片存储方案的接口

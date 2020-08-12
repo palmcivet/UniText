@@ -2,7 +2,7 @@
 node_modules
 .yarnclean
 
-# local env files
+# Local env files
 .env.local
 .env.*.local
 
@@ -19,6 +19,9 @@ yarn-error.log*
 *.sln
 *.sw*
 
-# build output
+# Build output
 /dist
 /dist_electron
+
+# Dev conifig
+dev.json

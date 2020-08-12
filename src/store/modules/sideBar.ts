@@ -1,4 +1,4 @@
-import { ISideBarState } from "@/interface/sideBar";
+import { ISideBarState } from "@/interface/vuex/sideBar";
 
 const state: ISideBarState = {
   files: {

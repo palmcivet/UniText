@@ -1,4 +1,4 @@
-import { IPannelState } from "@/interface/pannel";
+import { IPannelState } from "@/interface/vuex/pannel";
 
 const state: IPannelState = {
   toc: {},

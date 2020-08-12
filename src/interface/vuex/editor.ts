@@ -1,4 +1,4 @@
-import { IDocument, IDocumentFormat, IDocumentConfig } from "./document";
+import { IDocument } from "../document";
 
 /**
  * @type 标识打开的标签
@@ -24,11 +24,4 @@ export interface IEditorState {
   currentFileIndex: string;
   currentFileGroup: { [index: string]: IFile };
   currentTabs: Array<TTab>;
-  /* 以下继承自系统设置，作为文档设置的默认 */
-  defaultDoc: {
-    tag: string; // 默认标签
-    category: string; // 默认分类
-    format: IDocumentFormat;
-    config: IDocumentConfig;
-  };
 }
