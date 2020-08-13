@@ -36,7 +36,9 @@
     </main>
 
     <!-- 底栏 -->
-    <footer class="layout-footer" />
+    <footer class="layout-footer">
+      <status-bar />
+    </footer>
   </div>
 </template>
 
@@ -47,16 +49,18 @@ import { State, Action, Mutation } from "vuex-class";
 
 import { IPC_PREFERENCE } from "@/common/ipcChannel";
 import { IBootCache } from "@/interface/boot";
-import SideBar from "@/view/SideBar/Index.vue";
-import WorkBench from "@/view/WorkBench/Index.vue";
 import Pannel from "@/view/Panel/Index.vue";
+import SideBar from "@/view/SideBar/Index.vue";
+import StatusBar from "@/view/StatusBar/Index.vue";
+import WorkBench from "@/view/WorkBench/Index.vue";
 
 @Component({
   name: "App",
   components: {
-    SideBar,
-    WorkBench,
     Pannel,
+    SideBar,
+    StatusBar,
+    WorkBench,
   },
 })
 export default class App extends Vue {

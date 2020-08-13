@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex, { ActionContext } from "vuex";
-import editor from "./modules/editor";
+import workBench from "./modules/workBench";
 import general from "./modules/general";
 import sideBar from "./modules/sideBar";
 import notification from "./modules/notification";
@@ -12,26 +12,25 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    editor,
     general,
     sideBar,
+    workBench,
     notification,
   },
   mutations: {
-    /* 载入默认或自定义文件夹的设置，初始化 state */
+    /* 更新系统设置，初始化 state */
     SYNC_SETTING: (rootState: IRootState, payload: any) => {
       console.log(payload);
     },
   },
   actions: {
+    /* 读取并加载默认或自定义文件夹的设置文件 */
     LOAD_SETTING: (rootState: ActionContext<IRootState, IRootState>, payload: any) => {
       loadSetting(payload.path).then((res) => {
         console.log(res);
       });
     },
-    /**
-     * 返回发行说明，为 `""` 则表明未更新
-     */
+    /* 返回发行说明，为 `""` 则表明未更新 */
     CHECK_UPDATE: (rootState: ActionContext<IRootState, IRootState>) => {
       const getVersion = (ver: string) =>
         ver

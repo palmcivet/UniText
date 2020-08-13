@@ -3,46 +3,7 @@
   "title": "Setting",
   "type": "object",
   "properties": {
-    "editor": {
-      "description": "Configurations for Editor",
-      "type": "object",
-      "properties": {
-        "defaultDoc": {
-          "type": "object",
-          "properties": {
-            "tag": { "type": "string", "default": "Untaged" },
-            "category": { "type": "string", "default": "Uncategory" },
-            "format": {
-              "type": "object",
-              "properties": {
-                "indent": { "type": "integer", "default": 4 },
-                "encoding": {
-                  "type": "string",
-                  "enum": ["UTF-8", "GBK"],
-                  "default": "UTF-8"
-                },
-                "endOfLine": {
-                  "type": "string",
-                  "enum": ["LF", "CRLF"],
-                  "default": "LF"
-                }
-              }
-            },
-            "config": {
-              "type": "object",
-              "properties": {
-                "picStorage": { "enum": [""], "default": "" },
-                "autoSave": { "type": "boolean", "default": false },
-                "autoSync": { "type": "boolean", "default": false }
-              }
-            }
-          }
-        },
-        "lineNumber": { "type": "boolean", "default": true },
-        "highlightLine": { "type": "boolean", "default": true }
-      }
-    },
-    "general": {
+    "system": {
       "description": "General setting",
       "type": "object",
       "properties": {
@@ -51,31 +12,72 @@
         "saveRecent": { "type": "boolean", "default": true },
         "autoOpen": { "type": "boolean", "default": true },
         "autoUpdate": { "type": "boolean", "default": true },
+        "notesPath": { "type": "string", "default": "" }
+      }
+    },
+    "appearance": {
+      "type": "object",
+      "properties": {
         "language": { "enum": ["zh-CN", "en-US"], "default": "en-US" },
-        "notesPath": { "type": "string", "default": "" },
-        "interface": {
+        "showSideBar": { "type": "boolean", "default": true },
+        "showPreview": { "type": "boolean", "default": false },
+        "showPanel": { "enum": ["side", "hide", "float"], "default": "side" },
+        "panelType": { "enum": ["toc", "export", "info"], "default": "toc" },
+        "typeingMode": {
+          "enum": ["source", "contrast", "richText", "typeWrite"],
+          "default": "source"
+        },
+        "zenMode": { "type": "boolean", "default": false }
+      }
+    },
+    "editor": {
+      "description": "Configurations for Editor",
+      "type": "object",
+      "properties": {
+        "tag": { "type": "string", "default": "Untaged" },
+        "category": { "type": "string", "default": "Uncategory" },
+        "format": {
           "type": "object",
           "properties": {
-            "showPanel": { "enum": ["side", "hide", "float"], "default": "side" },
-            "showSideBar": { "type": "boolean", "default": true },
-            "showRender": { "type": "boolean", "default": false }
+            "indent": { "type": "integer", "enum": [2, 4], "default": 4 },
+            "encoding": {
+              "type": "string",
+              "enum": ["UTF-8", "GBK"],
+              "default": "UTF-8"
+            },
+            "endOfLine": {
+              "type": "string",
+              "enum": ["LF", "CRLF"],
+              "default": "LF"
+            }
           }
-        }
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "picStorage": { "enum": [""], "default": "" },
+            "autoSave": { "type": "boolean", "default": false },
+            "autoSync": { "type": "boolean", "default": false }
+          }
+        },
+        "wordWrap": { "type": "boolean", "default": true },
+        "lineNumber": { "type": "boolean", "default": true },
+        "highlightLine": { "type": "boolean", "default": true }
       }
     },
     "markdown": {
       "description": "Editor setting",
       "type": "object",
       "properties": {
-        "scheme": {
-          "enum": ["GFM"],
-          "default": "GFM"
-        },
         "image": {
           "type": "object",
           "properties": {
             "cachePath": { "type": "string", "default": ".CONFIG/_cache" }
           }
+        },
+        "scheme": {
+          "enum": ["GFM"],
+          "default": "GFM"
         }
       }
     },

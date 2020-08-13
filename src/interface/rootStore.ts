@@ -1,11 +1,11 @@
-import { IEditorState } from "./vuex/editor";
+import { IWorkBenchState } from "./vuex/workBench";
 import { IGeneralState } from "./vuex/general";
 import { ISideBarState } from "./vuex/sideBar";
 import { INotificationState } from "./vuex/notification";
 
 export interface IRootState {
-  editor: IEditorState;
   general: IGeneralState;
   sideBar: ISideBarState;
+  workBench: IWorkBenchState;
   notification: INotificationState;
 }

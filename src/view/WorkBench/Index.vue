@@ -39,7 +39,7 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
 import Tabs from "@/view/WorkBench/Tabs/Index.vue";
-import { IFile, TTab } from "@/interface/vuex/editor";
+import { IFile, TTab } from "@/interface/vuex/workBench";
 import { IDocument } from "@/interface/document";
 import { BUS_TOC } from "@/common/busChannel";
 import { ITocList } from "@/common/editor/create-toc";
@@ -48,7 +48,7 @@ import { updateStyle, debounce } from "@/common/editor/utils";
 import markdown from "@/common/editor/markdown";
 import theme from "./theme";
 
-const name = namespace("editor");
+const name = namespace("workBench");
 
 @Component({
   name: "WorkBench",

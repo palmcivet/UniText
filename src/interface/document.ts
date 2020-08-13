@@ -2,9 +2,8 @@
  * @enum {EEol} 文档结尾控制符，End OF Line
  */
 export enum EEol {
-  LF,
-  CR,
-  CRLF,
+  LF = "LF",
+  CRLF = "CRLF",
 }
 
 /**
@@ -36,15 +35,24 @@ export interface IDocumentConfig {
   picStorage: string; // 图片存储方案
   autoSave: boolean; // 自动保存
   autoSync: boolean; // 自动同步
-  complete: boolean; // 是否完成
 }
 
 /**
  * @interface Markdown 的 Front-Matter
  */
 export interface IDocumentFrontMatter {
+  /**
+   * @field 文章标签
+   */
   tag: string;
+  /**
+   * @field 备注信息
+   */
   comment: string;
+  /**
+   * @field 是否标记为完成
+   */
+  complete: boolean;
   metaInfo: IDocumentMetaInfo;
   format: IDocumentFormat;
   config: IDocumentConfig;

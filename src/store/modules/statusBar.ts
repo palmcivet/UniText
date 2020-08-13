@@ -1,4 +1,6 @@
-const state = {};
+import { IStatusBarState } from "@/interface/vuex/statusBar";
+
+const state: IStatusBarState = {};
 
 const getters = {};
 

@@ -47,7 +47,7 @@ import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
 import { ITreeItem } from "@/interface/vuex/sideBar";
 import { BUS_FILE } from "@/common/busChannel";
 
-const editor = namespace("editor");
+const workBench = namespace("workBench");
 const general = namespace("general");
 const sideBar = namespace("sideBar");
 
@@ -69,7 +69,7 @@ export default class Files extends Vue {
     ignoreFile: Array<string>;
   };
 
-  @editor.Action("OPEN_FILE")
+  @workBench.Action("OPEN_FILE")
   OPEN_FILE!: (path: string) => void;
 
   folderDir = "";

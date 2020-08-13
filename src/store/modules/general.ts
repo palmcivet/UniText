@@ -1,3 +1,7 @@
+/**
+ * @file 本模块统筹管理配置项，其余模块获取配置信息、管理运行时数据
+ */
+
 import {
   IGeneralState,
   EPanelShow,
@@ -7,37 +11,38 @@ import {
 import { EEol } from "@/interface/document";
 
 const state: IGeneralState = {
-  showTray: true,
-  exitWhenClosed: false,
-  saveRecent: true,
-  autoOpen: true,
-  autoUpdate: true,
-  language: "zh-CN",
-  notesPath: "",
-  interface: {
+  system: {
+    showTray: true,
+    exitWhenClosed: false,
+    saveRecent: true,
+    autoOpen: true,
+    autoUpdate: true,
+    notesPath: "",
+  },
+  appearance: {
+    language: "zh-CN",
     showSideBar: true,
-    showRender: false,
-    panelShow: EPanelShow.side,
+    showPreview: false,
+    showPanel: EPanelShow.side,
     panelType: EPanelType.toc,
     typingMode: ETypingMode.source,
     zenMode: false,
   },
   editor: {
-    defaultDoc: {
-      tag: "Untaged",
-      category: "Uncategory",
-      format: {
-        indent: 4,
-        encoding: "UTF-8",
-        endOfLine: EEol.LF,
-      },
-      config: {
-        picStorage: "",
-        autoSave: false,
-        autoSync: false,
-        complete: false,
-      },
+    tag: "Untaged",
+    category: "Uncategory",
+    format: {
+      indent: 4,
+      encoding: "UTF-8",
+      endOfLine: EEol.LF,
     },
+    config: {
+      picStorage: "",
+      autoSave: false,
+      autoSync: false,
+    },
+    miniMap: false,
+    wordWrap: false,
     lineNumber: true,
     highlightLine: true,
   },
