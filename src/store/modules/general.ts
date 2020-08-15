@@ -6,7 +6,8 @@ import {
   IGeneralState,
   EPanelShow,
   EPanelType,
-  ETypingMode,
+  ETypeMode,
+  EViewMode,
 } from "@/interface/vuex/general";
 import { EEol } from "@/interface/document";
 
@@ -18,15 +19,15 @@ const state: IGeneralState = {
     autoOpen: true,
     autoUpdate: true,
     notesPath: "",
+    language: "zh-CN",
   },
   appearance: {
-    language: "zh-CN",
     showSideBar: true,
-    showPreview: false,
-    showPanel: EPanelShow.side,
-    panelType: EPanelType.toc,
-    typingMode: ETypingMode.source,
-    zenMode: false,
+    showStatusBar: true,
+    showPanel: EPanelShow.SIDE,
+    panelType: EPanelType.TOC,
+    viewMode: EViewMode.CONTRAST,
+    typeMode: ETypeMode.NORMAL,
   },
   editor: {
     tag: "Untaged",
@@ -51,8 +52,11 @@ const state: IGeneralState = {
 const getters = {};
 
 const mutations = {
-  SET_TYPING_MODE: (moduleState: IGeneralState, mode: ETypingMode) => {
-    moduleState.appearance.typingMode = mode;
+  SET_TYPE_MODE: (moduleState: IGeneralState, mode: ETypeMode) => {
+    moduleState.appearance.typeMode = mode;
+  },
+  SET_VIEW_MODE: (moduleState: IGeneralState, mode: EViewMode) => {
+    moduleState.appearance.viewMode = mode;
   },
 };
 

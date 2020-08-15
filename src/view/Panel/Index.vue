@@ -1,7 +1,7 @@
 <template>
   <article>
     <keep-alive>
-      <component :is="activePannel"></component>
+      <component :is="activePanel"></component>
     </keep-alive>
   </article>
 </template>
@@ -21,8 +21,8 @@ import Export from "@/view/Panel/Export/Index.vue";
     Export,
   },
 })
-export default class Pannel extends Vue {
-  activePannel = "Toc";
+export default class Panel extends Vue {
+  activePanel = "Toc";
 }
 </script>
 

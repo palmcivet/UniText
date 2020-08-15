@@ -15,14 +15,20 @@
       <section
         id="markdown-editor"
         :style="{
-          width: finalWidth ? `calc(100% - ${finalWidth - 2}px` : '50%',
+          width: !isPreview
+            ? '100%'
+            : finalWidth
+            ? `calc(100% - ${finalWidth - 2}px`
+            : '50%',
         }"
       />
       <span v-show="isPreview" ref="resize" />
       <section
         id="markdown-preview"
         v-show="isPreview"
-        :style="{ width: finalWidth ? `${finalWidth}px` : 'clac(50% - 2px)' }"
+        :style="{
+          width: !isPreview ? '0' : finalWidth ? `${finalWidth}px` : 'clac(50% - 2px)',
+        }"
       />
     </article>
   </div>
@@ -39,6 +45,7 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
 import Tabs from "@/view/WorkBench/Tabs/Index.vue";
+import { IGeneralState, EPanelType, EViewMode } from "@/interface/vuex/general";
 import { IFile, TTab } from "@/interface/vuex/workBench";
 import { IDocument } from "@/interface/document";
 import { BUS_TOC } from "@/common/busChannel";
@@ -46,9 +53,11 @@ import { ITocList } from "@/common/editor/create-toc";
 import { wordCount, timeCalc } from "@/common/editor/words-count";
 import { updateStyle, debounce } from "@/common/editor/utils";
 import markdown from "@/common/editor/markdown";
+import { init } from "./option";
 import theme from "./theme";
 
-const name = namespace("workBench");
+const general = namespace("general");
+const workBench = namespace("workBench");
 
 @Component({
   name: "WorkBench",
@@ -59,72 +68,47 @@ const name = namespace("workBench");
   },
 })
 export default class WorkBench extends Vue {
-  @name.State("currentFileIndex")
+  @workBench.State("currentFileIndex")
   currentFileIndex!: string;
 
-  @name.State("currentTabs")
+  @workBench.State("currentTabs")
   currentTabs!: Array<TTab>;
 
-  @name.Getter("currentFile")
+  @workBench.Getter("currentFile")
   currentFile!: { order: string; value: IFile };
 
-  @name.Mutation("SWITCH_TABS")
+  @workBench.Mutation("SWITCH_TABS")
   SWITCH_TABS!: (value: IDocument[]) => void;
 
-  @name.Mutation("SELECT_TAB")
+  @workBench.Mutation("SELECT_TAB")
   SELECT_TAB!: (index: string) => void;
 
-  @name.Action("CLOSE_FILE")
+  @workBench.Action("CLOSE_FILE")
   CLOSE_FILE!: (index: string) => void;
 
-  @name.Action("NEW_FILE")
+  @workBench.Action("NEW_FILE")
   NEW_FILE!: (title?: string) => void;
 
-  @name.Mutation("TOGGLE_MODIFY")
+  @workBench.Mutation("TOGGLE_MODIFY")
   TOGGLE_MODIFY!: () => void;
 
-  initOption: monaco.editor.IEditorConstructionOptions = {
-    language: "markdown-math",
-    fontSize: 16,
-    theme: "GrideaLight",
-    lineNumbers: "on",
-    minimap: {
-      enabled: false,
-    },
-    wordWrap: "off",
-    cursorWidth: 2,
-    cursorSmoothCaretAnimation: true,
-    cursorBlinking: "smooth",
-    colorDecorators: true,
-    folding: true,
-    highlightActiveIndentGuide: true,
-    renderIndentGuides: false,
-    renderLineHighlight: "all",
-    scrollbar: {
-      vertical: "auto",
-      horizontal: "auto",
-      verticalScrollbarSize: 6,
-      horizontalScrollbarSize: 6,
-    },
-    lineHeight: 26,
-    scrollBeyondLastLine: true,
-    smoothScrolling: true,
-    wordBasedSuggestions: false,
-    snippetSuggestions: "none",
-    lineDecorationsWidth: 0,
-    occurrencesHighlight: true,
-    automaticLayout: true,
-    fontFamily:
-      "Source Code Pro, STZhongSong, PingFang SC, SF UI Text, STheiti, Microsoft YaHei, sans-serif",
-  };
+  @general.State((state: IGeneralState) => state.appearance.viewMode)
+  viewMode!: EViewMode;
+
+  get isPreview() {
+    return this.viewMode === EViewMode.CONTRAST;
+  }
+
+  @general.State((state: IGeneralState) => state.appearance.panelType)
+  panelType!: EPanelType;
+
+  get isToc() {
+    return this.panelType === EPanelType.TOC;
+  }
 
   editor!: monaco.editor.IStandaloneCodeEditor;
 
   modelStack: { [key: string]: monaco.editor.IModel } = {};
-
-  isPreview = true;
-
-  isToc = true;
 
   editWidth = 0;
 
@@ -135,7 +119,7 @@ export default class WorkBench extends Vue {
   refEditor!: HTMLElement;
 
   get finalWidth() {
-    return this.editWidth;
+    return this.isPreview ? this.editWidth : 0;
   }
 
   set finalWidth(value: number) {
@@ -201,7 +185,7 @@ export default class WorkBench extends Vue {
 
     monaco.editor.defineTheme("GrideaLight", theme as monaco.editor.IStandaloneThemeData);
 
-    this.editor = monaco.editor.create(this.refEditor, this.initOption);
+    this.editor = monaco.editor.create(this.refEditor, init);
 
     this.modelStack[this.currentFileIndex] = monaco.editor.createModel(
       this.currentFile.value.content,

@@ -1,8 +1,9 @@
 import Vue from "vue";
 import Vuex, { ActionContext } from "vuex";
-import workBench from "./modules/workBench";
+import panel from "./modules/panel";
 import general from "./modules/general";
 import sideBar from "./modules/sideBar";
+import workBench from "./modules/workBench";
 import notification from "./modules/notification";
 import { IRootState } from "@/interface/rootStore";
 import { loadSetting } from "@/common/main/utils";
@@ -12,6 +13,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    panel,
     general,
     sideBar,
     workBench,

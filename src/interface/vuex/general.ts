@@ -4,28 +4,37 @@ import { IDocumentFormat, IDocumentConfig } from "../document";
  * @enum {EPanelShow} 右侧面板的展示形式
  */
 export enum EPanelShow {
-  side = "side",
-  hide = "hide",
-  float = "float",
+  SIDE = "SIDE",
+  HIDE = "HIDE",
+  FLOAT = "FLOAT",
 }
 
 /**
  * @enum {EPanelType} 右侧面板展示的信息类型
  */
 export enum EPanelType {
-  toc = "toc",
-  export = "export",
-  info = "info",
+  TOC = "TOC",
+  INFO = "INFO",
+  EXPORT = "EXPORT",
 }
 
 /**
- * @enum {ETypingMode} 编辑模式
+ * @enum {EViewMode} 视图模式
  */
-export enum ETypingMode {
-  source = "source",
-  contrast = "contrast",
-  richText = "richText",
-  typeWrite = "typeWrite",
+export enum EViewMode {
+  SOURCE = "SOURCE",
+  WYSIWYG = "WYSIWYG",
+  CONTRAST = "CONTRAST",
+}
+
+/**
+ * @enum {ETypeMode} 编辑模式
+ */
+export enum ETypeMode {
+  ZEN = "ZEN",
+  FOCUS = "FOCUS",
+  TYPER = "TYPER",
+  NORMAL = "NORMAL",
 }
 
 /**
@@ -57,27 +66,24 @@ export interface IGeneralState {
      * @field 笔记文件夹的位置，该字段作为文章的根
      */
     notesPath: string;
-  };
-  appearance: {
     /**
      * @field 显示语言
      */
     language: string; // TODO 完善语言的接口
+  };
+  appearance: {
     /**
      * @field 是否显示左侧边栏
      */
     showSideBar: boolean;
     /**
-     * @field 是否显示预览
+     * @field 是否显示状态栏
      */
-    showPreview: boolean;
+    showStatusBar: boolean;
     showPanel: EPanelShow;
     panelType: EPanelType;
-    typingMode: ETypingMode;
-    /**
-     * @field 是否启用禅模式
-     */
-    zenMode: boolean;
+    viewMode: EViewMode;
+    typeMode: ETypeMode;
   };
   editor: {
     /**

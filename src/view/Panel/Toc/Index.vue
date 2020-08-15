@@ -23,9 +23,12 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import vueCustomScrollbar from "vue-custom-scrollbar";
+import { State, namespace } from "vuex-class";
 
 import { ITocList } from "@/common/editor/create-toc";
 import { BUS_TOC } from "@/common/busChannel";
+
+const panel = namespace("panel");
 
 @Component({
   name: "Toc",
@@ -38,7 +41,11 @@ export default class Toc extends Vue {
   })
   firstLevel!: number;
 
-  tocTree: Array<ITocList> = [];
+  @panel.State("toc")
+  tocTree!: Array<ITocList>;
+
+  @panel.Mutation("SYNC_TOC")
+  SYNC_TOC!: (value: Array<ITocList>) => void;
 
   revealLine(value: Array<number>) {
     this.$bus.$emit(BUS_TOC.REVEAL_SECTION, value);
@@ -47,7 +54,7 @@ export default class Toc extends Vue {
   mounted() {
     this.$nextTick(() => {
       this.$bus.$on(BUS_TOC.SYNC_TOC, (value: Array<ITocList>) => {
-        this.tocTree = value;
+        this.SYNC_TOC(value);
       });
     });
   }

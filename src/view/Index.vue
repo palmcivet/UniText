@@ -30,8 +30,8 @@
 
       <!-- 右侧栏 -->
       <aside class="right-side-bar" :style="{ width: `${finalRightWidth}px` }">
-        <span v-show="isShowPannel" ref="rightResize" />
-        <pannel />
+        <span v-show="isShowPanel" ref="rightResize" />
+        <panel />
       </aside>
     </main>
 
@@ -49,7 +49,7 @@ import { State, Action, Mutation } from "vuex-class";
 
 import { IPC_PREFERENCE } from "@/common/ipcChannel";
 import { IBootCache } from "@/interface/boot";
-import Pannel from "@/view/Panel/Index.vue";
+import Panel from "@/view/Panel/Index.vue";
 import SideBar from "@/view/SideBar/Index.vue";
 import StatusBar from "@/view/StatusBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
@@ -57,7 +57,7 @@ import WorkBench from "@/view/WorkBench/Index.vue";
 @Component({
   name: "App",
   components: {
-    Pannel,
+    Panel,
     SideBar,
     StatusBar,
     WorkBench,
@@ -68,7 +68,7 @@ export default class App extends Vue {
 
   isShowSide = true;
 
-  isShowPannel = true;
+  isShowPanel = true;
 
   leftViewWidth = 200;
 
