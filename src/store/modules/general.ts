@@ -50,7 +50,11 @@ const state: IGeneralState = {
 
 const getters = {};
 
-const mutations = {};
+const mutations = {
+  SET_TYPING_MODE: (moduleState: IGeneralState, mode: ETypingMode) => {
+    moduleState.appearance.typingMode = mode;
+  },
+};
 
 const actions = {};
 

@@ -87,7 +87,7 @@ const makeSafe = (
     id[key] = 0;
   }
   id[key] += 1;
-  return key + (id[key] > 1 ? `-${id[key]}` : "");
+  return "h" + key + (id[key] > 1 ? `-${id[key]}` : "");
 };
 
 const space = () => {
