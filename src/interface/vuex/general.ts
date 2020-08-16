@@ -1,11 +1,10 @@
 import { IDocumentFormat, IDocumentConfig } from "../document";
 
 /**
- * @enum {EPanelShow} 右侧面板的展示形式
+ * @enum {EPanelStyle} 右侧面板的展示形式
  */
-export enum EPanelShow {
+export enum EPanelStyle {
   SIDE = "SIDE",
-  HIDE = "HIDE",
   FLOAT = "FLOAT",
 }
 
@@ -80,7 +79,11 @@ export interface IGeneralState {
      * @field 是否显示状态栏
      */
     showStatusBar: boolean;
-    showPanel: EPanelShow;
+    /**
+     * @field 是否显示右侧面板
+     */
+    showPanel: boolean;
+    panelStyle: EPanelStyle;
     panelType: EPanelType;
     viewMode: EViewMode;
     typeMode: ETypeMode;

@@ -1,13 +1,13 @@
 <template>
   <!-- 本组件中，父组件只用作组合，不含业务逻辑，而子组件拥有各自的逻辑，相互独立 -->
-  <article>
+  <footer>
     <ul>
       <component v-for="(v, i) in leftGroup" :is="v" :key="i"></component>
     </ul>
     <ul>
       <component v-for="(v, i) in rightGroup" :is="v" :key="i"></component>
     </ul>
-  </article>
+  </footer>
 </template>
 
 <script lang="ts">
@@ -37,15 +37,15 @@ const Space = {
   },
 })
 export default class StatusBar extends Vue {
-  leftGroup = ["Sync", "Space", "Mode", "Space", "Stat", "Tag"];
-  rightGroup = ["Notice", "Panel"];
+  leftGroup = ["Sync", "Space", "Stat", "Tag"];
+  rightGroup = ["Notice", "Panel", "Mode"];
 }
 </script>
 
 <style lang="less" scoped>
 @import "~@/asset/styles/var.less";
 
-article {
+footer {
   display: flex;
   justify-content: space-between;
   position: relative;

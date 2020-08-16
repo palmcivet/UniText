@@ -115,7 +115,6 @@ export default class Tabs extends Vue {
 ul {
   cursor: pointer;
   height: @tab-height;
-  box-shadow: -1px 1px 5px rgba(207, 207, 207, 0.5);
 
   & > span {
     display: flex;

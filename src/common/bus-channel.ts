@@ -1,5 +1,6 @@
 export enum BUS_FILE {
   OPEN_FILE = "OPEN_FILE",
+  CLOSE_FILE = "CLOSE_FILE",
 }
 
 export enum BUS_TOC {

@@ -7,7 +7,7 @@ import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
 import App from "@/view/Index.vue";
-import { IPC_PREFERENCE } from "@/common/ipcChannel";
+import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { localesMessage } from "@/app/config/locales-message";
 import { IBootCache } from "@/interface/boot";
 import { VueBus } from "./bus";

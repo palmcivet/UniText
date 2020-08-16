@@ -50,7 +50,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { ITreeItem } from "@/interface/vuex/sideBar";
-import { BUS_FILE } from "@/common/busChannel";
+import { BUS_FILE } from "@/common/bus-channel";
 
 @Component({
   name: "TreeItem",

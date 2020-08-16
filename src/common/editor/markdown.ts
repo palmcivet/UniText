@@ -10,10 +10,10 @@ import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 import { VueBus } from "@/app/renderer/bus";
-import { BUS_TOC } from "@/common/busChannel";
+import { BUS_TOC } from "@/common/bus-channel";
 import markdownItTocAndAnchor, { ITocList } from "@/common/editor/create-toc";
 
-const markdownIt = new MarkdownIt({
+const markdownEngine = new MarkdownIt({
   html: true,
   breaks: true,
   linkify: true,
@@ -22,13 +22,13 @@ const markdownIt = new MarkdownIt({
 const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
 const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
-markdownIt.validateLink = (url) => {
+markdownEngine.validateLink = (url) => {
   let str = url.trim().toLowerCase();
   return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
 };
 
-markdownIt.use(MarkdownItKatex);
-markdownIt.use(markdownItTocAndAnchor, {
+markdownEngine.use(MarkdownItKatex);
+markdownEngine.use(markdownItTocAndAnchor, {
   toc: true,
   tocClassName: "markdownIt-TOC",
   tocFirstLevel: 2,
@@ -38,22 +38,22 @@ markdownIt.use(markdownItTocAndAnchor, {
     VueBus.$emit(BUS_TOC.SYNC_TOC, tocArray);
   },
 });
-markdownIt.use(MarkdownItTaskLists, {
+markdownEngine.use(MarkdownItTaskLists, {
   label: true,
   labelAfter: true,
 });
-markdownIt.use(MarkdownItMark);
-markdownIt.use(MarkdownItSup);
-markdownIt.use(MarkdownItSub);
-markdownIt.use(MarkdownItFootnote);
-markdownIt.use(MarkdownItEmoji);
-markdownIt.use(MarkdownItImsize);
-markdownIt.use(MarkdownItImplicitFigures, {
+markdownEngine.use(MarkdownItMark);
+markdownEngine.use(MarkdownItSup);
+markdownEngine.use(MarkdownItSub);
+markdownEngine.use(MarkdownItFootnote);
+markdownEngine.use(MarkdownItEmoji);
+markdownEngine.use(MarkdownItImsize);
+markdownEngine.use(MarkdownItImplicitFigures, {
   dataType: true,
   figcaption: false,
   tabindex: true,
   link: false,
 });
-markdownIt.use(MarkdownItImageLazyLoading);
+markdownEngine.use(MarkdownItImageLazyLoading);
 
-export default markdownIt;
+export { markdownEngine };

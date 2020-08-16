@@ -1,58 +1,45 @@
 <template>
   <div>
-    <!-- 顶栏 -->
     <header class="layout-header">
       <span>UniText</span>
     </header>
 
     <main class="layout-main">
-      <!-- 左侧栏 -->
       <aside class="left-side-bar">
-        <side-bar
-          :isShowSide="isShowSide"
-          :sideWidth="finalLeftWidth"
-          @toggleSide="handleToggle()"
-        />
+        <side-bar :sideWidth="finalLeftWidth" />
         <span v-show="isShowSide" ref="leftResize" />
       </aside>
 
-      <!-- 编辑区 -->
-      <section
-        class="center-container"
-        :style="{
-          width: isShowSide
-            ? `calc(100vw - 45px - ${finalLeftWidth}px - ${finalRightWidth}px`
-            : `calc(100vw - 45px - ${finalRightWidth}px`,
-        }"
-      >
-        <work-bench />
-      </section>
+      <work-bench class="center-container" :style="{ width: centerWidth }" />
 
-      <!-- 右侧栏 -->
-      <aside class="right-side-bar" :style="{ width: `${finalRightWidth}px` }">
-        <span v-show="isShowPanel" ref="rightResize" />
+      <aside
+        class="right-side-bar"
+        v-show="isShowPanel"
+        :style="{ width: `${finalRightWidth}px` }"
+      >
+        <span ref="rightResize" />
         <panel />
       </aside>
     </main>
 
-    <!-- 底栏 -->
-    <footer class="layout-footer">
-      <status-bar />
-    </footer>
+    <status-bar class="layout-footer" />
   </div>
 </template>
 
 <script lang="ts">
 import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
-import { State, Action, Mutation } from "vuex-class";
+import { State, Action, Mutation, namespace } from "vuex-class";
 
-import { IPC_PREFERENCE } from "@/common/ipcChannel";
-import { IBootCache } from "@/interface/boot";
 import Panel from "@/view/Panel/Index.vue";
 import SideBar from "@/view/SideBar/Index.vue";
 import StatusBar from "@/view/StatusBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
+import { IPC_PREFERENCE } from "@/common/ipc-channel";
+import { IBootCache } from "@/interface/boot";
+import { IGeneralState, EPanelStyle } from "@/interface/vuex/general";
+
+const general = namespace("general");
 
 @Component({
   name: "App",
@@ -64,18 +51,21 @@ import WorkBench from "@/view/WorkBench/Index.vue";
   },
 })
 export default class App extends Vue {
-  // TODO 以下收入 preference
+  @Action("CHECK_UPDATE")
+  CHECK_UPDATE!: () => void;
 
-  isShowSide = true;
+  @general.State((state: IGeneralState) => state.appearance.showSideBar)
+  isShowSide!: boolean;
 
-  isShowPanel = true;
+  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  isShowPanel!: boolean;
+
+  // FEAT 设计浮动面板
+  panelStyle!: EPanelStyle;
 
   leftViewWidth = 200;
 
   rightViewWidth = 180;
-
-  @Action("CHECK_UPDATE")
-  CHECK_UPDATE!: () => void;
 
   get finalLeftWidth() {
     return this.leftViewWidth;
@@ -93,8 +83,12 @@ export default class App extends Vue {
     this.rightViewWidth = value;
   }
 
-  handleToggle() {
-    this.isShowSide = !this.isShowSide;
+  get centerWidth() {
+    return this.isShowPanel
+      ? this.isShowSide
+        ? `calc(100vw - 45px - ${this.finalLeftWidth}px - ${this.finalRightWidth}px`
+        : `calc(100vw - 45px - ${this.finalRightWidth}px`
+      : `calc(100vw - 45px - ${this.finalLeftWidth}px`;
   }
 
   created() {
@@ -244,7 +238,7 @@ export default class App extends Vue {
 
 .layout-main {
   span {
-    width: 1.5px;
+    width: 1.3px;
     height: 100%;
     cursor: col-resize;
   }

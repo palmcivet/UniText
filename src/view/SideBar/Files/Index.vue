@@ -45,7 +45,7 @@ import * as fse from "fs-extra";
 
 import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
 import { ITreeItem } from "@/interface/vuex/sideBar";
-import { BUS_FILE } from "@/common/busChannel";
+import { BUS_FILE } from "@/common/bus-channel";
 
 const workBench = namespace("workBench");
 const general = namespace("general");

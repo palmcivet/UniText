@@ -5,7 +5,7 @@ import { autoUpdater } from "electron-updater";
 
 import { generateMenu } from "./menu";
 import { IBootArgs, IBootCache } from "@/interface/boot";
-import { IPC_PREFERENCE } from "@/common/ipcChannel";
+import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { loadSetting } from "@/common/main/utils";
 
 export class App {

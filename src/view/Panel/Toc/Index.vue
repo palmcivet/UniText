@@ -26,7 +26,7 @@ import vueCustomScrollbar from "vue-custom-scrollbar";
 import { State, namespace } from "vuex-class";
 
 import { ITocList } from "@/common/editor/create-toc";
-import { BUS_TOC } from "@/common/busChannel";
+import { BUS_TOC } from "@/common/bus-channel";
 
 const panel = namespace("panel");
 

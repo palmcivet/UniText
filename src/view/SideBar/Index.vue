@@ -23,7 +23,7 @@
       <component
         class="right-column"
         v-show="isShowSide"
-        :style="{ width: `${sideWidth}px` }"
+        :style="{ width: `${sideWidth - 1.3}px` }"
         :is="activeItem"
       />
     </keep-alive>
@@ -32,11 +32,15 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import Tags from "@/view/SideBar/Tags/Index.vue";
 import Files from "@/view/SideBar/Files/Index.vue";
 import Marks from "@/view/SideBar/Marks/Index.vue";
 import Search from "@/view/SideBar/Search/Index.vue";
 import Setting from "@/view/SideBar/Setting/Index.vue";
+import { IGeneralState } from "@/interface/vuex/general";
+
+const general = namespace("general");
 
 @Component({
   name: "SideBar",
@@ -50,16 +54,16 @@ import Setting from "@/view/SideBar/Setting/Index.vue";
 })
 export default class SideBar extends Vue {
   @Prop({
-    type: Boolean,
-    required: true,
-  })
-  isShowSide!: boolean;
-
-  @Prop({
     type: Number,
     required: true,
   })
   sideWidth!: number;
+
+  @general.State((state: IGeneralState) => state.appearance.showSideBar)
+  isShowSide!: boolean;
+
+  @general.Mutation("TOGGLE_SIDE_BAR")
+  TOGGLE_SIDE_BAR!: () => void;
 
   get sideMenus() {
     return [
@@ -94,8 +98,14 @@ export default class SideBar extends Vue {
   activeItem = "Files";
 
   clickMenu(e: { key: string }) {
+    if (!this.isShowSide) {
+      this.TOGGLE_SIDE_BAR();
+      this.activeItem = e.key;
+      return;
+    }
+
     if (this.activeItem === e.key) {
-      this.$emit("toggleSide");
+      this.TOGGLE_SIDE_BAR();
     } else {
       this.activeItem = e.key;
     }

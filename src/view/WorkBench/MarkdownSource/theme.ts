@@ -1,4 +1,4 @@
-export default {
+export const theme = {
   base: "vs",
   inherit: true,
   rules: [

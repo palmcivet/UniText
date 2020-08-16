@@ -4,7 +4,7 @@
 
 import {
   IGeneralState,
-  EPanelShow,
+  EPanelStyle,
   EPanelType,
   ETypeMode,
   EViewMode,
@@ -24,7 +24,8 @@ const state: IGeneralState = {
   appearance: {
     showSideBar: true,
     showStatusBar: true,
-    showPanel: EPanelShow.SIDE,
+    showPanel: true,
+    panelStyle: EPanelStyle.SIDE,
     panelType: EPanelType.TOC,
     viewMode: EViewMode.CONTRAST,
     typeMode: ETypeMode.NORMAL,
@@ -52,6 +53,18 @@ const state: IGeneralState = {
 const getters = {};
 
 const mutations = {
+  TOGGLE_SIDE_BAR: (moduleState: IGeneralState) => {
+    moduleState.appearance.showSideBar = !moduleState.appearance.showSideBar;
+  },
+  TOGGLE_STATUS_BAR: (moduleState: IGeneralState) => {
+    moduleState.appearance.showStatusBar = !moduleState.appearance.showStatusBar;
+  },
+  TOGGLE_PANEL: (moduleState: IGeneralState) => {
+    moduleState.appearance.showPanel = !moduleState.appearance.showPanel;
+  },
+  SWITCH_PANEL_TYPE: (moduleState: IGeneralState, type: EPanelType) => {
+    moduleState.appearance.panelType = type;
+  },
   SET_TYPE_MODE: (moduleState: IGeneralState, mode: ETypeMode) => {
     moduleState.appearance.typeMode = mode;
   },
