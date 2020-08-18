@@ -1,8 +1,6 @@
 <template>
   <div>
-    <header class="layout-header">
-      <span>UniText</span>
-    </header>
+    <top-bar class="layout-header" />
 
     <main class="layout-main">
       <aside class="left-side-bar">
@@ -11,15 +9,6 @@
       </aside>
 
       <work-bench class="center-container" :style="{ width: centerWidth }" />
-
-      <aside
-        class="right-side-bar"
-        v-show="isShowPanel"
-        :style="{ width: `${finalRightWidth}px` }"
-      >
-        <span ref="rightResize" />
-        <panel />
-      </aside>
     </main>
 
     <status-bar class="layout-footer" />
@@ -31,7 +20,7 @@ import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action, Mutation, namespace } from "vuex-class";
 
-import Panel from "@/view/Panel/Index.vue";
+import TopBar from "@/view/TopBar/Index.vue";
 import SideBar from "@/view/SideBar/Index.vue";
 import StatusBar from "@/view/StatusBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
@@ -44,7 +33,7 @@ const general = namespace("general");
 @Component({
   name: "App",
   components: {
-    Panel,
+    TopBar,
     SideBar,
     StatusBar,
     WorkBench,
@@ -65,8 +54,6 @@ export default class App extends Vue {
 
   leftViewWidth = 200;
 
-  rightViewWidth = 180;
-
   get finalLeftWidth() {
     return this.leftViewWidth;
   }
@@ -75,20 +62,10 @@ export default class App extends Vue {
     this.leftViewWidth = value;
   }
 
-  get finalRightWidth() {
-    return this.rightViewWidth;
-  }
-
-  set finalRightWidth(value: number) {
-    this.rightViewWidth = value;
-  }
-
   get centerWidth() {
-    return this.isShowPanel
-      ? this.isShowSide
-        ? `calc(100vw - 45px - ${this.finalLeftWidth}px - ${this.finalRightWidth}px`
-        : `calc(100vw - 45px - ${this.finalRightWidth}px`
-      : `calc(100vw - 45px - ${this.finalLeftWidth}px`;
+    return this.isShowSide
+      ? `calc(100vw - 45px - ${this.finalLeftWidth}px`
+      : "calc(100vw - 45px)";
   }
 
   created() {
@@ -96,10 +73,8 @@ export default class App extends Vue {
       const { leftResize, rightResize } = this.$refs;
 
       let leftSideBarWidth = +this.leftViewWidth;
-      let rightSideBarWidth = +this.rightViewWidth;
 
       this.leftViewWidth = leftSideBarWidth;
-      this.rightViewWidth = rightSideBarWidth;
 
       let startX = 0;
       let startWidth = leftSideBarWidth;
@@ -116,33 +91,12 @@ export default class App extends Vue {
         }
       };
 
-      const mouseMoveHandlerR = (e: MouseEvent) => {
-        const offset = e.clientX - startX;
-        rightSideBarWidth = startWidth - offset;
-        if (rightSideBarWidth < 150) {
-          this.rightViewWidth = 150;
-        } else if (rightSideBarWidth > 250) {
-          this.rightViewWidth = 250;
-        } else {
-          this.rightViewWidth = rightSideBarWidth;
-        }
-      };
-
       const mouseUpHandlerL = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandlerL, false);
         document.removeEventListener("mouseup", mouseUpHandlerL, false);
         // DEV @layout-leftSide-right-column;
         if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
           this.leftViewWidth = leftSideBarWidth;
-        }
-      };
-
-      const mouseUpHandlerR = (e: MouseEvent) => {
-        document.removeEventListener("mousemove", mouseMoveHandlerR, false);
-        document.removeEventListener("mouseup", mouseUpHandlerR, false);
-        // DEV @layout-rightSide-bar;
-        if (rightSideBarWidth >= 150 && rightSideBarWidth <= 250) {
-          this.rightViewWidth = rightSideBarWidth;
         }
       };
 
@@ -153,19 +107,7 @@ export default class App extends Vue {
         document.addEventListener("mouseup", mouseUpHandlerL, false);
       };
 
-      const mouseDownHandlerR = (e: MouseEvent) => {
-        startX = e.clientX;
-        startWidth = +this.rightViewWidth;
-        document.addEventListener("mousemove", mouseMoveHandlerR, false);
-        document.addEventListener("mouseup", mouseUpHandlerR, false);
-      };
-
       (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandlerL, false);
-      (rightResize as HTMLElement).addEventListener(
-        "mousedown",
-        mouseDownHandlerR,
-        false
-      );
     });
   }
 
@@ -190,19 +132,6 @@ export default class App extends Vue {
   width: 100vw;
 }
 
-.layout-header {
-  height: @layout-top-bar;
-  -webkit-user-select: none;
-  -webkit-app-region: drag;
-
-  span {
-    position: absolute;
-    transform: translateX(-50%);
-    left: 50%;
-    font-size: 13px;
-  }
-}
-
 .layout-main {
   height: calc(100vh - @layout-top-bar - @layout-bottom-bar);
   display: flex;
@@ -217,20 +146,13 @@ export default class App extends Vue {
 /* 以下为分区 */
 
 .left-side-bar,
-.center-container,
-.right-side-bar {
+.center-container {
   height: calc(100vh - @layout-top-bar - @layout-bottom-bar);
 }
 
 .left-side-bar {
   left: 0;
   width: auto;
-  display: flex;
-}
-
-.right-side-bar {
-  position: absolute;
-  right: 0;
   display: flex;
 }
 
@@ -245,10 +167,6 @@ export default class App extends Vue {
 
   .left-side-bar span:hover {
     border-right: @resize-bar;
-  }
-
-  .right-side-bar span:hover {
-    border-left: @resize-bar;
   }
 }
 </style>

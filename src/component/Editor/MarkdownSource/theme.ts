@@ -1,4 +1,6 @@
-export const theme = {
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+
+export const theme: monaco.editor.IStandaloneThemeData = {
   base: "vs",
   inherit: true,
   rules: [

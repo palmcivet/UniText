@@ -1,24 +1,8 @@
 <template>
-  <article>
-    <section
-      id="markdown-editor"
-      :style="{
-        width: !isPreview
-          ? '100%'
-          : finalWidth
-          ? `calc(100% - ${finalWidth - 2}px`
-          : '50%',
-      }"
-    />
-    <span v-show="isPreview" ref="resize" />
-    <section
-      id="markdown-preview"
-      v-show="isPreview"
-      :style="{
-        width: !isPreview ? '0' : finalWidth ? `${finalWidth}px` : 'clac(50% - 2px)',
-      }"
-    />
-  </article>
+  <layout-box :totalWidth="containerWidth" :showMinor="isPreview" :threWidth="1 / 4">
+    <section id="markdown-editor" slot="left" />
+    <section id="markdown-preview" slot="right" />
+  </layout-box>
 </template>
 
 <script lang="ts">
@@ -28,21 +12,30 @@ import * as monacoMarkdown from "monaco-markdown";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
 
-import { IGeneralState, EViewMode } from "@/interface/vuex/general";
-import { IFile, TTab } from "@/interface/vuex/workBench";
+import LayoutBox from "@/component/widgets/LayoutBox/Index.vue";
 import { debounce } from "@/common/editor/utils";
+import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
 import { BUS_TOC, BUS_FILE } from "@/common/bus-channel";
+import { IGeneralState, EViewMode } from "@/interface/vuex/general";
+import { IFile, TTab } from "@/interface/vuex/workBench";
 import { theme } from "./theme";
 import { init } from "./option";
 
+const panel = namespace("panel");
 const general = namespace("general");
 const workBench = namespace("workBench");
 
 @Component({
   name: "MarkdownSource",
+  components: {
+    LayoutBox,
+  },
 })
 export default class MarkdownSource extends Vue {
+  @panel.State("toc")
+  tocTree!: Array<ITocList>;
+
   @general.State((state: IGeneralState) => state.appearance.viewMode)
   viewMode!: EViewMode;
 
@@ -66,15 +59,7 @@ export default class MarkdownSource extends Vue {
 
   syncDelay = 400;
 
-  editWidth = 0;
-
-  get finalWidth() {
-    return this.isPreview ? this.editWidth : 0;
-  }
-
-  set finalWidth(value: number) {
-    this.editWidth = value;
-  }
+  containerWidth = 0;
 
   @Watch("currentFile", { deep: true })
   syncModel(newValue: { order: string; value: IFile }) {
@@ -105,7 +90,7 @@ export default class MarkdownSource extends Vue {
     this.refPreview = document.querySelector("#markdown-preview") as HTMLElement;
     this.refEditor = document.querySelector("#markdown-editor") as HTMLElement;
 
-    monaco.editor.defineTheme("GrideaLight", theme as monaco.editor.IStandaloneThemeData);
+    monaco.editor.defineTheme("GrideaLight", theme);
 
     this.editor = monaco.editor.create(this.refEditor, init);
 
@@ -116,6 +101,11 @@ export default class MarkdownSource extends Vue {
 
     const extension = new monacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
+
+    setTimeout(() => {
+      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+      console.log(this.containerWidth);
+    });
 
     this.$nextTick(() => {
       /* 以下为实时渲染 */
@@ -143,54 +133,6 @@ export default class MarkdownSource extends Vue {
         this.modelStack[index].dispose();
         delete this.modelStack[index];
       });
-
-      /* 以下为 resize */
-
-      /* 获取容器宽度，编辑区初始值为容器的 50% */
-      const parent = this.$el as HTMLElement;
-      let containerWidth = parent.offsetWidth;
-      this.editWidth = parent.offsetWidth / 2;
-
-      let startX = 0;
-      let leftSide = this.editWidth;
-      let startWidth = leftSide;
-
-      const mouseMoveHandler = (e: MouseEvent) => {
-        const offset = e.clientX - startX;
-        leftSide = startWidth - offset;
-        if (leftSide < containerWidth / 4) {
-          this.editWidth = containerWidth / 4;
-        } else if (leftSide > (containerWidth * 3) / 4) {
-          this.editWidth = (containerWidth * 3) / 4;
-        } else {
-          this.editWidth = leftSide;
-        }
-      };
-
-      const mouseUpHandler = (e: MouseEvent) => {
-        document.removeEventListener("mousemove", mouseMoveHandler, false);
-        if (
-          containerWidth - leftSide >= containerWidth / 4 &&
-          containerWidth - leftSide <= (containerWidth / 4) * 3
-        ) {
-          this.editWidth = leftSide;
-        }
-      };
-
-      const mouseDownHandler = (e: MouseEvent) => {
-        startX = e.clientX;
-        containerWidth = parent.offsetWidth;
-        startWidth = this.editWidth;
-
-        document.addEventListener("mousemove", mouseMoveHandler, false);
-        document.addEventListener("mouseup", mouseUpHandler, false);
-      };
-
-      (this.$refs.resize as HTMLElement).addEventListener(
-        "mousedown",
-        mouseDownHandler,
-        false
-      );
     });
   }
 
@@ -206,25 +148,8 @@ export default class MarkdownSource extends Vue {
 <style lang="less" scoped>
 @import "~@/asset/styles/var.less";
 
-article {
-  display: flex;
-
-  & > span {
-    width: 3px;
-    height: 100%;
-    cursor: col-resize;
-    background-color: rgba(255, 255, 255, 0.6);
-
-    &:hover {
-      border-right: @resize-bar;
-    }
-  }
-}
-
 #markdown-editor {
   height: 100%;
-  width: 100%;
-  transition: @width-transition;
 
   /deep/ .context-view .monaco-scrollable-element {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
@@ -263,8 +188,9 @@ article {
 }
 
 #markdown-preview {
+  height: 100%;
   overflow: auto;
-  padding: 1em;
+  padding: 14px 1em;
   background-color: #fafafa;
   font-family: @normal-font-family;
   font-size: @preview-font-size;

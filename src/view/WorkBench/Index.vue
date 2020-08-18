@@ -1,25 +1,33 @@
 <template>
-  <section>
-    <tabs
-      v-show="!isBlank"
-      :openedFile="currentFileIndex"
-      :tabGroup="currentTabs"
-      @newFile="NEW_FILE()"
-      @switchTabs="SWITCH_TABS($event)"
-      @selectTab="SELECT_TAB({ cur: $event })"
-      @closeTab="handleClose($event)"
-    />
-    <blank v-show="isBlank" class="workbench" @newFile="NEW_FILE()" />
-    <markdown-source v-show="!isBlank" class="workbench" />
-  </section>
+  <layout-box
+    :totalWidth="containerWidth"
+    :showMinor="isShowPanel"
+    :threWidth="[150, 250]"
+  >
+    <section slot="left">
+      <tabs
+        v-show="!isBlank"
+        :openedFile="currentFileIndex"
+        :tabGroup="currentTabs"
+        @newFile="NEW_FILE()"
+        @switchTabs="SWITCH_TABS($event)"
+        @selectTab="SELECT_TAB({ cur: $event })"
+        @closeTab="handleClose($event)"
+      />
+      <blank v-show="isBlank" @newFile="NEW_FILE()" />
+      <markdown-source v-show="!isBlank" class="workbench" />
+    </section>
+    <panel slot="right" />
+  </layout-box>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import EmojiCard from "@/common/widgets/EmojiCard/Index.vue";
-import MarkdownSource from "@/view/WorkBench/MarkdownSource/Index.vue";
+import LayoutBox from "@/component/widgets/LayoutBox/Index.vue";
+import MarkdownSource from "@/component/Editor/MarkdownSource/Index.vue";
+import Panel from "@/component/Panel/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
 import Tabs from "@/view/WorkBench/Tabs/Index.vue";
 import { TTab } from "@/interface/vuex/workBench";
@@ -35,7 +43,8 @@ const workBench = namespace("workBench");
   name: "WorkBench",
   components: {
     MarkdownSource,
-    EmojiCard,
+    LayoutBox,
+    Panel,
     Blank,
     Tabs,
   },
@@ -62,16 +71,20 @@ export default class WorkBench extends Vue {
   @workBench.Action("NEW_FILE")
   NEW_FILE!: (title?: string) => void;
 
+  @workBench.Getter("isBlank")
+  isBlank!: boolean;
+
+  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  isShowPanel!: boolean;
+
   @general.State((state: IGeneralState) => state.appearance.panelType)
   panelType!: EPanelType;
-
-  get isBlank() {
-    return this.currentTabs.length === 0;
-  }
 
   get isToc() {
     return this.panelType === EPanelType.TOC;
   }
+
+  containerWidth = 0;
 
   getStatus() {
     const reading = timeCalc("");
@@ -97,7 +110,12 @@ export default class WorkBench extends Vue {
   }
 
   created() {
+    // TODO 检测设置并新建
     this.NEW_FILE();
+  }
+
+  mounted() {
+    this.containerWidth = (this.$el as HTMLElement).offsetWidth;
   }
 }
 </script>
@@ -112,7 +130,7 @@ section {
 }
 
 .workbench {
-  height: 100%;
+  height: calc(100% - 25px);
   width: 100%;
 }
 </style>

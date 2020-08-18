@@ -1,5 +1,5 @@
 <template>
-  <article>
+  <aside>
     <a-menu class="left-column" mode="vertical" :defaultSelectedKeys="['/files']">
       <a-menu-item
         v-for="menu in sideMenus"
@@ -27,7 +27,7 @@
         :is="activeItem"
       />
     </keep-alive>
-  </article>
+  </aside>
 </template>
 
 <script lang="ts">
@@ -116,7 +116,7 @@ export default class SideBar extends Vue {
 <style lang="less" scoped>
 @import "~@/asset/styles/var.less";
 
-article {
+aside {
   display: flex;
 
   .left-column {

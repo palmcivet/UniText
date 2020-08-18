@@ -29,6 +29,9 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
       value: moduleState.currentFileGroup[moduleState.currentFileIndex],
     };
   },
+  isBlank: (moduleState: IWorkBenchState) => {
+    return moduleState.currentTabs.length === 0;
+  },
 };
 
 const mutations: MutationTree<IWorkBenchState> = {
@@ -181,7 +184,10 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    *
    * 下一个页标签为 `Math.abs(index - 1)`
    */
-  CLOSE_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>, index: string) => {
+  CLOSE_FILE: (
+    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    index: string
+  ) => {
     const selectState = moduleState.state;
 
     /* 保存标签页的内容 */
