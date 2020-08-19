@@ -13,8 +13,9 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
+import PanelStyle from "./Panel/PanelStyle.vue";
+import PanelType from "./Panel/PanelType.vue";
 import Notice from "./Notice/Index.vue";
-import Panel from "./Panel/Index.vue";
 import Mode from "./Mode/Index.vue";
 import Stat from "./Stat/Index.vue";
 import Sync from "./Sync/Index.vue";
@@ -27,9 +28,10 @@ const Space = {
 @Component({
   name: "StatusBar",
   components: {
+    PanelStyle,
+    PanelType,
     Notice,
     Space,
-    Panel,
     Mode,
     Stat,
     Sync,
@@ -38,7 +40,7 @@ const Space = {
 })
 export default class StatusBar extends Vue {
   leftGroup = ["Sync", "Space", "Stat", "Tag"];
-  rightGroup = ["Notice", "Panel", "Mode"];
+  rightGroup = ["Notice", "Space", "PanelType", "Space", "PanelStyle", "Mode"];
 }
 </script>
 
@@ -50,7 +52,7 @@ footer {
   justify-content: space-between;
   position: relative;
   height: 100%;
-  padding: 0 0.25em;
+  padding: 0 0.5em;
 
   > ul {
     display: flex;
@@ -60,9 +62,9 @@ footer {
     }
 
     /deep/ li {
-      -webkit-user-select: none;
+      padding: 0 0.25em;
       cursor: pointer;
-      padding: 0 0.3em;
+      -webkit-user-select: none;
       line-height: @layout-bottom-bar;
 
       &:hover {

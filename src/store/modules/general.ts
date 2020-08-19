@@ -4,10 +4,9 @@
 
 import {
   IGeneralState,
-  EPanelStyle,
   EPanelType,
   ETypeMode,
-  EViewMode,
+  EEditMode,
 } from "@/interface/vuex/general";
 import { EEol } from "@/interface/document";
 
@@ -25,9 +24,11 @@ const state: IGeneralState = {
     showSideBar: true,
     showStatusBar: true,
     showPanel: true,
-    panelStyle: EPanelStyle.SIDE,
+    checkEdit: false,
+    checkPresent: false,
+    panelFloat: true,
     panelType: EPanelType.TOC,
-    viewMode: EViewMode.CONTRAST,
+    editMode: EEditMode.SOURCE,
     typeMode: ETypeMode.NORMAL,
   },
   editor: {
@@ -62,14 +63,23 @@ const mutations = {
   TOGGLE_PANEL: (moduleState: IGeneralState) => {
     moduleState.appearance.showPanel = !moduleState.appearance.showPanel;
   },
-  SWITCH_PANEL_TYPE: (moduleState: IGeneralState, type: EPanelType) => {
+  TOGGLE_CHECK: (moduleState: IGeneralState) => {
+    moduleState.appearance.checkEdit = !moduleState.appearance.checkEdit;
+  },
+  TOGGLE_PRESENT: (moduleState: IGeneralState) => {
+    moduleState.appearance.checkPresent = !moduleState.appearance.checkPresent;
+  },
+  TOGGLE_PANEL_STYLE: (moduleState: IGeneralState) => {
+    moduleState.appearance.panelFloat = !moduleState.appearance.panelFloat;
+  },
+  SET_PANEL_TYPE: (moduleState: IGeneralState, type: EPanelType) => {
     moduleState.appearance.panelType = type;
   },
   SET_TYPE_MODE: (moduleState: IGeneralState, mode: ETypeMode) => {
     moduleState.appearance.typeMode = mode;
   },
-  SET_VIEW_MODE: (moduleState: IGeneralState, mode: EViewMode) => {
-    moduleState.appearance.viewMode = mode;
+  SET_EDIT_MODE: (moduleState: IGeneralState, mode: EEditMode) => {
+    moduleState.appearance.editMode = mode;
   },
 };
 

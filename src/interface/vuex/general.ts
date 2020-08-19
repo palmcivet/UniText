@@ -1,14 +1,6 @@
 import { IDocumentFormat, IDocumentConfig } from "../document";
 
 /**
- * @enum {EPanelStyle} 右侧面板的展示形式
- */
-export enum EPanelStyle {
-  SIDE = "SIDE",
-  FLOAT = "FLOAT",
-}
-
-/**
  * @enum {EPanelType} 右侧面板展示的信息类型
  */
 export enum EPanelType {
@@ -18,16 +10,16 @@ export enum EPanelType {
 }
 
 /**
- * @enum {EViewMode} 视图模式
+ * @enum {EEditMode} 编辑模式
  */
-export enum EViewMode {
+export enum EEditMode {
   SOURCE = "SOURCE",
   WYSIWYG = "WYSIWYG",
-  CONTRAST = "CONTRAST",
+  RICHTEXT = "RICHTEXT",
 }
 
 /**
- * @enum {ETypeMode} 编辑模式
+ * @enum {ETypeMode} 打字模式
  */
 export enum ETypeMode {
   ZEN = "ZEN",
@@ -83,9 +75,23 @@ export interface IGeneralState {
      * @field 是否显示右侧面板
      */
     showPanel: boolean;
-    panelStyle: EPanelStyle;
+    /**
+     * @field 是否预览
+     */
+    checkPresent: boolean;
+    /**
+     * @field 是否查看编辑状态
+     * - 对于源码模式，查看预览
+     * - 对于 WYSIWYG，查看源码
+     * - 对于富文本，无效果
+     */
+    checkEdit: boolean;
+    /**
+     * @field 控制面板是否悬浮
+     */
+    panelFloat: boolean;
     panelType: EPanelType;
-    viewMode: EViewMode;
+    editMode: EEditMode;
     typeMode: ETypeMode;
   };
   editor: {

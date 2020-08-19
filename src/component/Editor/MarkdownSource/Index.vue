@@ -17,7 +17,7 @@ import { debounce } from "@/common/editor/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
 import { BUS_TOC, BUS_FILE } from "@/common/bus-channel";
-import { IGeneralState, EViewMode } from "@/interface/vuex/general";
+import { IGeneralState, EEditMode } from "@/interface/vuex/general";
 import { IFile, TTab } from "@/interface/vuex/workBench";
 import { theme } from "./theme";
 import { init } from "./option";
@@ -36,18 +36,14 @@ export default class MarkdownSource extends Vue {
   @panel.State("toc")
   tocTree!: Array<ITocList>;
 
-  @general.State((state: IGeneralState) => state.appearance.viewMode)
-  viewMode!: EViewMode;
+  @general.State((state: IGeneralState) => state.appearance.checkEdit)
+  isPreview!: boolean;
 
   @workBench.State("currentFileIndex")
   currentFileIndex!: string;
 
   @workBench.Getter("currentFile")
   currentFile!: { order: string; value: IFile };
-
-  get isPreview() {
-    return this.viewMode === EViewMode.CONTRAST;
-  }
 
   editor!: monaco.editor.IStandaloneCodeEditor;
 
@@ -87,6 +83,10 @@ export default class MarkdownSource extends Vue {
   }, this.syncDelay);
 
   mounted() {
+    setTimeout(() => {
+      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+    });
+
     this.refPreview = document.querySelector("#markdown-preview") as HTMLElement;
     this.refEditor = document.querySelector("#markdown-editor") as HTMLElement;
 
@@ -101,11 +101,6 @@ export default class MarkdownSource extends Vue {
 
     const extension = new monacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
-
-    setTimeout(() => {
-      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-      console.log(this.containerWidth);
-    });
 
     this.$nextTick(() => {
       /* 以下为实时渲染 */

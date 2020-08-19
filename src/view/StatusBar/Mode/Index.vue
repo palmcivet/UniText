@@ -1,36 +1,87 @@
 <template>
   <ol>
-    <li :class="viewMode === 'SOURCE' ? 'active' : ''" @click="handleClick('SOURCE')">
-      <i class="ri-code-s-slash-fill"></i>
-    </li>
-    <li :class="viewMode === 'CONTRAST' ? 'active' : ''" @click="handleClick('CONTRAST')">
-      <i class="ri-layout-column-fill"></i>
-    </li>
-    <li :class="viewMode === 'WYSIWYG' ? 'active' : ''" @click="handleClick('WYSIWYG')">
-      <i class="ri-text"></i>
-    </li>
+    <check-item
+      :itemGroup="checkMode"
+      :condition="checkEdit ? 'true' : 'false'"
+      @click="TOGGLE_CHECK()"
+    />
+    <check-item
+      :itemGroup="presentMode"
+      :condition="checkPresent ? 'true' : 'false'"
+      @click="TOGGLE_PRESENT()"
+    />
   </ol>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
-import { EViewMode, IGeneralState } from "@/interface/vuex/general";
+
+import { EEditMode, IGeneralState } from "@/interface/vuex/general";
+import CheckItem from "@/component/widgets/CheckItem/Index.vue";
 
 const general = namespace("general");
 
 @Component({
   name: "Mode",
+  components: {
+    CheckItem,
+  },
 })
 export default class Mode extends Vue {
-  @general.State((state: IGeneralState) => state.appearance.viewMode)
-  viewMode!: EViewMode;
+  @general.State((state: IGeneralState) => state.appearance.editMode)
+  editMode!: EEditMode;
 
-  @general.Mutation("SET_VIEW_MODE")
-  SET_VIEW_MODE!: (value: EViewMode) => void;
+  @general.State((state: IGeneralState) => state.appearance.checkEdit)
+  checkEdit!: boolean;
 
-  handleClick(value: EViewMode) {
-    this.SET_VIEW_MODE(value);
+  @general.State((state: IGeneralState) => state.appearance.checkPresent)
+  checkPresent!: boolean;
+
+  @general.Mutation("TOGGLE_CHECK")
+  TOGGLE_CHECK!: () => void;
+
+  @general.Mutation("TOGGLE_PRESENT")
+  TOGGLE_PRESENT!: () => void;
+
+  // FEAT i18n
+  get checkMode() {
+    return {
+      SOURCE: {
+        false: {
+          title: "书写",
+          icon: "ri-code-s-slash-fill",
+        },
+        true: {
+          title: "预览",
+          icon: "ri-layout-column-fill",
+        },
+      },
+      WYSIWYG: {
+        false: {
+          title: "书写",
+          icon: "ri-text",
+        },
+        true: {
+          title: "源码",
+          icon: "ri-code-s-slash-fill",
+        },
+      },
+      RICHTEXT: [{}],
+    }[this.editMode];
+  }
+
+  get presentMode() {
+    return {
+      true: {
+        title: "浏览模式",
+        icon: "ri-eye-line",
+      },
+      false: {
+        title: "编辑模式",
+        icon: "ri-pencil-line",
+      },
+    };
   }
 }
 </script>

@@ -26,7 +26,7 @@ import StatusBar from "@/view/StatusBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
 import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { IBootCache } from "@/interface/boot";
-import { IGeneralState, EPanelStyle } from "@/interface/vuex/general";
+import { IGeneralState } from "@/interface/vuex/general";
 
 const general = namespace("general");
 
@@ -48,9 +48,6 @@ export default class App extends Vue {
 
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
-
-  // FEAT 设计浮动面板
-  panelStyle!: EPanelStyle;
 
   leftViewWidth = 200;
 
