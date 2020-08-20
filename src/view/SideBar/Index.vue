@@ -1,29 +1,18 @@
 <template>
   <aside>
-    <a-menu class="left-column" mode="vertical" :defaultSelectedKeys="['/files']">
-      <a-menu-item
-        v-for="menu in sideMenus"
-        :key="menu.item"
-        :title="menu.text"
-        @click="clickMenu($event)"
-      >
-        <div>
-          <i
-            class="ri-xl"
-            :class="menu.icon"
-            :style="{
-              color: activeItem === menu.item ? '#f9d757' : 'inherit',
-            }"
-          />
-        </div>
-      </a-menu-item>
-    </a-menu>
+    <check-list
+      class="left-column"
+      :listGroup="menuList"
+      :condition="activeItem"
+      :activeStyle="{ color: this.isShowSide ? '#f9d757' : '' }"
+      @click="handleClick($event)"
+    />
 
     <keep-alive>
       <component
         class="right-column"
         v-show="isShowSide"
-        :style="{ width: `${sideWidth - 1.3}px` }"
+        :style="{ width: `${sideWidth}px` }"
         :is="activeItem"
       />
     </keep-alive>
@@ -33,11 +22,13 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+
 import Tags from "@/view/SideBar/Tags/Index.vue";
 import Files from "@/view/SideBar/Files/Index.vue";
 import Marks from "@/view/SideBar/Marks/Index.vue";
 import Search from "@/view/SideBar/Search/Index.vue";
 import Setting from "@/view/SideBar/Setting/Index.vue";
+import CheckList from "@/component/widgets/CheckList/Index.vue";
 import { IGeneralState } from "@/interface/vuex/general";
 
 const general = namespace("general");
@@ -50,6 +41,7 @@ const general = namespace("general");
     Marks,
     Search,
     Setting,
+    CheckList,
   },
 })
 export default class SideBar extends Vue {
@@ -65,49 +57,44 @@ export default class SideBar extends Vue {
   @general.Mutation("TOGGLE_SIDE_BAR")
   TOGGLE_SIDE_BAR!: () => void;
 
-  get sideMenus() {
-    return [
-      {
-        icon: "ri-folders-line",
-        text: this.$t("files"),
-        item: "Files",
-      },
-      {
-        icon: "ri-search-line",
-        text: this.$t("search"),
-        item: "Search",
-      },
-      {
-        icon: "ri-bookmark-3-line",
-        text: this.$t("bookmarks"),
-        item: "Marks",
-      },
-      {
-        icon: "ri-price-tag-3-line",
-        text: this.$t("tags"),
-        item: "Tags",
-      },
-      {
-        icon: "ri-settings-line",
-        text: this.$t("setting"),
-        item: "Setting",
-      },
-    ];
-  }
-
   activeItem = "Files";
 
-  clickMenu(e: { key: string }) {
+  get menuList() {
+    return {
+      Files: {
+        icon: "ri-xl ri-folders-line",
+        text: this.$t("files"),
+      },
+      Search: {
+        icon: "ri-xl ri-search-line",
+        text: this.$t("search"),
+      },
+      Marks: {
+        icon: "ri-xl ri-bookmark-3-line",
+        text: this.$t("bookmarks"),
+      },
+      Tags: {
+        icon: "ri-xl ri-price-tag-3-line",
+        text: this.$t("tags"),
+      },
+      Setting: {
+        icon: "ri-xl ri-settings-line",
+        text: this.$t("setting"),
+      },
+    };
+  }
+
+  handleClick(e: string) {
     if (!this.isShowSide) {
       this.TOGGLE_SIDE_BAR();
-      this.activeItem = e.key;
+      this.activeItem = e;
       return;
     }
 
-    if (this.activeItem === e.key) {
+    if (this.activeItem === e) {
       this.TOGGLE_SIDE_BAR();
     } else {
-      this.activeItem = e.key;
+      this.activeItem = e;
     }
   }
 }
@@ -124,14 +111,10 @@ aside {
     width: @layout-leftSide-left-column;
     height: 100%;
 
-    /deep/ .ant-menu:not(.ant-menu-horizontal),
-    /deep/ .ant-menu-item-selected {
-      background-color: unset;
-    }
-
-    /deep/ .ant-menu-item {
+    /deep/ li {
       padding: 11.5px;
       margin: 8px 0;
+      cursor: pointer;
 
       &:last-child {
         position: absolute;

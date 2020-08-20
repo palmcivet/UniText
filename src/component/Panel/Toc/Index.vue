@@ -1,6 +1,8 @@
 <template>
   <section>
+    <div v-show="tocTree.length === 0">目录为空</div>
     <vue-custom-scrollbar
+      v-show="tocTree.length !== 0"
       tagname="ul"
       :settings="{
         swipeEasing: 'true',
@@ -79,7 +81,15 @@ export default class Toc extends Vue {
 section {
   height: 100%;
   width: 100%;
+  position: relative;
   background-color: #f7f7f7; // DEV
+
+  > div {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, 50%);
+  }
 
   li {
     cursor: pointer;
@@ -93,7 +103,7 @@ section {
 
     div {
       width: 0.6em;
-      border-right: 0.3px solid rgba(126, 126, 126, 0.9);
+      border-right: 0.3px none;
     }
 
     pre {

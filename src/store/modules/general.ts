@@ -60,14 +60,14 @@ const mutations = {
   TOGGLE_STATUS_BAR: (moduleState: IGeneralState) => {
     moduleState.appearance.showStatusBar = !moduleState.appearance.showStatusBar;
   },
-  TOGGLE_PANEL: (moduleState: IGeneralState) => {
-    moduleState.appearance.showPanel = !moduleState.appearance.showPanel;
-  },
   TOGGLE_CHECK: (moduleState: IGeneralState) => {
     moduleState.appearance.checkEdit = !moduleState.appearance.checkEdit;
   },
   TOGGLE_PRESENT: (moduleState: IGeneralState) => {
     moduleState.appearance.checkPresent = !moduleState.appearance.checkPresent;
+  },
+  TOGGLE_PANEL: (moduleState: IGeneralState) => {
+    moduleState.appearance.showPanel = !moduleState.appearance.showPanel;
   },
   TOGGLE_PANEL_STYLE: (moduleState: IGeneralState) => {
     moduleState.appearance.panelFloat = !moduleState.appearance.panelFloat;

@@ -10,8 +10,7 @@ export const hashCode = (plain: string) => {
   return hash.toString();
 };
 
-export const updateStyle = (selector: string) =>
-  (document.querySelector(selector) as HTMLElement).style;
+export const $ = (q: string) => document.querySelector(q) as HTMLElement;
 
 export function debounce(fn: Function, delay: number = 1000): Function {
   let timeout: any;

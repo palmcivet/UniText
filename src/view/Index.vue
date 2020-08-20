@@ -4,7 +4,7 @@
 
     <main class="layout-main">
       <aside class="left-side-bar">
-        <side-bar :sideWidth="finalLeftWidth" />
+        <side-bar :sideWidth="finalLeftWidth - 1.5" />
         <span v-show="isShowSide" ref="leftResize" />
       </aside>
 
@@ -12,6 +12,7 @@
     </main>
 
     <status-bar class="layout-footer" />
+    <panel :fixed="false" />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import { ipcRenderer, IpcRendererEvent, shell } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action, Mutation, namespace } from "vuex-class";
 
+import Panel from "@/component/Panel/Index.vue";
 import TopBar from "@/view/TopBar/Index.vue";
 import SideBar from "@/view/SideBar/Index.vue";
 import StatusBar from "@/view/StatusBar/Index.vue";
@@ -33,6 +35,7 @@ const general = namespace("general");
 @Component({
   name: "App",
   components: {
+    Panel,
     TopBar,
     SideBar,
     StatusBar,
@@ -157,7 +160,7 @@ export default class App extends Vue {
 
 .layout-main {
   span {
-    width: 1.3px;
+    width: 1.5px;
     height: 100%;
     cursor: col-resize;
   }

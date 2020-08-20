@@ -13,11 +13,11 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
 
 import LayoutBox from "@/component/widgets/LayoutBox/Index.vue";
-import { debounce } from "@/common/editor/utils";
+import { debounce, $ } from "@/common/editor/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
 import { BUS_TOC, BUS_FILE } from "@/common/bus-channel";
-import { IGeneralState, EEditMode } from "@/interface/vuex/general";
+import { IGeneralState, EEditMode, EPanelType } from "@/interface/vuex/general";
 import { IFile, TTab } from "@/interface/vuex/workBench";
 import { theme } from "./theme";
 import { init } from "./option";
@@ -57,6 +57,13 @@ export default class MarkdownSource extends Vue {
 
   containerWidth = 0;
 
+  @general.State((state: IGeneralState) => state.appearance.panelType)
+  panelType!: EPanelType;
+
+  get isToc() {
+    return this.panelType === EPanelType.TOC;
+  }
+
   @Watch("currentFile", { deep: true })
   syncModel(newValue: { order: string; value: IFile }) {
     let mod = this.modelStack[newValue.order];
@@ -67,10 +74,8 @@ export default class MarkdownSource extends Vue {
     }
 
     this.editor.setModel(mod);
-
-    this.isPreview &&
-      (this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue())) &&
-      Prism.highlightAll();
+    this.syncPreOrToc(this);
+    Prism.highlightAll();
   }
 
   syncPreOrToc: Function = debounce((that: any) => {
@@ -87,8 +92,8 @@ export default class MarkdownSource extends Vue {
       this.containerWidth = (this.$el as HTMLElement).offsetWidth;
     });
 
-    this.refPreview = document.querySelector("#markdown-preview") as HTMLElement;
-    this.refEditor = document.querySelector("#markdown-editor") as HTMLElement;
+    this.refPreview = $("#markdown-preview");
+    this.refEditor = $("#markdown-editor");
 
     monaco.editor.defineTheme("GrideaLight", theme);
 

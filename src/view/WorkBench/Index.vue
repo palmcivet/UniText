@@ -1,7 +1,7 @@
 <template>
   <layout-box
     :totalWidth="containerWidth"
-    :showMinor="isShowPanel"
+    :showMinor="isShowPanel && !isPanelFloat"
     :threWidth="[150, 250]"
   >
     <section slot="left">
@@ -17,7 +17,7 @@
       <blank v-show="isBlank" @newFile="NEW_FILE()" />
       <markdown-source v-show="!isBlank" class="workbench" />
     </section>
-    <panel slot="right" />
+    <panel slot="right" :fixed="true" />
   </layout-box>
 </template>
 
@@ -77,12 +77,8 @@ export default class WorkBench extends Vue {
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.panelType)
-  panelType!: EPanelType;
-
-  get isToc() {
-    return this.panelType === EPanelType.TOC;
-  }
+  @general.State((state: IGeneralState) => state.appearance.panelFloat)
+  isPanelFloat!: boolean;
 
   containerWidth = 0;
 
