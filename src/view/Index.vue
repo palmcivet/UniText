@@ -79,7 +79,7 @@ export default class App extends Vue {
       let startX = 0;
       let startWidth = leftSideBarWidth;
 
-      const mouseMoveHandlerL = (e: MouseEvent) => {
+      const mouseMoveHandler = (e: MouseEvent) => {
         const offset = e.clientX - startX;
         leftSideBarWidth = startWidth + offset;
         if (leftSideBarWidth < 150) {
@@ -91,23 +91,23 @@ export default class App extends Vue {
         }
       };
 
-      const mouseUpHandlerL = (e: MouseEvent) => {
-        document.removeEventListener("mousemove", mouseMoveHandlerL, false);
-        document.removeEventListener("mouseup", mouseUpHandlerL, false);
+      const mouseUpHandler = (e: MouseEvent) => {
+        document.removeEventListener("mousemove", mouseMoveHandler, false);
+        document.removeEventListener("mouseup", mouseUpHandler, false);
         // DEV @layout-leftSide-right-column;
         if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
           this.leftViewWidth = leftSideBarWidth;
         }
       };
 
-      const mouseDownHandlerL = (e: MouseEvent) => {
+      const mouseDownHandler = (e: MouseEvent) => {
         startX = e.clientX;
         startWidth = +this.leftViewWidth;
-        document.addEventListener("mousemove", mouseMoveHandlerL, false);
-        document.addEventListener("mouseup", mouseUpHandlerL, false);
+        document.addEventListener("mousemove", mouseMoveHandler, false);
+        document.addEventListener("mouseup", mouseUpHandler, false);
       };
 
-      (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandlerL, false);
+      (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandler, false);
     });
   }
 

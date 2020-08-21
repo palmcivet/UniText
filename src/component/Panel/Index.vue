@@ -3,10 +3,14 @@
     <component v-show="!panelFloat && showPanel" :is="panelType" />
   </keep-alive>
   <section v-else v-show="panelFloat && showPanel">
-    <div v-if="panelType === 'TOC'" class="float">
-      <span ref="drag" title="拖拽" @click="handleClick($event)"></span>
-      <TOC />
-      <span ref="resize"></span>
+    <div
+      v-if="panelType === 'TOC'"
+      class="float"
+      :style="{ top: `${panelAxis.y}px`, left: `${panelAxis.x}px` }"
+    >
+      <span id="drag" title="拖拽"></span>
+      <TOC :style="{ height: `${panelHeight}px` }" />
+      <span id="resize" title="缩放"></span>
     </div>
     <div v-else class="panel">
       <keep-alive>
@@ -69,18 +73,74 @@ export default class Panel extends Vue {
     return $("body").offsetWidth - o.offsetLeft - o.offsetWidth + 8 / 2 - 10; // @dialog-gap/2 - @right-gap
   }
 
-  panelHeight = 150;
+  minHeight = 100;
 
-  get finalHeight() {
-    return this.panelHeight;
-  }
+  maxHeight = 900;
 
-  set finalHeight(value: number) {
-    this.panelHeight = value;
-  }
+  panelHeight = 60;
 
-  handleClick(val: number) {
-    console.log(val);
+  panelAxis = {
+    x: 1120,
+    y: 100,
+  };
+
+  mounted() {
+    this.$nextTick(() => {
+      let drag = false;
+      let revision = 0;
+      let startY = 0;
+      let leftSide = this.panelHeight;
+      let startHeight = leftSide;
+
+      const mouseMoveHandler = (e: MouseEvent) => {
+        const offset = e.clientY - startY;
+        leftSide = startHeight + offset;
+        if (leftSide < this.minHeight) {
+          this.panelHeight = this.minHeight;
+        } else if (leftSide > this.maxHeight) {
+          this.panelHeight = this.maxHeight;
+        } else {
+          this.panelHeight = leftSide;
+        }
+      };
+
+      const mouseUpHandler = (e: MouseEvent) => {
+        document.removeEventListener("mousemove", mouseMoveHandler, false);
+        if (
+          this.panelHeight - leftSide >= this.panelHeight &&
+          this.panelHeight - leftSide <= this.panelHeight
+        ) {
+          this.panelHeight = leftSide;
+        }
+      };
+
+      const mouseDownHandler = (e: MouseEvent) => {
+        startY = e.clientY;
+        startHeight = this.panelHeight;
+        document.addEventListener("mousemove", mouseMoveHandler, false);
+        document.addEventListener("mouseup", mouseUpHandler, false);
+      };
+
+      const dragDownHandler = (e: MouseEvent) => {
+        drag = true;
+        revision = e.clientX - this.panelAxis.x;
+        document.addEventListener("mousemove", dragMoveHandler, false);
+        document.addEventListener("mouseup", dragUpHandler, false);
+      };
+
+      const dragMoveHandler = (e: MouseEvent) => {
+        this.panelAxis.y = e.clientY;
+        this.panelAxis.x = e.clientX - revision;
+      };
+
+      const dragUpHandler = (e: MouseEvent) => {
+        document.removeEventListener("mousemove", dragMoveHandler, false);
+        drag = false;
+      };
+
+      $("#drag").addEventListener("mousedown", dragDownHandler, false);
+      $("#resize").addEventListener("mousedown", mouseDownHandler, false);
+    });
   }
 }
 </script>
@@ -100,11 +160,7 @@ section {
   }
 
   > div.float {
-    top: 100px;
-    right: 20px; // DEV
     width: 150px;
-    min-height: 100px;
-    max-height: 700px;
     display: flex;
     flex-direction: column;
 
@@ -113,12 +169,12 @@ section {
       clear: both;
 
       &:first-child {
-        height: 6px;
+        height: 8px;
         cursor: grab;
       }
 
       &:last-child {
-        height: 1px;
+        height: 2px;
         cursor: row-resize;
       }
     }

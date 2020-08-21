@@ -6,7 +6,11 @@ const state: IPanelState = {
   export: {},
 };
 
-const getters = {};
+const getters = {
+  isEmptyToc: (moduleState: IPanelState) => {
+    return !!moduleState.toc.length;
+  },
+};
 
 const mutations = {
   SYNC_TOC: (moduleState: IPanelState, value: Array<ITocList>) => {

@@ -88,7 +88,7 @@ section {
     top: 50%;
     left: 50%;
     position: absolute;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, calc(50% - 1em));
   }
 
   li {
