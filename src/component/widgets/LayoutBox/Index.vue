@@ -2,17 +2,19 @@
   <article>
     <div
       :style="{
-        width: !showMinor ? '100%' : finalWidth ? `calc(100% - ${finalWidth}px` : '50%',
+        width: !showMain ? '0%' : !showMinor ? '100%' : `calc(100% - ${minorWidth}px`,
       }"
     >
       <slot name="left" />
     </div>
-    <span v-show="showMinor" ref="resize"></span>
+    <span v-show="showMinor && showMain" ref="resize"></span>
     <div
       v-show="showMinor"
       :style="{
-        width: finalWidth
-          ? `${finalWidth - resizeWidth}px`
+        width: !showMain
+          ? '100%'
+          : minorWidth
+          ? `${minorWidth - resizeWidth}px`
           : `calc(50% - ${resizeWidth} px`,
       }"
     >
@@ -35,9 +37,15 @@ export default class LayoutBox extends Vue {
   totalWidth!: number;
 
   /**
-   * @member 是否隐藏副区域
+   * @member 是否显示主区域
    */
   @Prop({ type: Boolean, default: true })
+  showMain!: boolean;
+
+  /**
+   * @member 是否显示副区域
+   */
+  @Prop({ type: Boolean, default: false })
   showMinor!: boolean;
 
   /**
@@ -62,19 +70,11 @@ export default class LayoutBox extends Vue {
   syncWidth() {
     this.minorWidth =
       typeof this.threWidth === "number"
-        ? Math.ceil(this.totalWidth / 2)
-        : this.threWidth[0];
+        ? this.totalWidth * this.threWidth
+        : Math.ceil((this.threWidth[0] + this.threWidth[1]) / 2);
   }
 
   resizeWidth = 1.7;
-
-  get finalWidth() {
-    return this.showMinor ? this.minorWidth : 0;
-  }
-
-  set finalWidth(value: number) {
-    this.minorWidth = value;
-  }
 
   get minWidth() {
     return typeof this.threWidth === "number"

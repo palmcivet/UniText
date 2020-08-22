@@ -1,7 +1,16 @@
 <template>
-  <layout-box :totalWidth="containerWidth" :showMinor="isPreview" :threWidth="1 / 4">
-    <section id="markdown-editor" slot="left" />
-    <section id="markdown-preview" slot="right" />
+  <layout-box
+    :totalWidth="containerWidth"
+    :showMain="!isPresent"
+    :showMinor="isPreview"
+    :threWidth="1 / 2"
+  >
+    <template v-slot:left>
+      <section id="markdown-editor" v-show="!isPresent" />
+    </template>
+    <template v-slot:right>
+      <section id="markdown-preview" />
+    </template>
   </layout-box>
 </template>
 
@@ -16,7 +25,7 @@ import LayoutBox from "@/component/widgets/LayoutBox/Index.vue";
 import { debounce, $ } from "@/common/editor/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
-import { BUS_TOC, BUS_FILE } from "@/common/bus-channel";
+import { BUS_TOC, BUS_FILE, BUS_UI } from "@/common/bus-channel";
 import { IGeneralState, EEditMode, EPanelType } from "@/interface/vuex/general";
 import { IFile, TTab } from "@/interface/vuex/workBench";
 import { theme } from "./theme";
@@ -38,6 +47,9 @@ export default class MarkdownSource extends Vue {
 
   @general.State((state: IGeneralState) => state.appearance.checkEdit)
   isPreview!: boolean;
+
+  @general.State((state: IGeneralState) => state.appearance.checkPresent)
+  isPresent!: boolean;
 
   @workBench.State("currentFileIndex")
   currentFileIndex!: string;
@@ -64,6 +76,12 @@ export default class MarkdownSource extends Vue {
     return this.panelType === EPanelType.TOC;
   }
 
+  @Watch("isPresent")
+  syncPesent() {
+    if (!this.isPreview)
+      this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue());
+  }
+
   @Watch("currentFile", { deep: true })
   syncModel(newValue: { order: string; value: IFile }) {
     let mod = this.modelStack[newValue.order];
@@ -78,7 +96,7 @@ export default class MarkdownSource extends Vue {
     Prism.highlightAll();
   }
 
-  syncPreOrToc: Function = debounce((that: any) => {
+  syncPreOrToc = debounce((that: any) => {
     /* 二选一即可，后者只更新 TOC */
     if (that.isPreview) {
       that.refPreview.innerHTML = markdownEngine.render(that.editor.getValue());
@@ -88,10 +106,6 @@ export default class MarkdownSource extends Vue {
   }, this.syncDelay);
 
   mounted() {
-    setTimeout(() => {
-      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-    });
-
     this.refPreview = $("#markdown-preview");
     this.refEditor = $("#markdown-editor");
 
@@ -122,6 +136,12 @@ export default class MarkdownSource extends Vue {
 
       this.editor.onDidScrollChange((e: monaco.IScrollEvent) => {
         // 取 `scrollLeft` 和 `scrollTop` 为最左和最顶的高度
+      });
+
+      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+
+      this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
+        this.containerWidth = (this.$el as HTMLElement).offsetWidth;
       });
 
       this.$bus.$on(BUS_TOC.REVEAL_SECTION, (value: Array<number>) => {

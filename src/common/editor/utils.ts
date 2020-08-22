@@ -12,7 +12,7 @@ export const hashCode = (plain: string) => {
 
 export const $ = (q: string) => document.querySelector(q) as HTMLElement;
 
-export function debounce(fn: Function, delay: number = 1000): Function {
+export function debounce(fn: Function, delay: number = 1000) {
   let timeout: any;
   return function(this: any, ...args: any[]) {
     if (timeout) clearTimeout(timeout);

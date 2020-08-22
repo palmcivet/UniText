@@ -29,6 +29,8 @@ import WorkBench from "@/view/WorkBench/Index.vue";
 import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { IBootCache } from "@/interface/boot";
 import { IGeneralState } from "@/interface/vuex/general";
+import { debounce } from "@/common/editor/utils";
+import { BUS_UI } from "@/common/bus-channel";
 
 const general = namespace("general");
 
@@ -68,7 +70,9 @@ export default class App extends Vue {
       : "calc(100vw - 45px)";
   }
 
-  created() {
+  handleResize = () => this.$bus.$emit(BUS_UI.SYNC_RESIZE);
+
+  mounted() {
     this.$nextTick(() => {
       const { leftResize, rightResize } = this.$refs;
 
@@ -108,14 +112,17 @@ export default class App extends Vue {
       };
 
       (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandler, false);
+
+      /* 检查更新 */
+      // this.CHECK_UPDATE();
+
+      /* 调整大小 */
+      window.addEventListener("resize", this.handleResize);
     });
   }
 
-  mounted() {
-    this.$nextTick(() => {
-      /* 检查更新 */
-      // this.CHECK_UPDATE();
-    });
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   }
 }
 </script>

@@ -3,11 +3,7 @@
     <component v-show="!panelFloat && showPanel" :is="panelType" />
   </keep-alive>
   <section v-else v-show="panelFloat && showPanel">
-    <div
-      v-if="panelType === 'TOC'"
-      class="float"
-      :style="{ top: `${panelAxis.y}px`, left: `${panelAxis.x}px` }"
-    >
+    <div v-if="panelType === 'TOC'" class="float" :style="panelPos">
       <span id="drag" title="拖拽"></span>
       <TOC :style="{ height: `${panelHeight}px` }" />
       <span id="resize" title="缩放"></span>
@@ -80,9 +76,16 @@ export default class Panel extends Vue {
   panelHeight = 60;
 
   panelAxis = {
-    x: 1120,
+    x: 1080,
     y: 100,
   };
+
+  get panelPos() {
+    return {
+      right: `${Math.abs($("body").offsetWidth - 150 - this.panelAxis.x)}px`,
+      top: `${this.panelAxis.y}px`,
+    };
+  }
 
   mounted() {
     this.$nextTick(() => {
@@ -169,7 +172,7 @@ section {
       clear: both;
 
       &:first-child {
-        height: 8px;
+        height: 7px;
         cursor: grab;
       }
 

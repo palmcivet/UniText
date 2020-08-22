@@ -4,20 +4,24 @@
     :showMinor="isShowPanel && !isPanelFloat"
     :threWidth="[150, 250]"
   >
-    <section slot="left">
-      <tabs
-        v-show="!isBlank"
-        :openedFile="currentFileIndex"
-        :tabGroup="currentTabs"
-        @newFile="NEW_FILE()"
-        @switchTabs="SWITCH_TABS($event)"
-        @selectTab="SELECT_TAB({ cur: $event })"
-        @closeTab="handleClose($event)"
-      />
-      <blank v-show="isBlank" @newFile="NEW_FILE()" />
-      <markdown-source v-show="!isBlank" class="workbench" />
-    </section>
-    <panel slot="right" :fixed="true" />
+    <template v-slot:left>
+      <section>
+        <tabs
+          v-show="!isBlank"
+          :openedFile="currentFileIndex"
+          :tabGroup="currentTabs"
+          @newFile="NEW_FILE()"
+          @switchTabs="SWITCH_TABS($event)"
+          @selectTab="SELECT_TAB({ cur: $event })"
+          @closeTab="handleClose($event)"
+        />
+        <blank v-show="isBlank" @newFile="NEW_FILE()" />
+        <markdown-source v-show="!isBlank" class="workbench" />
+      </section>
+    </template>
+    <template v-slot:right>
+      <panel :fixed="true" />
+    </template>
   </layout-box>
 </template>
 
@@ -34,7 +38,7 @@ import { TTab } from "@/interface/vuex/workBench";
 import { IDocument } from "@/interface/document";
 import { IGeneralState, EPanelType } from "@/interface/vuex/general";
 import { wordCount, timeCalc } from "@/common/editor/words-count";
-import { BUS_FILE } from "@/common/bus-channel";
+import { BUS_FILE, BUS_UI } from "@/common/bus-channel";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -111,7 +115,16 @@ export default class WorkBench extends Vue {
   }
 
   mounted() {
-    this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+    this.$nextTick(() => {
+      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+      this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
+        this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+      });
+    });
+  }
+
+  beforeDestroy() {
+    this.$bus.$off(BUS_UI.SYNC_RESIZE);
   }
 }
 </script>

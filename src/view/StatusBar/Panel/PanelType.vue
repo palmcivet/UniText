@@ -13,6 +13,7 @@ import { Mutation, namespace } from "vuex-class";
 
 import { IGeneralState, EPanelType } from "@/interface/vuex/general";
 import CheckList from "@/component/widgets/CheckList/Index.vue";
+import { BUS_UI } from "@/common/bus-channel";
 
 const general = namespace("general");
 
