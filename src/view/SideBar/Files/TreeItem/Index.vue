@@ -4,43 +4,42 @@
       <div
         v-for="i in treeDeepth - 1"
         class="indent"
-        :class="showIndent ? 'indent-show' : ''"
+        :class="isIndent ? 'indent-show' : ''"
         :key="i"
       />
       <pre class="icon" />
       <pre class="space" />
+      <!-- TODO -->
       <a-icon type="file" />
       <pre class="space" />
-      {{ itemData.name | trimSuffix }}
+      {{ `${suffix ? trimSuffix(itemName) : itemName}` }}
     </div>
 
     <div v-else class="directory">
-      <div class="folder" @click.stop="toggleFolder()">
+      <div class="folder" @click="$emit('toggle', itemData.path)">
         <div
           class="indent"
           v-for="i in treeDeepth - 1"
-          :class="showIndent ? 'indent-show' : ''"
+          :class="isIndent ? 'indent-show' : ''"
           :key="i"
         />
-        <i
-          :class="
-            notCollapse && isOpen ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'
-          "
-        />
+        <i :class="itemData.fold ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
         <pre class="space" />
-        <a-icon v-if="notCollapse && isOpen" type="folder-open" />
+        <a-icon v-if="!itemData.fold" type="folder-open" />
         <a-icon v-else type="folder" />
         <pre class="space" />
-        {{ itemData.name }}
+        {{ itemName }}
       </div>
 
-      <ul v-show="notCollapse && isOpen">
+      <ul v-show="!itemData.fold">
         <tree-item
-          v-for="(subChild, subIndex) in itemData.file"
-          :key="subIndex"
-          :itemData="subChild"
+          v-for="(subData, subName) in itemData.file"
+          :key="subData.order"
+          :itemName="subName"
+          :itemData="subData"
+          :isIndent="isIndent"
           :treeDeepth="treeDeepth + 1"
-          :showIndent="showIndent"
+          @toggle="$emit('toggle', $event)"
         />
       </ul>
     </div>
@@ -54,18 +53,14 @@ import { BUS_FILE } from "@/common/bus-channel";
 
 @Component({
   name: "TreeItem",
-  filters: {
-    trimSuffix: (value: string) => {
-      const index = value.indexOf(".md");
-      if (index !== -1) {
-        return value.substring(0, index);
-      } else {
-        return value;
-      }
-    },
-  },
 })
 export default class TreeItem extends Vue {
+  @Prop({
+    type: String,
+    required: true,
+  })
+  itemName!: string;
+
   @Prop({
     type: Object,
     required: true,
@@ -76,7 +71,7 @@ export default class TreeItem extends Vue {
     type: Boolean,
     default: true,
   })
-  notCollapse!: boolean;
+  isIndent!: boolean;
 
   @Prop({
     type: Number,
@@ -88,23 +83,19 @@ export default class TreeItem extends Vue {
     type: Boolean,
     default: true,
   })
-  showIndent!: boolean;
-
-  @Watch("notCollapse")
-  collapse(value: boolean) {
-    if (!value) this.isOpen = false;
-  }
-
-  isOpen = false;
-
-  isHover = false;
+  suffix!: boolean;
 
   get isFile() {
-    return this.itemData.file === undefined;
+    return Object.keys(this.itemData.file).length === 0;
   }
 
-  toggleFolder() {
-    this.isOpen = !this.isOpen;
+  trimSuffix(value: string) {
+    const index = value.indexOf(".md");
+    if (index !== -1) {
+      return value.substring(0, index);
+    } else {
+      return value;
+    }
   }
 
   openFile(value: string) {

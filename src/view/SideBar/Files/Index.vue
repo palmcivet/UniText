@@ -10,27 +10,26 @@
     </header>
 
     <div v-if="folderDir === ''">
-      <button @click="openDialog()">打开文件夹</button>
+      <button @click="OPEN_FOLDER()">打开文件夹</button>
     </div>
-    <div v-else>
-      <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
-        <vue-custom-scrollbar
-          tagname="ul"
-          :settings="{
-            swipeEasing: 'true',
-            scrollingThreshold: '300',
-          }"
-        >
-          <tree-item
-            v-for="(child, index) in fileData"
-            :key="index"
-            :itemData="child"
-            :treeDeepth="1"
-            :showIndent="showIndent"
-            :notCollapse="notCollapse"
-          />
-        </vue-custom-scrollbar>
-      </ul>
+    <div v-else @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
+      <vue-custom-scrollbar
+        tagname="ul"
+        :settings="{
+          swipeEasing: 'true',
+          scrollingThreshold: '300',
+        }"
+      >
+        <tree-item
+          v-for="(data, name) in folderTree"
+          :key="data.order"
+          :itemName="name"
+          :itemData="data"
+          :isIndent="isIndent"
+          :treeDeepth="1"
+          @toggle="TOGGLE_FOLDER($event)"
+        />
+      </vue-custom-scrollbar>
     </div>
   </section>
 </template>
@@ -44,7 +43,7 @@ import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
 import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
-import { ITreeItem } from "@/interface/vuex/sideBar";
+import { ITreeItem, ISideBarState } from "@/interface/vuex/sideBar";
 import { BUS_FILE } from "@/common/bus-channel";
 
 const workBench = namespace("workBench");
@@ -60,94 +59,53 @@ const sideBar = namespace("sideBar");
   },
 })
 export default class Files extends Vue {
-  @general.State("notesPath")
-  defaultFolder!: string;
-
-  @sideBar.State("files")
-  stateFiles!: {
-    folderTree: Array<ITreeItem>;
-    ignoreFile: Array<string>;
-  };
-
   @workBench.Action("OPEN_FILE")
   OPEN_FILE!: (path: string) => void;
 
-  folderDir = "";
+  @sideBar.State((state: ISideBarState) => state.files.folderDir)
+  folderDir!: string;
 
-  @Watch("folderDir")
-  handleFolder() {
-    this.fileData = this.buildTree("");
-  }
+  @sideBar.State((state: ISideBarState) => state.files.showIndent)
+  showIndent!: boolean;
 
-  showIndent = true;
+  @sideBar.State((state: ISideBarState) => state.files.defaultFold)
+  defaultFold!: boolean;
 
-  notCollapse = true;
+  @sideBar.State((state: ISideBarState) => state.folderTree)
+  folderTree!: ITreeItem;
 
-  fileData: Array<ITreeItem> = [];
+  @sideBar.Mutation("TOGGLE_FOLDER")
+  TOGGLE_FOLDER!: (path: string) => void;
+
+  @sideBar.Mutation("TOGGLE_ALL")
+  TOGGLE_ALL!: (isOnce: boolean) => void;
+
+  @sideBar.Action("OPEN_FOLDER")
+  OPEN_FOLDER!: () => void;
+
+  @sideBar.Action("BUILD_TREE")
+  BUILD_TREE!: () => void;
+
+  isIndent = false;
+
+  isOnce = true;
 
   toggleAll() {
-    this.notCollapse = false;
-    setTimeout(() => {
-      this.notCollapse = true;
-    }, 100);
-  }
-
-  openDialog() {
-    remote.dialog
-      .showOpenDialog({
-        properties: ["openFile", "openDirectory", "createDirectory"],
-      })
-      .then((res) => {
-        this.folderDir = res.filePaths[0] || "";
-      });
+    this.TOGGLE_ALL(this.isOnce);
+    this.isOnce = !this.isOnce;
   }
 
   handleMouseEnter() {
-    this.showIndent = true;
+    this.showIndent && (this.isIndent = true);
   }
 
   handleMouseLeave() {
-    this.showIndent = false;
-  }
-
-  buildTree(path: string) {
-    const fileTree: Array<ITreeItem> = [];
-    fse
-      .readdir(`${this.folderDir}/${path}`)
-      .then((res) => {
-        return res;
-      })
-      .then((res) => {
-        res.forEach((item) => {
-          if (this.stateFiles.ignoreFile.indexOf(item) !== -1) {
-            return;
-          }
-
-          const subTree: ITreeItem = {
-            name: item,
-            path: `${path}/${item}`,
-          };
-
-          if (fse.lstatSync(`${this.folderDir}/${subTree.path}`).isDirectory()) {
-            fileTree.push({
-              file: this.buildTree(subTree.path),
-              ...subTree,
-            });
-          } else {
-            fileTree.push(subTree);
-          }
-        });
-      });
-    return fileTree;
+    this.showIndent && (this.isIndent = false);
   }
 
   mounted() {
-    if (this.folderDir !== "") {
-      this.handleFolder();
-    }
-
     this.$bus.$on(BUS_FILE.OPEN_FILE, (value: string) => {
-      this.OPEN_FILE(`${this.folderDir}${value}`);
+      this.OPEN_FILE(`${this.folderDir}/${value}`);
     });
   }
 

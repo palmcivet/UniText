@@ -1,19 +1,32 @@
 /**
- * @interface 文件树的其中一项，其中 `file` 不存在则表明是文件，否则为目录
+ * @interface 文件树的一项
  */
 export interface ITreeItem {
-  name: string;
+  order: number;
+  icon: string;
+  fold: boolean;
   path: string;
-  file?: Array<ITreeItem>;
+  file: ITree;
+}
+
+/**
+ * @interface 文件树
+ */
+export interface ITree {
+  [index: string]: ITreeItem;
 }
 
 /**
  * @interface 侧边栏的 state
  */
 export interface ISideBarState {
+  folderTree: ITree;
   files: {
-    folderTree: Array<ITreeItem>;
+    folderDir: string;
     ignoreFile: Array<string>;
+    hideIgnore: boolean;
+    showIndent: boolean;
+    defaultFold: boolean;
   };
   marks: {};
   search: {};
