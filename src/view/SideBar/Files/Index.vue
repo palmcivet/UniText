@@ -5,7 +5,7 @@
       <div v-if="folderDir === ''">无打开的文件/文件夹</div>
       <div v-else>
         <span>文件管理</span>
-        <button @click="toggleAll()">收</button>
+        <i class="ri-checkbox-indeterminate-line" @click="toggleAll()" title="收起" />
       </div>
     </header>
 
@@ -126,11 +126,16 @@ section {
   > header {
     color: #252525;
     background-color: rgb(251, 255, 227);
-    box-shadow: 0px 0px 5px rgba(210, 238, 153, 0.6);
+    box-shadow: 0px 1px 5px rgba(222, 241, 185, 0.6);
 
     > div {
-      height: 25px;
-      line-height: 25px;
+      display: flex;
+
+      > span,
+      > i {
+        line-height: 24px;
+        margin-left: 3px;
+      }
     }
 
     * {

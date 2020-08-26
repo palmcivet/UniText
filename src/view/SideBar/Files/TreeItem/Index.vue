@@ -9,8 +9,8 @@
       />
       <pre class="icon" />
       <pre class="space" />
-      <!-- TODO -->
-      <a-icon type="file" />
+      <!-- FEAT -->
+      <i class="ri-markdown-line"></i>
       <pre class="space" />
       {{ `${suffix ? trimSuffix(itemName) : itemName}` }}
     </div>
@@ -25,8 +25,7 @@
         />
         <i :class="itemData.fold ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
         <pre class="space" />
-        <a-icon v-if="!itemData.fold" type="folder-open" />
-        <a-icon v-else type="folder" />
+        <i :class="!itemData.fold ? 'ri-folder-open-line' : 'ri-folder-2-line'" />
         <pre class="space" />
         {{ itemName }}
       </div>

@@ -17,7 +17,7 @@
         @contextmenu.prevent=""
       >
         <span>{{ v.value }}</span>
-        <a-icon type="close" size="small" @click.stop="closeTab(v.order)" />
+        <i class="ri-close-line" @click.stop="closeTab(v.order)"></i>
       </li>
     </transition-group>
   </draggable>
@@ -123,7 +123,7 @@ ul {
     & > li {
       background-color: rgba(227, 233, 209, 0.5); // DEV
       border-left: 0.5px solid rgba(180, 180, 180, 0.5); // DEV
-      padding: 0 1.5em 0 0.9em;
+      padding: 0 1.5em 0 0.8em;
       position: relative;
 
       & > span {
@@ -136,12 +136,11 @@ ul {
       }
 
       /deep/ i {
-        font-size: 10px;
-        vertical-align: middle;
+        line-height: 12px;
+        font-size: 12px;
         border-radius: 50%;
-
         position: absolute;
-        right: 0.7em;
+        right: 0.5em;
         top: 50%;
         transform: translateY(-50%);
 

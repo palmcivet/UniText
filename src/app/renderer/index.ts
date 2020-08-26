@@ -1,5 +1,4 @@
 import Vue from "vue";
-import Antd from "ant-design-vue";
 import VueI18n from "vue-i18n";
 import VueShortkey from "vue-shortkey";
 import { ipcRenderer } from "electron";
@@ -16,7 +15,6 @@ import "@/asset/styles/main.less";
 
 let defaultLocale = "";
 
-// 与 main 进程通信获取数据
 ipcRenderer.on(
   IPC_PREFERENCE.SEND,
   (event, message: { locale: string; setting: any; cache: IBootCache; error: any[] }) => {
@@ -35,7 +33,6 @@ const i18n = new VueI18n({
   silentTranslationWarn: true,
 });
 
-Vue.use(Antd);
 Vue.use(VueShortkey);
 Vue.config.productionTip = false;
 Vue.prototype.$bus = VueBus;
