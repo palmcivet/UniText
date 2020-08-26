@@ -18,7 +18,7 @@ const state: IGeneralState = {
     autoOpen: true,
     autoUpdate: true,
     notesPath: "",
-    language: "zh-CN",
+    language: "en-US",
   },
   appearance: {
     showSideBar: true,

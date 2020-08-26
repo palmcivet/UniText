@@ -83,6 +83,9 @@ const mutations: MutationTree<ISideBarState> = {
 };
 
 const actions: ActionTree<ISideBarState, IRootState> = {
+  /**
+   * 选择笔记文件夹打开
+   */
   OPEN_FOLDER: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     remote.dialog
       .showOpenDialog({
@@ -102,6 +105,28 @@ const actions: ActionTree<ISideBarState, IRootState> = {
           }, 200);
         });
       });
+  },
+  /**
+   * 加载设置中 `folderDir` 保存的文件树
+   * - 不为空，则在初始化时加载
+   * - 若为空，则表名为新建窗口，需要手动指定文件夹，通过 `OPEN_FOLDER()` 加载
+   */
+  LOAD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
+    const dir = moduleState.state.files.folderDir;
+    if (dir !== "") {
+      fse.readJSON(dir).then((res) => {
+        moduleState.commit("SET_TREE", res);
+      });
+    }
+  },
+  /**
+   * 保存文件树
+   */
+  SAVE_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
+    fse.writeJSON(
+      `${moduleState.state.files.folderDir}/tree.json`,
+      moduleState.state.folderTree
+    );
   },
 };
 

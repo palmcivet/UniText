@@ -7,6 +7,7 @@ import workBench from "./modules/workBench";
 import notification from "./modules/notification";
 import { IRootState } from "@/interface/rootStore";
 import { loadSetting } from "@/common/main/utils";
+import { IGeneralState } from "@/interface/vuex/general";
 import * as pkg from "@/../package.json";
 
 Vue.use(Vuex);
@@ -22,17 +23,35 @@ export default new Vuex.Store({
   mutations: {
     /* 更新系统设置，初始化 state */
     SYNC_SETTING: (rootState: IRootState, payload: any) => {
-      console.log(payload);
+      const state = Object.keys(rootState.general);
+      state.forEach((group) => {
+        rootState.general[group as keyof IGeneralState] = payload[group];
+      });
+      // TODO 余下设置
     },
   },
   actions: {
-    /* 读取并加载默认或自定义文件夹的设置文件 */
-    LOAD_SETTING: (rootState: ActionContext<IRootState, IRootState>, payload: any) => {
-      loadSetting(payload.path).then((res) => {
-        console.log(res);
+    /**
+     * 加载、校验笔记文件夹的设置文件
+     * @param path 指定笔记文件夹路径
+     */
+    LOAD_SETTING: (rootState: ActionContext<IRootState, IRootState>, path: string) => {
+      loadSetting(path).then((res) => {
+        if (!res[1]) {
+          // TODO 报错
+          console.error(res);
+          return;
+        }
+        rootState.commit("SYNC_SETTING", res[0]);
       });
     },
-    /* 返回发行说明，为 `""` 则表明未更新 */
+    /**
+     * 保存笔记文件夹的设置
+     */
+    SAVE_SETTING: (rootState: ActionContext<IRootState, IRootState>) => {},
+    /**
+     * 获取发行说明，`""` 则表明未更新
+     */
     CHECK_UPDATE: (rootState: ActionContext<IRootState, IRootState>) => {
       const getVersion = (ver: string) =>
         ver
@@ -41,7 +60,7 @@ export default new Vuex.Store({
           .map((item: string) => parseInt(item, 10));
       const currentVersion = getVersion((pkg as any).version);
 
-      let notes = "";
+      let releaseNotes = "";
 
       fetch("")
         .then((res) => res.json())
@@ -49,13 +68,13 @@ export default new Vuex.Store({
           const latestVersion = getVersion(res.data.name);
           for (let i = 0; i < currentVersion.length; i += 1) {
             if (currentVersion[i] < latestVersion[i]) {
-              notes = res.data;
+              releaseNotes = res.data;
               break;
             }
           }
         });
 
-      if (notes !== "") {
+      if (releaseNotes !== "") {
         rootState.dispatch("");
       }
     },

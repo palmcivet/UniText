@@ -83,9 +83,6 @@ export default class Files extends Vue {
   @sideBar.Action("OPEN_FOLDER")
   OPEN_FOLDER!: () => void;
 
-  @sideBar.Action("BUILD_TREE")
-  BUILD_TREE!: () => void;
-
   isIndent = false;
 
   isOnce = true;

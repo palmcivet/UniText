@@ -12,22 +12,28 @@
         "saveRecent": { "type": "boolean", "default": true },
         "autoOpen": { "type": "boolean", "default": true },
         "autoUpdate": { "type": "boolean", "default": true },
-        "notesPath": { "type": "string", "default": "" }
+        "notesPath": { "type": "string", "default": "" },
+        "language": { "enum": ["zh-CN", "en-US"], "default": "en-US" }
       }
     },
     "appearance": {
       "type": "object",
       "properties": {
-        "language": { "enum": ["zh-CN", "en-US"], "default": "en-US" },
         "showSideBar": { "type": "boolean", "default": true },
-        "showPreview": { "type": "boolean", "default": false },
-        "showPanel": { "enum": ["side", "hide", "float"], "default": "side" },
-        "panelType": { "enum": ["toc", "export", "info"], "default": "toc" },
-        "typeingMode": {
-          "enum": ["source", "contrast", "richText", "typeWrite"],
-          "default": "source"
+        "showStatusBar": { "type": "boolean", "default": true },
+        "showPanel": { "type": "boolean", "default": true },
+        "checkEdit": { "type": "boolean", "default": false },
+        "checkPresent": { "type": "boolean", "default": false },
+        "panelFloat": { "type": "boolean", "default": true },
+        "panelType": { "enum": ["TOC", "EXPORT", "INFO"], "default": "TOC" },
+        "editMode": {
+          "enum": ["SOURCE", "WYSIWYG", "RICHTEXT"],
+          "default": "SOURCE"
         },
-        "zenMode": { "type": "boolean", "default": false }
+        "typeMode": {
+          "enum": ["ZEN", "FOCUS", "TYPER", "NORMAL"],
+          "default": "NORMAL"
+        }
       }
     },
     "editor": {

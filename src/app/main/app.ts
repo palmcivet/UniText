@@ -4,9 +4,10 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
 import { generateMenu } from "./menu";
-import { IBootArgs, IBootCache } from "@/interface/boot";
+import { IBootArgs, IBootCache } from "@/interface/bootstrap";
 import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { loadSetting } from "@/common/main/utils";
+import { isDev, isOsx, isWin } from "@/common/env";
 
 export class App {
   /**
@@ -24,12 +25,6 @@ export class App {
   private setting: any;
 
   private windowManager: Array<BrowserWindow | null>;
-
-  private isDev: boolean = process.env.NODE_ENV !== "production";
-
-  private isOsx: boolean = process.platform === "darwin";
-
-  private isWin: boolean = process.platform === "win32";
 
   constructor(bootData: { initArgs: IBootArgs; initCache: IBootCache }) {
     this.args = bootData.initArgs;
@@ -60,7 +55,7 @@ export class App {
     };
 
     /* 设置图标 */
-    if (this.isOsx) {
+    if (isOsx) {
       winOption.icon = `${__dirname}/app-icons/gridea.png`;
     }
 
@@ -128,7 +123,7 @@ export class App {
     ]);
 
     app.on("window-all-closed", () => {
-      if (this.isOsx) {
+      if (isOsx) {
         app.quit();
       }
     });
@@ -148,7 +143,7 @@ export class App {
        * support auto updating. Code Signing with a valid certificate is required.
        * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
        */
-      if (this.isDev && !process.env.IS_TEST) {
+      if (isDev && !process.env.IS_TEST) {
         await installExtension(VUEJS_DEVTOOLS);
       } else {
         autoUpdater.on("update-downloaded", () => {
@@ -160,8 +155,8 @@ export class App {
       this.createWindow();
     });
 
-    if (this.isDev) {
-      if (this.isWin) {
+    if (isDev) {
+      if (isWin) {
         process.on("message", (data) => {
           if (data === "graceful-exit") {
             app.quit();

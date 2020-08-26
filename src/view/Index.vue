@@ -1,16 +1,13 @@
 <template>
   <div>
     <top-bar class="layout-header" />
-
     <main class="layout-main">
       <aside class="left-side-bar">
         <side-bar :sideWidth="finalLeftWidth - 1.5" />
         <span v-show="isShowSide" ref="leftResize" />
       </aside>
-
       <work-bench class="center-container" :style="{ width: centerWidth }" />
     </main>
-
     <status-bar class="layout-footer" />
     <panel :fixed="false" />
   </div>
@@ -26,13 +23,14 @@ import TopBar from "@/view/TopBar/Index.vue";
 import SideBar from "@/view/SideBar/Index.vue";
 import StatusBar from "@/view/StatusBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
-import { IPC_PREFERENCE } from "@/common/ipc-channel";
-import { IBootCache } from "@/interface/boot";
+import { IBootCache } from "@/interface/bootstrap";
 import { IGeneralState } from "@/interface/vuex/general";
 import { debounce } from "@/common/editor/utils";
 import { BUS_UI } from "@/common/bus-channel";
+import { IPC_PREFERENCE } from "@/common/ipc-channel";
 
 const general = namespace("general");
+const sideBar = namespace("sideBar");
 
 @Component({
   name: "App",
@@ -54,6 +52,9 @@ export default class App extends Vue {
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
 
+  @sideBar.Action("LOAD_TREE")
+  LOAD_TREE!: () => void;
+
   leftViewWidth = 200;
 
   get finalLeftWidth() {
@@ -73,6 +74,9 @@ export default class App extends Vue {
   handleResize = () => this.$bus.$emit(BUS_UI.SYNC_RESIZE);
 
   mounted() {
+    // this.CHECK_UPDATE();
+    this.LOAD_TREE();
+
     this.$nextTick(() => {
       const { leftResize, rightResize } = this.$refs;
 
@@ -112,9 +116,6 @@ export default class App extends Vue {
       };
 
       (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandler, false);
-
-      /* 检查更新 */
-      // this.CHECK_UPDATE();
 
       /* 调整大小 */
       window.addEventListener("resize", this.handleResize);

@@ -8,7 +8,7 @@ import store from "@/store/index";
 import App from "@/view/Index.vue";
 import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { localesMessage } from "@/app/config/locales-message";
-import { IBootCache } from "@/interface/boot";
+import { IBootCache } from "@/interface/bootstrap";
 import { VueBus } from "./bus";
 import "@/asset/styles/tailwind.css";
 import "@/asset/styles/main.less";

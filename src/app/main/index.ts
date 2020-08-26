@@ -2,14 +2,13 @@ import * as fse from "fs-extra";
 import { app } from "electron";
 
 import { App } from "./app";
-import { IBootArgs, IBootCache } from "@/interface/boot";
+import { IBootArgs, IBootCache } from "@/interface/bootstrap";
 import { joinPath } from "@/common/main/files";
 
 /**
  * 读取启动文件
  * - 启动文件存在，读取文件，返回文件内容
  * - 用户目录不存在或启动文件不存在，返回 `""`
- * @function 获取 `notesPath`
  */
 const loadBootData = async () => {
   const initArgs: IBootArgs = {
