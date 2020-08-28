@@ -16,18 +16,20 @@ export interface ITree {
   [index: string]: ITreeItem;
 }
 
+export interface ISideBarStateFiles {
+  folderDir: string;
+  ignoreFile: Array<string>;
+  hideIgnore: boolean;
+  showIndent: boolean;
+  defaultFold: boolean;
+}
+
 /**
  * @interface 侧边栏的 state
  */
 export interface ISideBarState {
   folderTree: ITree;
-  files: {
-    folderDir: string;
-    ignoreFile: Array<string>;
-    hideIgnore: boolean;
-    showIndent: boolean;
-    defaultFold: boolean;
-  };
+  files: ISideBarStateFiles;
   marks: {};
   search: {};
   tags: {};

@@ -2,14 +2,14 @@
   <section>
     <header>
       <!-- 工具栏 -->
-      <div v-if="folderDir === ''">无打开的文件/文件夹</div>
+      <div v-if="isEmptyFolder">无打开的文件/文件夹</div>
       <div v-else>
         <span>文件管理</span>
         <i class="ri-checkbox-indeterminate-line" @click="toggleAll()" title="收起" />
       </div>
     </header>
 
-    <div v-if="folderDir === ''">
+    <div v-if="isEmptyFolder">
       <button @click="OPEN_FOLDER()">打开文件夹</button>
     </div>
     <div v-else @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
@@ -43,11 +43,11 @@ import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
 import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
-import { ITreeItem, ISideBarState } from "@/interface/vuex/sideBar";
+import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
 import { BUS_FILE } from "@/common/bus-channel";
+import { hasKeys } from "@/common/utils";
 
 const workBench = namespace("workBench");
-const general = namespace("general");
 const sideBar = namespace("sideBar");
 
 @Component({
@@ -86,6 +86,10 @@ export default class Files extends Vue {
   isIndent = false;
 
   isOnce = true;
+
+  get isEmptyFolder() {
+    return !hasKeys(this.folderTree);
+  }
 
   toggleAll() {
     this.TOGGLE_ALL(this.isOnce);

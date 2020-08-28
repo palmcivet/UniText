@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "system": {
-      "description": "General setting",
+      "description": "System Setting",
       "type": "object",
       "properties": {
         "showTray": { "type": "boolean", "default": true },
@@ -12,12 +12,12 @@
         "saveRecent": { "type": "boolean", "default": true },
         "autoOpen": { "type": "boolean", "default": true },
         "autoUpdate": { "type": "boolean", "default": true },
-        "notesPath": { "type": "string", "default": "" },
-        "language": { "enum": ["zh-CN", "en-US"], "default": "en-US" }
+        "locale": { "enum": ["zh-CN", "en-US"], "default": "en-US" }
       }
     },
     "appearance": {
       "type": "object",
+      "description": "Appearance Setting",
       "properties": {
         "showSideBar": { "type": "boolean", "default": true },
         "showStatusBar": { "type": "boolean", "default": true },
@@ -25,7 +25,10 @@
         "checkEdit": { "type": "boolean", "default": false },
         "checkPresent": { "type": "boolean", "default": false },
         "panelFloat": { "type": "boolean", "default": true },
-        "panelType": { "enum": ["TOC", "EXPORT", "INFO"], "default": "TOC" },
+        "panelType": {
+          "enum": ["TOC", "EXPORT", "INFO"],
+          "default": "TOC"
+        },
         "editMode": {
           "enum": ["SOURCE", "WYSIWYG", "RICHTEXT"],
           "default": "SOURCE"
@@ -36,6 +39,25 @@
         }
       }
     },
+    "files": {
+      "description": "Configurations for File Manager",
+      "type": "object",
+      "properties": {
+        "folderDir": { "type": "string", "default": "" },
+        "ignoreFile": {
+          "type": "array",
+          "default": [".DS_Store", "desktop.ini", ".CONFIG", "node_modules"]
+        },
+        "hideIgnore": { "type": "boolean", "default": false },
+        "showIndent": { "type": "boolean", "default": true },
+        "defaultFold": { "type": "boolean", "default": true }
+      }
+    },
+    "marks": {
+      "description": "Configurations for Bookmark Manager",
+      "type": "object",
+      "properties": {}
+    },
     "editor": {
       "description": "Configurations for Editor",
       "type": "object",
@@ -45,7 +67,11 @@
         "format": {
           "type": "object",
           "properties": {
-            "indent": { "type": "integer", "enum": [2, 4], "default": 4 },
+            "indent": {
+              "type": "integer",
+              "enum": [2, 4],
+              "default": 4
+            },
             "encoding": {
               "type": "string",
               "enum": ["UTF-8", "GBK"],
@@ -66,13 +92,14 @@
             "autoSync": { "type": "boolean", "default": false }
           }
         },
+        "miniMap": { "type": "boolean", "default": false },
         "wordWrap": { "type": "boolean", "default": true },
         "lineNumber": { "type": "boolean", "default": true },
         "highlightLine": { "type": "boolean", "default": true }
       }
     },
     "markdown": {
-      "description": "Editor setting",
+      "description": "Configurations for Markdown",
       "type": "object",
       "properties": {
         "image": {
@@ -87,8 +114,6 @@
         }
       }
     },
-    "theme": {},
-    "snippet": {},
-    "keybinding": {}
+    "theme": {}
   }
 }

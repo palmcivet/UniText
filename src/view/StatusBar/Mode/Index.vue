@@ -17,8 +17,8 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 
-import { EEditMode, IGeneralState } from "@/interface/vuex/general";
-import CheckItem from "@/component/widgets/CheckItem/Index.vue";
+import { EEditMode, IGeneralState } from "@/interface/vuex/modules/general";
+import CheckItem from "@/widget/CheckItem/Index.vue";
 
 const general = namespace("general");
 
@@ -44,7 +44,7 @@ export default class Mode extends Vue {
   @general.Mutation("TOGGLE_PRESENT")
   TOGGLE_PRESENT!: () => void;
 
-  // FEAT i18n
+  // DEV i18n
   get checkMode() {
     return {
       SOURCE: {

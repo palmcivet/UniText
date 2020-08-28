@@ -28,8 +28,8 @@ import Files from "@/view/SideBar/Files/Index.vue";
 import Marks from "@/view/SideBar/Marks/Index.vue";
 import Search from "@/view/SideBar/Search/Index.vue";
 import Setting from "@/view/SideBar/Setting/Index.vue";
-import CheckList from "@/component/widgets/CheckList/Index.vue";
-import { IGeneralState } from "@/interface/vuex/general";
+import CheckList from "@/widget/CheckList/Index.vue";
+import { IGeneralState } from "@/interface/vuex/modules/general";
 
 const general = namespace("general");
 

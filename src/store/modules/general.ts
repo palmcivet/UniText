@@ -1,25 +1,17 @@
-/**
- * @file 本模块统筹管理配置项，其余模块获取配置信息、管理运行时数据
- */
+import { ActionContext } from "vuex";
 
 import {
   IGeneralState,
   EPanelType,
   ETypeMode,
   EEditMode,
-} from "@/interface/vuex/general";
+} from "@/interface/vuex/modules/general";
 import { EEol } from "@/interface/document";
+import { IRootState } from "@/interface/vuex/index";
+import { loadSetting } from "@/common/initialize";
+import * as pkg from "@/../package.json";
 
 const state: IGeneralState = {
-  system: {
-    showTray: true,
-    exitWhenClosed: false,
-    saveRecent: true,
-    autoOpen: true,
-    autoUpdate: true,
-    notesPath: "",
-    language: "en-US",
-  },
   appearance: {
     showSideBar: true,
     showStatusBar: true,
@@ -83,7 +75,58 @@ const mutations = {
   },
 };
 
-const actions = {};
+const actions = {
+  /**
+   * 加载、校验笔记文件夹的设置文件
+   * @param path 指定笔记文件夹路径
+   */
+  LOAD_SETTING: (rootState: ActionContext<IRootState, IRootState>, path: string) => {
+    loadSetting(path).then((res) => {
+      if (!res[1]) {
+        // TODO 报错
+        console.error(res);
+        return;
+      }
+      rootState.commit("SYNC_SETTING", res[0]);
+    });
+  },
+  /**
+   * 保存笔记文件夹的设置
+   */
+  SAVE_SETTING: (rootState: ActionContext<IRootState, IRootState>) => {
+    rootState.commit("LOAD_SETTING");
+  },
+  /**
+   * 获取发行说明，`""` 则表明未更新
+   */
+  CHECK_UPDATE: (rootState: ActionContext<IGeneralState, IRootState>) => {
+    const getVersion = (ver: string) =>
+      ver
+        .substring(1)
+        .split(".")
+        .map((item: string) => parseInt(item, 10));
+    const currentVersion = getVersion((pkg as any).version);
+
+    let releaseNotes = "";
+
+    fetch("")
+      .then((res) => res.json())
+      .then((res) => {
+        const latestVersion = getVersion(res.data.name);
+        for (let i = 0; i < currentVersion.length; i += 1) {
+          if (currentVersion[i] < latestVersion[i]) {
+            releaseNotes = res.data;
+            break;
+          }
+        }
+      });
+
+    // TODO 新版本通知
+    if (releaseNotes !== "") {
+      rootState.dispatch("");
+    }
+  },
+};
 
 export default {
   namespaced: true,

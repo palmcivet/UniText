@@ -26,12 +26,12 @@ import { namespace } from "vuex-class";
 import TOC from "@/component/Panel/Toc/Index.vue";
 import INFO from "@/component/Panel/Info/Index.vue";
 import EXPORT from "@/component/Panel/Export/Index.vue";
-import { IGeneralState, EPanelType } from "@/interface/vuex/general";
-import { $ } from "@/common/editor/utils";
+import { IGeneralState, EPanelType } from "@/interface/vuex/modules/general";
+import { $ } from "@/common/utils";
 
 const general = namespace("general");
 
-// DEV
+// DEV i18n
 const titleMap = {
   TOC: "大纲",
   INFO: "信息",
@@ -63,7 +63,7 @@ export default class Panel extends Vue {
   panelType!: EPanelType;
 
   get arrowPos() {
-    // FEAT i18n
+    // DEV i18n
     // $(`footer li[title=${this.$t(this.panelType)}]`);
     const o = $(`footer li[title=${titleMap[this.panelType]}]`);
     return $("body").offsetWidth - o.offsetLeft - o.offsetWidth + 8 / 2 - 10; // @dialog-gap/2 - @right-gap

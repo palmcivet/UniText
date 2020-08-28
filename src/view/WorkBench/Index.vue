@@ -29,14 +29,14 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import LayoutBox from "@/component/widgets/LayoutBox/Index.vue";
+import LayoutBox from "@/widget/LayoutBox/Index.vue";
 import MarkdownSource from "@/component/Editor/MarkdownSource/Index.vue";
 import Panel from "@/component/Panel/Index.vue";
 import Blank from "@/view/WorkBench/Blank/Index.vue";
 import Tabs from "@/view/WorkBench/Tabs/Index.vue";
-import { TTab } from "@/interface/vuex/workBench";
+import { TTab } from "@/interface/vuex/modules/workBench";
 import { IDocument } from "@/interface/document";
-import { IGeneralState, EPanelType } from "@/interface/vuex/general";
+import { IGeneralState, EPanelType } from "@/interface/vuex/modules/general";
 import { wordCount, timeCalc } from "@/common/editor/words-count";
 import { BUS_FILE, BUS_UI } from "@/common/bus-channel";
 

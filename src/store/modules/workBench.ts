@@ -5,9 +5,9 @@ import {
   exportFrontMatter,
   metaInfo2Doc,
 } from "@/common/editor/front-matter";
-import { hashCode } from "@/common/editor/utils";
-import { IWorkBenchState, IFile, TTab } from "@/interface/vuex/workBench";
-import { IRootState } from "@/interface/rootStore";
+import { hashCode } from "@/common/utils";
+import { IWorkBenchState, IFile, TTab } from "@/interface/vuex/modules/workBench";
+import { IRootState } from "@/interface/vuex/index";
 import { EEol } from "@/interface/document";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
@@ -102,9 +102,9 @@ const mutations: MutationTree<IWorkBenchState> = {
 
 const actions: ActionTree<IWorkBenchState, IRootState> = {
   NEW_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>, title?: string) => {
-    // TODO 同步默认设置
+    const defaultEditor = moduleState.rootState.general.editor;
     const untitled: IFile = {
-      tag: "Untag",
+      tag: defaultEditor.tag,
       comment: "",
       complete: false,
       metaInfo: {
@@ -114,16 +114,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         charCount: 0,
         duration: 0,
       },
-      format: {
-        indent: 2,
-        encoding: "UTF-8",
-        endOfLine: EEol.LF,
-      },
-      config: {
-        picStorage: "string",
-        autoSave: false,
-        autoSync: false,
-      },
+      format: defaultEditor.format,
+      config: defaultEditor.config,
       content: "",
       title: `Untitled-${titleId}`,
       needSave: true,

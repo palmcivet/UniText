@@ -1,8 +1,9 @@
+import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import { remote } from "electron";
 import * as fse from "fs-extra";
-import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
-import { ISideBarState, ITree, ITreeItem } from "@/interface/vuex/sideBar";
-import { IRootState } from "@/interface/rootStore";
+
+import { ISideBarState, ITree, ITreeItem } from "@/interface/vuex/modules/sideBar";
+import { IRootState } from "@/interface/vuex/index";
 import { joinPath } from "@/common/main/files";
 
 const state: ISideBarState = {

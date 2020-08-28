@@ -16,7 +16,7 @@
     "comma-spacing": "warn",
     "comma-dangle": ["warn", "only-multiline"],
     "spaced-comment": "warn",
-    "indent": ["warn", 2],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
     "semi": ["warn", "always"],
     "eqeqeq": ["warn", "always"],
     "quotes": ["warn", "double"],

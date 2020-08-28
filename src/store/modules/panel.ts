@@ -1,5 +1,5 @@
 import { ITocList } from "@/common/editor/create-toc";
-import { IPanelState } from "@/interface/vuex/panel";
+import { IPanelState } from "@/interface/vuex/modules/panel";
 
 const state: IPanelState = {
   toc: [],

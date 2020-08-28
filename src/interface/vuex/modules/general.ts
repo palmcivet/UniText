@@ -1,4 +1,4 @@
-import { IDocumentFormat, IDocumentConfig } from "../document";
+import { IDocumentFormat, IDocumentConfig } from "@/interface/document";
 
 /**
  * @enum {EPanelType} 右侧面板展示的信息类型
@@ -28,38 +28,7 @@ export enum ETypeMode {
   NORMAL = "NORMAL",
 }
 
-interface IGeneralSystem {
-  /**
-   * @field 显示托盘
-   */
-  showTray: boolean;
-  /**
-   * @field 最后一个窗口关闭时退出
-   */
-  exitWhenClosed: boolean;
-  /**
-   * @field 记录最近打开
-   */
-  saveRecent: boolean;
-  /**
-   * @field 自动打开上一次的文件
-   */
-  autoOpen: boolean;
-  /**
-   * @field 自动更新
-   */
-  autoUpdate: boolean;
-  /**
-   * @field 笔记文件夹的位置，该字段作为文章的根
-   */
-  notesPath: string;
-  /**
-   * @field 显示语言
-   */
-  language: string; // TODO 完善语言的接口
-}
-
-interface IGeneralAppearance {
+export interface IGeneralStateAppearance {
   /**
    * @field 是否显示左侧边栏
    */
@@ -87,12 +56,21 @@ interface IGeneralAppearance {
    * @field 控制面板是否悬浮
    */
   panelFloat: boolean;
+  /**
+   * @field 右侧面板展示的信息类型
+   */
   panelType: EPanelType;
+  /**
+   * @field 编辑模式
+   */
   editMode: EEditMode;
+  /**
+   * @field 编辑模式
+   */
   typeMode: ETypeMode;
 }
 
-interface IGeneralEditor {
+export interface IGeneralStateEditor {
   /**
    * @field 默认标签
    */
@@ -101,7 +79,13 @@ interface IGeneralEditor {
    * @field 默认分类
    */
   category: string;
+  /**
+   * @field 编辑模式
+   */
   format: IDocumentFormat;
+  /**
+   * @field 编辑模式
+   */
   config: IDocumentConfig;
   /**
    * @field 是否换行
@@ -125,7 +109,6 @@ interface IGeneralEditor {
  * @interface 通用设置的 state
  */
 export interface IGeneralState {
-  system: IGeneralSystem;
-  appearance: IGeneralAppearance;
-  editor: IGeneralEditor;
+  appearance: IGeneralStateAppearance;
+  editor: IGeneralStateEditor;
 }

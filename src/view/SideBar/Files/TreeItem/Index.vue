@@ -47,8 +47,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { ITreeItem } from "@/interface/vuex/sideBar";
+import { ITreeItem } from "@/interface/vuex/modules/sideBar";
 import { BUS_FILE } from "@/common/bus-channel";
+import { hasKeys } from "@/common/utils";
 
 @Component({
   name: "TreeItem",
@@ -85,7 +86,7 @@ export default class TreeItem extends Vue {
   suffix!: boolean;
 
   get isFile() {
-    return Object.keys(this.itemData.file).length === 0;
+    return !hasKeys(this.itemData.file);
   }
 
   trimSuffix(value: string) {

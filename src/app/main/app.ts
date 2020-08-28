@@ -4,10 +4,10 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
 import { generateMenu } from "./menu";
-import { IBootArgs, IBootCache } from "@/interface/bootstrap";
-import { IPC_PREFERENCE } from "@/common/ipc-channel";
-import { loadSetting } from "@/common/main/utils";
+import { IBootArgs, EWindow, IBootSetting } from "@/interface/bootstrap";
 import { isDev, isOsx, isWin } from "@/common/env";
+import { IPC_PREFERENCE } from "@/common/ipc-channel";
+import { loadSetting } from "@/common/initialize";
 
 export class App {
   /**
@@ -15,29 +15,39 @@ export class App {
    */
   private args: IBootArgs;
 
-  private cache: IBootCache;
-
   /**
-   * @member 默认语言，在启动时获取，用于设置菜单
+   * @member 窗口管理
    */
-  private locale: string; // TODO i18n 接口
-
-  private setting: any;
-
   private windowManager: Array<BrowserWindow | null>;
 
-  constructor(bootData: { initArgs: IBootArgs; initCache: IBootCache }) {
-    this.args = bootData.initArgs;
-    this.cache = bootData.initCache;
-    this.locale = bootData.initArgs.locale;
+  /**
+   * @param bootArgs 启动参数
+   */
+  constructor(bootArgs: IBootArgs) {
+    this.args = bootArgs;
     this.windowManager = [];
   }
 
-  private async createWindow() {
+  private async createWindow(mode: EWindow = EWindow.NORMAL) {
     /* 获取初始设置 */
-    [this.setting, this.args.error] = await loadSetting(this.args.notesPath);
+    let preference!: IBootSetting;
+    switch (mode) {
+      case EWindow.NEW:
+        [preference, this.args.error] = await loadSetting();
+        break;
+      case EWindow.VIEW:
+        // FEAT 预览窗口
+        break;
+      case EWindow.NORMAL:
+        [preference, this.args.error] = await loadSetting(this.args.notesPath);
+        break;
+    }
+    const { system, ...setting } = preference;
 
-    /* 提取部分设置，用于创建窗口 */
+    // FEAT 读取工作区设置文件
+
+    // FEAT 提取部分设置
+    /* 创建窗口 */
     const winOption: any = {
       width: 1294,
       height: 800,
@@ -64,7 +74,7 @@ export class App {
     win.setTitle("UniText");
 
     /* 生成菜单 */
-    const menu = generateMenu(win, this.locale);
+    const menu = generateMenu(win, system.locale);
     Menu.setApplicationMenu(menu);
 
     /* 加载开发工具 */
@@ -85,9 +95,8 @@ export class App {
 
     ipcMain.on(IPC_PREFERENCE.FETCH, (event) => {
       event.reply(IPC_PREFERENCE.SEND, {
-        setting: this.setting,
-        locale: this.locale,
-        cache: this.cache,
+        locale: system.locale,
+        setting,
         error: this.args.error,
       });
     });

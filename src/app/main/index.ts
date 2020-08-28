@@ -1,40 +1,5 @@
-import * as fse from "fs-extra";
-import { app } from "electron";
-
 import { App } from "./app";
-import { IBootArgs, IBootCache } from "@/interface/bootstrap";
-import { joinPath } from "@/common/main/files";
-
-/**
- * 读取启动文件
- * - 启动文件存在，读取文件，返回文件内容
- * - 用户目录不存在或启动文件不存在，返回 `""`
- */
-const loadBootData = async () => {
-  const initArgs: IBootArgs = {
-    notesPath: "",
-    locale: app.getLocale() || "en-US",
-  };
-  const initCache: IBootCache = [];
-
-  const bootPath = joinPath(app.getPath("userData"), "unitext.json");
-
-  if (await fse.pathExists(bootPath)) {
-    fse
-      .readJSON(bootPath)
-      .then((res) => {
-        initArgs.notesPath = res.notesPath;
-      })
-      .catch((err) => {
-        /* 无需处理 */
-      });
-  }
-
-  return {
-    initArgs,
-    initCache,
-  };
-};
+import { loadBootData } from "@/common/initialize";
 
 let unitext: App;
 

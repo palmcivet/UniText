@@ -10,8 +10,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
 
-import { IGeneralState } from "@/interface/vuex/general";
-import CheckItem from "@/component/widgets/CheckItem/Index.vue";
+import { IGeneralState } from "@/interface/vuex/modules/general";
+import CheckItem from "@/widget/CheckItem/Index.vue";
 
 const general = namespace("general");
 

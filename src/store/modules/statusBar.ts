@@ -1,4 +1,4 @@
-import { IStatusBarState } from "@/interface/vuex/statusBar";
+import { IStatusBarState } from "@/interface/vuex/modules/statusBar";
 
 const state: IStatusBarState = {};
 

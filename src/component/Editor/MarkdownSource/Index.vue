@@ -21,13 +21,13 @@ import * as monacoMarkdown from "monaco-markdown";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
 
-import LayoutBox from "@/component/widgets/LayoutBox/Index.vue";
-import { debounce, $ } from "@/common/editor/utils";
+import LayoutBox from "@/widget/LayoutBox/Index.vue";
+import { debounce, $ } from "@/common/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
 import { BUS_TOC, BUS_FILE, BUS_UI } from "@/common/bus-channel";
-import { IGeneralState, EEditMode, EPanelType } from "@/interface/vuex/general";
-import { IFile, TTab } from "@/interface/vuex/workBench";
+import { IGeneralState, EEditMode, EPanelType } from "@/interface/vuex/modules/general";
+import { IFile, TTab } from "@/interface/vuex/modules/workBench";
 import { theme } from "./theme";
 import { init } from "./option";
 

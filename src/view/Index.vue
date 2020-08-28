@@ -23,9 +23,8 @@ import TopBar from "@/view/TopBar/Index.vue";
 import SideBar from "@/view/SideBar/Index.vue";
 import StatusBar from "@/view/StatusBar/Index.vue";
 import WorkBench from "@/view/WorkBench/Index.vue";
-import { IBootCache } from "@/interface/bootstrap";
-import { IGeneralState } from "@/interface/vuex/general";
-import { debounce } from "@/common/editor/utils";
+import { IGeneralState } from "@/interface/vuex/modules/general";
+import { debounce } from "@/common/utils";
 import { BUS_UI } from "@/common/bus-channel";
 import { IPC_PREFERENCE } from "@/common/ipc-channel";
 
@@ -43,14 +42,14 @@ const sideBar = namespace("sideBar");
   },
 })
 export default class App extends Vue {
-  @Action("CHECK_UPDATE")
-  CHECK_UPDATE!: () => void;
-
   @general.State((state: IGeneralState) => state.appearance.showSideBar)
   isShowSide!: boolean;
 
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
+
+  @general.Action("CHECK_UPDATE")
+  CHECK_UPDATE!: () => void;
 
   @sideBar.Action("LOAD_TREE")
   LOAD_TREE!: () => void;

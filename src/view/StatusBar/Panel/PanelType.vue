@@ -11,8 +11,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
 
-import { IGeneralState, EPanelType } from "@/interface/vuex/general";
-import CheckList from "@/component/widgets/CheckList/Index.vue";
+import { IGeneralState, EPanelType } from "@/interface/vuex/modules/general";
+import CheckList from "@/widget/CheckList/Index.vue";
 import { BUS_UI } from "@/common/bus-channel";
 
 const general = namespace("general");
@@ -36,7 +36,7 @@ export default class PanelType extends Vue {
   @general.Mutation("TOGGLE_PANEL")
   TOGGLE_PANEL!: () => void;
 
-  // FEAT i18n
+  // DEV i18n
   get typeList() {
     return {
       TOC: {
