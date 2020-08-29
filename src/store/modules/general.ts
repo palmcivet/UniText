@@ -8,10 +8,12 @@ import {
 } from "@/interface/vuex/modules/general";
 import { EEol } from "@/interface/document";
 import { IRootState } from "@/interface/vuex/index";
-import { loadSetting } from "@/common/initialize";
 import * as pkg from "@/../package.json";
 
 const state: IGeneralState = {
+  setting: {},
+  snippet: {},
+  keybinding: {},
   appearance: {
     showSideBar: true,
     showStatusBar: true,
@@ -26,7 +28,7 @@ const state: IGeneralState = {
   editor: {
     tag: "Untaged",
     category: "Uncategory",
-    format: {
+    fileinfo: {
       indent: 4,
       encoding: "UTF-8",
       endOfLine: EEol.LF,
@@ -46,6 +48,7 @@ const state: IGeneralState = {
 const getters = {};
 
 const mutations = {
+  /* TODO 优化 */
   TOGGLE_SIDE_BAR: (moduleState: IGeneralState) => {
     moduleState.appearance.showSideBar = !moduleState.appearance.showSideBar;
   },
@@ -77,29 +80,9 @@ const mutations = {
 
 const actions = {
   /**
-   * 加载、校验笔记文件夹的设置文件
-   * @param path 指定笔记文件夹路径
-   */
-  LOAD_SETTING: (rootState: ActionContext<IRootState, IRootState>, path: string) => {
-    loadSetting(path).then((res) => {
-      if (!res[1]) {
-        // TODO 报错
-        console.error(res);
-        return;
-      }
-      rootState.commit("SYNC_SETTING", res[0]);
-    });
-  },
-  /**
-   * 保存笔记文件夹的设置
-   */
-  SAVE_SETTING: (rootState: ActionContext<IRootState, IRootState>) => {
-    rootState.commit("LOAD_SETTING");
-  },
-  /**
    * 获取发行说明，`""` 则表明未更新
    */
-  CHECK_UPDATE: (rootState: ActionContext<IGeneralState, IRootState>) => {
+  CHECK_UPDATE: (moduleState: ActionContext<IGeneralState, IRootState>) => {
     const getVersion = (ver: string) =>
       ver
         .substring(1)
@@ -123,7 +106,7 @@ const actions = {
 
     // TODO 新版本通知
     if (releaseNotes !== "") {
-      rootState.dispatch("");
+      moduleState.dispatch("");
     }
   },
 };

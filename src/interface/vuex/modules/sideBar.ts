@@ -1,5 +1,7 @@
 /**
- * @interface 文件树的一项
+ * UniText 以磁盘文件为基础，方便迁移，但软件外整理文件将丢失信息
+ *
+ * @interface 文件项的信息
  */
 export interface ITreeItem {
   order: number;

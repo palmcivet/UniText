@@ -1,13 +1,15 @@
 import Vue from "vue";
-import Vuex from "vuex";
+import Vuex, { ActionContext } from "vuex";
+
 import panel from "./modules/panel";
 import general from "./modules/general";
 import sideBar from "./modules/sideBar";
 import statusBar from "./modules/statusBar";
 import workBench from "./modules/workBench";
 import notification from "./modules/notification";
-import { ISetting } from "@/interface/bootstrap";
+import { loadSetting } from "@/common/preference";
 import { IRootState } from "@/interface/vuex";
+import { TStore } from "@/interface/bootstrap";
 
 Vue.use(Vuex);
 
@@ -23,14 +25,29 @@ export default new Vuex.Store({
   strict: true,
   mutations: {
     /**
-     * 更新系统设置，初始化 state
-     * @param payload 从 JSON 文件读取的设置
+     * electron-store 读取/初始化得到的结构，存入 Vuex，此后使用 `.store`/`.get`/`.set` 读取或设置
+     * @param setting 存储结构
      */
-    SYNC_SETTING: (rootState: IRootState, payload: ISetting) => {
-      rootState.general.appearance = payload.appearance;
-      rootState.general.editor = payload.editor;
-      rootState.sideBar.files = payload.files;
+    SYNC_SETTING: (rootState: IRootState, setting: TStore) => {
+      rootState.general.setting = setting;
+      /* 初始化 state */
+      const { appearance, editor, files } = setting.store;
+      rootState.general.appearance = appearance;
+      rootState.general.editor = editor;
+      rootState.sideBar.files = files;
       // TODO 余下设置
+    },
+  },
+  actions: {
+    /**
+     * 加载、校验笔记文件夹的设置文件
+     */
+    LOAD_SETTING: (
+      moduleState: ActionContext<IRootState, IRootState>,
+      path: string = moduleState.state.sideBar.files.folderDir
+    ) => {
+      const setting = loadSetting(path);
+      moduleState.commit("SYNC_SETTING", setting);
     },
   },
 });

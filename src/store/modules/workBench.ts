@@ -1,5 +1,6 @@
 import * as fse from "fs-extra";
 import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
+
 import {
   importFrontMatter,
   exportFrontMatter,
@@ -114,7 +115,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         charCount: 0,
         duration: 0,
       },
-      format: defaultEditor.format,
+      format: defaultEditor.fileinfo,
       config: defaultEditor.config,
       content: "",
       title: `Untitled-${titleId}`,

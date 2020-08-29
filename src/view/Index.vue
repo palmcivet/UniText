@@ -26,7 +26,6 @@ import WorkBench from "@/view/WorkBench/Index.vue";
 import { IGeneralState } from "@/interface/vuex/modules/general";
 import { debounce } from "@/common/utils";
 import { BUS_UI } from "@/common/bus-channel";
-import { IPC_PREFERENCE } from "@/common/ipc-channel";
 
 const general = namespace("general");
 const sideBar = namespace("sideBar");

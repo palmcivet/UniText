@@ -2,7 +2,7 @@ import { shell, BrowserWindow, Menu } from "electron";
 import { localesMenu } from "@/app/config/locales-menu";
 
 export const generateMenu = (win: BrowserWindow, locale: string) => {
-  const menuLabels = localesMenu[locale] || localesMenu["zh-CN"];
+  const menuLabels = localesMenu[locale];
 
   const template: any = [
     {

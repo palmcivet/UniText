@@ -1,4 +1,5 @@
 import { IDocumentFormat, IDocumentConfig } from "@/interface/document";
+import { TStore } from "@/interface/bootstrap";
 
 /**
  * @enum {EPanelType} 右侧面板展示的信息类型
@@ -82,7 +83,7 @@ export interface IGeneralStateEditor {
   /**
    * @field 编辑模式
    */
-  format: IDocumentFormat;
+  fileinfo: IDocumentFormat;
   /**
    * @field 编辑模式
    */
@@ -109,6 +110,9 @@ export interface IGeneralStateEditor {
  * @interface 通用设置的 state
  */
 export interface IGeneralState {
+  setting: TStore | {};
+  snippet: TStore | {};
+  keybinding: TStore | {};
   appearance: IGeneralStateAppearance;
   editor: IGeneralStateEditor;
 }

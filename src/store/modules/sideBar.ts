@@ -4,6 +4,7 @@ import * as fse from "fs-extra";
 
 import { ISideBarState, ITree, ITreeItem } from "@/interface/vuex/modules/sideBar";
 import { IRootState } from "@/interface/vuex/index";
+import { CONFIG_FILE } from "@/common/env";
 import { joinPath } from "@/common/main/files";
 
 const state: ISideBarState = {
@@ -94,29 +95,42 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       })
       .then((res) => {
         moduleState.commit("SET_FOLDER", res.filePaths[0] || "");
-        const fileTree: ITree = {};
-        buildTree(
-          fileTree,
-          moduleState.state.files.folderDir,
-          "",
-          moduleState.state.files.ignoreFile
-        ).then(() => {
-          setTimeout(() => {
-            moduleState.commit("SET_TREE", fileTree);
-          }, 200);
-        });
+        moduleState.dispatch("BUILD_TREE");
       });
+  },
+  /**
+   * 构建文件树
+   */
+  BUILD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
+    const fileTree: ITree = {};
+    buildTree(
+      fileTree,
+      moduleState.state.files.folderDir,
+      "",
+      moduleState.state.files.ignoreFile
+    ).then(() => {
+      setTimeout(() => {
+        moduleState.commit("SET_TREE", fileTree);
+      }, 200);
+    });
   },
   /**
    * 加载设置中 `folderDir` 保存的文件树
    * - 不为空，则在初始化时加载
-   * - 若为空，则表名为新建窗口，需要手动指定文件夹，通过 `OPEN_FOLDER()` 加载
+   * - 若为空，则表明新建窗口，需要手动指定文件夹，通过 `OPEN_FOLDER()` 加载
    */
   LOAD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     const dir = moduleState.state.files.folderDir;
     if (dir !== "") {
-      fse.readJSON(dir).then((res) => {
-        moduleState.commit("SET_TREE", res);
+      const tree = joinPath(dir, CONFIG_FILE.TREE);
+      fse.pathExists(tree).then((isExit) => {
+        if (isExit) {
+          fse.readJSON(dir).then((res) => {
+            moduleState.commit("SET_TREE", res);
+          });
+        } else {
+          moduleState.dispatch("BUILD_TREE");
+        }
       });
     }
   },
@@ -124,11 +138,17 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    * 保存文件树
    */
   SAVE_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    fse.writeJSON(
-      `${moduleState.state.files.folderDir}/tree.json`,
-      moduleState.state.folderTree
-    );
+    fse
+      .writeJSON(
+        joinPath(moduleState.state.files.folderDir, CONFIG_FILE.TREE),
+        moduleState.state.folderTree
+      )
+      .then((res) => {
+        // TODO 通知
+        moduleState.dispatch("");
+      });
   },
+  CHECK_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {},
 };
 
 export default {

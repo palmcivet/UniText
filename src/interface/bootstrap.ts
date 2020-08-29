@@ -1,5 +1,12 @@
+import Store from "electron-store";
+
 import { IGeneralStateAppearance, IGeneralStateEditor } from "./vuex/modules/general";
 import { ISideBarStateFiles } from "./vuex/modules/sideBar";
+
+/**
+ * @type electron-store 的存储结构
+ */
+export type TStore = Store<ISetting>;
 
 /**
  * @interface 系统设置

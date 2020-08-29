@@ -1,8 +1,20 @@
+import { INotificationState } from "@/interface/vuex/modules/notification";
+
 const state = {};
 
 const getters = {};
 
-const mutations = {};
+const mutations = {
+  SET_INFO: (moduleState: INotificationState, msg: string) => {
+    console.log(msg);
+  },
+  SET_WARN: (moduleState: INotificationState, msg: string) => {
+    console.log(msg);
+  },
+  SET_ERROR: (moduleState: INotificationState, msg: string) => {
+    console.error(msg);
+  },
+};
 
 const actions = {};
 

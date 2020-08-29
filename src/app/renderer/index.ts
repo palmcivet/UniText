@@ -6,9 +6,9 @@ import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
 import App from "@/view/Index.vue";
-import { IPC_PREFERENCE } from "@/common/ipc-channel";
 import { localesMessage } from "@/app/config/locales-message";
-import { IGeneralState } from "@/interface/vuex/modules/general";
+import { IPC_BOOTSTRAP } from "@/common/ipc-channel";
+import { IBootArgs } from "@/interface/bootstrap";
 import { VueBus } from "./bus";
 import "@/asset/styles/tailwind.css";
 import "@/asset/styles/main.less";
@@ -16,15 +16,15 @@ import "@/asset/styles/main.less";
 let defaultLocale = "";
 
 ipcRenderer.on(
-  IPC_PREFERENCE.SEND,
-  (event, message: { locale: string; setting: IGeneralState; error: any[] }) => {
-    const { locale, setting, error } = message;
+  IPC_BOOTSTRAP.DATA_REPLY,
+  (event, message: { locale: string; args: IBootArgs }) => {
+    const { locale, args } = message;
     defaultLocale = locale;
-    store.commit("SYNC_SETTING", setting);
-    // TODO store.commit("notification/ERROR", error);
+    args.error.length && store.commit("notification/SET_ERROR", args.error);
+    store.dispatch("LOAD_SETTING", args.notesPath);
   }
 );
-ipcRenderer.send(IPC_PREFERENCE.FETCH);
+ipcRenderer.send(IPC_BOOTSTRAP.DATA_FETCH);
 
 Vue.use(VueI18n);
 
