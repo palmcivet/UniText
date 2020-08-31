@@ -118,7 +118,7 @@ aside {
 
       &:last-child {
         position: absolute;
-        bottom: 10px;
+        bottom: 0px;
       }
     }
   }

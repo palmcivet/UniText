@@ -148,7 +148,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       .then((res) => importFrontMatter(res))
       .then((res) => {
         const dirs = path.split("/");
-        // TODO 补全解析
+        // TODO 解析文档信息
         return moduleState.dispatch("LOAD_FILE", {
           file: {
             title: dirs[dirs.length - 1],

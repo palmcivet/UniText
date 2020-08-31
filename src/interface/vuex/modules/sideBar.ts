@@ -31,6 +31,7 @@ export interface ISideBarStateFiles {
  */
 export interface ISideBarState {
   folderTree: ITree;
+  activeItem: string;
   files: ISideBarStateFiles;
   marks: {};
   search: {};

@@ -214,8 +214,8 @@ export const theme: monaco.editor.IStandaloneThemeData = {
   colors: {
     "editor.foreground": "#333333",
     "editor.background": "#FFFFFF",
-    "editor.selectionBackground": "#BDD5FC",
-    "editor.lineHighlightBackground": "#E5EFD8",
+    "editor.selectionBackground": "#e6f1fb",
+    "editor.lineHighlightBackground": "#ecf1e7cc",
     "editorCursor.foreground": "#000000",
     "editorWhitespace.foreground": "#BFBFBF",
     "textLink.foreground": "#666",

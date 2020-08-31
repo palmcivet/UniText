@@ -2,12 +2,12 @@
 import crypto from "crypto";
 
 export function debounce(fn: Function, delay: number = 1000) {
-  let timeout: any;
+  let timeout: NodeJS.Timeout | null;
   return function(this: any, ...args: any[]) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       fn.apply(this, args);
-      timeout = undefined;
+      timeout = null;
     }, delay);
   };
 }

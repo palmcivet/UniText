@@ -48,7 +48,7 @@ const state: IGeneralState = {
 const getters = {};
 
 const mutations = {
-  /* TODO 优化 */
+  /* TODO 合并、优化 */
   TOGGLE_SIDE_BAR: (moduleState: IGeneralState) => {
     moduleState.appearance.showSideBar = !moduleState.appearance.showSideBar;
   },
@@ -104,7 +104,7 @@ const actions = {
         }
       });
 
-    // TODO 新版本通知
+    // FEAT 新版本通知
     if (releaseNotes !== "") {
       moduleState.dispatch("");
     }

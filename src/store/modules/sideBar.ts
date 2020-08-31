@@ -9,6 +9,7 @@ import { joinPath } from "@/common/main/files";
 
 const state: ISideBarState = {
   folderTree: {},
+  activeItem: "",
   files: {
     folderDir: "",
     ignoreFile: [".DS_Store", "desktop.ini", ".CONFIG", "node_modules"],
@@ -63,7 +64,11 @@ const mutations: MutationTree<ISideBarState> = {
       p = p[i].file;
     });
   },
+  CHOOSE_ITEM: (moduleState: ISideBarState, path: string) => {
+    moduleState.activeItem = path;
+  },
   TOGGLE_FOLDER: (moduleState: ISideBarState, path: string) => {
+    moduleState.activeItem = path;
     let p = moduleState.folderTree;
     let r!: ITreeItem;
     path.split("/").forEach((i) => {
@@ -86,7 +91,7 @@ const mutations: MutationTree<ISideBarState> = {
 
 const actions: ActionTree<ISideBarState, IRootState> = {
   /**
-   * 选择笔记文件夹打开
+   * 点击按钮，选择笔记文件夹打开
    */
   OPEN_FOLDER: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     remote.dialog
@@ -115,7 +120,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
     });
   },
   /**
-   * 加载设置中 `folderDir` 保存的文件树
+   * 加载设置中 `folderDir` 保存的 JSON 文件树
    * - 不为空，则在初始化时加载
    * - 若为空，则表明新建窗口，需要手动指定文件夹，通过 `OPEN_FOLDER()` 加载
    */
@@ -151,7 +156,10 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       )
       .then((res) => {
         // TODO 通知
-        moduleState.dispatch("");
+        moduleState.commit("notification/INFO", { root: true });
+      })
+      .catch((err) => {
+        moduleState.commit("notification/SET_ERROR", err, { root: true });
       });
   },
   CHECK_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {},

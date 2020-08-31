@@ -27,6 +27,7 @@
           :itemData="data"
           :isIndent="isIndent"
           :treeDeepth="1"
+          :activeItem="activeItem"
           @toggle="TOGGLE_FOLDER($event)"
         />
       </vue-custom-scrollbar>
@@ -42,7 +43,7 @@ import vueCustomScrollbar from "vue-custom-scrollbar";
 import draggable from "vuedraggable";
 import * as fse from "fs-extra";
 
-import TreeItem from "@/view/SideBar/Files/TreeItem/Index.vue";
+import TreeItem from "./TreeItem.vue";
 import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
 import { BUS_FILE } from "@/common/bus-channel";
 import { hasKeys } from "@/common/utils";
@@ -74,6 +75,12 @@ export default class Files extends Vue {
 
   @sideBar.State((state: ISideBarState) => state.folderTree)
   folderTree!: ITreeItem;
+
+  @sideBar.State((state: ISideBarState) => state.activeItem)
+  activeItem!: string;
+
+  @sideBar.Mutation("CHOOSE_ITEM")
+  CHOOSE_ITEM!: (path: string) => void;
 
   @sideBar.Mutation("TOGGLE_FOLDER")
   TOGGLE_FOLDER!: (path: string) => void;
@@ -108,6 +115,7 @@ export default class Files extends Vue {
   mounted() {
     this.$bus.$on(BUS_FILE.OPEN_FILE, (value: string) => {
       this.OPEN_FILE(joinPath(this.folderDir, value));
+      this.CHOOSE_ITEM(value);
     });
   }
 

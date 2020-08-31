@@ -122,7 +122,7 @@ ul {
 
     & > li {
       background-color: rgba(227, 233, 209, 0.5); // DEV
-      border-left: 0.5px solid rgba(180, 180, 180, 0.5); // DEV
+      border-right: 1px solid rgba(200, 200, 200, 0.2); // DEV
       padding: 0 1.5em 0 0.8em;
       position: relative;
 
@@ -152,7 +152,6 @@ ul {
       &.current {
         background-color: rgba(225, 235, 197, 0.7); // DEV
         border-bottom: 1px solid rgb(4, 174, 38);
-        border-left: 0.5px solid rgba(230, 230, 230, 0.5);
       }
 
       &.ghost {

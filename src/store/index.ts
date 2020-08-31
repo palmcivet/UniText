@@ -35,7 +35,7 @@ export default new Vuex.Store({
       rootState.general.appearance = appearance;
       rootState.general.editor = editor;
       rootState.sideBar.files = files;
-      // TODO 余下设置
+      // TODO 解析余下设置
     },
   },
   actions: {

@@ -1,6 +1,11 @@
 <template>
   <li>
-    <div v-if="isFile" class="file" @click.stop="openFile(itemData.path)">
+    <div
+      v-if="isFile"
+      class="file"
+      :class="itemData.path === activeItem ? 'active' : ''"
+      @click.stop="handleOpenFile(itemData.path)"
+    >
       <div
         v-for="i in treeDeepth - 1"
         class="indent"
@@ -16,7 +21,11 @@
     </div>
 
     <div v-else class="directory">
-      <div class="folder" @click="$emit('toggle', itemData.path)">
+      <div
+        class="folder"
+        :class="itemData.path === activeItem ? 'active' : ''"
+        @click="handleToggle(itemData.path)"
+      >
         <div
           class="indent"
           v-for="i in treeDeepth - 1"
@@ -37,8 +46,9 @@
           :itemName="subName"
           :itemData="subData"
           :isIndent="isIndent"
+          :activeItem="activeItem"
           :treeDeepth="treeDeepth + 1"
-          @toggle="$emit('toggle', $event)"
+          @toggle="handleToggle($event)"
         />
       </ul>
     </div>
@@ -74,6 +84,11 @@ export default class TreeItem extends Vue {
   isIndent!: boolean;
 
   @Prop({
+    type: String,
+  })
+  activeItem!: string;
+
+  @Prop({
     type: Number,
     default: 1,
   })
@@ -98,7 +113,11 @@ export default class TreeItem extends Vue {
     }
   }
 
-  openFile(value: string) {
+  handleToggle(value: string) {
+    this.$emit("toggle", value);
+  }
+
+  handleOpenFile(value: string) {
     this.$bus.$emit(BUS_FILE.OPEN_FILE, value);
   }
 }
@@ -155,6 +174,10 @@ pre {
 
 .file:hover,
 .folder:hover {
-  background-color: #ecdeb4;
+  background-color: #e8e7e1;
+}
+
+.active {
+  background-color: #e2e1da;
 }
 </style>
