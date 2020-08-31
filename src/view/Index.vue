@@ -28,7 +28,6 @@ import { debounce } from "@/common/utils";
 import { BUS_UI } from "@/common/bus-channel";
 
 const general = namespace("general");
-const sideBar = namespace("sideBar");
 
 @Component({
   name: "App",
@@ -46,12 +45,6 @@ export default class App extends Vue {
 
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
-
-  @general.Action("CHECK_UPDATE")
-  CHECK_UPDATE!: () => void;
-
-  @sideBar.Action("LOAD_TREE")
-  LOAD_TREE!: () => void;
 
   leftViewWidth = 200;
 
@@ -72,9 +65,6 @@ export default class App extends Vue {
   handleResize = () => this.$bus.$emit(BUS_UI.SYNC_RESIZE);
 
   mounted() {
-    // this.CHECK_UPDATE();
-    this.LOAD_TREE();
-
     this.$nextTick(() => {
       const { leftResize, rightResize } = this.$refs;
 

@@ -121,17 +121,23 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    */
   LOAD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     const dir = moduleState.state.files.folderDir;
+
     if (dir !== "") {
       const tree = joinPath(dir, CONFIG_FILE.TREE);
-      fse.pathExists(tree).then((isExit) => {
-        if (isExit) {
-          fse.readJSON(dir).then((res) => {
+      if (fse.pathExistsSync(tree)) {
+        fse
+          .readJSON(tree)
+          .then((res) => {
+            // TODO check and validate
+            // moduleState.commit("notification/SET_ERROR", { root: true });
             moduleState.commit("SET_TREE", res);
+          })
+          .catch((err) => {
+            moduleState.commit("notification/SET_ERROR", err, { root: true });
           });
-        } else {
-          moduleState.dispatch("BUILD_TREE");
-        }
-      });
+      } else {
+        moduleState.dispatch("BUILD_TREE");
+      }
     }
   },
   /**

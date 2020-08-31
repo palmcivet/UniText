@@ -43,11 +43,14 @@ export default new Vuex.Store({
      * 加载、校验笔记文件夹的设置文件
      */
     LOAD_SETTING: (
-      moduleState: ActionContext<IRootState, IRootState>,
-      path: string = moduleState.state.sideBar.files.folderDir
+      rootState: ActionContext<IRootState, IRootState>,
+      path: string = rootState.state.sideBar.files.folderDir
     ) => {
       const setting = loadSetting(path);
-      moduleState.commit("SYNC_SETTING", setting);
+      rootState.commit("SYNC_SETTING", setting);
+      /* 以下为初始化工作 */
+      rootState.dispatch("sideBar/LOAD_TREE");
+      // moduleState.dispatch("general/CHECK_UPDATE");
     },
   },
 });
