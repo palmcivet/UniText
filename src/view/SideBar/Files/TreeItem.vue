@@ -13,11 +13,10 @@
         :key="i"
       />
       <pre class="icon" />
-      <pre class="space" />
-      <!-- FEAT -->
+      <!-- FEAT 图标 -->
       <i class="ri-markdown-line"></i>
       <pre class="space" />
-      {{ `${suffix ? trimSuffix(itemName) : itemName}` }}
+      {{ trimSuffix(itemName) }}
     </div>
 
     <div v-else class="directory">
@@ -33,7 +32,6 @@
           :key="i"
         />
         <i :class="itemData.fold ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
-        <pre class="space" />
         <i :class="!itemData.fold ? 'ri-folder-open-line' : 'ri-folder-2-line'" />
         <pre class="space" />
         {{ itemName }}
@@ -57,14 +55,21 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { ITreeItem } from "@/interface/vuex/modules/sideBar";
+import { namespace } from "vuex-class";
+
+import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
 import { BUS_FILE } from "@/common/bus-channel";
 import { hasKeys } from "@/common/utils";
+
+const sideBar = namespace("sideBar");
 
 @Component({
   name: "TreeItem",
 })
 export default class TreeItem extends Vue {
+  @sideBar.State((state: ISideBarState) => state.activeItem)
+  activeItem!: string;
+
   @Prop({
     type: String,
     required: true,
@@ -84,11 +89,6 @@ export default class TreeItem extends Vue {
   isIndent!: boolean;
 
   @Prop({
-    type: String,
-  })
-  activeItem!: string;
-
-  @Prop({
     type: Number,
     default: 1,
   })
@@ -105,6 +105,7 @@ export default class TreeItem extends Vue {
   }
 
   trimSuffix(value: string) {
+    if (!this.suffix) return value;
     const index = value.indexOf(".md");
     if (index !== -1) {
       return value.substring(0, index);

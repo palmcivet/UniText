@@ -27,7 +27,6 @@
           :itemData="data"
           :isIndent="isIndent"
           :treeDeepth="1"
-          :activeItem="activeItem"
           @toggle="TOGGLE_FOLDER($event)"
         />
       </vue-custom-scrollbar>
@@ -36,12 +35,10 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer, IpcRendererEvent, remote } from "electron";
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
 import vueCustomScrollbar from "vue-custom-scrollbar";
 import draggable from "vuedraggable";
-import * as fse from "fs-extra";
 
 import TreeItem from "./TreeItem.vue";
 import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
@@ -75,9 +72,6 @@ export default class Files extends Vue {
 
   @sideBar.State((state: ISideBarState) => state.folderTree)
   folderTree!: ITreeItem;
-
-  @sideBar.State((state: ISideBarState) => state.activeItem)
-  activeItem!: string;
 
   @sideBar.Mutation("CHOOSE_ITEM")
   CHOOSE_ITEM!: (path: string) => void;
@@ -135,7 +129,7 @@ section {
 
   > header {
     color: #252525;
-    background-color: rgb(251, 255, 227);
+    background-color: rgb(235, 238, 225);
     box-shadow: 0px 1px 5px rgba(222, 241, 185, 0.6);
 
     > div {
@@ -143,7 +137,7 @@ section {
 
       > span,
       > i {
-        line-height: 24px;
+        line-height: 20px;
         margin-left: 3px;
       }
 
@@ -158,7 +152,7 @@ section {
   }
 
   > div {
-    height: calc(100% - 25px);
+    height: calc(100% - 20px);
     position: relative;
 
     > button {
