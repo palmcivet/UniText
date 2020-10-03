@@ -1,13 +1,14 @@
-import { app, BrowserWindow, Menu, ipcMain } from "electron";
+import { app, BrowserWindow, Menu, ipcMain, remote } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-import { generateMenu } from "./menu";
 import { IBootArgs, EWindow, TStore } from "@/interface/bootstrap";
 import { isDev, isOsx, isWin } from "@/common/env";
 import { IPC_BOOTSTRAP } from "@/common/ipc-channel";
 import { loadSetting } from "@/common/preference";
+import { getDockMenu } from "@/app/main/menu/dock";
+import { getTopMenu } from "@/app/main/menu/top";
 
 export class App {
   /**
@@ -108,8 +109,11 @@ export class App {
     let win: BrowserWindow | null = new BrowserWindow(winOption);
     win.setTitle("UniText");
 
-    const menu = generateMenu(win, this.locale);
-    Menu.setApplicationMenu(menu);
+    /* 添加菜单，上下文菜单在 IPC */
+    const topMenu = getTopMenu(win, this.locale);
+    const dockMenu = getDockMenu(win, this.locale);
+    Menu.setApplicationMenu(topMenu);
+    app.dock.setMenu(dockMenu);
 
     /* 加载开发工具 */
     if (process.env.WEBPACK_DEV_SERVER_URL) {

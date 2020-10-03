@@ -14,7 +14,7 @@
         :key="v.order"
         :class="v.order === openedFile ? 'current' : ''"
         @click.stop="selectTab(v.order)"
-        @contextmenu.prevent=""
+        @contextmenu="handleContextTab()"
       >
         <span>{{ v.value }}</span>
         <i class="ri-close-line" @click.stop="closeTab(v.order)"></i>
@@ -24,8 +24,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { remote } from "electron";
 import draggable from "vuedraggable";
+import { State, namespace } from "vuex-class";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { TContext } from "@/app/main/menu/context";
+
+const general = namespace("general");
 
 @Component({
   name: "Tabs",
@@ -34,6 +39,9 @@ import draggable from "vuedraggable";
   },
 })
 export default class Tabs extends Vue {
+  @general.State("context")
+  context!: TContext;
+
   @Prop({
     type: String,
     required: true,
@@ -94,6 +102,12 @@ export default class Tabs extends Vue {
     const tabs = this.tabRef;
     const newLeft = Math.max(0, Math.min(tabs.scrollLeft + delta, tabs.scrollWidth));
     tabs.scrollLeft = newLeft;
+  }
+
+  handleContextTab() {
+    this.context.tab.popup({
+      window: remote.getCurrentWindow(),
+    });
   }
 
   created() {

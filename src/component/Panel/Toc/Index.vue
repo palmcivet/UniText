@@ -12,7 +12,8 @@
       <li
         v-for="(item, index) in tocTree"
         :key="index"
-        @click.stop="revealLine(item.line)"
+        @click.stop="handleRevealLine(item.line)"
+        @contextmenu="handleContextToc(item)"
       >
         <div v-for="i in item.level - firstLevel" :key="i" />
         <pre></pre>
@@ -27,10 +28,13 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import vueCustomScrollbar from "vue-custom-scrollbar";
 import { State, namespace } from "vuex-class";
 
+import { TContext } from "@/app/main/menu/context";
 import { ITocList } from "@/common/editor/create-toc";
 import { BUS_TOC } from "@/common/bus-channel";
+import { remote } from "electron";
 
 const panel = namespace("panel");
+const general = namespace("general");
 
 @Component({
   name: "Toc",
@@ -49,8 +53,17 @@ export default class Toc extends Vue {
   @panel.Mutation("SYNC_TOC")
   SYNC_TOC!: (value: Array<ITocList>) => void;
 
-  revealLine(value: Array<number>) {
+  @general.State("context")
+  context!: TContext;
+
+  handleRevealLine(value: Array<number>) {
     this.$bus.$emit(BUS_TOC.REVEAL_SECTION, value);
+  }
+
+  handleContextToc(value: ITocList) {
+    this.context.toc.popup({
+      window: remote.getCurrentWindow(),
+    });
   }
 
   mounted() {

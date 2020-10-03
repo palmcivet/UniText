@@ -10,6 +10,8 @@ import notification from "./modules/notification";
 import { loadSetting } from "@/common/preference";
 import { IRootState } from "@/interface/vuex";
 import { TStore } from "@/interface/bootstrap";
+import { Menu } from "electron";
+import { TContext } from "@/app/main/menu/context";
 
 Vue.use(Vuex);
 
@@ -36,6 +38,9 @@ export default new Vuex.Store({
       rootState.general.editor = editor;
       rootState.sideBar.files = files;
       // TODO 解析余下设置
+    },
+    LOAD_CONTEXT: (rootState: IRootState, context: TContext) => {
+      rootState.general.context = context;
     },
   },
   actions: {

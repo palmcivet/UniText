@@ -140,14 +140,7 @@ article {
   display: flex;
 
   & > span {
-    width: 1.7px;
-    height: 100%;
-    cursor: col-resize;
-    background-color: rgba(255, 255, 255, 0.6);
-
-    &:hover {
-      border-right: @resize-bar;
-    }
+    #res();
   }
 }
 </style>

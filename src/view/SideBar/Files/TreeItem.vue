@@ -5,6 +5,7 @@
       class="file"
       :class="itemData.path === activeItem ? 'active' : ''"
       @click.stop="handleOpenFile(itemData.path)"
+      @contextmenu="handleContextFile()"
     >
       <div
         v-for="i in treeDeepth - 1"
@@ -24,6 +25,7 @@
         class="folder"
         :class="itemData.path === activeItem ? 'active' : ''"
         @click="handleToggle(itemData.path)"
+        @contextmenu="handleContextFolder()"
       >
         <div
           class="indent"
@@ -56,12 +58,15 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { remote } from "electron";
 
 import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
+import { TContext } from "@/app/main/menu/context";
 import { BUS_FILE } from "@/common/bus-channel";
 import { hasKeys } from "@/common/utils";
 
 const sideBar = namespace("sideBar");
+const general = namespace("general");
 
 @Component({
   name: "TreeItem",
@@ -69,6 +74,9 @@ const sideBar = namespace("sideBar");
 export default class TreeItem extends Vue {
   @sideBar.State((state: ISideBarState) => state.activeItem)
   activeItem!: string;
+
+  @general.State("context")
+  context!: TContext;
 
   @Prop({
     type: String,
@@ -121,6 +129,18 @@ export default class TreeItem extends Vue {
   handleOpenFile(value: string) {
     this.$bus.$emit(BUS_FILE.OPEN_FILE, value);
   }
+
+  handleContextFile() {
+    this.context.file.popup({
+      window: remote.getCurrentWindow(),
+    });
+  }
+
+  handleContextFolder() {
+    this.context.folder.popup({
+      window: remote.getCurrentWindow(),
+    });
+  }
 }
 </script>
 
@@ -152,6 +172,7 @@ pre {
 .folder {
   width: 100%;
   display: flex;
+  height: @line-height;
   line-height: @line-height;
 
   /deep/ i,
@@ -167,6 +188,7 @@ pre {
 .indent {
   width: 0.5em;
   margin-right: 0.2em;
+  border-right: 0.1px solid rgba(255, 255, 255, 0);
 }
 
 .indent-show {

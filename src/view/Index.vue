@@ -125,7 +125,6 @@ export default class App extends Vue {
 .layout-main,
 .layout-footer {
   background: #efefef;
-  width: 100vw;
 }
 
 .layout-main {
@@ -156,13 +155,7 @@ export default class App extends Vue {
 
 .layout-main {
   span {
-    width: 1.5px;
-    height: 100%;
-    cursor: col-resize;
-  }
-
-  .left-side-bar span:hover {
-    border-right: @resize-bar;
+    #res();
   }
 }
 </style>

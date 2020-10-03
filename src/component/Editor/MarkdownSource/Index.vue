@@ -110,7 +110,7 @@ export default class MarkdownSource extends Vue {
     this.refPreview = $("#markdown-preview");
     this.refEditor = $("#markdown-editor");
 
-    monaco.editor.defineTheme("GrideaLight", theme);
+    monaco.editor.defineTheme("CyanLight", theme);
 
     this.editor = monaco.editor.create(this.refEditor, init);
 
@@ -124,9 +124,7 @@ export default class MarkdownSource extends Vue {
 
     this.$nextTick(() => {
       /* 切换标签触发函数 */
-      this.editor.onDidChangeModelContent((e: monaco.editor.IModelContentChangedEvent) =>
-        this.syncPreOrToc(this)
-      );
+      this.editor.onDidChangeModelContent(() => this.syncPreOrToc(this));
 
       /* 以下为实时渲染 */
 
@@ -336,7 +334,7 @@ export default class MarkdownSource extends Vue {
 #markdown-preview {
   height: 100%;
   overflow: auto;
-  padding: 14px 1em;
+  padding-left: 1em;
   background-color: #fafafa;
   font-family: @normal-font-family;
   font-size: @preview-font-size;

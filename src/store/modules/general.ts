@@ -11,6 +11,7 @@ import { IRootState } from "@/interface/vuex/index";
 import * as pkg from "@/../package.json";
 
 const state: IGeneralState = {
+  context: {},
   setting: {},
   snippet: {},
   keybinding: {},

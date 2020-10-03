@@ -3,7 +3,7 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 export const init: monaco.editor.IEditorConstructionOptions = {
   language: "markdown-math",
   fontSize: 16,
-  theme: "GrideaLight",
+  theme: "CyanLight",
   lineNumbers: "on",
   minimap: {
     enabled: false,

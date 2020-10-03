@@ -71,9 +71,9 @@ export default class Panel extends Vue {
 
   minHeight = 100;
 
-  maxHeight = 900;
+  maxHeight = 600;
 
-  panelHeight = 60;
+  panelHeight = 120;
 
   panelAxis = {
     x: 1080,
@@ -158,7 +158,6 @@ section {
   > div {
     position: absolute;
     z-index: 99;
-    box-shadow: 0px 0px 6px 1px #cfe8e89e;
     border-radius: 2px;
   }
 
@@ -166,6 +165,7 @@ section {
     width: 150px;
     display: flex;
     flex-direction: column;
+    box-shadow: -3px 3px 10px #e6e6e6;
 
     > span {
       width: 100%;
@@ -173,6 +173,7 @@ section {
 
       &:first-child {
         height: 7px;
+        background-color: #f0f0f0;
         cursor: grab;
       }
 
