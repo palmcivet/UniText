@@ -3,7 +3,7 @@ import crypto from "crypto";
 
 export function debounce(fn: Function, delay: number = 1000) {
   let timeout: NodeJS.Timeout | null;
-  return function(this: any, ...args: any[]) {
+  return function(this: any, ...args: Array<any>) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       fn.apply(this, args);
@@ -14,7 +14,7 @@ export function debounce(fn: Function, delay: number = 1000) {
 
 export function throttle(fn: Function, delay: number = 1000): Function {
   let canRun = true;
-  return function(this: any, ...args: any[]) {
+  return function(this: any, ...args: Array<any>) {
     if (!canRun) return;
     canRun = false;
     setTimeout(() => {
@@ -27,6 +27,8 @@ export function throttle(fn: Function, delay: number = 1000): Function {
 export const $ = (q: string) => document.querySelector(q) as HTMLElement;
 
 export const hasKeys = (obj: object) => Object.keys(obj).length > 0;
+
+export const notEmpty = (arr: Array<any>) => arr.length !== 0;
 
 export const cloneObj = (obj: object, deepCopy = true) => {
   return deepCopy ? JSON.parse(JSON.stringify(obj)) : Object.assign({}, obj);

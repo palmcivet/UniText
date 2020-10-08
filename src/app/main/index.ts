@@ -2,7 +2,7 @@ import { app, protocol } from "electron";
 import * as fse from "fs-extra";
 
 import { App } from "./app";
-import { joinPath } from "@/common/main/files";
+import { joinPath } from "@/common/files/files";
 import { IBootArgs } from "@/interface/bootstrap";
 
 protocol.registerSchemesAsPrivileged([

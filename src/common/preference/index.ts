@@ -2,7 +2,7 @@ import Store from "electron-store";
 import * as fse from "fs-extra";
 
 import { TStore } from "@/interface/bootstrap";
-import { joinPath } from "@/common/main/files";
+import { joinPath } from "@/common/files/files";
 import { CONFIG_FILE } from "../env";
 import settingSchema from "./setting.json";
 

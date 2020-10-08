@@ -10,7 +10,6 @@ import notification from "./modules/notification";
 import { loadSetting } from "@/common/preference";
 import { IRootState } from "@/interface/vuex";
 import { TStore } from "@/interface/bootstrap";
-import { Menu } from "electron";
 import { TContext } from "@/app/main/menu/context";
 
 Vue.use(Vuex);
@@ -39,6 +38,10 @@ export default new Vuex.Store({
       rootState.sideBar.files = files;
       // TODO 解析余下设置
     },
+    /**
+     * 初始化上下文菜单
+     * @param context 上下文菜单的集合
+     */
     LOAD_CONTEXT: (rootState: IRootState, context: TContext) => {
       rootState.general.context = context;
     },
@@ -55,7 +58,7 @@ export default new Vuex.Store({
       rootState.commit("SYNC_SETTING", setting);
       /* 以下为初始化工作 */
       rootState.dispatch("sideBar/LOAD_TREE");
-      // moduleState.dispatch("general/CHECK_UPDATE");
+      // rootState.dispatch("general/CHECK_UPDATE");
     },
   },
 });

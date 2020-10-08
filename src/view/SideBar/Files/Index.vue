@@ -9,27 +9,36 @@
       </div>
     </header>
 
-    <div v-if="isEmptyFolder">
+    <div v-if="isEmptyFolder" class="blank">
       <button @click="OPEN_FOLDER()">打开文件夹</button>
     </div>
-    <div v-else @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
-      <vue-custom-scrollbar
-        tagname="ul"
-        :settings="{
-          swipeEasing: 'true',
-          scrollingThreshold: '300',
-        }"
-      >
+
+    <div
+      v-else
+      class="wrapper"
+      ref="scrollList"
+      @mousewheel="handleScroll($event)"
+      @mouseenter="handleMouseEnter()"
+      @mouseleave="handleMouseLeave()"
+    >
+      <ul class="list-container" :style="{ transform: `translateY(${reviseOffset}px` }">
         <tree-item
-          v-for="(data, name) in folderTree"
-          :key="data.order"
-          :itemName="name"
-          :itemData="data"
+          v-for="(item, idx) in visibleList"
+          :key="idx"
+          :index="idx"
+          :payload="item"
           :isIndent="isIndent"
-          :treeDeepth="1"
-          @toggle="TOGGLE_FOLDER($event)"
         />
-      </vue-custom-scrollbar>
+      </ul>
+      <div v-show="isOverLength" class="scroll-track">
+        <div
+          class="scroll-thumb"
+          :style="{
+            marginTop: `${scrollBarTop}px`,
+            height: `${thumbHeight}px`,
+          }"
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -37,23 +46,23 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { State, namespace } from "vuex-class";
-import vueCustomScrollbar from "vue-custom-scrollbar";
 import draggable from "vuedraggable";
 
 import TreeItem from "./TreeItem.vue";
-import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
-import { BUS_FILE } from "@/common/bus-channel";
-import { hasKeys } from "@/common/utils";
-import { joinPath } from "@/common/main/files";
+import { ICacheTree, ILogicTree, ISideBarState } from "@/interface/vuex/modules/sideBar";
+import { BUS_FILE, BUS_UI } from "@/common/bus-channel";
+import { notEmpty } from "@/common/utils";
+import { joinPath } from "@/common/files/files";
 
 const workBench = namespace("workBench");
 const sideBar = namespace("sideBar");
+
+const LINE_HEIGHT = 20.8;
 
 @Component({
   name: "File",
   components: {
     draggable,
-    vueCustomScrollbar,
     TreeItem,
   },
 })
@@ -67,17 +76,11 @@ export default class Files extends Vue {
   @sideBar.State((state: ISideBarState) => state.files.showIndent)
   showIndent!: boolean;
 
-  @sideBar.State((state: ISideBarState) => state.files.defaultFold)
-  defaultFold!: boolean;
-
-  @sideBar.State((state: ISideBarState) => state.folderTree)
-  folderTree!: ITreeItem;
+  @sideBar.Getter("logicTree")
+  fileList!: ILogicTree;
 
   @sideBar.Mutation("CHOOSE_ITEM")
   CHOOSE_ITEM!: (path: string) => void;
-
-  @sideBar.Mutation("TOGGLE_FOLDER")
-  TOGGLE_FOLDER!: (path: string) => void;
 
   @sideBar.Mutation("TOGGLE_ALL")
   TOGGLE_ALL!: (isOnce: boolean) => void;
@@ -85,13 +88,80 @@ export default class Files extends Vue {
   @sideBar.Action("OPEN_FOLDER")
   OPEN_FOLDER!: () => void;
 
+  /**
+   * @member 可见区域的长度，需挂载后根据父容器确定
+   */
+  visibleHeight = 0;
+
+  /**
+   * @member 已滚动的高度
+   */
+  invisibleHeight = 0;
+
+  /**
+   * @member 文件列表逻辑上的长度
+   */
+  get logicalHeight() {
+    return this.fileList.length * LINE_HEIGHT;
+  }
+
+  /**
+   * @member 滚动条已滚动的高度，该命名区别于 `scrollTop`
+   */
+  get scrollBarTop() {
+    return (this.invisibleHeight * this.visibleHeight) / this.logicalHeight;
+  }
+
+  /**
+   * @member 可见区域能展示的数量
+   */
+  get visibleCount() {
+    return Math.ceil(this.visibleHeight / LINE_HEIGHT);
+  }
+
+  /**
+   * @member 实际渲染的文件列表
+   */
+  get visibleList() {
+    return this.fileList.slice(
+      this.visibleListStart,
+      Math.min(this.visibleListEnd, this.fileList.length)
+    );
+  }
+
+  /**
+   * @member 滚动条的长度。thumb / track = track / height
+   */
+  get thumbHeight() {
+    return (this.visibleHeight * this.visibleHeight) / this.logicalHeight;
+  }
+
+  /**
+   * @member 判断是否打开文件夹
+   */
+  get isEmptyFolder() {
+    return !notEmpty(this.fileList);
+  }
+
+  /**
+   * @member 判断是否需要显示滚动条
+   */
+  get isOverLength() {
+    return this.logicalHeight > this.visibleHeight;
+  }
+
   isIndent = false;
 
   isOnce = true;
 
-  get isEmptyFolder() {
-    return !hasKeys(this.folderTree);
-  }
+  /**
+   * @member 滚动交界处修正的偏移
+   */
+  reviseOffset = 0;
+
+  visibleListStart = 0;
+
+  visibleListEnd = 0;
 
   toggleAll() {
     this.TOGGLE_ALL(this.isOnce);
@@ -106,11 +176,47 @@ export default class Files extends Vue {
     this.showIndent && (this.isIndent = false);
   }
 
+  handleScroll(value: MouseWheelEvent) {
+    if (!this.isOverLength) {
+      return;
+    }
+
+    if (this.invisibleHeight + value.deltaY < 0) {
+      this.invisibleHeight = 0;
+      this.reviseOffset = 0;
+      this.visibleListStart = 0;
+      this.visibleListEnd = this.visibleCount;
+    } else if (
+      this.invisibleHeight + value.deltaY >
+      this.logicalHeight - this.visibleHeight
+    ) {
+      this.invisibleHeight = this.logicalHeight - this.visibleHeight;
+      this.visibleListEnd = this.fileList.length;
+      this.visibleListStart = this.visibleListEnd - this.visibleCount;
+      this.reviseOffset = 0;
+    } else {
+      this.invisibleHeight += value.deltaY;
+      this.visibleListStart = Math.floor(this.invisibleHeight / LINE_HEIGHT);
+      this.visibleListEnd = this.visibleListStart + this.visibleCount;
+      this.reviseOffset = LINE_HEIGHT - (this.invisibleHeight % LINE_HEIGHT);
+    }
+  }
+
   mounted() {
     this.$bus.$on(BUS_FILE.OPEN_FILE, (value: string) => {
       this.OPEN_FILE(joinPath(this.folderDir, value));
       this.CHOOSE_ITEM(value);
     });
+
+    /* 监听窗口缩放事件 */
+    this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
+      this.visibleHeight = (this.$refs.scrollList as Element).clientHeight;
+    });
+
+    setTimeout(() => {
+      this.visibleHeight = (this.$refs.scrollList as Element).clientHeight;
+      this.visibleListEnd = this.visibleListStart + this.visibleCount;
+    }, 400);
   }
 
   beforeDestroy() {
@@ -154,23 +260,48 @@ section {
   > div {
     height: calc(100% - 20px);
     position: relative;
+    display: flex;
 
-    > button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      padding: 0.5em;
-      transform: translate(-50%, 50%);
-      color: whitesmoke;
-      background-color: #55aaf3;
-      box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
-      border-radius: 2px;
-      outline-style: none;
-      -webkit-user-select: none;
+    &.blank {
+      button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        padding: 0.5em;
+        transform: translate(-50%, 50%);
+        color: whitesmoke;
+        background-color: #55aaf3;
+        box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
+        border-radius: 2px;
+        outline-style: none;
+        -webkit-user-select: none;
+      }
     }
 
-    > ul {
-      height: 100%;
+    &.wrapper {
+      .list-container {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .scroll-track {
+        height: 100%;
+        position: absolute;
+        right: 0;
+        z-index: 2;
+        background-color: rgba(228, 228, 228, 0.5);
+
+        .scroll-thumb {
+          width: 6px;
+          border-radius: 2px;
+          background-color: rgba(225, 235, 197, 0.7);
+          display: block;
+
+          &:hover {
+            background-color: #d3e79c;
+          }
+        }
+      }
     }
   }
 }

@@ -67,7 +67,7 @@ export interface IBootArgs {
   /**
    * @field 错误信息堆栈
    */
-  error: any[];
+  error: Array<any>;
 }
 
 export enum EWindow {

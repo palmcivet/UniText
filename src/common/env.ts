@@ -1,4 +1,4 @@
-import { joinPath } from "./main/files";
+import { joinPath } from "./files/files";
 
 export const isOsx = process.platform === "darwin";
 export const isWin = process.platform === "win32";

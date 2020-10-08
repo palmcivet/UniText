@@ -2,13 +2,15 @@ import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import { remote } from "electron";
 import * as fse from "fs-extra";
 
-import { ISideBarState, ITree, ITreeItem } from "@/interface/vuex/modules/sideBar";
+import { ISideBarState } from "@/interface/vuex/modules/sideBar";
 import { IRootState } from "@/interface/vuex/index";
 import { CONFIG_FILE } from "@/common/env";
-import { joinPath } from "@/common/main/files";
+import { FileManager } from "@/common/files/FileManager";
+import { joinPath } from "@/common/files/files";
 
 const state: ISideBarState = {
-  folderTree: {},
+  fileManager: new FileManager(),
+
   activeItem: "",
   files: {
     folderDir: "",
@@ -22,70 +24,25 @@ const state: ISideBarState = {
   tags: {},
 };
 
-const buildTree = async (
-  fileTree: ITree,
-  base: string,
-  path: string,
-  ignore: string[]
-) => {
-  const res = await fse.readdir(joinPath(base, path));
-
-  res.forEach((item, idx) => {
-    if (ignore.indexOf(item) !== -1) return;
-    const isDir = fse.lstatSync(joinPath(base, path, item)).isDirectory();
-    const subPath = joinPath(path, item);
-    const subTree = {
-      order: idx,
-      icon: isDir ? "folder" : "file",
-      fold: true,
-      path: subPath,
-      file: {},
-    };
-    fileTree[item] = subTree;
-    if (isDir) {
-      return buildTree(subTree.file, base, subPath, ignore);
-    }
-  });
+const getters: GetterTree<ISideBarState, IRootState> = {
+  cacheTree: (moduleState: ISideBarState) => moduleState.fileManager.cacheTree,
+  logicTree: (moduleState: ISideBarState) => moduleState.fileManager.logicTree,
 };
-
-const getters: GetterTree<ISideBarState, IRootState> = {};
 
 const mutations: MutationTree<ISideBarState> = {
   SET_FOLDER: (moduleState: ISideBarState, path: string) => {
     moduleState.files.folderDir = path;
   },
-  SET_TREE: (moduleState: ISideBarState, tree: ITree) => {
-    moduleState.folderTree = tree;
-  },
-  REVEAL_FILE: (moduleState: ISideBarState, path: string) => {
-    let p = moduleState.folderTree;
-    path.split("/").forEach((i) => {
-      p[i].fold = false;
-      p = p[i].file;
-    });
-  },
   CHOOSE_ITEM: (moduleState: ISideBarState, path: string) => {
     moduleState.activeItem = path;
   },
-  TOGGLE_FOLDER: (moduleState: ISideBarState, path: string) => {
-    moduleState.activeItem = path;
-    let p = moduleState.folderTree;
-    let r!: ITreeItem;
-    path.split("/").forEach((i) => {
-      r = p[i];
-      p = p[i].file;
-    });
-    r.fold = !r.fold;
+  REVEAL_FILE: (moduleState: ISideBarState, path: string) => {},
+  TOGGLE_FOLDER: (moduleState: ISideBarState, idx: number) => {
+    moduleState.fileManager.toggleFolder(idx);
   },
-  TOGGLE_ALL: (moduleState: ISideBarState, isOnce: boolean) => {
-    let t = moduleState.folderTree;
-    if (isOnce) {
-      for (const f in t) {
-        t[f].fold = true;
-      }
-    } else {
-      // TODO traverse
-    }
+  TOGGLE_ALL: (moduleState: ISideBarState, isOnce: boolean) => {},
+  BUILD_LIST: (moduleState: ISideBarState) => {
+    moduleState.fileManager.buildLogicTree();
   },
 };
 
@@ -107,17 +64,14 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    * 构建文件树
    */
   BUILD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    const fileTree: ITree = {};
-    buildTree(
-      fileTree,
+    moduleState.state.fileManager.buildCacheTree(
       moduleState.state.files.folderDir,
       "",
       moduleState.state.files.ignoreFile
-    ).then(() => {
-      setTimeout(() => {
-        moduleState.commit("SET_TREE", fileTree);
-      }, 200);
-    });
+    );
+    setTimeout(() => {
+      moduleState.commit("BUILD_LIST");
+    }, 400);
   },
   /**
    * 加载设置中 `folderDir` 保存的 JSON 文件树
@@ -126,20 +80,17 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    */
   LOAD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     const dir = moduleState.state.files.folderDir;
+    const fm = moduleState.state.fileManager;
 
     if (dir !== "") {
       const tree = joinPath(dir, CONFIG_FILE.TREE);
       if (fse.pathExistsSync(tree)) {
-        fse
-          .readJSON(tree)
-          .then((res) => {
-            // TODO check and validate
-            // moduleState.commit("notification/SET_ERROR", { root: true });
-            moduleState.commit("SET_TREE", res);
-          })
-          .catch((err) => {
-            moduleState.commit("notification/SET_ERROR", err, { root: true });
-          });
+        fm.loadTree(tree).then(() => {
+          // TODO check and validate
+          // moduleState.commit("notification/SET_ERROR", { root: true });
+          moduleState.commit("notification/SET_ERROR", fm.errReg, { root: true });
+          moduleState.commit("BUILD_LIST");
+        });
       } else {
         moduleState.dispatch("BUILD_TREE");
       }
@@ -152,7 +103,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
     fse
       .writeJSON(
         joinPath(moduleState.state.files.folderDir, CONFIG_FILE.TREE),
-        moduleState.state.folderTree
+        moduleState.state.fileManager.cacheTree
       )
       .then((res) => {
         // TODO 通知

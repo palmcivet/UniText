@@ -1,56 +1,42 @@
 <template>
   <li>
     <div
-      v-if="isFile"
+      v-if="payload.isFile"
       class="file"
-      :class="itemData.path === activeItem ? 'active' : ''"
-      @click.stop="handleOpenFile(itemData.path)"
+      :class="payload.path === activeItem ? 'active' : ''"
+      @click.stop="handleOpenFile(payload.path)"
       @contextmenu="handleContextFile()"
     >
       <div
-        v-for="i in treeDeepth - 1"
+        v-for="i in payload.tier"
         class="indent"
         :class="isIndent ? 'indent-show' : ''"
         :key="i"
       />
       <pre class="icon" />
       <!-- FEAT 图标 -->
-      <i class="ri-markdown-line"></i>
+      <i class="ri-markdown-line" />
       <pre class="space" />
-      {{ trimSuffix(itemName) }}
+      {{ trimSuffix(title) }}
     </div>
 
-    <div v-else class="directory">
+    <div
+      v-else
+      class="folder"
+      :class="payload.path === activeItem ? 'active' : ''"
+      @contextmenu="handleContextFolder()"
+      @click="TOGGLE_FOLDER(index)"
+    >
       <div
-        class="folder"
-        :class="itemData.path === activeItem ? 'active' : ''"
-        @click="handleToggle(itemData.path)"
-        @contextmenu="handleContextFolder()"
-      >
-        <div
-          class="indent"
-          v-for="i in treeDeepth - 1"
-          :class="isIndent ? 'indent-show' : ''"
-          :key="i"
-        />
-        <i :class="itemData.fold ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
-        <i :class="!itemData.fold ? 'ri-folder-open-line' : 'ri-folder-2-line'" />
-        <pre class="space" />
-        {{ itemName }}
-      </div>
-
-      <ul v-show="!itemData.fold">
-        <tree-item
-          v-for="(subData, subName) in itemData.file"
-          :key="subData.order"
-          :itemName="subName"
-          :itemData="subData"
-          :isIndent="isIndent"
-          :activeItem="activeItem"
-          :treeDeepth="treeDeepth + 1"
-          @toggle="handleToggle($event)"
-        />
-      </ul>
+        v-for="i in payload.tier"
+        class="indent"
+        :class="isIndent ? 'indent-show' : ''"
+        :key="i"
+      />
+      <i :class="payload.isFold ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
+      <i :class="!payload.isFold ? 'ri-folder-open-line' : 'ri-folder-2-line'" />
+      <pre class="space" />
+      {{ title }}
     </div>
   </li>
 </template>
@@ -60,7 +46,13 @@ import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { remote } from "electron";
 
-import { ITreeItem, ISideBarState } from "@/interface/vuex/modules/sideBar";
+import {
+  ICacheTree,
+  ICacheTreeItem,
+  ILogicTree,
+  ILogicTreeItem,
+  ISideBarState,
+} from "@/interface/vuex/modules/sideBar";
 import { TContext } from "@/app/main/menu/context";
 import { BUS_FILE } from "@/common/bus-channel";
 import { hasKeys } from "@/common/utils";
@@ -72,35 +64,14 @@ const general = namespace("general");
   name: "TreeItem",
 })
 export default class TreeItem extends Vue {
-  @sideBar.State((state: ISideBarState) => state.activeItem)
-  activeItem!: string;
-
   @general.State("context")
   context!: TContext;
 
-  @Prop({
-    type: String,
-    required: true,
-  })
-  itemName!: string;
+  @sideBar.State((state: ISideBarState) => state.activeItem)
+  activeItem!: string;
 
-  @Prop({
-    type: Object,
-    required: true,
-  })
-  itemData!: ITreeItem;
-
-  @Prop({
-    type: Boolean,
-    default: true,
-  })
-  isIndent!: boolean;
-
-  @Prop({
-    type: Number,
-    default: 1,
-  })
-  treeDeepth!: number;
+  @sideBar.Mutation("TOGGLE_FOLDER")
+  TOGGLE_FOLDER!: (idx: number) => void;
 
   @Prop({
     type: Boolean,
@@ -108,8 +79,31 @@ export default class TreeItem extends Vue {
   })
   suffix!: boolean;
 
-  get isFile() {
-    return !hasKeys(this.itemData.file);
+  @Prop({
+    type: Number,
+    default: true,
+  })
+  index!: number;
+
+  @Prop({
+    type: Object,
+    required: true,
+  })
+  payload!: ILogicTreeItem;
+
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  isIndent!: boolean;
+
+  get title() {
+    const addr = this.payload.path.lastIndexOf("/");
+    if (addr === -1) {
+      return this.payload.path;
+    } else {
+      return this.payload.path.slice(addr + 1);
+    }
   }
 
   trimSuffix(value: string) {
@@ -120,10 +114,6 @@ export default class TreeItem extends Vue {
     } else {
       return value;
     }
-  }
-
-  handleToggle(value: string) {
-    this.$emit("toggle", value);
   }
 
   handleOpenFile(value: string) {
@@ -179,10 +169,6 @@ pre {
   i {
     line-height: @line-height;
   }
-}
-
-.directory {
-  width: 100%;
 }
 
 .indent {

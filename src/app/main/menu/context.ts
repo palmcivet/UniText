@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu, remote } from "electron";
 import { localesMenuContext } from "@/app/i18n/menuContext";
 
-type TOption = (Electron.MenuItemConstructorOptions | Electron.MenuItem)[];
+type TOption = Array<Electron.MenuItemConstructorOptions | Electron.MenuItem>;
 
 export type TContext = {
   file: Menu;

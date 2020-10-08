@@ -8,7 +8,6 @@
     "DEV" // 开发时参数
   ],
   "todo-tree.highlights.defaultHighlight": {
-    "background": "",
     "type": "tag-comment",
     "fontWeight": 600
   },

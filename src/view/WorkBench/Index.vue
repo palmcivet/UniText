@@ -61,7 +61,7 @@ export default class WorkBench extends Vue {
   currentTabs!: Array<TTab>;
 
   @workBench.Mutation("SWITCH_TABS")
-  SWITCH_TABS!: (value: IDocument[]) => void;
+  SWITCH_TABS!: (value: Array<IDocument>) => void;
 
   @workBench.Mutation("SELECT_TAB")
   SELECT_TAB!: (index: string) => void;
