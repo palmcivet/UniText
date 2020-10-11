@@ -1,9 +1,14 @@
-import { joinPath } from "./files/files";
+import { app, remote } from "electron";
+import { joinPath } from "./fileSystem/files";
 
 export const isOsx = process.platform === "darwin";
 export const isWin = process.platform === "win32";
 export const isLinux = process.platform === "linux";
 export const isDev = process.env.NODE_ENV !== "production";
+
+export const UNITEXT_SYSTEM = {
+  BOOT: joinPath(remote.app.getPath("userData"), "System", "boot.json"),
+};
 
 export const CONFIG_FOLDER = {
   CACHE_IMAGE: joinPath(".CONFIG", "cache", "image"),

@@ -7,14 +7,16 @@ import sideBar from "./modules/sideBar";
 import statusBar from "./modules/statusBar";
 import workBench from "./modules/workBench";
 import notification from "./modules/notification";
-import { loadSetting } from "@/common/preference";
-import { IRootState } from "@/interface/vuex";
-import { TStore } from "@/interface/bootstrap";
+import { loadSetting } from "@/app/main/preference";
+import { IRootState } from "@/typings/store";
+import { TStore } from "@/typings/bootstrap";
+// TODO 改进 context
 import { TContext } from "@/app/main/menu/context";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  strict: true,
   modules: {
     panel,
     general,
@@ -23,7 +25,6 @@ export default new Vuex.Store({
     workBench,
     notification,
   },
-  strict: true,
   mutations: {
     /**
      * electron-store 读取/初始化得到的结构，存入 Vuex，此后使用 `.store`/`.get`/`.set` 读取或设置

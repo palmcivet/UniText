@@ -7,9 +7,9 @@ import {
   metaInfo2Doc,
 } from "@/common/editor/front-matter";
 import { hashCode } from "@/common/utils";
-import { IWorkBenchState, IFile, TTab } from "@/interface/vuex/modules/workBench";
-import { IRootState } from "@/interface/vuex/index";
-import { EEol } from "@/interface/document";
+import { IWorkBenchState, IFile, TTab } from "@/typings/modules/workBench";
+import { IRootState } from "@/typings/store";
+import { EEol } from "@/typings/document";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
   stateTree.currentFileGroup[stateTree.currentFileIndex];
@@ -219,12 +219,10 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
   ) => {},
 };
 
-const module: Module<IWorkBenchState, IRootState> = {
+export default {
   namespaced: true,
   state,
   getters,
   mutations,
   actions,
 };
-
-export default module;

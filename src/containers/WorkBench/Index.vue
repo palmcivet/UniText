@@ -1,0 +1,145 @@
+<template>
+  <LayoutBox
+    :totalWidth="containerWidth"
+    :showMinor="isShowPanel && !isPanelFloat"
+    :threWidth="[150, 250]"
+  >
+    <template v-slot:left>
+      <section>
+        <Tabs
+          v-show="!isBlank"
+          :openedFile="currentFileIndex"
+          :tabGroup="currentTabs"
+          @newFile="NEW_FILE()"
+          @switchTabs="SWITCH_TABS($event)"
+          @selectTab="SELECT_TAB({ cur: $event })"
+          @closeTab="handleClose($event)"
+        />
+        <Blank v-show="isBlank" @newFile="NEW_FILE()" />
+        <MarkdownSource v-show="!isBlank" class="workbench" />
+      </section>
+    </template>
+    <template v-slot:right>
+      <panel :fixed="true" />
+    </template>
+  </LayoutBox>
+</template>
+
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
+
+import Tabs from "./Tabs.vue";
+import Blank from "./Blank.vue";
+import Panel from "./Panel/Index.vue";
+import LayoutBox from "@/components/LayoutBox.vue";
+import MarkdownSource from "./Editor/MarkdownSource/Index.vue";
+import { TTab } from "@/typings/modules/workBench";
+import { IDocument } from "@/typings/document";
+import { IGeneralState, EPanelType } from "@/typings/modules/general";
+import { wordCount, timeCalc } from "@/common/editor/words-count";
+import { BUS_FILE, BUS_UI } from "@/common/channel";
+
+const general = namespace("general");
+const workBench = namespace("workBench");
+
+@Component({
+  name: "WorkBench",
+  components: {
+    MarkdownSource,
+    LayoutBox,
+    Panel,
+    Blank,
+    Tabs,
+  },
+})
+export default class WorkBench extends Vue {
+  @workBench.State("currentFileIndex")
+  currentFileIndex!: string;
+
+  @workBench.State("currentTabs")
+  currentTabs!: Array<TTab>;
+
+  @workBench.Mutation("SWITCH_TABS")
+  SWITCH_TABS!: (value: Array<IDocument>) => void;
+
+  @workBench.Mutation("SELECT_TAB")
+  SELECT_TAB!: (index: string) => void;
+
+  @workBench.Mutation("TOGGLE_MODIFY")
+  TOGGLE_MODIFY!: () => void;
+
+  @workBench.Action("CLOSE_FILE")
+  CLOSE_FILE!: (index: string) => void;
+
+  @workBench.Action("NEW_FILE")
+  NEW_FILE!: (title?: string) => void;
+
+  @workBench.Getter("isBlank")
+  isBlank!: boolean;
+
+  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  isShowPanel!: boolean;
+
+  @general.State((state: IGeneralState) => state.appearance.panelFloat)
+  isPanelFloat!: boolean;
+
+  containerWidth = 0;
+
+  getStatus() {
+    const reading = timeCalc("");
+    const second = Number((reading.second - (reading.minius - 1) * 60).toFixed(2));
+    const formatTime = `${Math.floor(reading.second / 60)}m ${second < 60 ? second : ""}${
+      second < 60 ? "s" : ""
+    }`;
+
+    let wordsNumber = 0;
+    wordCount("", (count: number) => {
+      wordsNumber = count;
+    });
+
+    return {
+      formatTime,
+      wordsNumber: Array.isArray(wordsNumber) ? 0 : wordsNumber,
+    };
+  }
+
+  handleClose(index: string) {
+    this.CLOSE_FILE(index);
+    this.$bus.$emit(BUS_FILE.CLOSE_FILE, index);
+  }
+
+  created() {
+    // TODO 检测设置并新建
+    this.NEW_FILE();
+  }
+
+  mounted() {
+    this.$nextTick(() => {
+      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+      this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
+        this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+      });
+    });
+  }
+
+  beforeDestroy() {
+    this.$bus.$off(BUS_UI.SYNC_RESIZE);
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import "~@/styles/var.less";
+
+section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.workbench {
+  height: calc(100% - 25px);
+  width: 100%;
+}
+</style>

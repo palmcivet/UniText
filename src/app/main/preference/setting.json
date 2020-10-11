@@ -1,0 +1,113 @@
+{
+  "system": {
+    "type": "object",
+    "properties": {
+      "showTray": { "type": "boolean", "default": true },
+      "exitWhenClosed": { "type": "boolean", "default": false },
+      "saveRecent": { "type": "boolean", "default": true },
+      "autoOpen": { "type": "boolean", "default": true },
+      "autoUpdate": { "type": "boolean", "default": true },
+      "locale": { "enum": ["zh-CN", "en-US"], "default": "zh-CN" }
+    },
+    "default": {}
+  },
+  "appearance": {
+    "type": "object",
+    "properties": {
+      "showSideBar": { "type": "boolean", "default": true },
+      "showStatusBar": { "type": "boolean", "default": true },
+      "showPanel": { "type": "boolean", "default": true },
+      "checkEdit": { "type": "boolean", "default": false },
+      "checkPresent": { "type": "boolean", "default": false },
+      "panelFloat": { "type": "boolean", "default": true },
+      "panelType": {
+        "enum": ["TOC", "EXPORT", "INFO"],
+        "default": "TOC"
+      },
+      "editMode": {
+        "enum": ["SOURCE", "WYSIWYG", "RICHTEXT"],
+        "default": "SOURCE"
+      },
+      "typeMode": {
+        "enum": ["ZEN", "FOCUS", "TYPER", "NORMAL"],
+        "default": "NORMAL"
+      }
+    },
+    "default": {}
+  },
+  "files": {
+    "type": "object",
+    "properties": {
+      "folderDir": { "type": "string", "default": "" },
+      "ignoreFile": {
+        "type": "array",
+        "default": [".DS_Store", "desktop.ini", ".CONFIG", "node_modules"]
+      },
+      "hideIgnore": { "type": "boolean", "default": false },
+      "showIndent": { "type": "boolean", "default": true },
+      "defaultFold": { "type": "boolean", "default": true }
+    },
+    "default": {}
+  },
+  "marks": {
+    "type": "object",
+    "properties": {},
+    "default": {}
+  },
+  "editor": {
+    "type": "object",
+    "properties": {
+      "tag": { "type": "string", "default": "Untaged" },
+      "category": { "type": "string", "default": "Uncategory" },
+      "format": {
+        "type": "object",
+        "properties": {
+          "indent": {
+            "type": "integer",
+            "enum": [2, 4],
+            "default": 4
+          },
+          "encoding": {
+            "type": "string",
+            "enum": ["UTF-8", "GBK"],
+            "default": "UTF-8"
+          },
+          "endOfLine": {
+            "type": "string",
+            "enum": ["LF", "CRLF"],
+            "default": "LF"
+          }
+        },
+        "default": {}
+      },
+      "config": {
+        "type": "object",
+        "properties": {
+          "picStorage": { "enum": [""], "default": "" },
+          "autoSave": { "type": "boolean", "default": false },
+          "autoSync": { "type": "boolean", "default": false }
+        },
+        "default": {}
+      },
+      "miniMap": { "type": "boolean", "default": false },
+      "wordWrap": { "type": "boolean", "default": true },
+      "lineNumber": { "type": "boolean", "default": true },
+      "highlightLine": { "type": "boolean", "default": true }
+    },
+    "default": {}
+  },
+  "markdown": {
+    "type": "object",
+    "properties": {
+      "image": {
+        "type": "object",
+        "properties": {
+          "cachePath": { "type": "string", "default": ".CONFIG/_cache" }
+        },
+        "default": {}
+      },
+      "scheme": { "enum": ["GFM"], "default": "GFM" }
+    },
+    "default": {}
+  }
+}

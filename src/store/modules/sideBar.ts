@@ -2,15 +2,14 @@ import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import { remote } from "electron";
 import * as fse from "fs-extra";
 
-import { ISideBarState } from "@/interface/vuex/modules/sideBar";
-import { IRootState } from "@/interface/vuex/index";
+import { ISideBarState } from "@/typings/modules/sideBar";
+import { IRootState } from "@/typings/store";
 import { CONFIG_FILE } from "@/common/env";
-import { FileManager } from "@/common/files/FileManager";
-import { joinPath } from "@/common/files/files";
+import { FileManager } from "@/common/fileSystem/FileManager";
+import { joinPath } from "@/common/fileSystem/files";
 
 const state: ISideBarState = {
   fileManager: new FileManager(),
-
   activeItem: "",
   files: {
     folderDir: "",

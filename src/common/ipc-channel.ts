@@ -1,4 +1,0 @@
-export enum IPC_BOOTSTRAP {
-  DATA_FETCH = "DATA_FETCH",
-  DATA_REPLY = "DATA_REPLY",
-}

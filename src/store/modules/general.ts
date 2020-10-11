@@ -5,9 +5,9 @@ import {
   EPanelType,
   ETypeMode,
   EEditMode,
-} from "@/interface/vuex/modules/general";
-import { EEol } from "@/interface/document";
-import { IRootState } from "@/interface/vuex/index";
+} from "@/typings/modules/general";
+import { EEol } from "@/typings/document";
+import { IRootState } from "@/typings/store";
 import * as pkg from "@/../package.json";
 
 const state: IGeneralState = {

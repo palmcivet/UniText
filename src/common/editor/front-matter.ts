@@ -5,7 +5,7 @@
  * 使用的依赖为 js-yaml
  */
 
-import { IDocumentFrontMatter, IDocument } from "@/interface/document";
+import { IDocumentFrontMatter, IDocument } from "@/typings/document";
 
 const yaml = require("js-yaml");
 

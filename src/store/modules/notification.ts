@@ -1,4 +1,4 @@
-import { INotificationState } from "@/interface/vuex/modules/notification";
+import { INotificationState } from "@/typings/modules/notification";
 
 const state = {};
 

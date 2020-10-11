@@ -1,12 +1,12 @@
-import { app, BrowserWindow, Menu, ipcMain, remote } from "electron";
+import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-import { IBootArgs, EWindow, TStore } from "@/interface/bootstrap";
+import { IBootArgs, EWindow, TStore } from "@/typings/bootstrap";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { IPC_BOOTSTRAP } from "@/common/ipc-channel";
-import { loadSetting } from "@/common/preference";
+import { IPC_BOOTSTRAP } from "@/common/channel";
+import { loadSetting } from "@/app/main/preference";
 import { getDockMenu } from "@/app/main/menu/dock";
 import { getTopMenu } from "@/app/main/menu/top";
 
@@ -27,10 +27,10 @@ export class App {
   private windowManager: Array<BrowserWindow | null>;
 
   /**
-   * @param bootArgs 启动参数
+   * @param args 启动参数
    */
-  constructor(bootArgs: IBootArgs) {
-    this.args = bootArgs;
+  constructor(args: IBootArgs) {
+    this.args = args;
     this.windowManager = [];
   }
 

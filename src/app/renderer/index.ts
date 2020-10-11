@@ -5,14 +5,13 @@ import { ipcRenderer, remote } from "electron";
 import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
-import App from "@/view/Index.vue";
+import Main from "@/view/Main.vue";
 import { localesMessage } from "@/app/i18n/message";
 import { getContextMenu } from "@/app/main/menu/context";
-import { IPC_BOOTSTRAP } from "@/common/ipc-channel";
-import { IBootArgs } from "@/interface/bootstrap";
+import { IPC_BOOTSTRAP } from "@/common/channel";
+import { IBootArgs } from "@/typings/bootstrap";
 import { VueBus } from "./bus";
-import "@/asset/styles/tailwind.css";
-import "@/asset/styles/main.less";
+import "@/styles/main.less";
 
 let defaultLocale = "";
 
@@ -44,7 +43,7 @@ new Vue({
   i18n,
   store,
   components: {
-    App,
+    Main,
   },
-  template: "<App></App>",
+  template: "<Main></Main>",
 }).$mount("#app");

@@ -1,19 +1,22 @@
 {
   "name": "unitext",
-  "version": "0.1.0",
+  "productName": "UniText",
+  "version": "0.2.0",
   "private": true,
-  "description": "A Markdown Editor.",
+  "description": "A personal knowledge manager.",
+  "homepage": "",
+  "repository": "https://github.com/Palmcivet/UniText",
   "author": {
     "name": "Palm Civet",
     "email": "palmcivet_email@qq.com"
   },
+  "main": "background.js",
   "scripts": {
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^4.0.0",
     "electron-store": "^6.0.0",
@@ -74,7 +77,6 @@
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.4",
     "vue-template-compiler": "^2.6.10"
   },
-  "__npminstall_done": false,
   "broswerslist": [
     "> 1%",
     "last 2 versions",
@@ -83,23 +85,15 @@
   "engines": {
     "node": ">=10.0.0"
   },
-  "homepage": "",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
   },
-  "keywords": [
-    "UniText",
-    "Markdown",
-    "Editor"
-  ],
-  "license": "MIT",
   "lint-staged": {
     "*.{js,ts,tsx,vue}": [
       "vue-cli-service lint",
       "git add"
     ]
-  },
-  "repository": "https://github.com/Palmcivet/UniText"
+  }
 }

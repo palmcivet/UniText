@@ -1,5 +1,6 @@
 import { shell, BrowserWindow, Menu, app } from "electron";
 import { localesMenuTop } from "@/app/i18n/menuTop";
+import store from "@/store";
 
 export const getTopMenu = (win: BrowserWindow, locale: string) => {
   const menuLabels = localesMenuTop[locale];
@@ -33,7 +34,7 @@ export const getTopMenu = (win: BrowserWindow, locale: string) => {
       submenu: [
         {
           label: menuLabels.save,
-          click: () => win.webContents.send("click-menu-save"),
+          click: () => store.commit("workBench/CLOSE_FILE"),
           accelerator: "CmdOrCtrl+S",
         },
       ],
