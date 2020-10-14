@@ -1,70 +1,36 @@
-import { FileManager } from "@/common/fileSystem/FileManager";
+/**
+ * @type 描述文件路径的数组
+ */
+export type TFileRoute = Array<string>;
 
 /**
- * UniText 以磁盘文件为基础，方便迁移，但软件外整理文件将丢失信息
- * @interface 缓存文件树的子项
+ * @interface 文件或文件树的一项
  */
-export interface ICacheTreeItem {
-  /**
-   * @field 子文件
-   */
-  child: ICacheTree;
-  /**
-   * @field 该值在每一次折叠时赋值，在每一次展开时取值
-   */
-  cache: Array<ILogicTreeItem>;
-  /**
-   * @field 手动指定顺序
-   */
-  order: number;
-  /**
-   * @field 描述文件夹的折叠状态.`true` 关闭；`false` 打开
-   */
-  isFold: boolean;
-  /**
-   * @field 描述子项类型。`true` 文件；`false` 文件夹
-   */
-  isFile: boolean;
-}
-
-/**
- * @interface 缓存文件树
- */
-export interface ICacheTree {
-  [index: string]: ICacheTreeItem;
-}
-
-/**
- * @interface 逻辑文件树的子项
- */
-export interface ILogicTreeItem {
+export interface ITreeNode {
   /**
    * @field 图标
    */
   icon: string;
   /**
-   * 根据上下级构建。移动 `cacheTree` 的某一根节点，子节点都将修改，而遍历列表成本相对较低
-   * @field 基于根的路径
+   * @field 手动指定的顺序
    */
-  path: string;
+  order: number;
   /**
-   * @field 子项的嵌套信息，顶级为 `0`
+   * @field 子项或是否拥有子项。取值：`(对象实体)` | `{}` | `false`
    */
-  tier: number;
+  children: ITree | false;
   /**
    * @field 描述文件夹的折叠状态。`true` 关闭；`false` 打开
    */
-  isFold: boolean; // TODO collapse、folded
-  /**
-   * @field 描述子项类型。`true` 文件；`false` 文件夹
-   */
-  isFile: boolean; // TODO 是否为文件
+  collapse: boolean;
 }
 
 /**
- * @type 根据缓存文件树平铺得到文件列表
+ * @interface 多级文件树的一级
  */
-export type ILogicTree = Array<ILogicTreeItem>;
+export interface ITree {
+  [index: string]: ITreeNode;
+}
 
 /**
  * @interface 关于文件的设置项
@@ -81,10 +47,13 @@ export interface ISideBarStateFiles {
  * @interface 侧边栏的 state
  */
 export interface ISideBarState {
-  fileManager: FileManager;
+  fileTree: ITree;
+  /**
+   * @field 描述运行时文件路径的字符串。平台无关
+   */
   activeItem: string;
-  files: ISideBarStateFiles;
-  marks: {};
-  search: {};
-  tags: {};
+  filesState: ISideBarStateFiles;
+  marksState: {};
+  searchState: {};
+  tagsState: {};
 }

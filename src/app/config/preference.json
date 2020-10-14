@@ -49,11 +49,6 @@
     },
     "default": {}
   },
-  "marks": {
-    "type": "object",
-    "properties": {},
-    "default": {}
-  },
   "editor": {
     "type": "object",
     "properties": {

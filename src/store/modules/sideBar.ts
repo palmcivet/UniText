@@ -2,46 +2,58 @@ import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import { remote } from "electron";
 import * as fse from "fs-extra";
 
-import { ISideBarState } from "@/typings/modules/sideBar";
 import { IRootState } from "@/typings/store";
+import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/modules/sideBar";
+import { buildTree, joinPath } from "@/common/files";
 import { CONFIG_FILE } from "@/common/env";
-import { FileManager } from "@/common/fileSystem/FileManager";
-import { joinPath } from "@/common/fileSystem/files";
+import { hasKeys } from "@/common/utils";
 
 const state: ISideBarState = {
-  fileManager: new FileManager(),
   activeItem: "",
-  files: {
+  fileTree: {},
+  filesState: {
     folderDir: "",
-    ignoreFile: [".DS_Store", "desktop.ini", ".CONFIG", "node_modules"],
+    ignoreFile: [],
     hideIgnore: false,
-    showIndent: true,
-    defaultFold: true,
+    showIndent: false,
+    defaultFold: false,
   },
-  marks: {},
-  search: {},
-  tags: {},
+  marksState: {},
+  searchState: {},
+  tagsState: {},
 };
 
 const getters: GetterTree<ISideBarState, IRootState> = {
-  cacheTree: (moduleState: ISideBarState) => moduleState.fileManager.cacheTree,
-  logicTree: (moduleState: ISideBarState) => moduleState.fileManager.logicTree,
+  isEmptyFolder: (moduleState: ISideBarState) => {
+    return !hasKeys(moduleState.fileTree);
+  },
 };
 
 const mutations: MutationTree<ISideBarState> = {
   SET_FOLDER: (moduleState: ISideBarState, path: string) => {
-    moduleState.files.folderDir = path;
+    moduleState.filesState.folderDir = path;
   },
   CHOOSE_ITEM: (moduleState: ISideBarState, path: string) => {
     moduleState.activeItem = path;
   },
   REVEAL_FILE: (moduleState: ISideBarState, path: string) => {},
-  TOGGLE_FOLDER: (moduleState: ISideBarState, idx: number) => {
-    moduleState.fileManager.toggleFolder(idx);
+  TOGGLE_FOLDER: (moduleState: ISideBarState, route: TFileRoute) => {
+    let point = moduleState.fileTree;
+    let target!: ITreeNode;
+    route.forEach((key) => {
+      target = point[key];
+      point = point[key].children as ITree;
+    });
+    target.collapse = !target.collapse;
   },
-  TOGGLE_ALL: (moduleState: ISideBarState, isOnce: boolean) => {},
-  BUILD_LIST: (moduleState: ISideBarState) => {
-    moduleState.fileManager.buildLogicTree();
+  TOGGLE_ALL: (moduleState: ISideBarState, isOnce: boolean) => {
+    if (isOnce) {
+      Object.values(moduleState.fileTree).forEach((item) => {
+        item.collapse = true;
+      });
+    } else {
+      // FEAT
+    }
   },
 };
 
@@ -49,50 +61,57 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   /**
    * 点击按钮，选择笔记文件夹打开
    */
-  OPEN_FOLDER: (moduleState: ActionContext<ISideBarState, IRootState>) => {
+  OPEN_PROJECT: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     remote.dialog
       .showOpenDialog({
         properties: ["openFile", "openDirectory", "createDirectory"],
       })
       .then((res) => {
-        moduleState.commit("SET_FOLDER", res.filePaths[0] || "");
-        moduleState.dispatch("BUILD_TREE");
+        if (res.filePaths[0] === "") {
+          moduleState.commit("notification/SET_ERROR", "", { root: true });
+        } else {
+          moduleState.commit("SET_FOLDER", res.filePaths[0]);
+          moduleState.dispatch("BUILD_TREE");
+        }
       });
   },
   /**
    * 构建文件树
    */
   BUILD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    moduleState.state.fileManager.buildCacheTree(
-      moduleState.state.files.folderDir,
+    const targetTree: ITree = {};
+    buildTree(
+      moduleState.state.filesState.folderDir,
       "",
-      moduleState.state.files.ignoreFile
+      moduleState.state.filesState.ignoreFile,
+      targetTree
     );
     setTimeout(() => {
-      moduleState.commit("BUILD_LIST");
+      moduleState.state.fileTree = targetTree;
     }, 400);
   },
   /**
-   * 加载设置中 `folderDir` 保存的 JSON 文件树
+   * 加载文件树
    * - 不为空，则在初始化时加载
-   * - 若为空，则表明新建窗口，需要手动指定文件夹，通过 `OPEN_FOLDER()` 加载
+   * - 若为空，则表明新建窗口，不需要操作
    */
-  LOAD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    const dir = moduleState.state.files.folderDir;
-    const fm = moduleState.state.fileManager;
+  LOAD_TREE: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
+    const dir = moduleState.state.filesState.folderDir;
+    if (dir === "") return;
 
-    if (dir !== "") {
-      const tree = joinPath(dir, CONFIG_FILE.TREE);
-      if (fse.pathExistsSync(tree)) {
-        fm.loadTree(tree).then(() => {
-          // TODO check and validate
-          // moduleState.commit("notification/SET_ERROR", { root: true });
-          moduleState.commit("notification/SET_ERROR", fm.errReg, { root: true });
-          moduleState.commit("BUILD_LIST");
+    const treeJSON = joinPath(dir, CONFIG_FILE.TREE);
+    if (fse.pathExistsSync(treeJSON)) {
+      fse
+        .readJSON(treeJSON)
+        .then((res) => {
+          moduleState.state.fileTree = res;
+          moduleState.dispatch("CHECK_TREE");
+        })
+        .catch((err) => {
+          moduleState.commit("notification/SET_ERROR", err, { root: true });
         });
-      } else {
-        moduleState.dispatch("BUILD_TREE");
-      }
+    } else {
+      moduleState.dispatch("BUILD_TREE");
     }
   },
   /**
@@ -101,13 +120,9 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   SAVE_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
     fse
       .writeJSON(
-        joinPath(moduleState.state.files.folderDir, CONFIG_FILE.TREE),
-        moduleState.state.fileManager.cacheTree
+        joinPath(moduleState.state.filesState.folderDir, CONFIG_FILE.TREE),
+        moduleState.state.fileTree
       )
-      .then((res) => {
-        // TODO 通知
-        moduleState.commit("notification/INFO", { root: true });
-      })
       .catch((err) => {
         moduleState.commit("notification/SET_ERROR", err, { root: true });
       });

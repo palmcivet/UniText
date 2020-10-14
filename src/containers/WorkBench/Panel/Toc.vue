@@ -1,14 +1,7 @@
 <template>
   <section>
-    <div v-show="tocTree.length === 0">目录为空</div>
-    <VueCustomScrollbar
-      v-show="tocTree.length !== 0"
-      tagname="ul"
-      :settings="{
-        swipeEasing: 'true',
-        scrollingThreshold: '300',
-      }"
-    >
+    <div v-if="tocTree.length === 0">目录为空</div>
+    <ul v-else>
       <li
         v-for="(item, index) in tocTree"
         :key="index"
@@ -19,34 +12,28 @@
         <pre />
         {{ item.content }}
       </li>
-    </VueCustomScrollbar>
+    </ul>
   </section>
 </template>
 
 <script lang="ts">
+import { remote } from "electron";
 import { State, namespace } from "vuex-class";
-import VueCustomScrollbar from "vue-custom-scrollbar";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 import { TContext } from "@/app/main/menu/context";
 import { ITocList } from "@/common/editor/create-toc";
 import { BUS_TOC } from "@/common/channel";
-import { remote } from "electron";
 
 const panel = namespace("panel");
 const general = namespace("general");
 
 @Component({
   name: "Toc",
-  components: {
-    VueCustomScrollbar,
-  },
+  components: {},
 })
 export default class Toc extends Vue {
-  @Prop({
-    type: Number,
-    default: 2,
-  })
+  @Prop({ type: Number, default: 2 })
   firstLevel!: number;
 
   @panel.State("toc")
@@ -106,24 +93,29 @@ section {
     transform: translate(-50%, calc(50% - 1em));
   }
 
-  li {
-    cursor: pointer;
-    display: -webkit-box;
-    white-space: nowrap;
-    overflow: hidden;
+  > ul {
+    height: 100%;
+    overflow: auto;
 
-    &:hover {
-      background-color: #e2dac3;
-    }
+    li {
+      cursor: pointer;
+      display: -webkit-box;
+      white-space: nowrap;
+      overflow: hidden;
 
-    div {
-      width: 0.6em;
-      border-right: 0.3px none;
-    }
+      &:hover {
+        background-color: #e2dac3;
+      }
 
-    pre {
-      margin: 0;
-      width: 0.3em;
+      div {
+        width: 0.6em;
+        border-right: 0.3px none;
+      }
+
+      pre {
+        margin: 0;
+        width: 0.3em;
+      }
     }
   }
 }

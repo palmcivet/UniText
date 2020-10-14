@@ -45,10 +45,7 @@ const general = namespace("general");
   },
 })
 export default class SideBar extends Vue {
-  @Prop({
-    type: Number,
-    required: true,
-  })
+  @Prop({ type: Number, required: true })
   sideWidth!: number;
 
   @general.State((state: IGeneralState) => state.appearance.showSideBar)

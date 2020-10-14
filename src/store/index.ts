@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Vuex, { ActionContext } from "vuex";
+import Vuex, { ActionContext, ActionTree, MutationTree } from "vuex";
 
 import panel from "./modules/panel";
 import general from "./modules/general";
@@ -7,13 +7,51 @@ import sideBar from "./modules/sideBar";
 import statusBar from "./modules/statusBar";
 import workBench from "./modules/workBench";
 import notification from "./modules/notification";
-import { loadSetting } from "@/app/main/preference";
 import { IRootState } from "@/typings/store";
-import { TStore } from "@/typings/bootstrap";
-// TODO 改进 context
-import { TContext } from "@/app/main/menu/context";
+import * as pkg from "@/../package.json";
 
 Vue.use(Vuex);
+
+const mutations: MutationTree<IRootState> = {
+  SET_STATE: (moduleState: IRootState, msg) => {
+    moduleState.general.editor = msg.editor;
+    moduleState.general.appearance = msg.appearance;
+    moduleState.sideBar.filesState = msg.files;
+  },
+};
+
+const actions: ActionTree<IRootState, IRootState> = {
+  /**
+   * 获取发行说明，`""` 则表明未更新
+   */
+  CHECK_UPDATE: (moduleState: ActionContext<IRootState, IRootState>) => {
+    const getVersion = (ver: string) =>
+      ver
+        .substring(1)
+        .split(".")
+        .map((item: string) => parseInt(item, 10));
+    const currentVersion = getVersion((pkg as any).version);
+
+    let releaseNotes = "";
+
+    fetch("")
+      .then((res) => res.json())
+      .then((res) => {
+        const latestVersion = getVersion(res.data.name);
+        for (let i = 0; i < currentVersion.length; i += 1) {
+          if (currentVersion[i] < latestVersion[i]) {
+            releaseNotes = res.data;
+            break;
+          }
+        }
+      });
+
+    // FEAT 新版本通知
+    if (releaseNotes !== "") {
+      moduleState.dispatch("");
+    }
+  },
+};
 
 export default new Vuex.Store({
   strict: true,
@@ -25,41 +63,6 @@ export default new Vuex.Store({
     workBench,
     notification,
   },
-  mutations: {
-    /**
-     * electron-store 读取/初始化得到的结构，存入 Vuex，此后使用 `.store`/`.get`/`.set` 读取或设置
-     * @param setting 存储结构
-     */
-    SYNC_SETTING: (rootState: IRootState, setting: TStore) => {
-      rootState.general.setting = setting;
-      /* 初始化 state */
-      const { appearance, editor, files } = setting.store;
-      rootState.general.appearance = appearance;
-      rootState.general.editor = editor;
-      rootState.sideBar.files = files;
-      // TODO 解析余下设置
-    },
-    /**
-     * 初始化上下文菜单
-     * @param context 上下文菜单的集合
-     */
-    LOAD_CONTEXT: (rootState: IRootState, context: TContext) => {
-      rootState.general.context = context;
-    },
-  },
-  actions: {
-    /**
-     * 加载、校验笔记文件夹的设置文件
-     */
-    LOAD_SETTING: (
-      rootState: ActionContext<IRootState, IRootState>,
-      path: string = rootState.state.sideBar.files.folderDir
-    ) => {
-      const setting = loadSetting(path);
-      rootState.commit("SYNC_SETTING", setting);
-      /* 以下为初始化工作 */
-      rootState.dispatch("sideBar/LOAD_TREE");
-      // rootState.dispatch("general/CHECK_UPDATE");
-    },
-  },
+  mutations,
+  actions,
 });

@@ -1,24 +1,27 @@
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+
 import { ITocList } from "@/common/editor/create-toc";
 import { IPanelState } from "@/typings/modules/panel";
+import { IRootState } from "@/typings/store";
 
 const state: IPanelState = {
   toc: [],
   export: {},
 };
 
-const getters = {
+const getters: GetterTree<IPanelState, IRootState> = {
   isEmptyToc: (moduleState: IPanelState) => {
     return !!moduleState.toc.length;
   },
 };
 
-const mutations = {
+const mutations: MutationTree<IPanelState> = {
   SYNC_TOC: (moduleState: IPanelState, value: Array<ITocList>) => {
     moduleState.toc = value;
   },
 };
 
-const actions = {};
+const actions: ActionTree<IPanelState, IRootState> = {};
 
 export default {
   namespaced: true,

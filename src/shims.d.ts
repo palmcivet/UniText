@@ -4,6 +4,6 @@ import { VueBus } from "./app/renderer/bus";
 declare module "vue/types/vue" {
   interface Vue {
     readonly $electron: AllElectron;
-    $bus: typeof VueBus;
+    readonly $bus: typeof VueBus;
   }
 }

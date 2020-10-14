@@ -6,10 +6,12 @@ import {
   exportFrontMatter,
   metaInfo2Doc,
 } from "@/common/editor/front-matter";
-import { hashCode } from "@/common/utils";
+import { hashCode, notEmpty } from "@/common/utils";
 import { IWorkBenchState, IFile, TTab } from "@/typings/modules/workBench";
+import { TFileRoute } from "@/typings/modules/sideBar";
 import { IRootState } from "@/typings/store";
 import { EEol } from "@/typings/document";
+import { joinPath } from "@/common/files";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
   stateTree.currentFileGroup[stateTree.currentFileIndex];
@@ -31,7 +33,7 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
     };
   },
   isBlank: (moduleState: IWorkBenchState) => {
-    return moduleState.currentTabs.length === 0;
+    return !notEmpty(moduleState.currentTabs);
   },
 };
 
@@ -58,9 +60,9 @@ const mutations: MutationTree<IWorkBenchState> = {
     curFile.tag = tag;
   },
 
-  SET_COMMENT: (moduleState: IWorkBenchState, comment: string) => {
+  SET_COMMENT: (moduleState: IWorkBenchState, remark: string) => {
     const curFile = fileSelect(moduleState);
-    curFile.comment = comment;
+    curFile.remark = remark;
   },
 
   /* 以下为设置附加属性 */
@@ -106,7 +108,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const defaultEditor = moduleState.rootState.general.editor;
     const untitled: IFile = {
       tag: defaultEditor.tag,
-      comment: "",
+      remark: "",
       complete: false,
       metaInfo: {
         createDate: new Date(),
@@ -140,18 +142,24 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     moduleState.commit("SELECT_TAB", { cur: payload.index });
     moduleState.commit("SYNC_TABS");
   },
-
-  OPEN_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>, path: string) => {
+  /**
+   * 打开文件
+   * @param path 相对路径字符串数组，需要结合根路径
+   */
+  OPEN_FILE: (
+    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    route: TFileRoute
+  ) => {
+    const path = joinPath(moduleState.rootState.sideBar.filesState.folderDir, ...route);
     fse
       .readFile(path)
       .then((res) => res.toString())
       .then((res) => importFrontMatter(res))
       .then((res) => {
-        const dirs = path.split("/");
         // TODO 解析文档信息
         return moduleState.dispatch("LOAD_FILE", {
           file: {
-            title: dirs[dirs.length - 1],
+            title: route[route.length - 1],
             needSave: false,
             ...metaInfo2Doc(res),
           },

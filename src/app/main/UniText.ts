@@ -3,28 +3,30 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-import { IBootArgs, EWindow, TStore } from "@/typings/bootstrap";
-import { isDev, isOsx, isWin } from "@/common/env";
-import { IPC_BOOTSTRAP } from "@/common/channel";
-import { loadSetting } from "@/app/main/preference";
+// TODO
 import { getDockMenu } from "@/app/main/menu/dock";
-import { getTopMenu } from "@/app/main/menu/top";
+import { Preference } from "@/app/main/Preference";
 
-export class App {
-  /**
-   * @member 启动参数
-   */
+import { getTopMenu } from "@/app/main/menu/top";
+import { notEmpty } from "@/common/utils";
+import { IPC_BOOTSTRAP } from "@/common/channel";
+import { isDev, isOsx, isWin } from "@/common/env";
+import { IBootArgs, EWindow } from "@/typings/bootstrap";
+
+export class UniText {
   private args: IBootArgs;
 
-  /**
-   * @member 语言，用于菜单
-   */
   private locale!: string;
 
-  /**
-   * @member 窗口管理
-   */
-  private windowManager: Array<BrowserWindow | null>;
+  private windowManager!: Array<BrowserWindow | null>;
+
+  private menuManager!: any;
+
+  private snippet!: any;
+
+  private keybinding!: any;
+
+  private preference!: Preference;
 
   /**
    * @param args 启动参数
@@ -32,6 +34,7 @@ export class App {
   constructor(args: IBootArgs) {
     this.args = args;
     this.windowManager = [];
+    this.preference = new Preference();
   }
 
   private listenIpc() {
@@ -57,8 +60,8 @@ export class App {
     //   }
     // });
 
-    ipcMain.on(IPC_BOOTSTRAP.DATA_FETCH, (event) => {
-      event.reply(IPC_BOOTSTRAP.DATA_REPLY, {
+    ipcMain.once(IPC_BOOTSTRAP.FETCH, (event) => {
+      event.reply(IPC_BOOTSTRAP.REPLY, {
         locale: this.locale,
         args: this.args,
       });
@@ -66,23 +69,16 @@ export class App {
   }
 
   private async createWindow(mode: EWindow = EWindow.NORMAL) {
-    let setting: TStore;
-
     /* 获取初始设置 */
-    switch (mode) {
-      case EWindow.NEW:
-        setting = loadSetting();
-        break;
-      case EWindow.VIEW:
-        // FEAT 预览窗口
-        setting = loadSetting(this.args.notesPath);
-        break;
-      case EWindow.NORMAL:
-        setting = loadSetting(this.args.notesPath);
-        break;
+    if (mode === EWindow.NEW) {
+      this.preference.load();
+    } else if (mode === EWindow.VIEW) {
+      this.preference.load(this.args.notesPath); // FEAT 预览窗口
+    } else if (mode === EWindow.NORMAL) {
+      this.preference.load(this.args.notesPath);
     }
 
-    this.locale = setting.get("system.locale");
+    this.locale = this.preference.getItem("system.locale");
 
     // FEAT 读取工作区设置文件
 
@@ -145,7 +141,7 @@ export class App {
 
     // macOS
     app.on("activate", () => {
-      if (this.windowManager.length === 0) {
+      if (!notEmpty(this.windowManager)) {
         this.createWindow();
       }
     });

@@ -1,6 +1,4 @@
 import { IDocumentFormat, IDocumentConfig } from "@/typings/document";
-import { TStore } from "@/typings/bootstrap";
-import { TContext } from "@/app/main/menu/context";
 
 /**
  * @enum {EPanelType} 右侧面板展示的信息类型
@@ -111,10 +109,6 @@ export interface IGeneralStateEditor {
  * @interface 通用设置的 state
  */
 export interface IGeneralState {
-  context: TContext | {};
-  setting: TStore | {};
-  snippet: TStore | {};
-  keybinding: TStore | {};
   appearance: IGeneralStateAppearance;
   editor: IGeneralStateEditor;
 }

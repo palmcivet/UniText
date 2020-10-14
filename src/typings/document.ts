@@ -48,7 +48,7 @@ export interface IDocumentFrontMatter {
   /**
    * @field 备注信息
    */
-  comment: string;
+  remark: string;
   /**
    * @field 是否标记为完成
    */

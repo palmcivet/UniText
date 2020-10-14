@@ -22,7 +22,7 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
 
 import LayoutBox from "@/components/LayoutBox.vue";
-import { debounce, $ } from "@/common/utils";
+import { debounce, $, notEmpty } from "@/common/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
 import { BUS_TOC, BUS_FILE, BUS_UI } from "@/common/channel";
@@ -155,7 +155,7 @@ export default class MarkdownSource extends Vue {
         topPosition = this.editor.getScrollTop();
 
         // 当编辑区有标题时执行代码
-        if (this.tocTree.length !== 0) {
+        if (notEmpty(this.tocTree)) {
           if (topPosition === 0) {
             // 初始化数据
             currentTitle = 0;

@@ -1,8 +1,9 @@
-import { protocol } from "electron";
+import { protocol, app } from "electron";
 import * as fse from "fs-extra";
 
-import { App } from "./app";
+import { UniText } from "./UniText";
 import { IBootArgs } from "@/typings/bootstrap";
+import { joinPath } from "@/common/files";
 import { UNITEXT_SYSTEM } from "@/common/env";
 
 const bootData = async () => {
@@ -12,7 +13,9 @@ const bootData = async () => {
   };
 
   try {
-    const res = await fse.readJSON(UNITEXT_SYSTEM.BOOT);
+    const res = await fse.readJSON(
+      joinPath(app.getPath("userData"), ...UNITEXT_SYSTEM.BOOT_FILE)
+    );
     if (Object.keys(res).indexOf("notesPath") !== -1) {
       bootArgs.notesPath = res.notesPath;
     }
@@ -27,9 +30,9 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 
-let unitext: App;
+let APP: UniText;
 
 bootData().then((res) => {
-  unitext = new App(res);
-  unitext.init();
+  APP = new UniText(res);
+  APP.init();
 });

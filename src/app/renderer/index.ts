@@ -1,31 +1,36 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
 import VueShortkey from "vue-shortkey";
-import { ipcRenderer, remote } from "electron";
+import { ipcRenderer } from "electron";
 import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
 import Main from "@/view/Main.vue";
 import { localesMessage } from "@/app/i18n/message";
-import { getContextMenu } from "@/app/main/menu/context";
-import { IPC_BOOTSTRAP } from "@/common/channel";
+import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel";
+import { notEmpty } from "@/common/utils";
 import { IBootArgs } from "@/typings/bootstrap";
 import { VueBus } from "./bus";
 import "@/styles/main.less";
 
 let defaultLocale = "";
 
-ipcRenderer.on(
-  IPC_BOOTSTRAP.DATA_REPLY,
+store.commit(
+  "SET_STATE",
+  ipcRenderer.sendSync(IPC_PREFERENCE.GET_ITEM_SYNC, "appearance", "editor", "files")
+);
+
+ipcRenderer.once(
+  IPC_BOOTSTRAP.REPLY,
   (event, message: { locale: string; args: IBootArgs }) => {
     const { locale, args } = message;
     defaultLocale = locale;
-    args.error.length && store.commit("notification/SET_ERROR", args.error);
-    store.dispatch("LOAD_SETTING", args.notesPath);
-    store.commit("LOAD_CONTEXT", getContextMenu(remote.getCurrentWindow(), locale));
+
+    // store.dispatch("CHECK_UPDATE");
+    if (notEmpty(args.error)) store.commit("notification/SET_ERROR", args.error);
   }
 );
-ipcRenderer.send(IPC_BOOTSTRAP.DATA_FETCH);
+ipcRenderer.send(IPC_BOOTSTRAP.FETCH);
 
 Vue.use(VueI18n);
 
