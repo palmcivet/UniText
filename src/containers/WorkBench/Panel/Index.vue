@@ -159,13 +159,13 @@ section {
     position: absolute;
     z-index: 99;
     border-radius: 2px;
+    box-shadow: -3px 3px 10px #e6e6e6;
   }
 
   > div.float {
     width: 150px;
     display: flex;
     flex-direction: column;
-    box-shadow: -3px 3px 10px #e6e6e6;
 
     > span {
       width: 100%;

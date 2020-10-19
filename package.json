@@ -13,8 +13,10 @@
   "main": "background.js",
   "scripts": {
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
+    "electron:mac": "vue-cli-service electron:build",
+    "electron:win":"vue-cli-service electron:build --win nsis",
+    "electron:all":"vue-cli-service electron:build --mac dmg --win nsis --linux deb rpm",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {

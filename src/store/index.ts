@@ -14,9 +14,9 @@ Vue.use(Vuex);
 
 const mutations: MutationTree<IRootState> = {
   SET_STATE: (moduleState: IRootState, msg) => {
-    moduleState.general.editor = msg.editor;
-    moduleState.general.appearance = msg.appearance;
-    moduleState.sideBar.filesState = msg.files;
+    Vue.set(moduleState.general, "editor", msg.editor);
+    Vue.set(moduleState.general, "appearance", msg.appearance);
+    Vue.set(moduleState.sideBar, "filesState", msg.files);
   },
 };
 
