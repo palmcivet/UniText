@@ -24,12 +24,12 @@
 </template>
 
 <script lang="ts">
-import { remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 import Draggable from "vuedraggable";
 import { State, namespace } from "vuex-class";
 import { Vue, Component, Prop } from "vue-property-decorator";
-
-import { TContext } from "@/app/main/menu/context";
+import { IPC_MENUMANAGER } from "@/common/channel";
+import { EMenuContextKey } from "@/typings/bootstrap";
 
 const general = namespace("general");
 
@@ -40,9 +40,6 @@ const general = namespace("general");
   },
 })
 export default class Tabs extends Vue {
-  @general.State("context")
-  context!: TContext;
-
   @Prop({
     type: String,
     required: true,
@@ -106,9 +103,7 @@ export default class Tabs extends Vue {
   }
 
   handleContextTab() {
-    this.context.tab.popup({
-      window: remote.getCurrentWindow(),
-    });
+    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.WORKBENCH_TAB);
   }
 
   created() {

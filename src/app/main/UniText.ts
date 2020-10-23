@@ -3,30 +3,28 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-// TODO
-import { getDockMenu } from "@/app/main/menu/dock";
-import { Preference } from "@/app/main/Preference";
-
-import { getTopMenu } from "@/app/main/menu/top";
 import { notEmpty } from "@/common/utils";
 import { IPC_BOOTSTRAP } from "@/common/channel";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { IBootArgs, EWindow } from "@/typings/bootstrap";
+import { IBootArgs, EWindow, TI18n } from "@/typings/bootstrap";
+import { Preference } from "./Preference";
+import { Keybinding } from "./Keybinding";
+import { MenuManager } from "./MenuManager";
 
 export class UniText {
   private args: IBootArgs;
 
-  private locale!: string;
+  private locale!: TI18n;
 
   private windowManager!: Array<BrowserWindow | null>;
 
-  private menuManager!: any;
+  private menuManager!: MenuManager;
 
-  private snippet!: any;
-
-  private keybinding!: any;
+  private keybinding!: Keybinding;
 
   private preference!: Preference;
+
+  private snippet!: any;
 
   /**
    * @param args 启动参数
@@ -34,6 +32,8 @@ export class UniText {
   constructor(args: IBootArgs) {
     this.args = args;
     this.windowManager = [];
+    this.menuManager = new MenuManager();
+    this.keybinding = new Keybinding();
     this.preference = new Preference();
   }
 
@@ -71,12 +71,14 @@ export class UniText {
   private async createWindow(mode: EWindow = EWindow.NORMAL) {
     /* 获取初始设置 */
     if (mode === EWindow.NEW) {
-      this.preference.load();
+      this.preference.load("");
     } else if (mode === EWindow.VIEW) {
       this.preference.load(this.args.notesPath); // FEAT 预览窗口
     } else if (mode === EWindow.NORMAL) {
       this.preference.load(this.args.notesPath);
     }
+
+    if (this.preference.errReg) this.args.error.push(this.preference.errReg);
 
     this.locale = this.preference.getItem("system.locale");
 
@@ -105,11 +107,8 @@ export class UniText {
     let win: BrowserWindow | null = new BrowserWindow(winOption);
     win.setTitle("UniText");
 
-    /* 添加菜单，上下文菜单在 IPC */
-    const topMenu = getTopMenu(win, this.locale);
-    const dockMenu = getDockMenu(win, this.locale);
-    Menu.setApplicationMenu(topMenu);
-    app.dock.setMenu(dockMenu);
+    /* 添加菜单 */
+    this.menuManager.updateMenu(this.locale, this.keybinding);
 
     /* 加载开发工具 */
     if (process.env.WEBPACK_DEV_SERVER_URL) {

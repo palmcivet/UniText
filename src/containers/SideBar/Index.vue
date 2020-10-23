@@ -60,23 +60,23 @@ export default class SideBar extends Vue {
     return {
       Files: {
         icon: "ri-xl ri-folders-line",
-        text: this.$t("files"),
+        text: this.$t("sidebar.files"),
       },
       Search: {
         icon: "ri-xl ri-search-line",
-        text: this.$t("search"),
+        text: this.$t("sidebar.search"),
       },
       Marks: {
         icon: "ri-xl ri-bookmark-3-line",
-        text: this.$t("bookmarks"),
+        text: this.$t("sidebar.bookmarks"),
       },
       Tags: {
         icon: "ri-xl ri-price-tag-3-line",
-        text: this.$t("tags"),
+        text: this.$t("sidebar.tags"),
       },
       Setting: {
         icon: "ri-xl ri-settings-line",
-        text: this.$t("setting"),
+        text: this.$t("sidebar.setting"),
       },
     };
   }

@@ -3487,11 +3487,6 @@ csso@^4.0.2:
   dependencies:
     css-tree "1.0.0-alpha.39"
 
-custom-event-polyfill@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.npm.taobao.org/custom-event-polyfill/download/custom-event-polyfill-1.0.7.tgz#9bc993ddda937c1a30ccd335614c6c58c4f87aee"
-  integrity sha1-m8mT3dqTfBowzNM1YUxsWMT4eu4=
-
 cyclist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/cyclist/download/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
@@ -3975,11 +3970,6 @@ electron@^10.1.0:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
     extract-zip "^1.0.3"
-
-element-matches@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.npm.taobao.org/element-matches/download/element-matches-0.1.2.tgz#7345cb71e965bd2b12f725e524591c102198361a"
-  integrity sha1-c0XLcellvSsS9yXlJFkcECGYNho=
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -10269,14 +10259,6 @@ vue-property-decorator@^9.0.0:
   version "9.0.2"
   resolved "https://registry.npm.taobao.org/vue-property-decorator/download/vue-property-decorator-9.0.2.tgz#118459d77b4d5613ab2bbccba2edd5d7af685d30"
   integrity sha1-EYRZ13tNVhOrK7zLou3V169oXTA=
-
-vue-shortkey@^3.1.7:
-  version "3.1.7"
-  resolved "https://registry.npm.taobao.org/vue-shortkey/download/vue-shortkey-3.1.7.tgz#31c09a99ed597331a6a49a45eeff894a78a19eef"
-  integrity sha1-McCame1ZczGmpJpF7v+JSnihnu8=
-  dependencies:
-    custom-event-polyfill "^1.0.7"
-    element-matches "^0.1.2"
 
 vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
   version "4.1.2"

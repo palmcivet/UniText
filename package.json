@@ -12,11 +12,10 @@
   },
   "main": "background.js",
   "scripts": {
-    "lint": "vue-cli-service lint",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:mac": "vue-cli-service electron:build",
-    "electron:win":"vue-cli-service electron:build --win nsis",
-    "electron:all":"vue-cli-service electron:build --mac dmg --win nsis --linux deb rpm",
+    "electron:win": "vue-cli-service electron:build --win nsis",
+    "electron:all": "vue-cli-service electron:build --mac dmg --win nsis --linux deb rpm",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -45,7 +44,6 @@
     "vue-custom-scrollbar": "^1.2.0",
     "vue-i18n": "^8.7.0",
     "vue-property-decorator": "^9.0.0",
-    "vue-shortkey": "^3.1.7",
     "vuedraggable": "^2.23.2",
     "vuex": "^3.5.1",
     "vuex-class": "^0.3.2"

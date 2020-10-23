@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts">
-import { remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 import { State, namespace } from "vuex-class";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-import { TContext } from "@/app/main/menu/context";
 import { ITocList } from "@/common/editor/create-toc";
-import { BUS_TOC } from "@/common/channel";
+import { BUS_TOC, IPC_MENUMANAGER } from "@/common/channel";
+import { EMenuContextKey } from "@/typings/bootstrap";
 
 const panel = namespace("panel");
 const general = namespace("general");
@@ -42,17 +42,12 @@ export default class Toc extends Vue {
   @panel.Mutation("SYNC_TOC")
   SYNC_TOC!: (value: Array<ITocList>) => void;
 
-  @general.State("context")
-  context!: TContext;
-
   handleRevealLine(value: Array<number>) {
     this.$bus.$emit(BUS_TOC.REVEAL_SECTION, value);
   }
 
   handleContextToc(value: ITocList) {
-    this.context.toc.popup({
-      window: remote.getCurrentWindow(),
-    });
+    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.PANEL_TOC);
   }
 
   mounted() {

@@ -1,8 +1,14 @@
+import { Menu } from "electron";
 import Store from "electron-store";
 
 import { IGeneralStateAppearance, IGeneralStateEditor } from "./modules/general";
 import { ISideBarStateFiles } from "./modules/sideBar";
+import { localesView } from "@/app/i18n/view";
+import { localesMenu } from "@/app/i18n/menu";
 
+/**
+ * @enum 窗口的打开方式
+ */
 export enum EWindow {
   NEW,
   VIEW,
@@ -54,7 +60,7 @@ export interface IBootConfig {
 }
 
 /**
- * @interface preference 文件
+ * @interface preference 文件，除 `IBootConfig` 字段外，都是支持即时修改的 State
  */
 export interface IPreference {
   system: IBootConfig;
@@ -65,6 +71,50 @@ export interface IPreference {
 }
 
 /**
- * @type electron-store 的存储结构
+ * @type preference 的存储结构，使用 electron-store
  */
-export type TStore = Store<IPreference>;
+export type TPreferenceSet = Store<IPreference>;
+
+/**
+ * @interface keybinding 的存储结构
+ */
+export type IKeybindingSet = Map<string, string>;
+
+/**
+ * @enum context menu 的访问键
+ */
+export enum EMenuContextKey {
+  SIDEBAR_FOLDER = "SIDEBAR_FOLDER",
+  SIDEBAR_FILE = "SIDEBAR_FILE",
+  PANEL_TOC = "PANEL_TOC",
+  WORKBENCH_TAB = "WORKBENCH_TAB",
+}
+
+/**
+ * @interface menu 的存储结构
+ */
+export interface IMenuSet {
+  SIDEBAR_FOLDER: Menu;
+  SIDEBAR_FILE: Menu;
+  PANEL_TOC: Menu;
+  WORKBENCH_TAB: Menu;
+  DOCK_BAR: Menu;
+  MENU_BAR: Menu;
+}
+
+/**
+ * @type 菜单模板
+ */
+export type TMenuTemplate = Array<
+  Electron.MenuItemConstructorOptions | Electron.MenuItem
+>;
+
+/**
+ * @type i18n 类型
+ */
+export type TI18n = keyof typeof localesView;
+
+/**
+ * @type i18n 语言包
+ */
+export type TMenu = typeof localesMenu["zh-CN"];

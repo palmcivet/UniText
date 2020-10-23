@@ -52,10 +52,11 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 
-import { TContext } from "@/app/main/menu/context";
 import { ISideBarState, ITree, TFileRoute } from "@/typings/modules/sideBar";
+import { IPC_MENUMANAGER } from "@/common/channel";
+import { EMenuContextKey } from "@/typings/bootstrap";
 
 const sideBar = namespace("sideBar");
 const general = namespace("general");
@@ -65,9 +66,6 @@ const workBench = namespace("workBench");
   name: "FileTreeNode",
 })
 export default class FileTreeNode extends Vue {
-  @general.State("context")
-  context!: TContext;
-
   @sideBar.State((state: ISideBarState) => state.activeItem)
   activeItem!: string;
 
@@ -127,15 +125,11 @@ export default class FileTreeNode extends Vue {
   }
 
   handleContextFile() {
-    this.context.file.popup({
-      window: remote.getCurrentWindow(),
-    });
+    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FILE);
   }
 
   handleContextFolder() {
-    this.context.folder.popup({
-      window: remote.getCurrentWindow(),
-    });
+    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FOLDER);
   }
 }
 </script>

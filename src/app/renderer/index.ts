@@ -1,12 +1,11 @@
 import Vue from "vue";
 import VueI18n from "vue-i18n";
-import VueShortkey from "vue-shortkey";
 import { ipcRenderer } from "electron";
 import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
 import Main from "@/view/Main.vue";
-import { localesMessage } from "@/app/i18n/message";
+import { localesView } from "@/app/i18n/view";
 import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel";
 import { notEmpty } from "@/common/utils";
 import { IBootArgs } from "@/typings/bootstrap";
@@ -36,11 +35,10 @@ Vue.use(VueI18n);
 
 const i18n = new VueI18n({
   locale: defaultLocale,
-  messages: localesMessage,
+  messages: localesView,
   silentTranslationWarn: true,
 });
 
-Vue.use(VueShortkey);
 Vue.config.productionTip = false;
 Vue.prototype.$bus = VueBus;
 
