@@ -14,7 +14,7 @@ import { MenuManager } from "./MenuManager";
 export class UniText {
   private args: IBootArgs;
 
-  private locale!: TI18n;
+  private language!: TI18n;
 
   private windowManager!: Array<BrowserWindow | null>;
 
@@ -62,7 +62,7 @@ export class UniText {
 
     ipcMain.once(IPC_BOOTSTRAP.FETCH, (event) => {
       event.reply(IPC_BOOTSTRAP.REPLY, {
-        locale: this.locale,
+        lang: this.language,
         args: this.args,
       });
     });
@@ -80,7 +80,7 @@ export class UniText {
 
     if (this.preference.errReg) this.args.error.push(this.preference.errReg);
 
-    this.locale = this.preference.getItem("system.locale");
+    this.language = this.preference.getItem("system.language");
 
     // FEAT 读取工作区设置文件
 
@@ -108,7 +108,7 @@ export class UniText {
     win.setTitle("UniText");
 
     /* 添加菜单 */
-    this.menuManager.updateMenu(this.locale, this.keybinding);
+    this.menuManager.updateMenu(this.language, this.keybinding);
 
     /* 加载开发工具 */
     if (process.env.WEBPACK_DEV_SERVER_URL) {

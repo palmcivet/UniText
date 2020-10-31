@@ -10,11 +10,26 @@ export enum EEol {
  * @interface 文章的元信息，自动生成
  */
 export interface IDocumentMetaInfo {
-  createDate: Date; // 创建日期
-  modifyDate: Date; // 更改日期
-  wordCount: number; // 字数统计
-  charCount: number; // 字符统计
-  duration: number; // 编辑时长
+  /**
+   * @field 创建日期
+   */
+  createDate: string;
+  /**
+   * @field 更改日期
+   */
+  modifyDate: string;
+  /**
+   * @field 字数统计
+   */
+  wordCount: number;
+  /**
+   * @field 字符统计
+   */
+  charCount: number;
+  /**
+   * @field 编辑时长
+   */
+  duration: number;
 }
 
 /**

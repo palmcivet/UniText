@@ -21,13 +21,32 @@
 @tab-height: 25px;
 @tab-boxshadow: 1px;
 
+/* Panel */
+@span-major: 1.4rem;
+@span-minor: 1rem;
+@span-common: 0.8rem;
+@span-remark: 0.7rem;
+
+#block-style {
+  margin: 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 2px 3px 2px rgb(243, 245, 239);
+
+  span {
+    -webkit-user-select: none;
+    font-size: @span-common;
+  }
+}
+
 /* WorkBench */
 @preview-font-size: 15px;
 
 /* ResizeBar */
 @resize-bar: 1px solid rgba(216, 216, 216, 0.4); // DEV
 
-#res {
+#resize {
   width: 1.5px;
   height: 100%;
   cursor: col-resize;

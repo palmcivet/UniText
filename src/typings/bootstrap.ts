@@ -56,7 +56,7 @@ export interface IBootConfig {
   /**
    * @field 显示语言
    */
-  locale: string; // TODO 完善语言的接口
+  language: TI18n;
 }
 
 /**

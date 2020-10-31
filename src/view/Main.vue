@@ -155,7 +155,7 @@ export default class Main extends Vue {
 
 .layout-main {
   span {
-    #res();
+    #resize();
   }
 }
 </style>

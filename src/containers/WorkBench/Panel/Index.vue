@@ -189,6 +189,7 @@ section {
     min-height: 50px;
     width: 150px;
     right: @right-gap;
+    background-color: white;
     bottom: calc(@layout-bottom-bar + @dialog-gap);
 
     > .arrow {

@@ -5,83 +5,75 @@
  * 使用的依赖为 js-yaml
  */
 
-import { IDocumentFrontMatter, IDocument } from "@/typings/document";
-
 const yaml = require("js-yaml");
 
-const rFrontMatter = /^(-{3,}|;{3,})\n([\s\S]+?)\n\1(?:$|\n([\s\S]*)$)/;
+import { IDocumentFrontMatter, IDocument } from "@/typings/document";
+import { IGeneralStateEditor } from "@/typings/modules/general";
+import { IFile } from "@/typings/modules/workBench";
+import { formatDate } from "../utils";
 
-enum SCHEMA {
-  FAILSAFE_SCHEMA = "FAILSAFE_SCHEMA",
-  JSON_SCHEMA = "JSON_SCHEMA",
-  CORE_SCHEMA = "CORE_SCHEMA",
-  DEFAULT_SAFE_SCHEMA = "DEFAULT_SAFE_SCHEMA",
-  DEFAULT_FULL_SCHEMA = "DEFAULT_FULL_SCHEMA",
-}
+const FRONT_MATTER = /^(-{3,}|;{3,})\n([\s\S]+?)\n\1(?:$|\n([\s\S]*)$)/;
 
 /**
+ * @type YAML 方案
+ */
+type SCHEMA =
+  | "JSON_SCHEMA"
+  | "CORE_SCHEMA"
+  | "FAILSAFE_SCHEMA"
+  | "DEFAULT_SAFE_SCHEMA"
+  | "DEFAULT_FULL_SCHEMA";
+
+/**
+ * https://github.com/nodeca/js-yaml#safeload-string---options-
  * @interface js-yaml `safeLoad()` 的参数
  */
 interface ILoadOption {
-  /* (default: null) - string to be used as a file path in error/warning messages. */
-  filename?: string | null;
-  /* (default: null) - function to call on warning messages. Loader will call this function with an instance of YAMLException for each warning. */
-  onWarning?: () => {} | null;
-  /* (default: DEFAULT_SAFE_SCHEMA) - specifies a schema to use. */
-  schema?: SCHEMA;
-  /* (default: false) - compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error. */
-  json?: boolean;
+  filename?: string | null /* (default: null) */;
+  onWarning?: () => {} | null /* (default: null) */;
+  schema?: SCHEMA /* (default: DEFAULT_SAFE_SCHEMA) */;
+  json?: boolean /* (default: false) */;
 }
 
 /**
+ * https://github.com/nodeca/js-yaml#safedump-object---options-
  * @interface js-yaml `safeDump()` 的参数
  */
 interface IDumpOption {
-  /* (default: 2) - indentation width to use (in spaces). */
-  indent: number;
-  /* (default: false) - when true, will not add an indentation level to array elements */
-  noArrayIndent: boolean;
-  /* (default: false) - do not throw on invalid types (like function in the safe schema) and skip pairs and single values with such types. */
-  skipInvalid: boolean;
-  /* (default: -1) - specifies level of nesting, when to switch from block to flow style for collections. -1 means block style everwhere */
-  flowLevel: number;
-  /* - "tag" => "style" map. Each tag may have own set of styles. */
-  styles: string;
-  /* (default: DEFAULT_SAFE_SCHEMA) specifies a schema to use. */
-  schema: SCHEMA;
-  /* (default: false) - if true, sort keys when dumping YAML. If a function, use the function to sort the keys. */
-  sortKeys: boolean;
-  /* (default: 80) - set max line width. */
-  lineWidth: number;
-  /* (default: false) - if true, don't convert duplicate objects into references */
-  noRefs: boolean;
-  /* (default: false) - if true don't try to be compatible with older yaml versions. Currently: don't quote "yes", "no" and so on, as required for YAML 1.1 */
-  noCompatMode: boolean;
-  /* (default: false) - if true flow sequences will be condensed, omitting the space between a, b. Eg. '[a,b]', and omitting the space between key: value and quoting the key. Eg. '{"a":b}' Can be useful when using yaml for pretty URL query params as spaces are %-encoded. */
-  condenseFlow: boolean;
+  indent: number /* (default: 2) */;
+  noArrayIndent: boolean /* (default: false) */;
+  skipInvalid: boolean /* (default: false) */;
+  flowLevel: number /* (default: -1) */;
+  styles: string /* "" */;
+  schema: SCHEMA /* (default: DEFAULT_SAFE_SCHEMA) */;
+  sortKeys: boolean /* (default: false) */;
+  lineWidth: number /* (default: 80) */;
+  noRefs: boolean /* (default: false) */;
+  noCompatMode: boolean /* (default: false) */;
+  condenseFlow: boolean /* (default: false) */;
 }
 
 /**
  * @interface 存放待导入或待导出 Markdown 文件的结构
  */
-export interface ISpilt {
-  data?: string | IDocumentFrontMatter; // 属性信息
-  prefix?: boolean; // 是否在内容之前
-  content: string; // 文章内容
-  separator?: string; // "---" | ";;;"，根据分隔符区别 YAML 和 JSON
+interface ISpiltStructure {
+  /**
+   * @field 属性信息
+   */
+  data?: string | IDocumentFrontMatter;
+  /**
+   * @field 是否在内容之前
+   */
+  prefix?: boolean;
+  /**
+   * @field 文章内容
+   */
+  content: string;
+  /**
+   * @field 取值：`---` | `;;;`，根据分隔符区别 YAML 和 JSON
+   */
+  separator?: string;
 }
-
-const doubleDigit = (num: number) => {
-  return num < 10 ? `0${num}` : num;
-};
-
-const formatDate = (date: Date) => {
-  return `${date.getFullYear()}-${doubleDigit(date.getMonth() + 1)}-${doubleDigit(
-    date.getDate()
-  )} ${doubleDigit(date.getHours())}:${doubleDigit(date.getMinutes())}:${doubleDigit(
-    date.getSeconds()
-  )}`;
-};
 
 const escapeYAML = (str: string) => {
   return str.replace(/\n(\t+)/g, (tabs) => {
@@ -167,9 +159,9 @@ const stringifyJSON = (obj: Object): string => {
  * 使用正则的方法，分离 Markdown 文件字符串
  * @param str 文件总的字符串
  */
-const split = (str: string): ISpilt => {
-  if (rFrontMatter.test(str)) {
-    let match = str.match(rFrontMatter);
+const split = (str: string): ISpiltStructure => {
+  if (FRONT_MATTER.test(str)) {
+    let match = str.match(FRONT_MATTER);
     match = match as RegExpMatchArray;
 
     return {
@@ -188,7 +180,7 @@ const split = (str: string): ISpilt => {
  * @param str 文件总的字符串
  * @param options js-yaml 的参数
  */
-export function importFrontMatter(str: string, options?: ILoadOption): ISpilt {
+export function importFrontMatter(str: string, options?: ILoadOption): ISpiltStructure {
   const splitData = split(str);
   if (!splitData.data) {
     return splitData;
@@ -215,9 +207,8 @@ export function importFrontMatter(str: string, options?: ILoadOption): ISpilt {
  * @param payload 对象
  * @param options 选项
  */
-export function exportFrontMatter(payload: ISpilt, options?: IDumpOption) {
+export function exportFrontMatter(payload: ISpiltStructure, options?: IDumpOption) {
   const content = payload.content;
-  delete payload.content;
 
   if (!Object.keys(payload).length) return content;
 
@@ -250,10 +241,13 @@ export function exportFrontMatter(payload: ISpilt, options?: IDumpOption) {
  * 将解析得到的属性信息合并入 Doc
  * @param payload JS 对象属性信息
  */
-export const metaInfo2Doc = (payload: ISpilt): IDocument => {
-  const data = payload.data as IDocumentFrontMatter;
+export const metaInfo2Doc = (payload: ISpiltStructure, doc: IFile): IDocument => {
+  const data = payload.data as string;
+  // TODO 校验 front-matter 完整性
+  if (data === "") return doc;
+
   return {
-    ...data,
+    ...(parseYAML(data) as IDocumentFrontMatter),
     content: payload.content,
   };
 };

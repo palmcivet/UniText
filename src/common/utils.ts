@@ -59,3 +59,13 @@ export const getHash = (
 export const getContentHash = (content: string) => {
   return getHash(content, "utf8", "sha1");
 };
+
+export const formatDate = (raw: Date) => {
+  const doubleDigit = (num: number) => {
+    return num < 10 ? `0${num}` : num;
+  };
+
+  return `${raw.getFullYear()}.${doubleDigit(raw.getMonth() + 1)}.${doubleDigit(
+    raw.getDate()
+  )} ${doubleDigit(raw.getHours())}:${doubleDigit(raw.getMinutes())}`;
+};

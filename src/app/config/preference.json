@@ -7,7 +7,7 @@
       "saveRecent": { "type": "boolean", "default": true },
       "autoOpen": { "type": "boolean", "default": true },
       "autoUpdate": { "type": "boolean", "default": true },
-      "locale": { "enum": ["zh-CN", "en-US"], "default": "zh-CN" }
+      "language": { "enum": ["zh-CN", "en-US"], "default": "zh-CN" }
     },
     "default": {}
   },

@@ -5,11 +5,11 @@ import "remixicon/fonts/remixicon.css";
 
 import store from "@/store/index";
 import Main from "@/view/Main.vue";
-import { localesView } from "@/app/i18n/view";
-import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel";
-import { notEmpty } from "@/common/utils";
-import { IBootArgs } from "@/typings/bootstrap";
 import { VueBus } from "./bus";
+import { localesView } from "@/app/i18n/view";
+import { notEmpty } from "@/common/utils";
+import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel";
+import { IBootArgs, TI18n } from "@/typings/bootstrap";
 import "@/styles/main.less";
 
 let defaultLocale = "";
@@ -21,9 +21,9 @@ store.commit(
 
 ipcRenderer.once(
   IPC_BOOTSTRAP.REPLY,
-  (event, message: { locale: string; args: IBootArgs }) => {
-    const { locale, args } = message;
-    defaultLocale = locale;
+  (event, message: { lang: TI18n; args: IBootArgs }) => {
+    const { lang, args } = message;
+    defaultLocale = lang;
 
     // store.dispatch("CHECK_UPDATE");
     if (notEmpty(args.error)) store.commit("notification/SET_ERROR", args.error);

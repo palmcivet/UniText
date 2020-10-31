@@ -6,15 +6,36 @@ import {
   exportFrontMatter,
   metaInfo2Doc,
 } from "@/common/editor/front-matter";
-import { hashCode, notEmpty } from "@/common/utils";
-import { IWorkBenchState, IFile, TTab } from "@/typings/modules/workBench";
+import { joinPath } from "@/common/files";
+import { formatDate, hashCode, notEmpty } from "@/common/utils";
 import { TFileRoute } from "@/typings/modules/sideBar";
 import { IRootState } from "@/typings/store";
 import { EEol } from "@/typings/document";
-import { joinPath } from "@/common/files";
+import { IGeneralStateEditor } from "@/typings/modules/general";
+import { IWorkBenchState, IFile, TTab } from "@/typings/modules/workBench";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
   stateTree.currentFileGroup[stateTree.currentFileIndex];
+
+const getDefaultFile = (doc: IGeneralStateEditor): IFile => {
+  return {
+    tag: doc.tag,
+    remark: "",
+    complete: false,
+    metaInfo: {
+      createDate: formatDate(new Date()),
+      modifyDate: formatDate(new Date()),
+      wordCount: 0,
+      charCount: 0,
+      duration: 0,
+    },
+    format: doc.fileinfo,
+    config: doc.config,
+    content: "",
+    title: `Untitled-${titleId}`,
+    needSave: true,
+  };
+};
 
 let titleId = 0;
 
@@ -105,24 +126,7 @@ const mutations: MutationTree<IWorkBenchState> = {
 
 const actions: ActionTree<IWorkBenchState, IRootState> = {
   NEW_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>, title?: string) => {
-    const defaultEditor = moduleState.rootState.general.editor;
-    const untitled: IFile = {
-      tag: defaultEditor.tag,
-      remark: "",
-      complete: false,
-      metaInfo: {
-        createDate: new Date(),
-        modifyDate: new Date(),
-        wordCount: 0,
-        charCount: 0,
-        duration: 0,
-      },
-      format: defaultEditor.fileinfo,
-      config: defaultEditor.config,
-      content: "",
-      title: `Untitled-${titleId}`,
-      needSave: true,
-    };
+    const untitled = getDefaultFile(moduleState.rootState.general.editor);
     titleId += 1;
     moduleState.dispatch("LOAD_FILE", {
       file: untitled,
@@ -156,12 +160,11 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       .then((res) => res.toString())
       .then((res) => importFrontMatter(res))
       .then((res) => {
-        // TODO 解析文档信息
         return moduleState.dispatch("LOAD_FILE", {
           file: {
             title: route[route.length - 1],
             needSave: false,
-            ...metaInfo2Doc(res),
+            ...metaInfo2Doc(res, getDefaultFile(moduleState.rootState.general.editor)),
           },
           index: hashCode(path),
         });
