@@ -138,7 +138,7 @@ article {
   display: flex;
 
   & > span {
-    #resize();
+    #resize-style();
   }
 }
 </style>

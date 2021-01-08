@@ -27,7 +27,6 @@ import Tags from "./Tags.vue";
 import Files from "./Files.vue";
 import Marks from "./Marks.vue";
 import Search from "./Search.vue";
-import Settings from "./Settings.vue";
 import CheckList from "@/components/CheckList.vue";
 import { IGeneralState } from "@/typings/modules/general";
 
@@ -40,7 +39,6 @@ const general = namespace("general");
     Files,
     Marks,
     Search,
-    Settings,
     CheckList,
   },
 })

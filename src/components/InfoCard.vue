@@ -5,7 +5,7 @@
       <span>{{ "月 " }}</span>
       <span class="major">{{ date.slice(8, 10) }}</span>
       <span>{{ "日 " }}</span>
-      <span class="minor">{{ date.slice(12, 16) }}</span>
+      <span class="minor">{{ date.slice(11, 16) }}</span>
     </div>
     <div v-else-if="type === 'DATE' && !isCN">
       <span class="major">{{ date.slice(8, 10) }}</span>
@@ -62,7 +62,7 @@ export default class InfoCard extends Vue {
   ];
 
   get date() {
-    const reg = /([0-9]+).(([0][1-9])|([1][0-2])).(([0][1-9])|([1][0-9])|([3][0-1]))\s(([0-1][0-9])|([2][0-4])):([0-5][0-9])/;
+    const reg = /([0-9]+).(([0][1-9])|([1][0-2])).(([0][1-9])|([1-2][0-9])|([3][0-1]))\s(([0-1][0-9])|([2][0-3])):([0-5][0-9])/;
     if (!reg.test(this.raw as string)) {
       // DEV i18n
       return "时间无效";

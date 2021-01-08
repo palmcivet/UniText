@@ -8,9 +8,11 @@ import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
 @Component({
-  name: "Settings",
+  name: "Setting",
 })
-export default class Settings extends Vue {}
+export default class Setting extends Vue {
+
+}
 </script>
 
 <style lang="less" scoped></style>

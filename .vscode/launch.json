@@ -11,8 +11,13 @@
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
       "preLaunchTask": "Debug",
-      "args": ["--remote-debugging-port=8081", "./dist_electron"],
-      "outFiles": ["${workspaceFolder}/dist_electron/**/*.js"]
+      "args": [
+        "--remote-debugging-port=8081",
+        "./dist_electron"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/dist_electron/**/*.js"
+      ]
     },
     {
       "type": "chrome",
@@ -29,7 +34,10 @@
   "compounds": [
     {
       "name": "All",
-      "configurations": ["Main", "Renderer"]
+      "configurations": [
+        "Main",
+        "Renderer"
+      ]
     }
   ]
 }

@@ -125,6 +125,7 @@ export default class Main extends Vue {
 .layout-main,
 .layout-footer {
   background: #efefef;
+  font-family: "PingFang SC";
 }
 
 .layout-main {
@@ -155,7 +156,7 @@ export default class Main extends Vue {
 
 .layout-main {
   span {
-    #resize();
+    #resize-style();
   }
 }
 </style>

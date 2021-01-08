@@ -12,11 +12,11 @@
   },
   "main": "background.js",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "electron:serve": "vue-cli-service electron:serve",
-    "electron:mac": "vue-cli-service electron:build",
-    "electron:win": "vue-cli-service electron:build --win nsis",
-    "electron:all": "vue-cli-service electron:build --mac dmg --win nsis --linux deb rpm",
-    "postinstall": "electron-builder install-app-deps"
+    "release:mac": "vue-cli-service electron:build --mac dmg",
+    "release:win": "vue-cli-service electron:build --win nsis",
+    "release:all": "vue-cli-service electron:build --mac dmg --win nsis --linux deb rpm"
   },
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^4.0.0",

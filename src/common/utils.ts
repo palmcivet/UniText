@@ -47,7 +47,7 @@ export const hashCode = (plain: string) => {
 
 export const getHash = (
   content: string,
-  encoding: crypto.Utf8AsciiLatin1Encoding,
+  encoding: crypto.Encoding,
   type: string
 ) => {
   return crypto

@@ -8,7 +8,6 @@
 const yaml = require("js-yaml");
 
 import { IDocumentFrontMatter, IDocument } from "@/typings/document";
-import { IGeneralStateEditor } from "@/typings/modules/general";
 import { IFile } from "@/typings/modules/workBench";
 import { formatDate } from "../utils";
 
