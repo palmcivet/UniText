@@ -6,7 +6,7 @@ import {
   exportFrontMatter,
   metaInfo2Doc,
 } from "@/common/editor/front-matter";
-import { joinPath } from "@/common/files";
+import { joinPath } from "@/common/fileSystem";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
 import { TFileRoute } from "@/typings/modules/sideBar";
 import { IRootState } from "@/typings/store";

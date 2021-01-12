@@ -24,4 +24,4 @@ yarn-error.log*
 /dist_electron
 
 # Dev config
-*pre*
+*.pre*

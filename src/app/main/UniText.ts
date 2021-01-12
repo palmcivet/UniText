@@ -1,43 +1,42 @@
-import { app, BrowserWindow, Menu, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-import { notEmpty } from "@/common/utils";
 import { IPC_BOOTSTRAP } from "@/common/channel";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { IBootArgs, EWindow, TI18n } from "@/typings/bootstrap";
+import { IBootArgs, TI18n } from "@/typings/bootstrap";
 import { Preference } from "./Preference";
 import { Keybinding } from "./Keybinding";
 import { MenuManager } from "./MenuManager";
 
 export class UniText {
-  private args: IBootArgs;
+  private _args: IBootArgs;
 
-  private language!: TI18n;
+  private _language!: TI18n;
 
-  private windowManager!: Array<BrowserWindow | null>;
+  private _window!: BrowserWindow | null;
 
-  private menuManager!: MenuManager;
+  private _menuManager!: MenuManager;
 
-  private keybinding!: Keybinding;
+  private _keybinding!: Keybinding;
 
-  private preference!: Preference;
+  private _preference!: Preference;
 
-  private snippet!: any;
+  private _snippet!: any;
 
   /**
    * @param args 启动参数
    */
   constructor(args: IBootArgs) {
-    this.args = args;
-    this.windowManager = [];
-    this.menuManager = new MenuManager();
-    this.keybinding = new Keybinding();
-    this.preference = new Preference();
+    this._args = args;
+    this._window = null;
+    this._menuManager = new MenuManager();
+    this._keybinding = new Keybinding();
+    this._preference = new Preference(args.notesPath);
   }
 
-  private listenIpc() {
+  private _listenForIpcMain() {
     // ipcMain.on("min-window", () => {
     //   if (win) {
     //     win.minimize();
@@ -62,30 +61,19 @@ export class UniText {
 
     ipcMain.once(IPC_BOOTSTRAP.FETCH, (event) => {
       event.reply(IPC_BOOTSTRAP.REPLY, {
-        lang: this.language,
-        args: this.args,
+        lang: this._language,
+        args: this._args,
       });
     });
   }
 
-  private async createWindow(mode: EWindow = EWindow.NORMAL) {
-    /* 获取初始设置 */
-    if (mode === EWindow.NEW) {
-      this.preference.load("");
-    } else if (mode === EWindow.VIEW) {
-      this.preference.load(this.args.notesPath); // FEAT 预览窗口
-    } else if (mode === EWindow.NORMAL) {
-      this.preference.load(this.args.notesPath);
-    }
-
-    if (this.preference.errReg) this.args.error.push(this.preference.errReg);
-
-    this.language = this.preference.getItem("system.language");
+  private async _createWindow() {
+    this._language = this._preference.getItem("system.language");
 
     // FEAT 读取工作区设置文件
 
     // FEAT 提取部分设置
-    /* 创建窗口 */
+
     const winOption: any = {
       width: 1294,
       height: 800,
@@ -103,71 +91,63 @@ export class UniText {
         | "customButtonsOnHover",
     };
 
-    /* 创建窗口 */
     let win: BrowserWindow | null = new BrowserWindow(winOption);
+
     win.setTitle("UniText");
 
-    /* 添加菜单 */
-    this.menuManager.updateMenu(this.language, this.keybinding);
+    this._menuManager.updateMenu(this._language, this._keybinding);
 
-    /* 加载开发工具 */
+    /**
+     * 加载开发者工具
+     */
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-      if (!process.env.IS_TEST) {
-        win.webContents.openDevTools();
-      }
+      if (!process.env.IS_TEST) win.webContents.openDevTools();
     } else {
-      createProtocol("app");
-      await win.loadURL("app://./index.html");
+      createProtocol("unitext");
+      await win.loadURL("unitext://./index.html");
     }
 
     win.on("closed", () => {
       win = null;
-      this.windowManager = this.windowManager.filter((win) => win !== null);
     });
 
-    this.windowManager.push(win);
+    this._window = win;
   }
 
   public init() {
-    this.listenIpc();
+    this._listenForIpcMain();
 
     app.on("window-all-closed", () => {
-      if (isOsx) {
-        app.quit();
-      }
+      if (isOsx) app.quit();
     });
 
-    // macOS
+    /**
+     * macOS only
+     */
     app.on("activate", () => {
-      if (!notEmpty(this.windowManager)) {
-        this.createWindow();
-      }
+      if (!this._window) this._createWindow();
     });
 
     app.whenReady().then(() => {
-      this.createWindow();
+      this._createWindow();
 
       if (isDev) {
         installExtension(VUEJS_DEVTOOLS);
+      } else {
+        autoUpdater.on("update-downloaded", () => {
+          autoUpdater.quitAndInstall();
+        });
+        autoUpdater.checkForUpdatesAndNotify();
       }
-
-      autoUpdater.on("update-downloaded", () => {
-        autoUpdater.quitAndInstall();
-      });
-      autoUpdater.checkForUpdatesAndNotify();
     });
 
     if (isWin) {
       process.on("message", (data) => {
-        if (data === "graceful-exit") {
-          app.quit();
-        }
+        if (data === "graceful-exit") app.quit();
       });
     } else {
-      process.on("SIGTERM", () => {
-        app.quit();
-      });
+      process.on("SIGTERM", () => app.quit());
     }
   }
 }

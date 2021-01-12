@@ -11,14 +11,14 @@ import { EMenuContextKey, IMenuSet, TI18n } from "@/typings/bootstrap";
 import { IPC_MENUMANAGER } from "@/common/channel";
 
 export class MenuManager {
-  private menuSet!: IMenuSet;
+  private _menuSet!: IMenuSet;
 
   constructor() {
-    this.listenForIpcMain();
+    this._listenForIpcMain();
   }
 
   buildMenuSet(lang: TI18n, key: Keybinding) {
-    this.menuSet = {
+    this._menuSet = {
       SIDEBAR_FOLDER: Menu.buildFromTemplate(folder(lang, key)),
       SIDEBAR_FILE: Menu.buildFromTemplate(file(lang, key)),
       PANEL_TOC: Menu.buildFromTemplate(toc(lang, key)),
@@ -30,17 +30,17 @@ export class MenuManager {
 
   updateMenu(lang: TI18n, key: Keybinding) {
     this.buildMenuSet(lang, key);
-    Menu.setApplicationMenu(this.menuSet.MENU_BAR);
-    app.dock.setMenu(this.menuSet.DOCK_BAR);
+    Menu.setApplicationMenu(this._menuSet.MENU_BAR);
+    app.dock.setMenu(this._menuSet.DOCK_BAR);
   }
 
   getContextMenu(key: keyof IMenuSet) {
-    return this.menuSet[key];
+    return this._menuSet[key];
   }
 
-  private listenForIpcMain() {
+  private _listenForIpcMain() {
     ipcMain.on(IPC_MENUMANAGER.POPUP_CONTEXT, (event, key: EMenuContextKey) => {
-      this.menuSet[key].popup();
+      this._menuSet[key].popup();
     });
   }
 }

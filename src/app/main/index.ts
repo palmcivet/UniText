@@ -1,38 +1,46 @@
-import { protocol, app } from "electron";
+import { protocol } from "electron";
 import * as fse from "fs-extra";
 
-import { UniText } from "./UniText";
 import { IBootArgs } from "@/typings/bootstrap";
-import { joinPath } from "@/common/files";
-import { UNITEXT_SYSTEM } from "@/common/env";
+import { UNITEXT_SYSTEM } from "@/app/config";
+import { UniText } from "./UniText";
 
-const bootData = async () => {
+protocol.registerSchemesAsPrivileged([
+  { scheme: "unitext", privileges: { secure: true, standard: true } },
+]);
+
+let UniTextApp: UniText;
+
+/**
+ * 读取 `boot.json` 文件，判断文件是否存在
+ * - 存在则读取各字段
+ * - 不存在则新建文件，并初始化为默认值
+ */
+(async function boot() {
   const bootArgs: IBootArgs = {
     notesPath: "",
     error: [],
   };
 
+  const bootFile = UNITEXT_SYSTEM.BOOT_FILE;
+
   try {
-    const res = await fse.readJSON(
-      joinPath(app.getPath("userData"), ...UNITEXT_SYSTEM.BOOT_FILE)
-    );
-    if (Object.keys(res).indexOf("notesPath") !== -1) {
+    const res = await fse.readJSON(bootFile);
+    if (Object.keys(res).indexOf("notesPath") === -1) {
+      await fse.writeJSON(bootFile, {
+        ...res,
+        notesPath: "",
+      });
+    } else {
       bootArgs.notesPath = res.notesPath;
     }
   } catch (err) {
+    await fse.writeJSON(bootFile, {
+      notesPath: "",
+    });
     bootArgs.error.push(err);
   }
 
-  return bootArgs;
-};
-
-protocol.registerSchemesAsPrivileged([
-  { scheme: "app", privileges: { secure: true, standard: true } },
-]);
-
-let APP: UniText;
-
-bootData().then((res) => {
-  APP = new UniText(res);
-  APP.init();
-});
+  UniTextApp = new UniText(bootArgs);
+  UniTextApp.init();
+})();

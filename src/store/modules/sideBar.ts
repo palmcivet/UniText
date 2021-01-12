@@ -4,7 +4,7 @@ import * as fse from "fs-extra";
 
 import { IRootState } from "@/typings/store";
 import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/modules/sideBar";
-import { buildTree, joinPath } from "@/common/files";
+import { buildTree, joinPath } from "@/common/fileSystem";
 import { CONFIG_FILE } from "@/common/env";
 import { hasKeys } from "@/common/utils";
 

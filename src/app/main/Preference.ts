@@ -3,10 +3,12 @@ import Store from "electron-store";
 import * as fse from "fs-extra";
 
 import { TPreferenceSet } from "@/typings/bootstrap";
-import { joinPath } from "@/common/files";
+import { joinPath } from "@/common/fileSystem";
 import { IPC_PREFERENCE } from "@/common/channel";
-import { UNITEXT_SYSTEM, CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
+import { CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
 import schema from "@/app/config/preference.json";
+import logger from "./Logger";
+import { UNITEXT_SYSTEM } from "@/app/config";
 
 /**
  * 有以下功能：
@@ -16,57 +18,43 @@ import schema from "@/app/config/preference.json";
  * @class 管理用户 preference 的数据结构
  */
 export class Preference {
-  private preferenceSet!: TPreferenceSet;
+  private _preferenceSet!: TPreferenceSet;
 
-  errReg!: Error;
+  constructor(base: string) {
+    let cwd = joinPath(base, CONFIG_FOLDER.CONFIG);
+    const filePath = joinPath(base, CONFIG_FILE.PREFERENCE);
 
-  constructor() {
-    this.preferenceSet = new Store({
-      cwd: joinPath(...UNITEXT_SYSTEM.DEFAULT_DIR),
-      name: "preference",
-      schema: schema,
-    });
-
-    this.listenForIpcMain();
-  }
-
-  /**
-   * 加载 `path` 下的 `preference.json` 配置文件
-   * - 存在，加载、校验
-   * - 不存在、内容为空、不为空但找不到配置文件，加载默认配置
-   * @param path 目标文件夹的绝对路径
-   */
-  load(path: string) {
-    if (path === "") return;
-
-    this.preferenceSet = new Store({
-      cwd: joinPath(path, CONFIG_FOLDER.CONFIG_DIR),
-      name: "preference",
-      schema: schema,
-    });
-
-    /* 验证有效性，读取文件 */
-    const filePath = joinPath(path, CONFIG_FILE.PREFERENCE);
     if (!fse.pathExistsSync(filePath)) {
-      this.errReg = new Error(`Can't find ${filePath}`);
+      cwd = UNITEXT_SYSTEM.DEFAULT_DIR;
+      logger.error(`Can't find ${filePath}`);
     }
+
+    this._preferenceSet = new Store({
+      cwd,
+      name: "preference",
+      schema,
+    });
+
+    this._preferenceSet.set("files.folderDir", base);
+
+    this._listenForIpcMain();
   }
 
   getItem(key: string): any {
-    return this.preferenceSet.get(key);
+    return this._preferenceSet.get(key);
   }
 
-  private listenForIpcMain() {
+  private _listenForIpcMain() {
     ipcMain.on(IPC_PREFERENCE.LOAD, () => {});
 
     ipcMain.on(IPC_PREFERENCE.GET_ALL, (event) => {
-      event.reply(IPC_PREFERENCE.REPLY_GET_ALL, this.preferenceSet.store);
+      event.reply(IPC_PREFERENCE.REPLY_GET_ALL, this._preferenceSet.store);
     });
 
     ipcMain.on(IPC_PREFERENCE.GET_ITEM, (event, ...keys: Array<string>) => {
       const res: { [key: string]: any } = {};
       keys.forEach((k) => {
-        res[k] = this.preferenceSet.get(k);
+        res[k] = this._preferenceSet.get(k);
       });
       event.reply(IPC_PREFERENCE.REPLY_GET_ITEM, res);
     });
@@ -74,13 +62,13 @@ export class Preference {
     ipcMain.on(IPC_PREFERENCE.GET_ITEM_SYNC, (event, ...keys: Array<string>) => {
       const res: { [key: string]: any } = {};
       keys.forEach((k) => {
-        res[k] = this.preferenceSet.get(k);
+        res[k] = this._preferenceSet.get(k);
       });
       event.returnValue = res;
     });
 
     ipcMain.on(IPC_PREFERENCE.SET_ITEM, (event, key: string, val: any) => {
-      this.preferenceSet.set(key, val);
+      this._preferenceSet.set(key, val);
     });
   }
 }

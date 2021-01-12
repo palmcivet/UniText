@@ -2,8 +2,6 @@ import { ipcMain } from "electron";
 import * as fse from "fs-extra";
 
 import { IKeybindingSet } from "@/typings/bootstrap";
-import { UNITEXT_SYSTEM } from "@/common/env";
-import { joinPath } from "@/common/files";
 
 export class Keybinding {
   private readonly defaultSet!: IKeybindingSet;
@@ -50,7 +48,7 @@ export class Keybinding {
       ["tab.preview", "预览"],
     ]);
 
-    this.listenForIpcMain();
+    this._listenForIpcMain();
   }
 
   /**
@@ -74,7 +72,7 @@ export class Keybinding {
 
         if (value.length === 0) {
           userAccelerators.set(key, "");
-        } else if (this.checkAccelerator(value)) {
+        } else if (this._checkAccelerator(value)) {
           userAccelerators.set(key, value);
         }
       }
@@ -93,11 +91,11 @@ export class Keybinding {
    * 检测快捷键是否合法
    * @param key 快捷键
    */
-  private checkAccelerator(key: string) {
+  private _checkAccelerator(key: string) {
     return true;
   }
 
-  private listenForIpcMain() {
+  private _listenForIpcMain() {
     ipcMain.on("", () => {});
   }
 }

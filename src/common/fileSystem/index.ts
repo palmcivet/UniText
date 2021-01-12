@@ -14,7 +14,9 @@ export const buildTree = (
   fse.readdir(joinPath(base, path)).then((res) =>
     res.forEach((item, idx) => {
       if (ignore.indexOf(item) !== -1) return;
+
       const isDir = fse.lstatSync(joinPath(base, path, item)).isDirectory();
+
       const subTree: ITreeNode = {
         icon: "",
         order: idx,
