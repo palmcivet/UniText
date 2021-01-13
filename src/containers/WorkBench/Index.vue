@@ -37,7 +37,6 @@ import MarkdownSource from "./Editor/MarkdownSource/Index.vue";
 import { TTab } from "@/typings/modules/workBench";
 import { IDocument } from "@/typings/document";
 import { IGeneralState, EPanelType } from "@/typings/modules/general";
-import { wordCount, timeCalc } from "@/common/editor/words-count";
 import { BUS_FILE, BUS_UI } from "@/common/channel";
 
 const general = namespace("general");
@@ -85,24 +84,6 @@ export default class WorkBench extends Vue {
   isPanelFloat!: boolean;
 
   containerWidth = 0;
-
-  getStatus() {
-    const reading = timeCalc("");
-    const second = Number((reading.second - (reading.minius - 1) * 60).toFixed(2));
-    const formatTime = `${Math.floor(reading.second / 60)}m ${second < 60 ? second : ""}${
-      second < 60 ? "s" : ""
-    }`;
-
-    let wordsNumber = 0;
-    wordCount("", (count: number) => {
-      wordsNumber = count;
-    });
-
-    return {
-      formatTime,
-      wordsNumber: Array.isArray(wordsNumber) ? 0 : wordsNumber,
-    };
-  }
 
   handleClose(index: string) {
     this.CLOSE_FILE(index);

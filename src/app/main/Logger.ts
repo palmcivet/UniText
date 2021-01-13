@@ -34,15 +34,15 @@ class Logger {
   }
 
   info(msg: string) {
-    this._logger.info("[INFO]-[%s]-%s", formatDate(new Date()), msg);
+    this._logger.info("[%s]-[INFO]-%s", formatDate(new Date()), msg);
   }
 
   error(msg: string) {
-    this._logger.error("[ERROR]-[%s]-%s", formatDate(new Date()), msg);
+    this._logger.error("[%s]-[ERROR]-%s", formatDate(new Date()), msg);
   }
 
   debug(msg: string) {
-    isDev && this._logger.info("[DEBUG]-[%s]-%s", formatDate(new Date()), msg);
+    isDev && this._logger.info("[%s]-[DEBUG]-%s", formatDate(new Date()), msg);
   }
 }
 

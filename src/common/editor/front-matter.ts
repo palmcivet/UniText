@@ -7,9 +7,9 @@
 
 const yaml = require("js-yaml");
 
-import { IDocumentFrontMatter, IDocument } from "@/typings/document";
-import { IFile } from "@/typings/modules/workBench";
+import { IDocumentFrontMatter } from "@/typings/document";
 import { formatDate } from "../utils";
+import { BLANK_PATTERN } from "./index";
 
 const FRONT_MATTER = /^(-{3,}|;{3,})\n([\s\S]+?)\n\1(?:$|\n([\s\S]*)$)/;
 
@@ -57,9 +57,13 @@ interface IDumpOption {
  */
 interface ISpiltStructure {
   /**
+   * @field 取值：`---` | `;;;`，根据分隔符区别 YAML 和 JSON
+   */
+  sep?: string;
+  /**
    * @field 属性信息
    */
-  data?: string | IDocumentFrontMatter;
+  data?: IDocumentFrontMatter;
   /**
    * @field 是否在内容之前
    */
@@ -68,14 +72,10 @@ interface ISpiltStructure {
    * @field 文章内容
    */
   content: string;
-  /**
-   * @field 取值：`---` | `;;;`，根据分隔符区别 YAML 和 JSON
-   */
-  separator?: string;
 }
 
 const escapeYAML = (str: string) => {
-  return str.replace(/\n(\t+)/g, (tabs) => {
+  return str.replace(BLANK_PATTERN, (tabs) => {
     let result = "\n";
     for (let i = 0, len = tabs.length; i < len; i += 1) {
       result += "  ";
@@ -89,9 +89,12 @@ const escapeYAML = (str: string) => {
  * @param str 字符串
  * @param options js-yaml 选项
  */
-const parseYAML = (str: string, options?: ILoadOption): IDocumentFrontMatter | null => {
+const parseYAML = (
+  str: string,
+  options?: ILoadOption
+): IDocumentFrontMatter | undefined => {
   const result = yaml.load(escapeYAML(str), options);
-  if (typeof result !== "object") return null;
+  if (typeof result !== "object") return undefined;
   return result;
 };
 
@@ -99,11 +102,11 @@ const parseYAML = (str: string, options?: ILoadOption): IDocumentFrontMatter | n
  * 将 JSON 字符串解析为 JS 对象
  * @param str 字符串
  */
-const parseJSON = (str: string): IDocumentFrontMatter | null => {
+const parseJSON = (str: string): IDocumentFrontMatter | undefined => {
   try {
     return JSON.parse(`{${str}}`);
   } catch (err) {
-    return null;
+    return undefined;
   }
 };
 
@@ -155,48 +158,41 @@ const stringifyJSON = (obj: Object): string => {
 };
 
 /**
- * 使用正则的方法，分离 Markdown 文件字符串
- * @param str 文件总的字符串
- */
-const split = (str: string): ISpiltStructure => {
-  if (FRONT_MATTER.test(str)) {
-    let match = str.match(FRONT_MATTER);
-    match = match as RegExpMatchArray;
-
-    return {
-      data: match[2],
-      content: match[3],
-      separator: match[1],
-      prefix: true,
-    };
-  }
-
-  return { content: str };
-};
-
-/**
  * 解析字符串属性信息为对象
  * @param str 文件总的字符串
  * @param options js-yaml 的参数
  */
 export function importFrontMatter(str: string, options?: ILoadOption): ISpiltStructure {
-  const splitData = split(str);
-  if (!splitData.data) {
-    return splitData;
-  }
+  if (!FRONT_MATTER.test(str)) return { content: str };
 
-  const data = splitData.data as string;
-  const sep = splitData.separator as string;
+  const match = str.match(FRONT_MATTER) as RegExpMatchArray;
+
+  const sep = match[1];
+  const data = match[2];
+
+  const splitData = {
+    sep,
+    data,
+    content: match[3],
+    prefix: true,
+  };
+
+  if (data.replaceAll(BLANK_PATTERN, "") === "") {
+    return {
+      ...splitData,
+      data: undefined,
+    };
+  }
 
   if (sep[0] === ";") {
     return {
-      data: parseJSON(data) || "",
       ...splitData,
+      data: parseJSON(data),
     };
   } else {
     return {
-      data: parseYAML(data, options) || "",
       ...splitData,
+      data: parseYAML(data, options),
     };
   }
 }
@@ -213,7 +209,7 @@ export function exportFrontMatter(payload: ISpiltStructure, options?: IDumpOptio
 
   const data = payload.data as Object;
   const prefix = payload.prefix;
-  const separator = payload.separator as string;
+  const separator = payload.sep as string;
 
   let result = "";
 
@@ -235,18 +231,3 @@ export function exportFrontMatter(payload: ISpiltStructure, options?: IDumpOptio
 
   return result;
 }
-
-/**
- * 将解析得到的属性信息合并入 Doc
- * @param payload JS 对象属性信息
- */
-export const metaInfo2Doc = (payload: ISpiltStructure, doc: IFile): IDocument => {
-  const data = payload.data as string;
-  // TODO 校验 front-matter 完整性
-  if (data === "") return doc;
-
-  return {
-    ...(parseYAML(data) as IDocumentFrontMatter),
-    content: payload.content,
-  };
-};

@@ -1,16 +1,13 @@
 import * as fse from "fs-extra";
-import { MutationTree, ActionContext, GetterTree, Module, ActionTree } from "vuex";
+import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 
-import {
-  importFrontMatter,
-  exportFrontMatter,
-  metaInfo2Doc,
-} from "@/common/editor/front-matter";
-import { joinPath } from "@/common/fileSystem";
+import { charCount, wordCount } from "@/common/editor";
+import { fetchFileInfo, joinPath } from "@/common/fileSystem";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
+import { importFrontMatter, exportFrontMatter } from "@/common/editor/front-matter";
 import { TFileRoute } from "@/typings/modules/sideBar";
 import { IRootState } from "@/typings/store";
-import { EEol } from "@/typings/document";
+import { EEol, IDocumentFrontMatter } from "@/typings/document";
 import { IGeneralStateEditor } from "@/typings/modules/general";
 import { IWorkBenchState, IFile, TTab } from "@/typings/modules/workBench";
 
@@ -150,25 +147,49 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 打开文件
    * @param path 相对路径字符串数组，需要结合根路径
    */
-  OPEN_FILE: (
+  OPEN_FILE: async (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
     route: TFileRoute
   ) => {
+    const editor = moduleState.rootState.general.editor;
     const path = joinPath(moduleState.rootState.sideBar.filesState.folderDir, ...route);
-    fse
-      .readFile(path)
-      .then((res) => res.toString())
-      .then((res) => importFrontMatter(res))
-      .then((res) => {
-        return moduleState.dispatch("LOAD_FILE", {
-          file: {
-            title: route[route.length - 1],
-            needSave: false,
-            ...metaInfo2Doc(res, getDefaultFile(moduleState.rootState.general.editor)),
-          },
-          index: hashCode(path),
-        });
-      });
+    const res = importFrontMatter((await fse.readFile(path)).toString());
+    let doc: IDocumentFrontMatter;
+
+    // FEAT 校验字段
+    if (res.data === undefined) {
+      const info = await fetchFileInfo(path);
+      doc = {
+        tag: editor.tag,
+        remark: "",
+        complete: false,
+        metaInfo: {
+          wordCount: wordCount(res.content),
+          charCount: charCount(res.content),
+          createDate: formatDate(info.createDate),
+          modifyDate: formatDate(info.modifyDate),
+          duration: 0,
+        },
+        format: {
+          ...editor.fileinfo,
+        },
+        config: {
+          ...editor.config,
+        },
+      };
+    } else {
+      doc = { ...res.data };
+    }
+
+    return moduleState.dispatch("LOAD_FILE", {
+      file: {
+        title: route[route.length - 1],
+        needSave: false,
+        content: res.content,
+        ...doc,
+      },
+      index: hashCode(path),
+    });
   },
 
   SAVE_FILE: (

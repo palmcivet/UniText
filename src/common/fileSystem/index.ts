@@ -5,6 +5,15 @@ import { ITree, ITreeNode } from "@/typings/modules/sideBar";
 
 export const joinPath = (...args: Array<string>) => path.normalize(path.join(...args));
 
+export const fetchFileInfo = async (path: string) => {
+  const res = await fse.stat(path);
+
+  return {
+    createDate: res.birthtime,
+    modifyDate: res.mtime,
+  };
+};
+
 export const buildTree = (
   base: string,
   path: string,

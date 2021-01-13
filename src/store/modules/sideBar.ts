@@ -52,7 +52,7 @@ const mutations: MutationTree<ISideBarState> = {
         item.collapse = true;
       });
     } else {
-      // FEAT
+      // FEAT 递归收起
     }
   },
 };
