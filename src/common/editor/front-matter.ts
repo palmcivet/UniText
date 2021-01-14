@@ -130,7 +130,9 @@ const stringifyYAML = (obj: { [index: string]: any }, options?: IDumpOption): st
     }
   }
 
-  let result = yaml.dump(data, options);
+  let result = yaml.dump(data, {
+    quotingType: "",
+  });
 
   if (dateKeys.length) {
     dateKeys.forEach((item) => {
@@ -153,8 +155,8 @@ const stringifyYAML = (obj: { [index: string]: any }, options?: IDumpOption): st
  */
 const stringifyJSON = (obj: Object): string => {
   return JSON.stringify(obj, null, "  ")
-    .replace(/\n {2}/g, () => "\n")
-    .replace(/^{\n|}$/g, "");
+    .replace(/\n{2}/g, () => "\n")
+    .replace(/^{\n}$/g, "");
 };
 
 /**
@@ -204,29 +206,26 @@ export function importFrontMatter(str: string, options?: ILoadOption): ISpiltStr
  */
 export function exportFrontMatter(payload: ISpiltStructure, options?: IDumpOption) {
   const content = payload.content;
-
-  if (!Object.keys(payload).length) return content;
-
+  const sep = payload.sep as string;
   const data = payload.data as Object;
   const prefix = payload.prefix;
-  const separator = payload.sep as string;
 
   let result = "";
 
   if (prefix) {
-    result += `${separator}\n`;
+    result += `${sep}\n`;
   } else {
-    result += `${content}\n${separator}\n`;
+    result += `${content}\n${sep}\n`;
   }
 
-  if (separator[0] === "-") {
+  if (sep[0] === "-") {
     result += stringifyYAML(data, options);
   } else {
     result += stringifyJSON(data);
   }
 
   if (prefix) {
-    result += `${separator}\n${content}`;
+    result += `${sep}\n${content}`;
   }
 
   return result;

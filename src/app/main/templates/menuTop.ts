@@ -1,9 +1,11 @@
-import { app, shell } from "electron";
+import { app, BrowserWindow, shell } from "electron";
 
 import { isOsx } from "@/common/env";
 import { Keybinding } from "@/app/main/Keybinding";
 import { localesMenu } from "@/app/i18n/menu";
 import { TI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { IPC_EVENT } from "@/common/channel";
+import { VueBus } from "@/app/renderer/bus";
 
 export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
   const menu: TMenuTemplate = [];
@@ -109,7 +111,9 @@ export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
         {
           label: localesMenu[locale].file.save,
           accelerator: keybinding.getItem("file.save"),
-          click: () => {},
+          click: (menu, win) => {
+            (win as BrowserWindow).webContents.send(IPC_EVENT.FILE_SAVE);
+          },
         },
         {
           label: localesMenu[locale].edit.delete,

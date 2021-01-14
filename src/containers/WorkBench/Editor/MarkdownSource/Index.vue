@@ -25,11 +25,12 @@ import LayoutBox from "@/components/LayoutBox.vue";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
-import { BUS_TOC, BUS_FILE, BUS_UI } from "@/common/channel";
+import { BUS_TOC, BUS_FILE, BUS_UI, IPC_EVENT } from "@/common/channel";
 import { IGeneralState, EEditMode, EPanelType } from "@/typings/modules/general";
 import { IFile, TTab } from "@/typings/modules/workBench";
 import { theme } from "./theme";
 import { init } from "./option";
+import { ipcRenderer } from "electron";
 
 const panel = namespace("panel");
 const general = namespace("general");
@@ -57,6 +58,9 @@ export default class MarkdownSource extends Vue {
 
   @workBench.Getter("currentFile")
   currentFile!: { order: string; value: IFile };
+
+  @workBench.Action("SAVE_FILE")
+  SAVE_FILE!: (content: string) => void;
 
   editor!: monaco.editor.IStandaloneCodeEditor;
 
@@ -277,6 +281,8 @@ export default class MarkdownSource extends Vue {
         this.modelStack[index].dispose();
         delete this.modelStack[index];
       });
+
+      ipcRenderer.on(IPC_EVENT.FILE_SAVE, () => this.SAVE_FILE(this.editor.getValue()));
     });
   }
 
@@ -285,6 +291,7 @@ export default class MarkdownSource extends Vue {
     this.editor.dispose();
     this.$bus.$off(BUS_TOC.REVEAL_SECTION);
     this.$bus.$off(BUS_FILE.CLOSE_FILE);
+    ipcRenderer.off(IPC_EVENT.FILE_SAVE, this.SAVE_FILE);
   }
 }
 </script>

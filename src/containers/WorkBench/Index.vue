@@ -36,7 +36,7 @@ import LayoutBox from "@/components/LayoutBox.vue";
 import MarkdownSource from "./Editor/MarkdownSource/Index.vue";
 import { TTab } from "@/typings/modules/workBench";
 import { IDocument } from "@/typings/document";
-import { IGeneralState, EPanelType } from "@/typings/modules/general";
+import { IGeneralState } from "@/typings/modules/general";
 import { BUS_FILE, BUS_UI } from "@/common/channel";
 
 const general = namespace("general");

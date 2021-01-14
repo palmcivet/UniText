@@ -1,7 +1,9 @@
-import { ipcMain } from "electron";
+import { ipcRenderer } from "electron";
 import * as fse from "fs-extra";
 
 import { IKeybindingSet } from "@/typings/bootstrap";
+import { IPC_EVENT } from "@/common/channel";
+import { VueBus } from "@/app/renderer/bus";
 
 export class Keybinding {
   private readonly defaultSet!: IKeybindingSet;
@@ -21,9 +23,10 @@ export class Keybinding {
       /* file */
       ["file.read", ""],
       ["file.edit", ""],
-      ["file.new-file", ""],
+      ["file.new-file", "CmdOrCtrl+N"],
       ["file.new-folder", ""],
       ["file.reveal", ""],
+      ["file.save", "CmdOrCtrl+S"],
       ["file.copy", "CmdOrCtrl+C"],
 
       /* edit */
@@ -95,7 +98,5 @@ export class Keybinding {
     return true;
   }
 
-  private _listenForIpcMain() {
-    ipcMain.on("", () => {});
-  }
+  private _listenForIpcMain() {}
 }

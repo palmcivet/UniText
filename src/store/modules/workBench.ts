@@ -10,6 +10,8 @@ import { IRootState } from "@/typings/store";
 import { EEol, IDocumentFrontMatter } from "@/typings/document";
 import { IGeneralStateEditor } from "@/typings/modules/general";
 import { IWorkBenchState, IFile, TTab } from "@/typings/modules/workBench";
+import { ipcRenderer } from "electron";
+import { IPC_EVENT } from "@/common/channel";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
   stateTree.currentFileGroup[stateTree.currentFileIndex];
@@ -29,7 +31,7 @@ const getDefaultFile = (doc: IGeneralStateEditor): IFile => {
     format: doc.fileinfo,
     config: doc.config,
     content: "",
-    title: `Untitled-${titleId}`,
+    title: [`Untitled-${titleId}`],
     needSave: true,
   };
 };
@@ -94,9 +96,10 @@ const mutations: MutationTree<IWorkBenchState> = {
     const newTabs: Array<TTab> = [];
     const group = Object.keys(moduleState.currentFileGroup);
     group.forEach((v) => {
+      const t = moduleState.currentFileGroup[Number(v)].title;
       newTabs.push({
         order: v,
-        value: moduleState.currentFileGroup[Number(v)].title,
+        value: t[t.length - 1],
       });
     });
     moduleState.currentTabs = newTabs;
@@ -127,7 +130,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     titleId += 1;
     moduleState.dispatch("LOAD_FILE", {
       file: untitled,
-      index: hashCode(untitled.title),
+      index: hashCode(joinPath(...untitled.title)),
     });
     /* 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建，前者需要写入磁盘 */
     if (title) {
@@ -154,6 +157,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const editor = moduleState.rootState.general.editor;
     const path = joinPath(moduleState.rootState.sideBar.filesState.folderDir, ...route);
     const res = importFrontMatter((await fse.readFile(path)).toString());
+
     let doc: IDocumentFrontMatter;
 
     // FEAT 校验字段
@@ -183,7 +187,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     return moduleState.dispatch("LOAD_FILE", {
       file: {
-        title: route[route.length - 1],
+        title: route,
         needSave: false,
         content: res.content,
         ...doc,
@@ -194,11 +198,18 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
   SAVE_FILE: (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
-    newTitle?: string
+    content: string
   ) => {
-    const { title, needSave, ...payload } = fileSelect(moduleState.state);
-    const markdown = exportFrontMatter(payload);
-    fse.writeFile(newTitle || title, markdown);
+    const { title, needSave, content: nouse, ...payload } = fileSelect(moduleState.state);
+    // if (!needSave) return;
+    const markdown = exportFrontMatter({
+      sep: "---",
+      data: payload as IDocumentFrontMatter,
+      prefix: true,
+      content,
+    });
+    const path = joinPath(moduleState.rootState.sideBar.filesState.folderDir, ...title);
+    fse.writeFile(path, markdown);
   },
 
   /**
@@ -217,7 +228,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     /* 保存标签页的内容 */
     if (selectState.currentFileGroup[index].needSave) {
-      // moduleState.dispatch("SAVE_FILE");
+      ipcRenderer.send(IPC_EVENT.FILE_SAVE);
     }
 
     /* 删除标签页的内容 */

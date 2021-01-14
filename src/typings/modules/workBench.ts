@@ -1,4 +1,5 @@
 import { IDocument } from "@/typings/document";
+import { TFileRoute } from "./sideBar";
 
 /**
  * @type 标识打开的标签
@@ -21,7 +22,7 @@ export interface IFile extends IDocument {
   /**
    * @field 文件名
    */
-  title: string;
+  title: TFileRoute;
   /**
    * @field 是否改动
    */
