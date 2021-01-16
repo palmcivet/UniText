@@ -9,7 +9,7 @@ import MarkdownItTaskLists from "markdown-it-task-lists";
 import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
-import { VueBus } from "@/app/renderer/bus";
+import { VueBus } from "@/renderer/bus";
 import { BUS_TOC } from "@/common/channel";
 import markdownItTocAndAnchor, { ITocList } from "@/common/editor/create-toc";
 

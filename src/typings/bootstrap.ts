@@ -1,10 +1,10 @@
 import { Menu } from "electron";
 import Store from "electron-store";
 
-import { IGeneralStateAppearance, IGeneralStateEditor } from "./modules/general";
-import { ISideBarStateFiles } from "./modules/sideBar";
-import { localesView } from "@/app/i18n/view";
-import { localesMenu } from "@/app/i18n/menu";
+import { IGeneralStateAppearance, IGeneralStateEditor } from "./vuex/general";
+import { ISideBarStateFiles } from "./vuex/sideBar";
+import { localesView } from "@/main/i18n/view";
+import { localesMenu } from "@/main/i18n/menu";
 
 /**
  * @enum 窗口的打开方式

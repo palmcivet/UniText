@@ -1,23 +1,15 @@
 /**
- * @enum {EEol} 文档结尾控制符，End OF Line
- */
-export enum EEol {
-  LF = "LF",
-  CRLF = "CRLF",
-}
-
-/**
  * @interface 文章的元信息，自动生成
  */
 export interface IDocumentMetaInfo {
   /**
    * @field 创建日期
    */
-  createDate: string;
+  created: string;
   /**
    * @field 更改日期
    */
-  modifyDate: string;
+  modified: string;
   /**
    * @field 字数统计
    */
@@ -36,20 +28,36 @@ export interface IDocumentMetaInfo {
  * @interface 编辑器格式相关属性
  */
 export interface IDocumentFormat {
-  indent: 2 | 4; // 缩进
-  // TODO 完善字符编码的接口
-  encoding: string; // 编码格式
-  endOfLine: EEol; // 控制符
+  /**
+   * @field 缩进
+   */
+  indent: 2 | 4;
+  /**
+   * @field 编码格式
+   */
+  encoding: string; // TODO 完善字符编码的接口
+  /**
+   * @field 控制符
+   */
+  endOfLine: "LF" | "CRLF";
 }
 
 /**
  * @interface 文件设置相关属性
  */
 export interface IDocumentConfig {
-  // TODO 完善图片存储方案的接口
-  picStorage: string; // 图片存储方案
-  autoSave: boolean; // 自动保存
-  autoSync: boolean; // 自动同步
+  /**
+   * @field 图片存储方案
+   */
+  picStorage: string; // TODO 完善图片存储方案的接口
+  /**
+   * @field 自动保存
+   */
+  autoSave: boolean;
+  /**
+   * @field 自动同步
+   */
+  autoSync: boolean;
 }
 
 /**
@@ -77,5 +85,8 @@ export interface IDocumentFrontMatter {
  * @interface 文章属性
  */
 export interface IDocument extends IDocumentFrontMatter {
+  /**
+   * @field 文档内容
+   */
   content: string;
 }

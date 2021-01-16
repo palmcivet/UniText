@@ -1,7 +1,7 @@
 import path from "path";
 import * as fse from "fs-extra";
 
-import { ITree, ITreeNode } from "@/typings/modules/sideBar";
+import { ITree, ITreeNode } from "@/typings/vuex/sideBar";
 
 export const joinPath = (...args: Array<string>) => path.normalize(path.join(...args));
 

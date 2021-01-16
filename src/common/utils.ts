@@ -45,19 +45,11 @@ export const hashCode = (plain: string) => {
   return hash.toString();
 };
 
-export const getHash = (
-  content: string,
-  encoding: crypto.Encoding,
-  type: string
-) => {
+export const getHash = (content: string) => {
   return crypto
-    .createHash(type)
-    .update(content, encoding)
+    .createHash("md5")
+    .update(content, "utf-8")
     .digest("hex");
-};
-
-export const getContentHash = (content: string) => {
-  return getHash(content, "utf8", "sha1");
 };
 
 export const formatDate = (raw: Date) => {

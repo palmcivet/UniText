@@ -4,7 +4,7 @@ module.exports = {
   runtimeCompiler: true,
   pages: {
     index: {
-      entry: path.join(__dirname, "src/app/renderer/index.ts"),
+      entry: path.join(__dirname, "src/renderer/index.ts"),
     },
   },
   css: {
@@ -24,7 +24,7 @@ module.exports = {
       nodeIntegration: true,
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
-      mainProcessFile: "src/app/main/index.ts",
+      mainProcessFile: "src/main/index.ts",
       outputDir: "dist",
       builderOptions: {
         productName: "UniText",
