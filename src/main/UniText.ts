@@ -5,7 +5,7 @@ import { autoUpdater } from "electron-updater";
 
 import { IPC_BOOTSTRAP } from "@/common/channel";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { IBootArgs, TI18n } from "@/typings/bootstrap";
+import { IBootArgs, EI18n } from "@/typings/bootstrap";
 import { Preference } from "./modules/Preference";
 import { Keybinding } from "./modules/Keybinding";
 import { MenuManager } from "./modules/MenuManager";
@@ -13,7 +13,7 @@ import { MenuManager } from "./modules/MenuManager";
 export class UniText {
   private _args: IBootArgs;
 
-  private _language!: TI18n;
+  private _language!: "ZH_CN" | "EN_US";
 
   private _window!: BrowserWindow | null;
 
@@ -95,7 +95,7 @@ export class UniText {
 
     win.setTitle("UniText");
 
-    this._menuManager.updateMenu(this._language, this._keybinding);
+    this._menuManager.updateMenu(EI18n[this._language], this._keybinding);
 
     /**
      * 加载开发者工具

@@ -1,32 +1,37 @@
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
-import { TI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
 
-export const tab = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => [
+export const tab = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
-    label: localesMenu[locale].tab.closeCur,
-    accelerator: keybinding.getItem("tab.close-current"),
+    label: localesMenu.tab.closecurrent[locale],
+    accelerator: keybinding.getItem("tab.closecurrent"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].tab.closeSave,
-    accelerator: keybinding.getItem("tab.close-save"),
+    label: localesMenu.tab.closesaved[locale],
+    accelerator: keybinding.getItem("tab.closesave"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].tab.closeAll,
-    accelerator: keybinding.getItem("tab.close-all"),
+    label: localesMenu.tab.closeall[locale],
+    accelerator: keybinding.getItem("tab.closeall"),
+    click: () => {},
+  },
+  {
+    label: localesMenu.tab.saveall[locale],
+    accelerator: keybinding.getItem("tab.saveall"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].tab.pin,
-    accelerator: keybinding.getItem("tab.pin-tab"),
+    label: localesMenu.tab.pin[locale],
+    accelerator: keybinding.getItem("tab.pintab"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].tab.preview,
+    label: localesMenu.tab.preview[locale],
     accelerator: keybinding.getItem("tab.preview"),
     click: () => {},
   },

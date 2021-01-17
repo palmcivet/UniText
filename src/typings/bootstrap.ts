@@ -3,8 +3,6 @@ import Store from "electron-store";
 
 import { IGeneralStateAppearance, IGeneralStateEditor } from "./vuex/general";
 import { ISideBarStateFiles } from "./vuex/sideBar";
-import { localesView } from "@/main/i18n/view";
-import { localesMenu } from "@/main/i18n/menu";
 
 /**
  * @enum 窗口的打开方式
@@ -56,7 +54,7 @@ export interface IBootConfig {
   /**
    * @field 显示语言
    */
-  language: TI18n;
+  language: EI18n;
 }
 
 /**
@@ -110,11 +108,9 @@ export type TMenuTemplate = Array<
 >;
 
 /**
- * @type i18n 类型
+ * @enum i18n 类型
  */
-export type TI18n = keyof typeof localesView;
-
-/**
- * @type i18n 语言包
- */
-export type TMenu = typeof localesMenu["zh-CN"];
+export enum EI18n {
+  ZH_CN,
+  EN_US,
+}

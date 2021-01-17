@@ -13,15 +13,14 @@ export class Keybinding {
       ["system.preference", ""],
       ["system.keybinding", ""],
       ["system.snippet", ""],
-      ["system.toggledevtools", "F12"],
-      ["system.close", "CmdOrCtrl+W"],
+      ["system.toggledevtools", "Option+Cmd+I"],
       ["system.quit", "CmdOrCtrl+Q"],
 
       /* file */
       ["file.read", ""],
       ["file.edit", ""],
-      ["file.new-file", "CmdOrCtrl+N"],
-      ["file.new-folder", ""],
+      ["file.newfile", "CmdOrCtrl+N"],
+      ["file.newfolder", ""],
       ["file.reveal", ""],
       ["file.save", "CmdOrCtrl+S"],
       ["file.copy", "CmdOrCtrl+C"],
@@ -37,15 +36,20 @@ export class Keybinding {
       ["edit.reicon", ""],
       ["edit.selectall", "CmdOrCtrl+A"],
 
+      /* view */
+      ["view.statusbar", ""],
+      ["view.file", ""],
+
       /* help */
       ["help.learnmore", ""],
 
       /* tab */
-      ["tab.close-current", "关闭当前标签"],
-      ["tab.close-save", "关闭已保存标签"],
-      ["tab.close-all", "关闭所有标签"],
-      ["tab.pin-tab", "固定标签"],
-      ["tab.preview", "预览"],
+      ["tab.closecurrent", "Cmd+W"],
+      ["tab.closesaves", ""],
+      ["tab.closeall", ""],
+      ["tab.saveall", "Cmd+Option+S"],
+      ["tab.preview", ""],
+      ["tab.pin", ""],
     ]);
 
     this._listenForIpcMain();

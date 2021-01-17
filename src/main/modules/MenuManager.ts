@@ -1,13 +1,13 @@
 import { app, ipcMain, Menu } from "electron";
 
-import { folder } from "../templates/contextFolder";
-import { file } from "../templates/contextFile";
-import { toc } from "../templates/contextToc";
-import { tab } from "../templates/contextTab";
-import { dock } from "../templates/menuDock";
-import { top } from "../templates/menuTop";
+import { folder } from "@/main/templates/contextFolder";
+import { file } from "@/main/templates/contextFile";
+import { toc } from "@/main/templates/contextToc";
+import { tab } from "@/main/templates/contextTab";
+import { dock } from "@/main/templates/menuDock";
+import { top } from "@/main/templates/menuTop";
 import { Keybinding } from "./Keybinding";
-import { EMenuContextKey, IMenuSet, TI18n } from "@/typings/bootstrap";
+import { EMenuContextKey, IMenuSet, EI18n } from "@/typings/bootstrap";
 import { IPC_MENUMANAGER } from "@/common/channel";
 
 export class MenuManager {
@@ -17,7 +17,7 @@ export class MenuManager {
     this._listenForIpcMain();
   }
 
-  buildMenuSet(lang: TI18n, key: Keybinding) {
+  buildMenuSet(lang: EI18n, key: Keybinding) {
     this._menuSet = {
       SIDEBAR_FOLDER: Menu.buildFromTemplate(folder(lang, key)),
       SIDEBAR_FILE: Menu.buildFromTemplate(file(lang, key)),
@@ -28,7 +28,7 @@ export class MenuManager {
     };
   }
 
-  updateMenu(lang: TI18n, key: Keybinding) {
+  updateMenu(lang: EI18n, key: Keybinding) {
     this.buildMenuSet(lang, key);
     Menu.setApplicationMenu(this._menuSet.MENU_BAR);
     app.dock.setMenu(this._menuSet.DOCK_BAR);

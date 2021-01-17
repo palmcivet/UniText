@@ -3,11 +3,10 @@ import { app, BrowserWindow, shell } from "electron";
 import { isOsx } from "@/common/env";
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
-import { TI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
 import { IPC_EVENT } from "@/common/channel";
-import { VueBus } from "@/renderer/bus";
 
-export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
+export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
   const menu: TMenuTemplate = [];
 
   if (isOsx) {
@@ -15,29 +14,29 @@ export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
       label: app.name,
       submenu: [
         {
-          label: localesMenu[locale].system.about,
+          label: localesMenu.system.about[locale],
           role: "about",
         },
         {
-          label: localesMenu[locale].system.check,
+          label: localesMenu.system.check[locale],
           click: () => {},
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].system.setting,
+          label: localesMenu.system.setting[locale],
           submenu: [
             {
-              label: localesMenu[locale].system.settingGroup.preference,
+              label: localesMenu.system.preference[locale],
               accelerator: keybinding.getItem("system.preference"),
               click: () => {},
             },
             {
-              label: localesMenu[locale].system.settingGroup.keybinding,
+              label: localesMenu.system.keybinding[locale],
               accelerator: keybinding.getItem("system.keybinding"),
               click: () => {},
             },
             {
-              label: localesMenu[locale].system.settingGroup.snippet,
+              label: localesMenu.system.snippet[locale],
               accelerator: keybinding.getItem("system.snippet"),
               click: () => {},
             },
@@ -45,24 +44,19 @@ export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].system.toggleDevTools,
+          label: localesMenu.system.toggledevtools[locale],
           role: "toggleDevTools",
           accelerator: keybinding.getItem("system.toggledevtools"),
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].system.services,
+          label: localesMenu.system.services[locale],
           role: "services",
           accelerator: keybinding.getItem("system.services"),
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].system.close,
-          role: "close",
-          accelerator: keybinding.getItem("system.close"),
-        },
-        {
-          label: localesMenu[locale].system.quit,
+          label: localesMenu.system.quit[locale],
           role: "quit",
           accelerator: keybinding.getItem("system.quit"),
         },
@@ -73,98 +67,98 @@ export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
   return [
     ...menu,
     {
-      label: localesMenu[locale].title.file,
+      label: localesMenu.file.label[locale],
       submenu: [
         {
-          label: localesMenu[locale].file.read,
+          label: localesMenu.file.read[locale],
           accelerator: keybinding.getItem("file.read"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].file.edit,
+          label: localesMenu.file.edit[locale],
           accelerator: keybinding.getItem("file.edit"),
           click: () => {},
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].edit.copy,
+          label: localesMenu.edit.copy[locale],
           accelerator: keybinding.getItem("file.copy"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].edit.cut,
+          label: localesMenu.edit.cut[locale],
           accelerator: keybinding.getItem("edit.cut"),
           click: () => {},
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].file.newFile,
-          accelerator: keybinding.getItem("file.new-file"),
+          label: localesMenu.file.newfile[locale],
+          accelerator: keybinding.getItem("file.newfile"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].file.newFolder,
-          accelerator: keybinding.getItem("file.new-folder"),
+          label: localesMenu.file.newfolder[locale],
+          accelerator: keybinding.getItem("file.newfolder"),
           click: () => {},
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].file.save,
+          label: localesMenu.file.save[locale],
           accelerator: keybinding.getItem("file.save"),
           click: (menu, win) => {
             (win as BrowserWindow).webContents.send(IPC_EVENT.FILE_SAVE);
           },
         },
         {
-          label: localesMenu[locale].edit.delete,
+          label: localesMenu.edit.delete[locale],
           accelerator: keybinding.getItem("edit.delete"),
           click: () => {},
         },
       ],
     },
     {
-      label: localesMenu[locale].title.edit,
+      label: localesMenu.edit.label[locale],
       submenu: [
         { type: "separator" },
         {
-          label: localesMenu[locale].edit.undo,
+          label: localesMenu.edit.undo[locale],
           role: "undo",
           accelerator: keybinding.getItem("edit.undo"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].edit.redo,
+          label: localesMenu.edit.redo[locale],
           role: "redo",
           accelerator: keybinding.getItem("edit.redo"),
           click: () => {},
         },
         { type: "separator" },
         {
-          label: localesMenu[locale].edit.cut,
+          label: localesMenu.edit.cut[locale],
           role: "cut",
           accelerator: keybinding.getItem("edit.cut"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].edit.copy,
+          label: localesMenu.edit.copy[locale],
           role: "copy",
           accelerator: keybinding.getItem("edit.copy"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].edit.paste,
+          label: localesMenu.edit.paste[locale],
           role: "paste",
           accelerator: keybinding.getItem("edit.paste"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].edit.delete,
+          label: localesMenu.edit.delete[locale],
           role: "delete",
           accelerator: keybinding.getItem("edit.delete"),
           click: () => {},
         },
         {
-          label: localesMenu[locale].edit.selectall,
+          label: localesMenu.edit.selectall[locale],
           role: "selectAll",
           accelerator: keybinding.getItem("edit.selectall"),
           click: () => {},
@@ -172,11 +166,22 @@ export const top = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => {
       ],
     },
     {
-      label: localesMenu[locale].title.window,
+      label: localesMenu.view.label[locale],
+      submenu: [
+        {
+          label: localesMenu.view.status[locale],
+          accelerator: keybinding.getItem("view.status"),
+          click: () => {},
+        },
+        { type: "separator" },
+      ],
+    },
+    {
+      label: localesMenu.window.label[locale],
       role: "windowMenu",
     },
     {
-      label: localesMenu[locale].title.help,
+      label: localesMenu.help.label[locale],
       role: "help",
       submenu: [
         {

@@ -8,7 +8,7 @@ import store from "@/renderer/vuex";
 import { localesView } from "@/main/i18n/view";
 import { notEmpty } from "@/common/utils";
 import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel";
-import { IBootArgs, TI18n } from "@/typings/bootstrap";
+import { IBootArgs, EI18n } from "@/typings/bootstrap";
 import { VueBus } from "./bus";
 import "@/renderer/styles/main.less";
 
@@ -21,9 +21,9 @@ store.commit(
 
 ipcRenderer.once(
   IPC_BOOTSTRAP.REPLY,
-  (event, message: { lang: TI18n; args: IBootArgs }) => {
+  (event, message: { lang: EI18n; args: IBootArgs }) => {
     const { lang, args } = message;
-    defaultLocale = lang;
+    defaultLocale = EI18n[lang];
 
     // store.dispatch("CHECK_UPDATE");
     if (notEmpty(args.error)) store.commit("SET_ERROR", args.error);

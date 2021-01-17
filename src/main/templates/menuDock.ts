@@ -1,20 +1,20 @@
-import { TI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
 
-export const dock = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => [
+export const dock = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
-    label: localesMenu[locale].dock.newWindow,
-    accelerator: keybinding.getItem("dock.newWindow"),
+    label: localesMenu.dock.newwindow[locale],
+    accelerator: keybinding.getItem("dock.newwindow"),
   },
   {
-    label: localesMenu[locale].dock.newNote,
-    accelerator: keybinding.getItem("dock.newNote"),
+    label: localesMenu.dock.newnote[locale],
+    accelerator: keybinding.getItem("dock.newnote"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].dock.newAgenda,
-    accelerator: keybinding.getItem("dock.newAgenda"),
+    label: localesMenu.dock.newagenda[locale],
+    accelerator: keybinding.getItem("dock.newagenda"),
     click: () => {},
   },
 ];

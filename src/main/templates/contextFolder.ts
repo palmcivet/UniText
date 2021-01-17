@@ -1,54 +1,54 @@
 import { localesMenu } from "@/main/i18n/menu";
 import { Keybinding } from "@/main/modules/Keybinding";
-import { TI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
 
-export const folder = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => [
+export const folder = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
-    label: localesMenu[locale].file.newFile,
-    accelerator: keybinding.getItem("file.new-file"),
+    label: localesMenu.file.newfile[locale],
+    accelerator: keybinding.getItem("file.newfile"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].file.newFolder,
-    accelerator: keybinding.getItem("file.new-folder"),
+    label: localesMenu.file.newfolder[locale],
+    accelerator: keybinding.getItem("file.newfolder"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].edit.copy,
+    label: localesMenu.edit.copy[locale],
     accelerator: keybinding.getItem("edit.copy"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].edit.cut,
+    label: localesMenu.edit.cut[locale],
     accelerator: keybinding.getItem("edit.cut"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].edit.paste,
+    label: localesMenu.edit.paste[locale],
     accelerator: keybinding.getItem("edit.paste"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].edit.rename,
+    label: localesMenu.edit.rename[locale],
     accelerator: keybinding.getItem("edit.rename"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].edit.reicon,
+    label: localesMenu.edit.reicon[locale],
     accelerator: keybinding.getItem("edit.reicon"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].file.reveal,
+    label: localesMenu.file.reveal[locale],
     accelerator: keybinding.getItem("file.reveal"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].edit.delete,
+    label: localesMenu.edit.delete[locale],
     accelerator: keybinding.getItem("edit.delete"),
     click: () => {},
   },

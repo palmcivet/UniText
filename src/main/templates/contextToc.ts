@@ -1,21 +1,21 @@
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
-import { TI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
 
-export const toc = (locale: TI18n, keybinding: Keybinding): TMenuTemplate => [
+export const toc = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
-    label: localesMenu[locale].toc.titleUp,
-    accelerator: keybinding.getItem("toc.titleUp"),
+    label: localesMenu.toc.titleup[locale],
+    accelerator: keybinding.getItem("toc.titleup"),
     click: () => {},
   },
   {
-    label: localesMenu[locale].toc.titleDown,
-    accelerator: keybinding.getItem("toc.titleDown"),
+    label: localesMenu.toc.titledown[locale],
+    accelerator: keybinding.getItem("toc.titledown"),
     click: () => {},
   },
   { type: "separator" },
   {
-    label: localesMenu[locale].toc.retitle,
+    label: localesMenu.toc.retitle[locale],
     accelerator: keybinding.getItem("toc.retitle"),
     click: () => {},
   },
