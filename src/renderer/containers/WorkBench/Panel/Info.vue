@@ -2,14 +2,14 @@
   <section>
     <div class="date">
       <InfoCard
-        :raw="file.metaInfo.createDate"
-        :remark="'创建时间'"
+        :raw="file.created"
+        :remark="$t('panel.created')"
         :type="'DATE'"
         :isCN="isCN"
       />
       <InfoCard
-        :raw="file.metaInfo.modifyDate"
-        :remark="'更改时间'"
+        :raw="file.modified"
+        :remark="$t('panel.modified')"
         :type="'DATE'"
         :isCN="isCN"
       />
@@ -17,26 +17,26 @@
 
     <div class="grid">
       <InfoCard
-        :raw="file.metaInfo.wordCount"
-        :remark="'词数'"
+        :raw="file.wordCount"
+        :remark="$t('panel.wordCount')"
         :type="'NUM'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
       <InfoCard
-        :raw="file.metaInfo.charCount"
-        :remark="'字数'"
+        :raw="file.charCount"
+        :remark="$t('panel.charCount')"
         :type="'NUM'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
       <InfoCard
-        :raw="file.metaInfo.charCount"
-        :remark="'阅读时长'"
+        :raw="file.readTime"
+        :remark="$t('panel.readTime')"
         :type="'TIME'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
       <InfoCard
-        :raw="file.metaInfo.duration"
-        :remark="'编辑时长'"
+        :raw="file.editTime"
+        :remark="$t('panel.editTime')"
         :type="'TIME'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
@@ -50,6 +50,7 @@ import { namespace } from "vuex-class";
 
 import InfoCard from "@/renderer/components/InfoCard.vue";
 import { IFile } from "@/typings/vuex/workBench";
+import { EI18n } from "@/typings/bootstrap";
 
 const workBench = namespace("workBench");
 
@@ -64,17 +65,11 @@ export default class Info extends Vue {
   currentFile!: { order: string; value: IFile };
 
   get file() {
-    return this.currentFile.value;
+    return this.currentFile.value.metaInfo;
   }
 
-  // DEV i18n
   get isCN() {
-    return true;
-  }
-
-  // DEV 转移到状态栏
-  get read() {
-    return this.isCN ? "阅读时长" : "Read Time";
+    return this.$i18n.lang === EI18n.ZH_CN;
   }
 }
 </script>

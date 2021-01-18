@@ -1,15 +1,13 @@
-import {
-  IGeneralState,
-  EPanelType,
-  ETypeMode,
-  EEditMode,
-} from "@/typings/vuex/general";
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+
+import { IRootState } from "@/typings/vuex";
+import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
 
 const state = {};
 
-const getters = {};
+const getters: GetterTree<IGeneralState, IRootState> = {};
 
-const mutations = {
+const mutations: MutationTree<IGeneralState> = {
   /* TODO 合并、优化 */
   TOGGLE_SIDE_BAR: (moduleState: IGeneralState) => {
     moduleState.appearance.showSideBar = !moduleState.appearance.showSideBar;
@@ -40,7 +38,7 @@ const mutations = {
   },
 };
 
-const actions = {};
+const actions: ActionTree<IGeneralState, IRootState> = {};
 
 export default {
   namespaced: true,

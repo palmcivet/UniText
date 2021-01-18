@@ -3,7 +3,7 @@ import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
 import { IPC_EVENT } from "@/common/channel";
-import { charCount, wordCount } from "@/common/editor";
+import { charCount, wordCount, timeCalc } from "@/common/editor";
 import { fetchFileInfo, joinPath } from "@/common/fileSystem";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
 import { importFrontMatter, exportFrontMatter } from "@/common/editor/front-matter";
@@ -114,7 +114,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         modified: formatDate(new Date()),
         wordCount: 0,
         charCount: 0,
-        duration: 0,
+        readTime: 0,
+        editTime: 0,
       },
       format: doc.format,
       config: doc.config,
@@ -166,7 +167,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
           charCount: charCount(res.content),
           created: formatDate(info.createDate),
           modified: formatDate(info.modifyDate),
-          duration: 0,
+          readTime: timeCalc(res.content),
+          editTime: 0,
         },
         format: {
           ...editor.format,

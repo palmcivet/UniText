@@ -44,27 +44,26 @@ export default class Mode extends Vue {
   @general.Mutation("TOGGLE_PRESENT")
   TOGGLE_PRESENT!: () => void;
 
-  // DEV i18n
   get checkMode() {
     return {
       SOURCE: {
         false: {
-          title: "书写",
           icon: "ri-code-s-slash-fill",
+          title: this.$t("status.sourceEdit"),
         },
         true: {
-          title: "预览",
           icon: "ri-layout-column-fill",
+          title: this.$t("status.sourcePreview"),
         },
       },
       WYSIWYG: {
         false: {
-          title: "书写",
           icon: "ri-text",
+          title: this.$t("status.wysiwygWrite"),
         },
         true: {
-          title: "源码",
           icon: "ri-code-s-slash-fill",
+          title: this.$t("status.wysiwygSource"),
         },
       },
       RICHTEXT: [{}],
@@ -74,12 +73,12 @@ export default class Mode extends Vue {
   get presentMode() {
     return {
       true: {
-        title: "浏览模式",
         icon: "ri-eye-line",
+        title: this.$t("status.presentPreview"),
       },
       false: {
-        title: "编辑模式",
         icon: "ri-pencil-line",
+        title: this.$t("status.presentEdit"),
       },
     };
   }

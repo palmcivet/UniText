@@ -1,16 +1,16 @@
 <template>
   <section :title="`${remark}: ${raw}`">
     <div v-if="type === 'DATE' && isCN">
-      <span class="major">{{ date.slice(5, 7) }}</span>
+      <span class="major">{{ raw.slice(5, 7) }}</span>
       <span>{{ "月 " }}</span>
-      <span class="major">{{ date.slice(8, 10) }}</span>
+      <span class="major">{{ raw.slice(8, 10) }}</span>
       <span>{{ "日 " }}</span>
-      <span class="minor">{{ date.slice(11, 16) }}</span>
+      <span class="minor">{{ raw.slice(11, 16) }}</span>
     </div>
     <div v-else-if="type === 'DATE' && !isCN">
-      <span class="major">{{ date.slice(8, 10) }}</span>
+      <span class="major">{{ raw.slice(8, 10) }}</span>
       <span>{{ ` ${monthMap[parseInt(date.slice(5, 7))]} ` }}</span>
-      <span class="minor">{{ date.slice(12, 16) }}</span>
+      <span class="minor">{{ raw.slice(12, 16) }}</span>
     </div>
 
     <div v-else-if="type === 'TIME'">
@@ -60,16 +60,6 @@ export default class InfoCard extends Vue {
     "Nov",
     "Dec",
   ];
-
-  get date() {
-    const reg = /([0-9]+).(([0][1-9])|([1][0-2])).(([0][1-9])|([1-2][0-9])|([3][0-1]))\s(([0-1][0-9])|([2][0-3])):([0-5][0-9])/;
-    if (!reg.test(this.raw as string)) {
-      // DEV i18n
-      return "时间无效";
-    } else {
-      return this.raw;
-    }
-  }
 
   get num() {
     const val = this.raw as number;

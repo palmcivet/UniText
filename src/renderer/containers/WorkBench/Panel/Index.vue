@@ -4,9 +4,9 @@
   </keep-alive>
   <section v-else v-show="panelFloat && showPanel">
     <div v-if="panelType === 'TOC'" class="float" :style="panelPos">
-      <span id="drag" title="拖拽" />
+      <span id="drag" :title="$t('ui.drag')" />
       <TOC :style="{ height: `${panelHeight}px` }" />
-      <span id="resize" title="缩放" />
+      <span id="resize" :title="$t('ui.resize')" />
     </div>
     <div v-else class="panel">
       <keep-alive>
@@ -30,13 +30,6 @@ import { IGeneralState, EPanelType } from "@/typings/vuex/general";
 import { $ } from "@/common/utils";
 
 const general = namespace("general");
-
-// DEV i18n
-const titleMap = {
-  TOC: "大纲",
-  INFO: "信息",
-  EXPORT: "导出",
-};
 
 @Component({
   name: "Panel",
@@ -63,10 +56,9 @@ export default class Panel extends Vue {
   panelType!: EPanelType;
 
   get arrowPos() {
-    // DEV i18n
-    // $(`footer li[title=${this.$t(this.panelType)}]`);
-    const o = $(`footer li[title=${titleMap[this.panelType]}]`);
-    return $("body").offsetWidth - o.offsetLeft - o.offsetWidth + 8 / 2 - 10; // @dialog-gap/2 - @right-gap
+    const o = $(`footer li[title=${this.$t("status." + this.panelType)}]`);
+    // @dialog-gap/2 - @right-gap
+    return $("body").offsetWidth - o.offsetLeft - o.offsetWidth + 8 / 2 - 10;
   }
 
   minHeight = 100;

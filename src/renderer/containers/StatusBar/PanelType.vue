@@ -35,20 +35,19 @@ export default class PanelType extends Vue {
   @general.Mutation("TOGGLE_PANEL")
   TOGGLE_PANEL!: () => void;
 
-  // DEV i18n
   get typeList() {
     return {
       TOC: {
-        title: "大纲",
         icon: "ri-list-check",
+        title: this.$t("status.TOC"),
       },
       INFO: {
-        title: "信息",
         icon: "ri-information-line",
+        title: this.$t("status.INFO"),
       },
       EXPORT: {
-        title: "导出",
         icon: "ri-share-box-line",
+        title: this.$t("status.EXPORT"),
       },
     };
   }

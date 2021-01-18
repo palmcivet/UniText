@@ -19,9 +19,13 @@ export interface IDocumentMetaInfo {
    */
   charCount: number;
   /**
+   * @field 阅读时长
+   */
+  readTime: number;
+  /**
    * @field 编辑时长
    */
-  duration: number;
+  editTime: number;
 }
 
 /**
