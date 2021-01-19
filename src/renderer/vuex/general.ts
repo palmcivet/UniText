@@ -2,6 +2,8 @@ import { ActionTree, GetterTree, MutationTree } from "vuex";
 
 import { IRootState } from "@/typings/vuex";
 import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
+import { VueBus } from "../bus";
+import { BUS_EDITOR } from "@/common/channel";
 
 const state = {};
 
@@ -16,9 +18,11 @@ const mutations: MutationTree<IGeneralState> = {
     moduleState.appearance.showStatusBar = !moduleState.appearance.showStatusBar;
   },
   TOGGLE_CHECK: (moduleState: IGeneralState) => {
+    VueBus.$emit(BUS_EDITOR.SYNC_VIEW);
     moduleState.appearance.checkEdit = !moduleState.appearance.checkEdit;
   },
   TOGGLE_PRESENT: (moduleState: IGeneralState) => {
+    VueBus.$emit(BUS_EDITOR.SYNC_VIEW);
     moduleState.appearance.checkPresent = !moduleState.appearance.checkPresent;
   },
   TOGGLE_PANEL: (moduleState: IGeneralState) => {

@@ -1,12 +1,12 @@
 <template>
   <LayoutBox
     :totalWidth="containerWidth"
-    :showMain="!isPresent"
-    :showMinor="isPreview"
+    :showMain="!checkPresent"
+    :showMinor="checkEdit || checkPresent"
     :threWidth="1 / 2"
   >
     <template v-slot:left>
-      <section id="markdown-editor" v-show="!isPresent" />
+      <section id="markdown-editor" v-show="!checkPresent" />
     </template>
     <template v-slot:right>
       <section id="markdown-preview" />
@@ -17,6 +17,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
+import { ipcRenderer } from "electron";
 import * as monacoMarkdown from "monaco-markdown";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
@@ -25,16 +26,15 @@ import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
-import { BUS_TOC, BUS_FILE, BUS_UI, IPC_EVENT } from "@/common/channel";
+import { BUS_FILE, BUS_UI, IPC_EVENT, BUS_EDITOR } from "@/common/channel";
 import { IGeneralState, EPanelType } from "@/typings/vuex/general";
 import { IFile } from "@/typings/vuex/workBench";
 import { theme } from "./theme";
 import { init } from "./option";
-import { ipcRenderer } from "electron";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
-const stausPanel = namespace("sttausPanel");
+const statusPanel = namespace("statusPanel");
 const DEFINE_BORDER = 16; // 边框大小
 
 @Component({
@@ -44,17 +44,26 @@ const DEFINE_BORDER = 16; // 边框大小
   },
 })
 export default class MarkdownSource extends Vue {
-  @stausPanel.State("toc")
+  @statusPanel.State("toc")
   tocTree!: Array<ITocList>;
 
+  /**
+   * 控制是否两栏
+   */
   @general.State((state: IGeneralState) => state.appearance.checkEdit)
-  isPreview!: boolean;
+  checkEdit!: boolean;
 
+  /**
+   * 控制是否预览
+   */
   @general.State((state: IGeneralState) => state.appearance.checkPresent)
-  isPresent!: boolean;
+  checkPresent!: boolean;
 
-  @workBench.State("currentFileIndex")
-  currentFileIndex!: string;
+  @general.State((state: IGeneralState) => state.appearance.panelType)
+  panelType!: EPanelType;
+
+  @workBench.State("currentIndex")
+  currentIndex!: string;
 
   @workBench.Getter("currentFile")
   currentFile!: { order: string; value: IFile };
@@ -74,19 +83,6 @@ export default class MarkdownSource extends Vue {
 
   containerWidth = 0;
 
-  @general.State((state: IGeneralState) => state.appearance.panelType)
-  panelType!: EPanelType;
-
-  get isToc() {
-    return this.panelType === EPanelType.TOC;
-  }
-
-  @Watch("isPresent")
-  syncPesent() {
-    if (!this.isPreview)
-      this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue());
-  }
-
   @Watch("currentFile", { deep: true })
   syncModel(newValue: { order: string; value: IFile }) {
     let mod = this.modelStack[newValue.order];
@@ -103,22 +99,41 @@ export default class MarkdownSource extends Vue {
 
   syncPreOrToc = debounce((that: any) => {
     /* 二选一即可，后者只更新 TOC */
-    if (that.isPreview) {
+    if (that.checkEdit || that.checkPresent) {
       that.refPreview.innerHTML = markdownEngine.render(that.editor.getValue());
-    } else if (that.isToc) {
+      Prism.highlightAll();
+    } else if (this.panelType === EPanelType.TOC) {
       markdownEngine.render(that.editor.getValue());
     }
   }, this.syncDelay);
 
+  created() {
+    this.$bus.$on(BUS_FILE.CLOSE_FILE, (index: string) => {
+      this.modelStack[index].dispose();
+      delete this.modelStack[index];
+    });
+
+    this.$bus.$on(BUS_EDITOR.SYNC_VIEW, () => {
+      this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue());
+    });
+
+    this.$bus.$on(BUS_EDITOR.REVEAL_SECTION, (value: Array<number>) => {
+      this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
+      this.editor.setPosition({ column: 1, lineNumber: value[1] });
+    });
+
+    ipcRenderer.on(IPC_EVENT.FILE_SAVE, () => this.SAVE_FILE(this.editor.getValue()));
+  }
+
   mounted() {
-    this.refPreview = $("#markdown-preview");
     this.refEditor = $("#markdown-editor");
+    this.refPreview = $("#markdown-preview");
 
     monaco.editor.defineTheme("CyanLight", theme);
 
     this.editor = monaco.editor.create(this.refEditor, init);
 
-    this.modelStack[this.currentFileIndex] = monaco.editor.createModel(
+    this.modelStack[this.currentIndex] = monaco.editor.createModel(
       this.currentFile.value.content,
       "markdown-math"
     );
@@ -154,7 +169,7 @@ export default class MarkdownSource extends Vue {
 
       /* 编辑区滚动条变化触发函数 */
       this.editor.onDidScrollChange((e: monaco.IScrollEvent) => {
-        if (!this.isPreview) return;
+        if (!this.checkEdit) return;
 
         topPosition = this.editor.getScrollTop();
 
@@ -271,26 +286,16 @@ export default class MarkdownSource extends Vue {
       this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
         this.containerWidth = (this.$el as HTMLElement).offsetWidth;
       });
-
-      this.$bus.$on(BUS_TOC.REVEAL_SECTION, (value: Array<number>) => {
-        this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
-        this.editor.setPosition({ column: 1, lineNumber: value[1] });
-      });
-
-      this.$bus.$on(BUS_FILE.CLOSE_FILE, (index: string) => {
-        this.modelStack[index].dispose();
-        delete this.modelStack[index];
-      });
-
-      ipcRenderer.on(IPC_EVENT.FILE_SAVE, () => this.SAVE_FILE(this.editor.getValue()));
     });
   }
 
   beforeDestroy() {
     this.modelStack = {};
     this.editor.dispose();
-    this.$bus.$off(BUS_TOC.REVEAL_SECTION);
+    this.$bus.$off(BUS_UI.SYNC_RESIZE);
     this.$bus.$off(BUS_FILE.CLOSE_FILE);
+    this.$bus.$off(BUS_EDITOR.SYNC_VIEW);
+    this.$bus.$off(BUS_EDITOR.REVEAL_SECTION);
     ipcRenderer.off(IPC_EVENT.FILE_SAVE, this.SAVE_FILE);
   }
 }

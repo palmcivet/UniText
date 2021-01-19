@@ -22,7 +22,7 @@ import { namespace } from "vuex-class";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 import { ITocList } from "@/common/editor/create-toc";
-import { BUS_TOC, IPC_MENUMANAGER } from "@/common/channel";
+import { BUS_EDITOR, IPC_MENUMANAGER } from "@/common/channel";
 import { EMenuContextKey } from "@/typings/bootstrap";
 
 const statusPanel = namespace("statusPanel");
@@ -42,7 +42,7 @@ export default class Toc extends Vue {
   SYNC_TOC!: (value: Array<ITocList>) => void;
 
   handleRevealLine(value: Array<number>) {
-    this.$bus.$emit(BUS_TOC.REVEAL_SECTION, value);
+    this.$bus.$emit(BUS_EDITOR.REVEAL_SECTION, value);
   }
 
   handleContextToc(value: ITocList) {
@@ -50,15 +50,14 @@ export default class Toc extends Vue {
   }
 
   mounted() {
-    this.$nextTick(() => {
-      this.$bus.$on(BUS_TOC.SYNC_TOC, (value: Array<ITocList>) => {
-        this.SYNC_TOC(value);
-      });
+    this.$bus.$on(BUS_EDITOR.SYNC_TOC, (value: Array<ITocList>) => {
+      this.SYNC_TOC(value);
     });
   }
 
   beforeDestroy() {
-    this.$bus.$off(BUS_TOC.SYNC_TOC);
+    this.$bus.$off(BUS_EDITOR.SYNC_TOC);
+    this.$bus.$off(BUS_EDITOR.REVEAL_SECTION);
   }
 }
 </script>
