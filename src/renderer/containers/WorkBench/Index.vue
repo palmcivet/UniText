@@ -87,7 +87,11 @@ export default class WorkBench extends Vue {
 
   handleClose(index: string) {
     this.CLOSE_FILE(index);
-    this.$bus.$emit(BUS_FILE.CLOSE_FILE, index);
+    this.$bus.emit(BUS_FILE.CLOSE_FILE, index);
+  }
+
+  handleResize() {
+    this.containerWidth = (this.$el as HTMLElement).offsetWidth;
   }
 
   created() {
@@ -98,14 +102,12 @@ export default class WorkBench extends Vue {
   mounted() {
     this.$nextTick(() => {
       this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-      this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
-        this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-      });
+      this.$bus.on(BUS_UI.SYNC_RESIZE, this.handleResize);
     });
   }
 
   beforeDestroy() {
-    this.$bus.$off(BUS_UI.SYNC_RESIZE);
+    this.$bus.off(BUS_UI.SYNC_RESIZE, this.handleResize);
   }
 }
 </script>

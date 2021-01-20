@@ -9,7 +9,8 @@ import MarkdownItTaskLists from "markdown-it-task-lists";
 import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
-import { VueBus } from "@/renderer/bus";
+
+import { Bus } from "@/renderer/plugins/VueBus";
 import { BUS_EDITOR } from "@/common/channel";
 import markdownItTocAndAnchor, { ITocList } from "@/common/editor/create-toc";
 
@@ -35,7 +36,7 @@ markdownEngine.use(markdownItTocAndAnchor, {
   tocLastLevel: 6,
   anchorLink: false,
   tocCallback: (tocMarkdown: string, tocArray: Array<ITocList>, tocHtml: string) => {
-    VueBus.$emit(BUS_EDITOR.SYNC_TOC, tocArray);
+    Bus.emit(BUS_EDITOR.SYNC_TOC, tocArray);
   },
 });
 markdownEngine.use(MarkdownItTaskLists, {

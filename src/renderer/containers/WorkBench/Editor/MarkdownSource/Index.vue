@@ -107,21 +107,28 @@ export default class MarkdownSource extends Vue {
     }
   }, this.syncDelay);
 
+  handleCloseFile(index: string) {
+    this.modelStack[index].dispose();
+    delete this.modelStack[index];
+  }
+
+  handleSyncView() {
+    this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue());
+  }
+
+  handleRevealSection(value: Array<number>) {
+    this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
+    this.editor.setPosition({ column: 1, lineNumber: value[1] });
+  }
+
+  handleSyncResize() {
+    this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+  }
+
   created() {
-    this.$bus.$on(BUS_FILE.CLOSE_FILE, (index: string) => {
-      this.modelStack[index].dispose();
-      delete this.modelStack[index];
-    });
-
-    this.$bus.$on(BUS_EDITOR.SYNC_VIEW, () => {
-      this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue());
-    });
-
-    this.$bus.$on(BUS_EDITOR.REVEAL_SECTION, (value: Array<number>) => {
-      this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
-      this.editor.setPosition({ column: 1, lineNumber: value[1] });
-    });
-
+    this.$bus.on(BUS_FILE.CLOSE_FILE, this.handleCloseFile);
+    this.$bus.on(BUS_EDITOR.SYNC_VIEW, this.handleSyncView);
+    this.$bus.on(BUS_EDITOR.REVEAL_SECTION, this.handleRevealSection);
     ipcRenderer.on(IPC_EVENT.FILE_SAVE, () => this.SAVE_FILE(this.editor.getValue()));
   }
 
@@ -283,19 +290,17 @@ export default class MarkdownSource extends Vue {
 
       this.containerWidth = (this.$el as HTMLElement).offsetWidth;
 
-      this.$bus.$on(BUS_UI.SYNC_RESIZE, () => {
-        this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-      });
+      this.$bus.on(BUS_UI.SYNC_RESIZE, this.handleSyncResize);
     });
   }
 
   beforeDestroy() {
     this.modelStack = {};
     this.editor.dispose();
-    this.$bus.$off(BUS_UI.SYNC_RESIZE);
-    this.$bus.$off(BUS_FILE.CLOSE_FILE);
-    this.$bus.$off(BUS_EDITOR.SYNC_VIEW);
-    this.$bus.$off(BUS_EDITOR.REVEAL_SECTION);
+    this.$bus.off(BUS_UI.SYNC_RESIZE, this.handleSyncResize);
+    this.$bus.off(BUS_FILE.CLOSE_FILE, this.handleCloseFile);
+    this.$bus.off(BUS_EDITOR.SYNC_VIEW, this.handleSyncView);
+    this.$bus.off(BUS_EDITOR.REVEAL_SECTION, this.handleRevealSection);
     ipcRenderer.off(IPC_EVENT.FILE_SAVE, this.SAVE_FILE);
   }
 }

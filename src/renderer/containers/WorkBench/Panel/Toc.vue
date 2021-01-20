@@ -42,22 +42,23 @@ export default class Toc extends Vue {
   SYNC_TOC!: (value: Array<ITocList>) => void;
 
   handleRevealLine(value: Array<number>) {
-    this.$bus.$emit(BUS_EDITOR.REVEAL_SECTION, value);
+    this.$bus.emit(BUS_EDITOR.REVEAL_SECTION, value);
   }
 
   handleContextToc(value: ITocList) {
     ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.PANEL_TOC);
   }
 
+  handleSyncToc(value: Array<ITocList>) {
+    this.SYNC_TOC(value);
+  }
+
   mounted() {
-    this.$bus.$on(BUS_EDITOR.SYNC_TOC, (value: Array<ITocList>) => {
-      this.SYNC_TOC(value);
-    });
+    this.$bus.on(BUS_EDITOR.SYNC_TOC, this.handleSyncToc);
   }
 
   beforeDestroy() {
-    this.$bus.$off(BUS_EDITOR.SYNC_TOC);
-    this.$bus.$off(BUS_EDITOR.REVEAL_SECTION);
+    this.$bus.off(BUS_EDITOR.SYNC_TOC, this.handleSyncToc);
   }
 }
 </script>

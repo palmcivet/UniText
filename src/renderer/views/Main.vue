@@ -64,7 +64,9 @@ export default class Main extends Vue {
       : "calc(100vw - 45px)";
   }
 
-  handleResize = () => this.$bus.$emit(BUS_UI.SYNC_RESIZE);
+  handleResize() {
+    this.$bus.emit(BUS_UI.SYNC_RESIZE);
+  }
 
   created() {
     ipcRenderer.once(
@@ -74,7 +76,7 @@ export default class Main extends Vue {
         this.$i18n.setLang(EI18n[lang]);
 
         if (notEmpty(args.error)) {
-          store.commit("SET_ERROR", args.error);
+          store.commit("information/SET_ERROR", args.error, { root: true });
         }
       }
     );

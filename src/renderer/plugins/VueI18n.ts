@@ -57,8 +57,8 @@ interface IPluginOptions {
   messages: IMessageObject;
 }
 
-interface VueI18n {
-  readonly i18n: {
+export interface IVueI18n {
+  readonly $i18n: {
     lang: number;
     add: (msg: object) => void;
     setLang: (msg: number) => void;
@@ -105,6 +105,6 @@ const install = (Vue: VueConstructor<Vue>, options: IPluginOptions) => {
   });
 };
 
-export const I18n = {
+export default {
   install,
 };

@@ -4,7 +4,7 @@
     class="file"
     :class="path === activeItem ? 'active' : ''"
     @click="handleOpenFile(route)"
-    @contextmenu="handleContextFile()"
+    @contextmenu="handleContextFile(route)"
   >
     <div
       v-for="i in tier"
@@ -24,7 +24,7 @@
       class="folder"
       :class="path === activeItem ? 'active' : ''"
       @click.prevent="handleToggleFolder(route)"
-      @contextmenu="handleContextFolder()"
+      @contextmenu="handleContextFolder(route)"
     >
       <div
         v-for="i in tier"
@@ -123,12 +123,16 @@ export default class FileTreeNode extends Vue {
     this.CHOOSE_ITEM(this.path);
   }
 
-  handleContextFile() {
-    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FILE);
+  handleContextFile(value: TFileRoute) {
+    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FILE, value);
   }
 
-  handleContextFolder() {
-    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FOLDER);
+  handleContextFolder(value: TFileRoute) {
+    ipcRenderer.send(
+      IPC_MENUMANAGER.POPUP_CONTEXT,
+      EMenuContextKey.SIDEBAR_FOLDER,
+      value
+    );
   }
 }
 </script>

@@ -2,11 +2,11 @@ import { remote } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import * as fse from "fs-extra";
 
-import { IRootState } from "@/typings/vuex";
-import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/sideBar";
-import { buildTree, joinPath } from "@/common/fileSystem";
-import { CONFIG_FILE } from "@/common/env";
 import { hasKeys } from "@/common/utils";
+import { CONFIG_FILE } from "@/common/env";
+import { buildTree, joinPath } from "@/common/fileSystem";
+import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/sideBar";
+import { IRootState } from "@/typings/vuex";
 
 const state: ISideBarState = {
   activeItem: "",
@@ -68,7 +68,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       })
       .then((res) => {
         if (res.filePaths[0] === "") {
-          moduleState.commit("SET_ERROR", "", { root: true });
+          moduleState.commit("information/SET_ERROR", "", { root: true });
         } else {
           moduleState.commit("SET_FOLDER", res.filePaths[0]);
           moduleState.dispatch("BUILD_TREE");
@@ -108,7 +108,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
           moduleState.dispatch("CHECK_TREE");
         })
         .catch((err) => {
-          moduleState.commit("SET_ERROR", err, { root: true });
+          moduleState.commit("information/SET_ERROR", err, { root: true });
         });
     } else {
       moduleState.dispatch("BUILD_TREE");
@@ -124,7 +124,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
         moduleState.state.fileTree
       )
       .catch((err) => {
-        moduleState.commit("SET_ERROR", err, { root: true });
+        moduleState.commit("information/SET_ERROR", err, { root: true });
       });
   },
   CHECK_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {},

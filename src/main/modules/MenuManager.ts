@@ -39,8 +39,11 @@ export class MenuManager {
   }
 
   private _listenForIpcMain() {
-    ipcMain.on(IPC_MENUMANAGER.POPUP_CONTEXT, (event, key: EMenuContextKey) => {
-      this._menuSet[key].popup();
-    });
+    ipcMain.on(
+      IPC_MENUMANAGER.POPUP_CONTEXT,
+      (event, key: EMenuContextKey, value: any) => {
+        this._menuSet[key].popup();
+      }
+    );
   }
 }
