@@ -22,13 +22,14 @@ import * as monacoMarkdown from "monaco-markdown";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
 
-import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { ITocList } from "@/common/editor/create-toc";
 import { markdownEngine } from "@/common/editor/markdown";
-import { BUS_FILE, BUS_UI, IPC_EVENT, BUS_EDITOR } from "@/common/channel";
-import { IGeneralState, EPanelType } from "@/typings/vuex/general";
+import { IPC_FILE } from "@/common/channel/ipc";
+import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
+import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
+import { IGeneralState, EPanelType } from "@/typings/vuex/general";
 import { theme } from "./theme";
 import { init } from "./option";
 
@@ -107,6 +108,10 @@ export default class MarkdownSource extends Vue {
     }
   }, this.syncDelay);
 
+  handleSaveFile() {
+    this.SAVE_FILE(this.editor.getValue());
+  }
+
   handleCloseFile(index: string) {
     this.modelStack[index].dispose();
     delete this.modelStack[index];
@@ -126,10 +131,10 @@ export default class MarkdownSource extends Vue {
   }
 
   created() {
-    this.$bus.on(BUS_FILE.CLOSE_FILE, this.handleCloseFile);
     this.$bus.on(BUS_EDITOR.SYNC_VIEW, this.handleSyncView);
+    this.$bus.on(BUS_EDITOR.CLOSE_FILE, this.handleCloseFile);
     this.$bus.on(BUS_EDITOR.REVEAL_SECTION, this.handleRevealSection);
-    ipcRenderer.on(IPC_EVENT.FILE_SAVE, () => this.SAVE_FILE(this.editor.getValue()));
+    ipcRenderer.on(IPC_FILE.SAVE, this.handleSaveFile);
   }
 
   mounted() {
@@ -298,10 +303,10 @@ export default class MarkdownSource extends Vue {
     this.modelStack = {};
     this.editor.dispose();
     this.$bus.off(BUS_UI.SYNC_RESIZE, this.handleSyncResize);
-    this.$bus.off(BUS_FILE.CLOSE_FILE, this.handleCloseFile);
     this.$bus.off(BUS_EDITOR.SYNC_VIEW, this.handleSyncView);
+    this.$bus.off(BUS_EDITOR.CLOSE_FILE, this.handleCloseFile);
     this.$bus.off(BUS_EDITOR.REVEAL_SECTION, this.handleRevealSection);
-    ipcRenderer.off(IPC_EVENT.FILE_SAVE, this.SAVE_FILE);
+    ipcRenderer.off(IPC_FILE.SAVE, this.handleSaveFile);
   }
 }
 </script>

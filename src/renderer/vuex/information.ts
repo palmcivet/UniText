@@ -2,18 +2,14 @@ import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
 import { IRootState } from "@/typings/vuex";
 import { IInformationState } from "@/typings/vuex/information";
+import { isDev } from "@/common/env";
 import * as pkg from "@/../package.json";
 
-const state: IInformationState = {
-  contenxtObj: null,
-};
+const state: IInformationState = {};
 
 const getters: GetterTree<IInformationState, IRootState> = {};
 
 const mutations: MutationTree<IInformationState> = {
-  SET_CONTEXT: (moduleState: IInformationState, value: any) => {
-    moduleState.contenxtObj = value;
-  },
   SET_INFO: (moduleState: IInformationState, msg: string) => {
     console.log(msg);
   },
@@ -30,6 +26,8 @@ const actions: ActionTree<IInformationState, IRootState> = {
    * 获取发行说明，`""` 则表明未更新
    */
   CHECK_UPDATE: (moduleState: ActionContext<IInformationState, IRootState>) => {
+    if (isDev) return;
+
     const getVersion = (ver: string) =>
       ver
         .substring(1)

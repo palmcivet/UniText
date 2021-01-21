@@ -4,7 +4,7 @@ import { isOsx } from "@/common/env";
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
 import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
-import { IPC_EVENT } from "@/common/channel";
+import { IPC_FILE } from "@/common/channel/ipc";
 
 export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
   const menu: TMenuTemplate = [];
@@ -106,7 +106,7 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
           label: localesMenu.file.save[locale],
           accelerator: keybinding.getItem("file.save"),
           click: (menu, win) => {
-            (win as BrowserWindow).webContents.send(IPC_EVENT.FILE_SAVE);
+            (win as BrowserWindow).webContents.send(IPC_FILE.SAVE);
           },
         },
         {

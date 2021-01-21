@@ -11,7 +11,7 @@ import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 
 import { Bus } from "@/renderer/plugins/VueBus";
-import { BUS_EDITOR } from "@/common/channel";
+import { BUS_EDITOR } from "@/common/channel/bus";
 import markdownItTocAndAnchor, { ITocList } from "@/common/editor/create-toc";
 
 const markdownEngine = new MarkdownIt({

@@ -4,7 +4,7 @@
     class="file"
     :class="path === activeItem ? 'active' : ''"
     @click="handleOpenFile(route)"
-    @contextmenu="handleContextFile(route)"
+    @contextmenu="handleFileContext(route)"
   >
     <div
       v-for="i in tier"
@@ -24,7 +24,7 @@
       class="folder"
       :class="path === activeItem ? 'active' : ''"
       @click.prevent="handleToggleFolder(route)"
-      @contextmenu="handleContextFolder(route)"
+      @contextmenu="handleFolderContext(route)"
     >
       <div
         v-for="i in tier"
@@ -54,9 +54,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 
-import { ISideBarState, ITree, TFileRoute } from "@/typings/vuex/sideBar";
-import { IPC_MENUMANAGER } from "@/common/channel";
+import { IPC_FILE, IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { EMenuContextKey } from "@/typings/bootstrap";
+import { ISideBarState, ITree, TFileRoute } from "@/typings/vuex/sideBar";
 
 const sideBar = namespace("sideBar");
 const workBench = namespace("workBench");
@@ -119,15 +119,14 @@ export default class FileTreeNode extends Vue {
   }
 
   handleOpenFile(value: TFileRoute) {
-    this.OPEN_FILE(value);
-    this.CHOOSE_ITEM(this.path);
+    ipcRenderer.emit(IPC_FILE.OPEN_FOR_VIEW, null, value);
   }
 
-  handleContextFile(value: TFileRoute) {
+  handleFileContext(value: TFileRoute) {
     ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FILE, value);
   }
 
-  handleContextFolder(value: TFileRoute) {
+  handleFolderContext(value: TFileRoute) {
     ipcRenderer.send(
       IPC_MENUMANAGER.POPUP_CONTEXT,
       EMenuContextKey.SIDEBAR_FOLDER,

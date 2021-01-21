@@ -1,9 +1,12 @@
-import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { ipcRenderer } from "electron";
+import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
+import { IPC_FILE } from "@/common/channel/ipc";
+import { BUS_EDITOR } from "@/common/channel/bus";
+import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
+import { TFileRoute } from "@/typings/vuex/sideBar";
 import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
-import { Bus } from "../plugins/VueBus";
-import { BUS_EDITOR } from "@/common/channel";
 
 const state = {};
 
@@ -18,11 +21,9 @@ const mutations: MutationTree<IGeneralState> = {
     moduleState.appearance.showStatusBar = !moduleState.appearance.showStatusBar;
   },
   TOGGLE_CHECK: (moduleState: IGeneralState) => {
-    Bus.emit(BUS_EDITOR.SYNC_VIEW);
     moduleState.appearance.checkEdit = !moduleState.appearance.checkEdit;
   },
   TOGGLE_PRESENT: (moduleState: IGeneralState) => {
-    Bus.emit(BUS_EDITOR.SYNC_VIEW);
     moduleState.appearance.checkPresent = !moduleState.appearance.checkPresent;
   },
   TOGGLE_PANEL: (moduleState: IGeneralState) => {
@@ -42,7 +43,23 @@ const mutations: MutationTree<IGeneralState> = {
   },
 };
 
-const actions: ActionTree<IGeneralState, IRootState> = {};
+const actions: ActionTree<IGeneralState, IRootState> = {
+  LISTEN_FOR_OPEN: (moduleState: ActionContext<IGeneralState, IRootState>) => {
+    const { commit, dispatch } = moduleState;
+
+    ipcRenderer.on(IPC_FILE.OPEN_FOR_EDIT, (e, value: TFileRoute) => {
+      dispatch("workBench/OPEN_FILE", value, { root: true });
+      commit("sideBar/CHOOSE_ITEM", value.join("/"), { root: true });
+    });
+
+    ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, value: TFileRoute) => {
+      dispatch("workBench/OPEN_FILE", value, { root: true });
+      commit("sideBar/CHOOSE_ITEM", value.join("/"), { root: true });
+      Bus.emit(BUS_EDITOR.SYNC_VIEW);
+      commit("TOGGLE_PRESENT");
+    });
+  },
+};
 
 export default {
   namespaced: true,

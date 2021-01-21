@@ -13,7 +13,7 @@
           @newFile="NEW_FILE()"
           @switchTabs="SWITCH_TABS($event)"
           @selectTab="SELECT_TAB({ cur: $event })"
-          @closeTab="handleClose($event)"
+          @closeTab="CLOSE_FILE($event)"
         />
         <Blank v-show="isBlank" @newFile="NEW_FILE()" />
         <MarkdownSource v-show="!isBlank" class="workbench" />
@@ -33,11 +33,11 @@ import Tabs from "./Tabs.vue";
 import Blank from "./Blank.vue";
 import Panel from "./Panel/Index.vue";
 import MarkdownSource from "./Editor/MarkdownSource/Index.vue";
+import { BUS_UI } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { TTab } from "@/typings/vuex/workBench";
 import { IDocument } from "@/typings/document";
 import { IGeneralState } from "@/typings/vuex/general";
-import { BUS_FILE, BUS_UI } from "@/common/channel";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -84,11 +84,6 @@ export default class WorkBench extends Vue {
   isPanelFloat!: boolean;
 
   containerWidth = 0;
-
-  handleClose(index: string) {
-    this.CLOSE_FILE(index);
-    this.$bus.emit(BUS_FILE.CLOSE_FILE, index);
-  }
 
   handleResize() {
     this.containerWidth = (this.$el as HTMLElement).offsetWidth;

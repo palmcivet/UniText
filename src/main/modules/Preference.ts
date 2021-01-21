@@ -3,7 +3,7 @@ import Store from "electron-store";
 import * as fse from "fs-extra";
 
 import { joinPath } from "@/common/fileSystem";
-import { IPC_PREFERENCE } from "@/common/channel";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
 import { TPreferenceSet } from "@/typings/bootstrap";
 import { UNITEXT_SYSTEM } from "@/main/config";

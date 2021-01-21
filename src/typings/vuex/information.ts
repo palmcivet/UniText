@@ -1,3 +1,1 @@
-export interface IInformationState {
-  contenxtObj: any;
-}
+export interface IInformationState {}

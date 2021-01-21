@@ -1,14 +1,15 @@
 import { app, ipcMain, Menu } from "electron";
 
+import { IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { folder } from "@/main/templates/contextFolder";
 import { file } from "@/main/templates/contextFile";
 import { toc } from "@/main/templates/contextToc";
 import { tab } from "@/main/templates/contextTab";
 import { dock } from "@/main/templates/menuDock";
 import { top } from "@/main/templates/menuTop";
+import { Bus } from "@/renderer/plugins/VueBus";
 import { Keybinding } from "./Keybinding";
 import { EMenuContextKey, IMenuSet, EI18n } from "@/typings/bootstrap";
-import { IPC_MENUMANAGER } from "@/common/channel";
 
 export class MenuManager {
   private _menuSet!: IMenuSet;
@@ -17,7 +18,7 @@ export class MenuManager {
     this._listenForIpcMain();
   }
 
-  buildMenuSet(lang: EI18n, key: Keybinding) {
+  private _buildMenuSet(lang: EI18n, key: Keybinding) {
     this._menuSet = {
       SIDEBAR_FOLDER: Menu.buildFromTemplate(folder(lang, key)),
       SIDEBAR_FILE: Menu.buildFromTemplate(file(lang, key)),
@@ -29,7 +30,7 @@ export class MenuManager {
   }
 
   updateMenu(lang: EI18n, key: Keybinding) {
-    this.buildMenuSet(lang, key);
+    this._buildMenuSet(lang, key);
     Menu.setApplicationMenu(this._menuSet.MENU_BAR);
     app.dock.setMenu(this._menuSet.DOCK_BAR);
   }
@@ -42,6 +43,7 @@ export class MenuManager {
     ipcMain.on(
       IPC_MENUMANAGER.POPUP_CONTEXT,
       (event, key: EMenuContextKey, value: any) => {
+        Bus.value = value;
         this._menuSet[key].popup();
       }
     );

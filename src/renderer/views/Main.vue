@@ -18,14 +18,14 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 
-import store from "@/renderer/vuex";
 import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import Panel from "@/renderer/containers/WorkBench/Panel/Index.vue";
 import { notEmpty } from "@/common/utils";
-import { BUS_UI, IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel";
+import { BUS_UI } from "@/common/channel/bus";
+import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EI18n, IBootArgs } from "@/typings/bootstrap";
 
@@ -69,6 +69,8 @@ export default class Main extends Vue {
   }
 
   created() {
+    const { commit, dispatch } = this.$store;
+
     ipcRenderer.once(
       IPC_BOOTSTRAP.REPLY,
       (event, msg: { lang: "ZH_CN" | "EN_US"; args: IBootArgs }) => {
@@ -76,15 +78,13 @@ export default class Main extends Vue {
         this.$i18n.setLang(EI18n[lang]);
 
         if (notEmpty(args.error)) {
-          store.commit("information/SET_ERROR", args.error, { root: true });
+          commit("information/SET_ERROR", args.error, { root: true });
         }
       }
     );
     ipcRenderer.send(IPC_BOOTSTRAP.FETCH);
 
-    // store.dispatch("CHECK_UPDATE");
-
-    store.commit("SET_STATE", {
+    commit("SET_STATE", {
       ...ipcRenderer.sendSync(
         IPC_PREFERENCE.GET_ITEM_SYNC,
         "editor",
@@ -92,6 +92,9 @@ export default class Main extends Vue {
         "files"
       ),
     });
+
+    dispatch("information/CHECK_UPDATE");
+    dispatch("general/LISTEN_FOR_OPEN");
   }
 
   mounted() {

@@ -1,17 +1,25 @@
+import { BrowserWindow } from "electron";
+
+import { IPC_FILE } from "@/common/channel/ipc";
 import { localesMenu } from "@/main/i18n/menu";
 import { Keybinding } from "@/main/modules/Keybinding";
+import { Bus } from "@/renderer/plugins/VueBus";
 import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
 
 export const file = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
     label: localesMenu.file.read[locale],
     accelerator: keybinding.getItem("file.read"),
-    click: () => {},
+    click: (menu, win) => {
+      (win as BrowserWindow).webContents.send(IPC_FILE.OPEN_FOR_VIEW, Bus.value);
+    },
   },
   {
     label: localesMenu.file.edit[locale],
     accelerator: keybinding.getItem("file.edit"),
-    click: () => {},
+    click: (menu, win) => {
+      (win as BrowserWindow).webContents.send(IPC_FILE.OPEN_FOR_EDIT, Bus.value);
+    },
   },
   { type: "separator" },
   {

@@ -23,6 +23,8 @@ export type EventHandlerMap = Map<EventType, EventHandlerList | WildCardEventHan
 export interface Emitter {
   all: EventHandlerMap;
 
+  value: any;
+
   on<T = any>(type: EventType, handler: Handler<T>): void;
   on(type: "*", handler: WildcardHandler): void;
 
@@ -52,6 +54,8 @@ export function mitt(all?: EventHandlerMap): Emitter {
      * A Map of event names to registered handler functions.
      */
     all,
+
+    value: null,
 
     /**
      * Register an event handler for the given type.

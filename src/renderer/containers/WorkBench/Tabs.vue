@@ -28,7 +28,7 @@ import { ipcRenderer } from "electron";
 import Draggable from "vuedraggable";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-import { IPC_MENUMANAGER } from "@/common/channel";
+import { IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { EMenuContextKey } from "@/typings/bootstrap";
 
 @Component({

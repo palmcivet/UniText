@@ -2,13 +2,15 @@ import { ipcRenderer } from "electron";
 import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
-import { IPC_EVENT } from "@/common/channel";
+import { IPC_FILE } from "@/common/channel/ipc";
+import { BUS_EDITOR } from "@/common/channel/bus";
 import { charCount, wordCount, timeCalc } from "@/common/editor";
 import { fetchFileInfo, joinPath } from "@/common/fileSystem";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
 import { importFrontMatter, exportFrontMatter } from "@/common/editor/front-matter";
-import { TFileRoute } from "@/typings/vuex/sideBar";
+import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
+import { TFileRoute } from "@/typings/vuex/sideBar";
 import { IDocumentFrontMatter } from "@/typings/document";
 import { IWorkBenchState, IFile, TTab } from "@/typings/vuex/workBench";
 
@@ -212,7 +214,6 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     );
     fse.writeFile(path, markdown);
   },
-
   /**
    * 关闭标签页的逻辑
    *
@@ -225,11 +226,12 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     moduleState: ActionContext<IWorkBenchState, IRootState>,
     index: string
   ) => {
+    const { commit } = moduleState;
     const selectState = moduleState.state;
 
     /* 保存标签页的内容 */
     if (selectState.currentGroup[index].needSave) {
-      ipcRenderer.send(IPC_EVENT.FILE_SAVE);
+      ipcRenderer.send(IPC_FILE.SAVE);
     }
 
     /* 删除标签页的内容 */
@@ -241,7 +243,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
      * 传入非 `-1` 值表示删除
      */
     const tIndex = selectState.currentTabs.findIndex((tab: TTab) => tab.order === index);
-    moduleState.commit("SYNC_TABS");
+    commit("SYNC_TABS");
 
     /**
      * 删除标签页后的行为。切换标签页
@@ -250,11 +252,13 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
      */
     const tLength = selectState.currentTabs.length;
     if (tLength !== 0) {
-      moduleState.commit("SELECT_TAB", {
+      commit("SELECT_TAB", {
         cur: selectState.currentTabs[tLength !== tIndex ? tIndex : tIndex - 1].order,
         his: selectState.currentTabs[tLength - 1].order,
       });
     }
+
+    Bus.emit(BUS_EDITOR.CLOSE_FILE, index);
   },
 
   RENAME_FILE: (

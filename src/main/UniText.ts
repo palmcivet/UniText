@@ -3,7 +3,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-import { IPC_BOOTSTRAP } from "@/common/channel";
+import { IPC_BOOTSTRAP } from "@/common/channel/ipc";
 import { isDev, isOsx, isWin } from "@/common/env";
 import { IBootArgs, EI18n } from "@/typings/bootstrap";
 import { Preference } from "./modules/Preference";
