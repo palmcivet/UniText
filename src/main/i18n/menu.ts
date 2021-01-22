@@ -2,12 +2,13 @@ export const localesMenu = {
   system: {
     about: ["关于 UniText"],
     check: ["检查更新"],
-    services: ["服务"],
-    setting: ["设置"],
     preference: ["首选项"],
+    setting: ["设置"],
     keybinding: ["快捷键"],
     snippet: ["代码片段"],
-    toggledevtools: ["开发者工具"],
+    services: ["服务"],
+    hide: ["隐藏"],
+    hideothers: ["隐藏其他"],
     close: ["关闭"],
     quit: ["退出"],
   },
@@ -47,6 +48,9 @@ export const localesMenu = {
 
   help: {
     label: ["帮助"],
+    report: ["报告错误"],
+    learnmore: ["更多信息"],
+    toggledevtools: ["开发者工具"],
   },
 
   toc: {

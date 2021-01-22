@@ -17,13 +17,13 @@
       "showSideBar": { "type": "boolean", "default": true },
       "showStatusBar": { "type": "boolean", "default": true },
       "showPanel": { "type": "boolean", "default": true },
-      "checkEdit": { "type": "boolean", "default": false },
-      "checkPresent": { "type": "boolean", "default": false },
+      "dbColumn": { "type": "boolean", "default": false },
       "panelFloat": { "type": "boolean", "default": true },
       "panelType": {
         "enum": ["TOC", "EXPORT", "INFO"],
         "default": "TOC"
       },
+      "readMode": { "type": "boolean", "default": false },
       "editMode": {
         "enum": ["SOURCE", "WYSIWYG", "RICHTEXT"],
         "default": "SOURCE"

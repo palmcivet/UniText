@@ -77,9 +77,6 @@ export default class FileTreeNode extends Vue {
   @sideBar.Mutation("TOGGLE_FOLDER")
   TOGGLE_FOLDER!: (route: TFileRoute) => void;
 
-  @workBench.Action("OPEN_FILE")
-  OPEN_FILE!: (route: TFileRoute) => void;
-
   @Prop({ type: Array, required: true })
   route!: TFileRoute;
 
@@ -119,7 +116,7 @@ export default class FileTreeNode extends Vue {
   }
 
   handleOpenFile(value: TFileRoute) {
-    ipcRenderer.emit(IPC_FILE.OPEN_FOR_VIEW, null, value);
+    ipcRenderer.emit(IPC_FILE.OPEN, null, value);
   }
 
   handleFileContext(value: TFileRoute) {

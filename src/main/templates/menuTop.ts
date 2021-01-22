@@ -1,10 +1,10 @@
 import { app, BrowserWindow, shell } from "electron";
 
 import { isOsx } from "@/common/env";
+import { IPC_FILE, IPC_OTHER } from "@/common/channel/ipc";
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
 import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
-import { IPC_FILE } from "@/common/channel/ipc";
 
 export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
   const menu: TMenuTemplate = [];
@@ -16,18 +16,21 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         {
           label: localesMenu.system.about[locale],
           role: "about",
+          // TODO 添加信息
         },
         {
           label: localesMenu.system.check[locale],
-          click: () => {},
+          click: (menu, win) => {
+            (win as BrowserWindow).webContents.send(IPC_OTHER.CHECK_UPDATE);
+          },
         },
         { type: "separator" },
         {
-          label: localesMenu.system.setting[locale],
+          label: localesMenu.system.preference[locale],
           submenu: [
             {
-              label: localesMenu.system.preference[locale],
-              accelerator: keybinding.getItem("system.preference"),
+              label: localesMenu.system.setting[locale],
+              accelerator: keybinding.getItem("system.setting"),
               click: () => {},
             },
             {
@@ -44,15 +47,18 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         },
         { type: "separator" },
         {
-          label: localesMenu.system.toggledevtools[locale],
-          role: "toggleDevTools",
-          accelerator: keybinding.getItem("system.toggledevtools"),
-        },
-        { type: "separator" },
-        {
           label: localesMenu.system.services[locale],
           role: "services",
           accelerator: keybinding.getItem("system.services"),
+        },
+        { type: "separator" },
+        {
+          label: localesMenu.system.hide[locale],
+          role: "hide",
+        },
+        {
+          label: localesMenu.system.hideothers[locale],
+          role: "hideOthers",
         },
         { type: "separator" },
         {
@@ -185,8 +191,17 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
       role: "help",
       submenu: [
         {
-          label: "Learn More",
+          label: localesMenu.help.learnmore[locale],
           click: () => shell.openExternal("https://github.com/Palmcivet/UniText"),
+        },
+        {
+          label: localesMenu.help.report[locale],
+          click: () => shell.openExternal("https://github.com/Palmcivet/UniText/issues"),
+        },
+        {
+          label: localesMenu.help.toggledevtools[locale],
+          role: "toggleDevTools",
+          accelerator: keybinding.getItem("system.toggledevtools"),
         },
       ],
     },

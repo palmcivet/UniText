@@ -1,12 +1,12 @@
 <template>
   <LayoutBox
     :totalWidth="containerWidth"
-    :showMain="!checkPresent"
-    :showMinor="checkEdit || checkPresent"
+    :showMain="!isReadMode"
+    :showMinor="dbColumn || isReadMode"
     :threWidth="1 / 2"
   >
     <template v-slot:left>
-      <section id="markdown-editor" v-show="!checkPresent" />
+      <section id="markdown-editor" v-show="!isReadMode" />
     </template>
     <template v-slot:right>
       <section id="markdown-preview" />
@@ -48,20 +48,17 @@ export default class MarkdownSource extends Vue {
   @statusPanel.State("toc")
   tocTree!: Array<ITocList>;
 
-  /**
-   * 控制是否两栏
-   */
-  @general.State((state: IGeneralState) => state.appearance.checkEdit)
-  checkEdit!: boolean;
+  @general.State((state: IGeneralState) => state.appearance.dbColumn)
+  dbColumn!: boolean;
 
-  /**
-   * 控制是否预览
-   */
-  @general.State((state: IGeneralState) => state.appearance.checkPresent)
-  checkPresent!: boolean;
+  @general.State((state: IGeneralState) => state.appearance.readMode)
+  isReadMode!: boolean;
 
   @general.State((state: IGeneralState) => state.appearance.panelType)
   panelType!: EPanelType;
+
+  @general.Mutation("SET_READ_MODE")
+  SET_READ_MODE!: (mode: boolean) => void;
 
   @workBench.State("currentIndex")
   currentIndex!: string;
@@ -86,6 +83,8 @@ export default class MarkdownSource extends Vue {
 
   @Watch("currentFile", { deep: true })
   syncModel(newValue: { order: string; value: IFile }) {
+    this.SET_READ_MODE(newValue.value.readMode);
+
     let mod = this.modelStack[newValue.order];
 
     if (!mod) {
@@ -98,9 +97,9 @@ export default class MarkdownSource extends Vue {
     Prism.highlightAll();
   }
 
-  syncPreOrToc = debounce((that: any) => {
+  syncPreOrToc = debounce((that: this) => {
     /* 二选一即可，后者只更新 TOC */
-    if (that.checkEdit || that.checkPresent) {
+    if (that.dbColumn || that.isReadMode) {
       that.refPreview.innerHTML = markdownEngine.render(that.editor.getValue());
       Prism.highlightAll();
     } else if (this.panelType === EPanelType.TOC) {
@@ -181,7 +180,7 @@ export default class MarkdownSource extends Vue {
 
       /* 编辑区滚动条变化触发函数 */
       this.editor.onDidScrollChange((e: monaco.IScrollEvent) => {
-        if (!this.checkEdit) return;
+        if (!this.dbColumn) return;
 
         topPosition = this.editor.getScrollTop();
 

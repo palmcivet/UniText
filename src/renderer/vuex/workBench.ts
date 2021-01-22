@@ -86,9 +86,9 @@ const mutations: MutationTree<IWorkBenchState> = {
 
   /* 切换标签页 */
   SELECT_TAB: (moduleState: IWorkBenchState, payload: { cur: string; his?: string }) => {
-    moduleState.historyIndex =
-      payload.his !== undefined ? payload.his : moduleState.currentIndex;
-    moduleState.currentIndex = payload.cur;
+    const { his, cur } = payload;
+    moduleState.historyIndex = his !== undefined ? his : moduleState.currentIndex;
+    moduleState.currentIndex = cur;
   },
 
   /* 拖拽更改标签位置 */
@@ -104,8 +104,22 @@ const mutations: MutationTree<IWorkBenchState> = {
 };
 
 const actions: ActionTree<IWorkBenchState, IRootState> = {
+  LOAD_FILE: (
+    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    payload: { file: IFile; index: string }
+  ) => {
+    const { index, file } = payload;
+    const { commit, state } = moduleState;
+    state.currentGroup[index] = file;
+    commit("SYNC_TABS");
+    commit("SELECT_TAB", { cur: index });
+    commit("sideBar/CHOOSE_ITEM", file.fileName.join("/"), { root: true });
+    Bus.emit(BUS_EDITOR.SYNC_VIEW);
+  },
+
   NEW_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>, title?: string) => {
     titleId += 1;
+    const { dispatch } = moduleState;
     const doc = moduleState.rootState.general.editor;
     const untitled: IFile = {
       tag: doc.tag,
@@ -124,34 +138,35 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       content: "",
       fileName: [`Untitled-${titleId}`],
       needSave: true,
+      tempFile: true,
+      readMode: false,
     };
-    moduleState.dispatch("LOAD_FILE", {
+    dispatch("LOAD_FILE", {
       file: untitled,
       index: hashCode(joinPath(...untitled.fileName)),
     });
-    /* 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建，前者需要写入磁盘 */
+    /**
+     * 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建
+     * 前者需要写入磁盘
+     */
     if (title) {
-      moduleState.dispatch("SAVE_FILE", untitled);
+      dispatch("SAVE_FILE", untitled);
     }
   },
 
-  LOAD_FILE: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    payload: { file: IFile; index: string }
-  ) => {
-    moduleState.state.currentGroup[payload.index] = payload.file;
-    moduleState.commit("SELECT_TAB", { cur: payload.index });
-    moduleState.commit("SYNC_TABS");
-  },
   /**
    * 打开文件
    * @param path 相对路径字符串数组，需要结合根路径
+   *
+   * 流程：=> LOAD_FILE
    */
   OPEN_FILE: async (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
-    route: TFileRoute
+    payload: { route: TFileRoute; isRead?: boolean }
   ) => {
-    const editor = moduleState.rootState.general.editor;
+    const { dispatch } = moduleState;
+    const { editor } = moduleState.rootState.general;
+    const { route, isRead } = payload;
     const path = joinPath(moduleState.rootState.sideBar.filesState.folderDir, ...route);
     const res = importFrontMatter((await fse.readFile(path)).toString());
 
@@ -183,37 +198,19 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       doc = { ...res.data };
     }
 
-    return moduleState.dispatch("LOAD_FILE", {
+    dispatch("LOAD_FILE", {
       file: {
         fileName: route,
         needSave: false,
+        tempFile: false,
+        readMode: isRead || doc.complete,
         content: res.content,
         ...doc,
-      },
+      } as IFile,
       index: hashCode(path),
     });
   },
 
-  SAVE_FILE: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    content: string
-  ) => {
-    const { fileName, needSave, content: nouse, ...payload } = fileSelect(
-      moduleState.state
-    );
-    if (!needSave) return;
-    const markdown = exportFrontMatter({
-      sep: "---",
-      data: payload as IDocumentFrontMatter,
-      prefix: true,
-      content,
-    });
-    const path = joinPath(
-      moduleState.rootState.sideBar.filesState.folderDir,
-      ...fileName
-    );
-    fse.writeFile(path, markdown);
-  },
   /**
    * 关闭标签页的逻辑
    *
@@ -221,6 +218,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 2. 找到对应的下标 `index`
    *
    * 下一个页标签为 `Math.abs(index - 1)`
+   *
+   * 流程：=> SYNC_TABS => SELECT_TABS => SELECT_TAB
    */
   CLOSE_FILE: (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
@@ -256,9 +255,33 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         cur: selectState.currentTabs[tLength !== tIndex ? tIndex : tIndex - 1].order,
         his: selectState.currentTabs[tLength - 1].order,
       });
+      const { currentGroup, currentIndex } = selectState;
+      const path = currentGroup[currentIndex].fileName.join("/");
+      commit("sideBar/CHOOSE_ITEM", path, { root: true });
     }
 
     Bus.emit(BUS_EDITOR.CLOSE_FILE, index);
+  },
+
+  SAVE_FILE: (
+    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    content: string
+  ) => {
+    const { fileName, needSave, content: nouse, ...payload } = fileSelect(
+      moduleState.state
+    );
+    if (!needSave) return;
+    const markdown = exportFrontMatter({
+      sep: "---",
+      data: payload as IDocumentFrontMatter,
+      prefix: true,
+      content,
+    });
+    const path = joinPath(
+      moduleState.rootState.sideBar.filesState.folderDir,
+      ...fileName
+    );
+    fse.writeFile(path, markdown);
   },
 
   RENAME_FILE: (

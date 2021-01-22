@@ -1,9 +1,7 @@
 import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
-import { IPC_FILE } from "@/common/channel/ipc";
-import { BUS_EDITOR } from "@/common/channel/bus";
-import { Bus } from "@/renderer/plugins/VueBus";
+import { IPC_FILE, IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { TFileRoute } from "@/typings/vuex/sideBar";
 import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
@@ -21,10 +19,7 @@ const mutations: MutationTree<IGeneralState> = {
     moduleState.appearance.showStatusBar = !moduleState.appearance.showStatusBar;
   },
   TOGGLE_CHECK: (moduleState: IGeneralState) => {
-    moduleState.appearance.checkEdit = !moduleState.appearance.checkEdit;
-  },
-  TOGGLE_PRESENT: (moduleState: IGeneralState) => {
-    moduleState.appearance.checkPresent = !moduleState.appearance.checkPresent;
+    moduleState.appearance.dbColumn = !moduleState.appearance.dbColumn;
   },
   TOGGLE_PANEL: (moduleState: IGeneralState) => {
     moduleState.appearance.showPanel = !moduleState.appearance.showPanel;
@@ -34,6 +29,9 @@ const mutations: MutationTree<IGeneralState> = {
   },
   SET_PANEL_TYPE: (moduleState: IGeneralState, type: EPanelType) => {
     moduleState.appearance.panelType = type;
+  },
+  SET_READ_MODE: (moduleState: IGeneralState, mode: boolean) => {
+    moduleState.appearance.readMode = mode;
   },
   SET_TYPE_MODE: (moduleState: IGeneralState, mode: ETypeMode) => {
     moduleState.appearance.typeMode = mode;
@@ -45,18 +43,25 @@ const mutations: MutationTree<IGeneralState> = {
 
 const actions: ActionTree<IGeneralState, IRootState> = {
   LISTEN_FOR_OPEN: (moduleState: ActionContext<IGeneralState, IRootState>) => {
-    const { commit, dispatch } = moduleState;
+    const { dispatch, commit } = moduleState;
 
-    ipcRenderer.on(IPC_FILE.OPEN_FOR_EDIT, (e, value: TFileRoute) => {
-      dispatch("workBench/OPEN_FILE", value, { root: true });
-      commit("sideBar/CHOOSE_ITEM", value.join("/"), { root: true });
+    ipcRenderer.on(IPC_FILE.OPEN, (e, route: TFileRoute) => {
+      dispatch("workBench/OPEN_FILE", { route }, { root: true });
     });
 
-    ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, value: TFileRoute) => {
-      dispatch("workBench/OPEN_FILE", value, { root: true });
-      commit("sideBar/CHOOSE_ITEM", value.join("/"), { root: true });
-      Bus.emit(BUS_EDITOR.SYNC_VIEW);
-      commit("TOGGLE_PRESENT");
+    ipcRenderer.on(IPC_FILE.OPEN_FOR_EDIT, (e, route: TFileRoute) => {
+      dispatch("workBench/OPEN_FILE", { route, isRead: false }, { root: true });
+    });
+
+    ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, route: TFileRoute) => {
+      dispatch("workBench/OPEN_FILE", { route, isRead: true }, { root: true });
+    });
+
+    ipcRenderer.on(IPC_OTHER.SET_READ_MODE, (e, mode: boolean) => {
+      commit("SET_READ_MODE", mode);
+      moduleState.rootState.workBench.currentGroup[
+        moduleState.rootState.workBench.currentIndex
+      ].readMode = mode;
     });
   },
 };

@@ -40,7 +40,6 @@ export interface ISideBarStateFiles {
   ignoreFile: Array<string>;
   hideIgnore: boolean;
   showIndent: boolean;
-  defaultFold: boolean;
 }
 
 /**

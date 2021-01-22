@@ -10,10 +10,9 @@ export class Keybinding {
       /* system */
       ["system.about", ""],
       ["system.check", ""],
-      ["system.preference", ""],
+      ["system.setting", ""],
       ["system.keybinding", ""],
       ["system.snippet", ""],
-      ["system.toggledevtools", "Option+Cmd+I"],
       ["system.quit", "CmdOrCtrl+Q"],
 
       /* file */
@@ -42,6 +41,7 @@ export class Keybinding {
 
       /* help */
       ["help.learnmore", ""],
+      ["help.toggledevtools", "Option+Cmd+I"],
 
       /* tab */
       ["tab.closecurrent", "Cmd+W"],

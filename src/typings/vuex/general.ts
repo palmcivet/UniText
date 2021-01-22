@@ -44,14 +44,14 @@ export interface IGeneralStateAppearance {
   /**
    * @field 是否预览
    */
-  checkPresent: boolean;
+  readMode: boolean;
   /**
    * @field 是否查看编辑状态
    * - 对于源码模式，查看预览
    * - 对于 WYSIWYG，查看源码
    * - 对于富文本，无效果
    */
-  checkEdit: boolean;
+  dbColumn: boolean;
   /**
    * @field 控制面板是否悬浮
    */

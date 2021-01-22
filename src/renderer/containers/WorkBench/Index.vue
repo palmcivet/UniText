@@ -62,11 +62,11 @@ export default class WorkBench extends Vue {
   @workBench.Mutation("SWITCH_TABS")
   SWITCH_TABS!: (value: Array<IDocument>) => void;
 
-  @workBench.Mutation("SELECT_TAB")
-  SELECT_TAB!: (index: string) => void;
-
   @workBench.Mutation("TOGGLE_MODIFY")
   TOGGLE_MODIFY!: () => void;
+
+  @workBench.Mutation("SELECT_TAB")
+  SELECT_TAB!: (index: string) => void;
 
   @workBench.Action("CLOSE_FILE")
   CLOSE_FILE!: (index: string) => void;

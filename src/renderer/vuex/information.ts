@@ -1,8 +1,10 @@
+import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
+import { isDev } from "@/common/env";
+import { IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { IInformationState } from "@/typings/vuex/information";
-import { isDev } from "@/common/env";
 import * as pkg from "@/../package.json";
 
 const state: IInformationState = {};
@@ -53,6 +55,13 @@ const actions: ActionTree<IInformationState, IRootState> = {
     if (releaseNotes !== "") {
       moduleState.dispatch("");
     }
+  },
+  LISTEN_FOR_NOTIFY: (moduleState: ActionContext<IInformationState, IRootState>) => {
+    const { commit, dispatch } = moduleState;
+
+    ipcRenderer.on(IPC_OTHER.CHECK_UPDATE, (e) => {
+      dispatch("CHECK_UPDATE");
+    });
   },
 };
 

@@ -5,8 +5,8 @@ import * as fse from "fs-extra";
 import { hasKeys } from "@/common/utils";
 import { CONFIG_FILE } from "@/common/env";
 import { buildTree, joinPath } from "@/common/fileSystem";
-import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/sideBar";
 import { IRootState } from "@/typings/vuex";
+import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/sideBar";
 
 const state: ISideBarState = {
   activeItem: "",
@@ -16,7 +16,6 @@ const state: ISideBarState = {
     ignoreFile: [],
     hideIgnore: false,
     showIndent: false,
-    defaultFold: false,
   },
   marksState: {},
   searchState: {},

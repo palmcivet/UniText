@@ -2,23 +2,25 @@
   <ol>
     <CheckItem
       :itemGroup="checkMode"
-      :condition="checkEdit ? 'true' : 'false'"
+      :condition="dbColumn ? 'true' : 'false'"
       @click="TOGGLE_CHECK()"
     />
     <CheckItem
       :itemGroup="presentMode"
-      :condition="checkPresent ? 'true' : 'false'"
-      @click="TOGGLE_PRESENT()"
+      :condition="readMode ? 'true' : 'false'"
+      @click="setReadMode(!readMode)"
     />
   </ol>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
-import { State, namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
 import CheckItem from "@/renderer/components/CheckItem.vue";
 import { EEditMode, IGeneralState } from "@/typings/vuex/general";
+import { ipcRenderer } from "electron";
+import { IPC_OTHER } from "@/common/channel/ipc";
 
 const general = namespace("general");
 
@@ -32,17 +34,18 @@ export default class Mode extends Vue {
   @general.State((state: IGeneralState) => state.appearance.editMode)
   editMode!: EEditMode;
 
-  @general.State((state: IGeneralState) => state.appearance.checkEdit)
-  checkEdit!: boolean;
+  @general.State((state: IGeneralState) => state.appearance.dbColumn)
+  dbColumn!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.checkPresent)
-  checkPresent!: boolean;
+  @general.State((state: IGeneralState) => state.appearance.readMode)
+  readMode!: boolean;
 
   @general.Mutation("TOGGLE_CHECK")
   TOGGLE_CHECK!: () => void;
 
-  @general.Mutation("TOGGLE_PRESENT")
-  TOGGLE_PRESENT!: () => void;
+  setReadMode(mode: boolean) {
+    ipcRenderer.emit(IPC_OTHER.SET_READ_MODE, null, mode);
+  }
 
   get checkMode() {
     return {
