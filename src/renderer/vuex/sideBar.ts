@@ -2,7 +2,7 @@ import { remote } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import * as fse from "fs-extra";
 
-import { hasKeys } from "@/common/utils";
+import { hasKeys, notEmpty } from "@/common/utils";
 import { CONFIG_FILE } from "@/common/env";
 import { buildTree, joinPath } from "@/common/fileSystem";
 import { IRootState } from "@/typings/vuex";
@@ -60,20 +60,24 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   /**
    * 点击按钮，选择笔记文件夹打开
    */
-  OPEN_PROJECT: (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    remote.dialog
-      .showOpenDialog({
-        properties: ["openFile", "openDirectory", "createDirectory"],
-      })
-      .then((res) => {
-        if (res.filePaths[0] === "") {
-          moduleState.commit("information/SET_ERROR", "", { root: true });
-        } else {
-          moduleState.commit("SET_FOLDER", res.filePaths[0]);
-          moduleState.dispatch("BUILD_TREE");
-        }
-      });
+  OPEN_PROJECT: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
+    const { commit, dispatch } = moduleState;
+
+    const res = await remote.dialog.showOpenDialog({
+      // FEAT i18n
+      title: "打开项目文件夹",
+      properties: ["openDirectory", "createDirectory", "showHiddenFiles"],
+    });
+
+    if (notEmpty(res.filePaths)) {
+      // TODO 完善报错信息
+      commit("information/SET_ERROR", "", { root: true });
+    } else {
+      commit("SET_FOLDER", res.filePaths[0]);
+      dispatch("BUILD_TREE");
+    }
   },
+
   /**
    * 构建文件树
    */
@@ -87,44 +91,47 @@ const actions: ActionTree<ISideBarState, IRootState> = {
     );
     setTimeout(() => {
       moduleState.state.fileTree = targetTree;
+      moduleState.dispatch("SAVE_TREE");
     }, 400);
   },
+
   /**
    * 加载文件树
    * - 不为空，则在初始化时加载
    * - 若为空，则表明新建窗口，不需要操作
    */
   LOAD_TREE: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    const dir = moduleState.state.filesState.folderDir;
+    const { commit, dispatch, state } = moduleState;
+    const dir = state.filesState.folderDir;
+
     if (dir === "") return;
 
     const treeJSON = joinPath(dir, CONFIG_FILE.TREE);
     if (fse.pathExistsSync(treeJSON)) {
-      fse
-        .readJSON(treeJSON)
-        .then((res) => {
-          moduleState.state.fileTree = res;
-          moduleState.dispatch("CHECK_TREE");
-        })
-        .catch((err) => {
-          moduleState.commit("information/SET_ERROR", err, { root: true });
-        });
+      try {
+        const res = await fse.readJSON(treeJSON);
+        moduleState.state.fileTree = res;
+        dispatch("CHECK_TREE");
+      } catch (err) {
+        commit("information/SET_ERROR", err, { root: true });
+      }
     } else {
-      moduleState.dispatch("BUILD_TREE");
+      dispatch("BUILD_TREE");
     }
   },
+
   /**
    * 保存文件树
    */
-  SAVE_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    fse
-      .writeJSON(
+  SAVE_TREE: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
+    try {
+      await fse.writeJSON(
         joinPath(moduleState.state.filesState.folderDir, CONFIG_FILE.TREE),
         moduleState.state.fileTree
-      )
-      .catch((err) => {
-        moduleState.commit("information/SET_ERROR", err, { root: true });
-      });
+      );
+    } catch (err) {
+      moduleState.commit("information/SET_ERROR", err, { root: true });
+    }
   },
   CHECK_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {},
 };

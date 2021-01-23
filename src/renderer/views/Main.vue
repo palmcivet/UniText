@@ -94,7 +94,8 @@ export default class Main extends Vue {
     });
 
     dispatch("information/CHECK_UPDATE");
-    dispatch("general/LISTEN_FOR_OPEN");
+    dispatch("general/LISTEN_FOR_GENERAL");
+    dispatch("workBench/LISTEN_FOR_OPEN");
   }
 
   mounted() {

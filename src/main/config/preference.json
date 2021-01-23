@@ -53,6 +53,7 @@
     "type": "object",
     "properties": {
       "tag": { "type": "string", "default": "Untaged" },
+      "startUp": { "type": "boolean", "default": true },
       "category": { "type": "string", "default": "Uncategory" },
       "format": {
         "type": "object",

@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
@@ -30,7 +30,7 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
   currentFile: (moduleState: IWorkBenchState) => {
     return {
       order: moduleState.currentIndex,
-      value: moduleState.currentGroup[moduleState.currentIndex],
+      value: fileSelect(moduleState),
     };
   },
   isBlank: (moduleState: IWorkBenchState) => {
@@ -104,7 +104,12 @@ const mutations: MutationTree<IWorkBenchState> = {
 };
 
 const actions: ActionTree<IWorkBenchState, IRootState> = {
-  LOAD_FILE: (
+  /**
+   * 加载文件
+   * 用于 NEW_FILE 或 OPEN_FILE 后，同步状态
+   * 流程：SYNC_TABS => SELECT_TAB => sideBar/CHOOSE_ITEM
+   */
+  SYNC_LOAD: (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
     payload: { file: IFile; index: string }
   ) => {
@@ -117,12 +122,29 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     Bus.emit(BUS_EDITOR.SYNC_VIEW);
   },
 
-  NEW_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>, title?: string) => {
-    titleId += 1;
+  /**
+   * 新建文件
+   * 根据是否传入 title 确定从资源管理器新建还是临时新建，前者需要写入磁盘
+   * 流程：SYNC_LOAD => (SAVE_FILE)
+   */
+  NEW_FILE: (
+    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    title?: TFileRoute
+  ) => {
     const { dispatch } = moduleState;
-    const doc = moduleState.rootState.general.editor;
+    const { tag, format, config } = moduleState.rootState.general.editor;
+    const isTemp = title === undefined;
+
+    let fileName: TFileRoute;
+    if (isTemp) {
+      titleId += 1;
+      fileName = [`Untitled-${titleId}`];
+    } else {
+      fileName = title as TFileRoute;
+    }
+
     const untitled: IFile = {
-      tag: doc.tag,
+      tag,
       remark: "",
       complete: false,
       metaInfo: {
@@ -133,78 +155,77 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         readTime: 0,
         editTime: 0,
       },
-      format: doc.format,
-      config: doc.config,
+      format,
+      config,
       content: "",
-      fileName: [`Untitled-${titleId}`],
-      needSave: true,
-      tempFile: true,
+      fileName,
+      needSave: isTemp,
+      tempFile: isTemp,
       readMode: false,
     };
-    dispatch("LOAD_FILE", {
+
+    dispatch("SYNC_LOAD", {
       file: untitled,
-      index: hashCode(joinPath(...untitled.fileName)),
+      index: hashCode(joinPath(...fileName)),
     });
+
     /**
-     * 根据是否传入 title 确定从资源管理器新建还是 tab 栏新建
-     * 前者需要写入磁盘
+     * SYNC_LOAD 之后，该文档变为当前标签，因此执行保存，内容为空
      */
-    if (title) {
-      dispatch("SAVE_FILE", untitled);
+    if (!isTemp) {
+      dispatch("SAVE_FILE", "");
     }
   },
 
   /**
    * 打开文件
-   * @param path 相对路径字符串数组，需要结合根路径
-   *
-   * 流程：=> LOAD_FILE
+   * 流程：=> SYNC_LOAD
    */
   OPEN_FILE: async (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
     payload: { route: TFileRoute; isRead?: boolean }
   ) => {
     const { dispatch } = moduleState;
-    const { editor } = moduleState.rootState.general;
+    const { general, sideBar } = moduleState.rootState;
+    const { tag, format, config } = general.editor;
     const { route, isRead } = payload;
-    const path = joinPath(moduleState.rootState.sideBar.filesState.folderDir, ...route);
-    const res = importFrontMatter((await fse.readFile(path)).toString());
+    const path = joinPath(sideBar.filesState.folderDir, ...route);
+    const { data, content } = importFrontMatter((await fse.readFile(path)).toString());
 
     let doc: IDocumentFrontMatter;
 
     // FEAT 校验字段
-    if (res.data === undefined) {
-      const info = await fetchFileInfo(path);
+    if (data === undefined) {
+      const { createDate, modifyDate } = await fetchFileInfo(path);
       doc = {
-        tag: editor.tag,
+        tag: tag,
         remark: "",
         complete: false,
         metaInfo: {
-          wordCount: wordCount(res.content),
-          charCount: charCount(res.content),
-          created: formatDate(info.createDate),
-          modified: formatDate(info.modifyDate),
-          readTime: timeCalc(res.content),
+          wordCount: wordCount(content),
+          charCount: charCount(content),
+          created: formatDate(createDate),
+          modified: formatDate(modifyDate),
+          readTime: timeCalc(content),
           editTime: 0,
         },
         format: {
-          ...editor.format,
+          ...format,
         },
         config: {
-          ...editor.config,
+          ...config,
         },
       };
     } else {
-      doc = { ...res.data };
+      doc = { ...data };
     }
-
-    dispatch("LOAD_FILE", {
+    dispatch("SYNC_LOAD", {
       file: {
         fileName: route,
         needSave: false,
         tempFile: false,
         readMode: isRead || doc.complete,
-        content: res.content,
+        content,
         ...doc,
       } as IFile,
       index: hashCode(path),
@@ -212,14 +233,14 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
   },
 
   /**
-   * 关闭标签页的逻辑
+   * 关闭标签页
    *
    * 1. 先判断 `currentTabs` 数组长度
    * 2. 找到对应的下标 `index`
    *
    * 下一个页标签为 `Math.abs(index - 1)`
    *
-   * 流程：=> SYNC_TABS => SELECT_TABS => SELECT_TAB
+   * 流程：=> SYNC_TABS => SELECT_TABS => (SELECT_TAB => sideBar/CHOOSE_ITEM)
    */
   CLOSE_FILE: (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
@@ -255,32 +276,62 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         cur: selectState.currentTabs[tLength !== tIndex ? tIndex : tIndex - 1].order,
         his: selectState.currentTabs[tLength - 1].order,
       });
-      const { currentGroup, currentIndex } = selectState;
-      const path = currentGroup[currentIndex].fileName.join("/");
+      const path = fileSelect(selectState).fileName.join("/");
       commit("sideBar/CHOOSE_ITEM", path, { root: true });
     }
 
     Bus.emit(BUS_EDITOR.CLOSE_FILE, index);
   },
 
-  SAVE_FILE: (
+  /**
+   * 保存文件
+   * 目标文件将切换到当前活跃
+   */
+  SAVE_FILE: async (
     moduleState: ActionContext<IWorkBenchState, IRootState>,
     content: string
   ) => {
-    const { fileName, needSave, content: nouse, ...payload } = fileSelect(
-      moduleState.state
-    );
-    if (!needSave) return;
+    const { state, rootState, commit } = moduleState;
+    const root = rootState.sideBar.filesState.folderDir;
+    const {
+      fileName,
+      tempFile,
+      content: noUse_1,
+      needSave: noUse_2,
+      readMode: noUse_3,
+      ...payload
+    } = fileSelect(state);
     const markdown = exportFrontMatter({
       sep: "---",
       data: payload as IDocumentFrontMatter,
       prefix: true,
       content,
     });
-    const path = joinPath(
-      moduleState.rootState.sideBar.filesState.folderDir,
-      ...fileName
-    );
+
+    let path = joinPath(root, ...fileName);
+
+    if (tempFile) {
+      const res = await remote.dialog.showSaveDialog({
+        // FEAT i18n
+        title: "保存到",
+        properties: ["createDirectory", "showOverwriteConfirmation"],
+        defaultPath: path + ".md",
+      });
+
+      if (res.filePath === undefined || res.filePath === "") {
+        // TODO 完善报错信息
+        commit("information/SET_ERROR", "", { root: true });
+        return;
+      }
+
+      if (res.filePath.indexOf(root) === -1) {
+        // TODO 完善报错信息
+        commit("information/SET_ERROR", "", { root: true });
+      }
+
+      path = res.filePath;
+    }
+
     fse.writeFile(path, markdown);
   },
 
@@ -288,6 +339,22 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     moduleState: ActionContext<IWorkBenchState, IRootState>,
     title: string
   ) => {},
+
+  LISTEN_FOR_OPEN: (moduleState: ActionContext<IWorkBenchState, IRootState>) => {
+    const { dispatch, commit } = moduleState;
+
+    ipcRenderer.on(IPC_FILE.OPEN, (e, route: TFileRoute) => {
+      dispatch("OPEN_FILE", { route });
+    });
+
+    ipcRenderer.on(IPC_FILE.OPEN_FOR_EDIT, (e, route: TFileRoute) => {
+      dispatch("OPEN_FILE", { route, isRead: false });
+    });
+
+    ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, route: TFileRoute) => {
+      dispatch("OPEN_FILE", { route, isRead: true });
+    });
+  },
 };
 
 export default {

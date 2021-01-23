@@ -77,6 +77,9 @@ export default class WorkBench extends Vue {
   @workBench.Getter("isBlank")
   isBlank!: boolean;
 
+  @general.State((state: IGeneralState) => state.editor.startUp)
+  startUp!: boolean;
+
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
 
@@ -90,8 +93,9 @@ export default class WorkBench extends Vue {
   }
 
   created() {
-    // TODO 检测设置并新建
-    this.NEW_FILE();
+    if (this.startUp) {
+      this.NEW_FILE();
+    }
   }
 
   mounted() {

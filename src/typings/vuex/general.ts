@@ -72,6 +72,11 @@ export interface IGeneralStateAppearance {
 
 export interface IGeneralStateEditor {
   /**
+   * @field 启动后呈现的内容
+   * 暂定为是否新建文件
+   */
+  startUp: boolean;
+  /**
    * @field 默认标签
    */
   tag: string;
@@ -80,11 +85,11 @@ export interface IGeneralStateEditor {
    */
   category: string;
   /**
-   * @field 编辑模式
+   * @field 编辑器格式相关属性
    */
   format: IDocumentFormat;
   /**
-   * @field 编辑模式
+   * @field 文件设置相关属性
    */
   config: IDocumentConfig;
   /**

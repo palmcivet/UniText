@@ -1,9 +1,8 @@
 import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
-import { IPC_FILE, IPC_OTHER } from "@/common/channel/ipc";
+import { IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
-import { TFileRoute } from "@/typings/vuex/sideBar";
 import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
 
 const state = {};
@@ -42,20 +41,8 @@ const mutations: MutationTree<IGeneralState> = {
 };
 
 const actions: ActionTree<IGeneralState, IRootState> = {
-  LISTEN_FOR_OPEN: (moduleState: ActionContext<IGeneralState, IRootState>) => {
+  LISTEN_FOR_GENERAL: (moduleState: ActionContext<IGeneralState, IRootState>) => {
     const { dispatch, commit } = moduleState;
-
-    ipcRenderer.on(IPC_FILE.OPEN, (e, route: TFileRoute) => {
-      dispatch("workBench/OPEN_FILE", { route }, { root: true });
-    });
-
-    ipcRenderer.on(IPC_FILE.OPEN_FOR_EDIT, (e, route: TFileRoute) => {
-      dispatch("workBench/OPEN_FILE", { route, isRead: false }, { root: true });
-    });
-
-    ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, route: TFileRoute) => {
-      dispatch("workBench/OPEN_FILE", { route, isRead: true }, { root: true });
-    });
 
     ipcRenderer.on(IPC_OTHER.SET_READ_MODE, (e, mode: boolean) => {
       commit("SET_READ_MODE", mode);
