@@ -16,7 +16,13 @@
     <!-- FEAT 图标 -->
     <i class="ri-markdown-line" />
     <pre class="space" />
-    {{ trimSuffix(title) }}
+
+    <div v-if="isEdit">
+      <input placeholder="名称" />
+    </div>
+    <div v-else>
+      {{ trimSuffix(title) }}
+    </div>
   </div>
 
   <details v-else :open="!node.collapse">
@@ -25,6 +31,7 @@
       :class="path === activeItem ? 'active' : ''"
       @click.prevent="handleToggleFolder(route)"
       @contextmenu="handleFolderContext(route)"
+      @keydown.enter="handleRenameFolder(route)"
     >
       <div
         v-for="i in tier"
@@ -35,7 +42,19 @@
       <i :class="node.collapse ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
       <i :class="node.collapse ? 'ri-folder-2-line' : 'ri-folder-open-line'" />
       <pre class="space" />
-      {{ title }}
+
+      <div v-show="isEdit" class="title">
+        <input
+          ref="input"
+          id="input"
+          v-model="newTitle"
+          @click.stop="noop()"
+          @keydown="handleSubmit($event)"
+        />
+      </div>
+      <div v-show="!isEdit" class="title">
+        {{ title }}
+      </div>
     </summary>
 
     <FileTreeNode
@@ -54,6 +73,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 
+import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { IPC_FILE, IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { EMenuContextKey } from "@/typings/bootstrap";
 import { ISideBarState, ITree, TFileRoute } from "@/typings/vuex/sideBar";
@@ -77,6 +97,15 @@ export default class FileTreeNode extends Vue {
   @sideBar.Mutation("TOGGLE_FOLDER")
   TOGGLE_FOLDER!: (route: TFileRoute) => void;
 
+  @workBench.Mutation("NEW_FILE")
+  NEW_FILE!: (title?: TFileRoute) => void;
+
+  @workBench.Action("RENAME_FILE")
+  RENAME_FILE!: (title: string) => void;
+
+  @workBench.Action("RENAME_FOLDER")
+  RENAME_FOLDER!: (title: string) => void;
+
   @Prop({ type: Array, required: true })
   route!: TFileRoute;
 
@@ -92,6 +121,10 @@ export default class FileTreeNode extends Vue {
   @Prop({ type: Boolean, default: true })
   isIndent!: boolean;
 
+  isEdit = false;
+
+  newTitle = "";
+
   get title() {
     return this.route[this.route.length - 1];
   }
@@ -99,6 +132,8 @@ export default class FileTreeNode extends Vue {
   get path() {
     return this.route.join("/");
   }
+
+  noop() {}
 
   trimSuffix(value: string) {
     if (!this.suffix) return value;
@@ -115,6 +150,45 @@ export default class FileTreeNode extends Vue {
     this.CHOOSE_ITEM(this.path);
   }
 
+  handleSubmit(e: KeyboardEvent) {
+    e.stopPropagation();
+
+    switch (e.key) {
+      case "Escape":
+        this.isEdit = false;
+        break;
+      case "Enter":
+        this.isEdit = false;
+        if (this.newTitle.search(/[/|\\]/) !== -1) {
+          // TODO 完善报错信息
+          return;
+        } else {
+          this.RENAME_FOLDER(this.newTitle.trim());
+        }
+        break;
+      case "Space":
+        break;
+    }
+  }
+
+  handleRenameFolder() {
+    this.newTitle = this.title;
+    this.isEdit = true;
+    this.$nextTick(() => {
+      (this.$refs.input as HTMLElement).focus();
+    });
+  }
+
+  handleRenameFile() {
+    this.isEdit = true;
+    console.log("File");
+  }
+
+  handleNewFile() {
+    // 在此校验名称，最终发送 route 到 vuex
+    this.NEW_FILE();
+  }
+
   handleOpenFile(value: TFileRoute) {
     ipcRenderer.emit(IPC_FILE.OPEN, null, value);
   }
@@ -129,6 +203,14 @@ export default class FileTreeNode extends Vue {
       EMenuContextKey.SIDEBAR_FOLDER,
       value
     );
+  }
+
+  created() {
+    this.$bus.on(BUS_SIDEBAR.RENAME_FOLDER, this.handleRenameFolder);
+  }
+
+  beforeDestroy() {
+    this.$bus.off(BUS_SIDEBAR.RENAME_FOLDER, this.handleRenameFolder);
   }
 }
 </script>
@@ -173,6 +255,20 @@ pre {
 
 details > summary::-webkit-details-marker {
   display: none;
+}
+
+.title {
+  width: 100%;
+
+  input {
+    width: 100%;
+    outline: none;
+    padding: 1px 0;
+    border-width: 0.5px 0;
+    border-style: solid;
+    border-color: white;
+    background-color: #faf9f4;
+  }
 }
 
 .indent {

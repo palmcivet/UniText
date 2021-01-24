@@ -3,7 +3,7 @@ import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
 import { IPC_FILE } from "@/common/channel/ipc";
-import { BUS_EDITOR } from "@/common/channel/bus";
+import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
 import { charCount, wordCount, timeCalc } from "@/common/editor";
 import { fetchFileInfo, joinPath } from "@/common/fileSystem";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
@@ -340,6 +340,13 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     title: string
   ) => {},
 
+  RENAME_FOLDER: (
+    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    title: string
+  ) => {
+    console.log(title);
+  },
+
   LISTEN_FOR_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>) => {
     const { dispatch, commit, rootState } = moduleState;
 
@@ -353,6 +360,10 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, route: TFileRoute) => {
       dispatch("OPEN_FILE", { route, isRead: true });
+    });
+
+    ipcRenderer.on(IPC_FILE.RENAME_FOLDER, (e, route: TFileRoute) => {
+      Bus.emit(BUS_SIDEBAR.RENAME_FOLDER);
     });
 
     ipcRenderer.on(IPC_FILE.REVEAL, (e, route: TFileRoute) => {
