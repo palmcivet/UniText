@@ -47,7 +47,9 @@ export const file = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
     label: localesMenu.file.reveal[locale],
     accelerator: keybinding.getItem("file.reveal"),
-    click: () => {},
+    click: (menu, win) => {
+      (win as BrowserWindow).webContents.send(IPC_FILE.REVEAL, Bus.value);
+    },
   },
   { type: "separator" },
   {

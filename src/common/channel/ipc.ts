@@ -23,6 +23,7 @@ export enum IPC_FILE {
   SAVE = "IPC::SAVE",
   OPEN_FOR_EDIT = "IPC::OPEN_FOR_EDIT",
   OPEN_FOR_VIEW = "IPC::OPEN_FOR_VIEW",
+  REVEAL = "IPC::REVEAL",
 }
 
 export enum IPC_OTHER {

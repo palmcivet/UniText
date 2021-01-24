@@ -340,8 +340,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     title: string
   ) => {},
 
-  LISTEN_FOR_OPEN: (moduleState: ActionContext<IWorkBenchState, IRootState>) => {
-    const { dispatch, commit } = moduleState;
+  LISTEN_FOR_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>) => {
+    const { dispatch, commit, rootState } = moduleState;
 
     ipcRenderer.on(IPC_FILE.OPEN, (e, route: TFileRoute) => {
       dispatch("OPEN_FILE", { route });
@@ -353,6 +353,12 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, route: TFileRoute) => {
       dispatch("OPEN_FILE", { route, isRead: true });
+    });
+
+    ipcRenderer.on(IPC_FILE.REVEAL, (e, route: TFileRoute) => {
+      remote.shell.showItemInFolder(
+        joinPath(rootState.sideBar.filesState.folderDir, ...route)
+      );
     });
   },
 };

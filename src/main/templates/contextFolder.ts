@@ -1,6 +1,9 @@
+import { IPC_FILE } from "@/common/channel/ipc";
 import { localesMenu } from "@/main/i18n/menu";
 import { Keybinding } from "@/main/modules/Keybinding";
+import { Bus } from "@/renderer/plugins/VueBus";
 import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { BrowserWindow } from "electron";
 
 export const folder = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
@@ -44,7 +47,9 @@ export const folder = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => 
   {
     label: localesMenu.file.reveal[locale],
     accelerator: keybinding.getItem("file.reveal"),
-    click: () => {},
+    click: (menu, win) => {
+      (win as BrowserWindow).webContents.send(IPC_FILE.REVEAL, Bus.value);
+    },
   },
   { type: "separator" },
   {
