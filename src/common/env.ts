@@ -14,7 +14,6 @@ export const CONFIG_FOLDER = {
 
 export const CONFIG_FILE = {
   TAG: joinPath(".CONFIG", "sync", "tag.json"),
-  TREE: joinPath(".CONFIG", "sync", "tree.json"),
   SNIPPET: joinPath(".CONFIG", "sync", "settings", "snippet.json"),
   PREFERENCE: joinPath(".CONFIG", "sync", "settings", "preference.json"),
   KEYBINDING: joinPath(".CONFIG", "sync", "settings", "keybinding.json"),

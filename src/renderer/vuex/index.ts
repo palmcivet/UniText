@@ -11,10 +11,10 @@ import { IRootState } from "@/typings/vuex";
 Vue.use(Vuex);
 
 const mutations: MutationTree<IRootState> = {
-  SET_STATE: (moduleState: IRootState, msg) => {
-    Vue.set(moduleState.general, "editor", msg.editor);
-    Vue.set(moduleState.general, "appearance", msg.appearance);
-    Vue.set(moduleState.sideBar, "filesState", msg.files);
+  SET_STATE: (_: IRootState, msg) => {
+    Vue.set(_.general, "editor", msg.editor);
+    Vue.set(_.general, "appearance", msg.appearance);
+    Vue.set(_.sideBar, "filesState", msg.files);
   },
 };
 

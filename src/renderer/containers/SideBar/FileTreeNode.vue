@@ -2,9 +2,10 @@
   <div
     v-if="node.children === false"
     class="file"
-    :class="path === activeItem ? 'active' : ''"
+    :class="isActive ? 'active' : ''"
     @click="handleOpenFile(route)"
     @contextmenu="handleFileContext(route)"
+    @keydown.enter="handleRename(route)"
   >
     <div
       v-for="i in tier"
@@ -17,10 +18,15 @@
     <i class="ri-markdown-line" />
     <pre class="space" />
 
-    <div v-if="isEdit">
-      <input placeholder="名称" />
+    <div v-show="isEdit" class="title">
+      <input
+        ref="input"
+        v-model="newTitle"
+        @click.stop="noop()"
+        @keydown="handleSubmit($event)"
+      />
     </div>
-    <div v-else>
+    <div v-show="!isEdit" class="title">
       {{ trimSuffix(title) }}
     </div>
   </div>
@@ -28,10 +34,10 @@
   <details v-else :open="!node.collapse">
     <summary
       class="folder"
-      :class="path === activeItem ? 'active' : ''"
+      :class="isActive ? 'active' : ''"
       @click.prevent="handleToggleFolder(route)"
       @contextmenu="handleFolderContext(route)"
-      @keydown.enter="handleRenameFolder(route)"
+      @keydown.enter="handleRename(route)"
     >
       <div
         v-for="i in tier"
@@ -100,11 +106,8 @@ export default class FileTreeNode extends Vue {
   @workBench.Mutation("NEW_FILE")
   NEW_FILE!: (title?: TFileRoute) => void;
 
-  @workBench.Action("RENAME_FILE")
-  RENAME_FILE!: (title: string) => void;
-
-  @workBench.Action("RENAME_FOLDER")
-  RENAME_FOLDER!: (title: string) => void;
+  @workBench.Action("RENAME")
+  RENAME!: (title: string) => void;
 
   @Prop({ type: Array, required: true })
   route!: TFileRoute;
@@ -131,6 +134,10 @@ export default class FileTreeNode extends Vue {
 
   get path() {
     return this.route.join("/");
+  }
+
+  get isActive() {
+    return this.path === this.activeItem;
   }
 
   noop() {}
@@ -163,7 +170,7 @@ export default class FileTreeNode extends Vue {
           // TODO 完善报错信息
           return;
         } else {
-          this.RENAME_FOLDER(this.newTitle.trim());
+          this.RENAME(this.newTitle.trim());
         }
         break;
       case "Space":
@@ -171,17 +178,13 @@ export default class FileTreeNode extends Vue {
     }
   }
 
-  handleRenameFolder() {
+  handleRename() {
+    if (!this.isActive) return;
     this.newTitle = this.title;
     this.isEdit = true;
     this.$nextTick(() => {
       (this.$refs.input as HTMLElement).focus();
     });
-  }
-
-  handleRenameFile() {
-    this.isEdit = true;
-    console.log("File");
   }
 
   handleNewFile() {
@@ -194,10 +197,12 @@ export default class FileTreeNode extends Vue {
   }
 
   handleFileContext(value: TFileRoute) {
+    this.CHOOSE_ITEM(this.path);
     ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.SIDEBAR_FILE, value);
   }
 
   handleFolderContext(value: TFileRoute) {
+    this.CHOOSE_ITEM(this.path);
     ipcRenderer.send(
       IPC_MENUMANAGER.POPUP_CONTEXT,
       EMenuContextKey.SIDEBAR_FOLDER,
@@ -206,11 +211,11 @@ export default class FileTreeNode extends Vue {
   }
 
   created() {
-    this.$bus.on(BUS_SIDEBAR.RENAME_FOLDER, this.handleRenameFolder);
+    this.$bus.on(BUS_SIDEBAR.RENAME, this.handleRename);
   }
 
   beforeDestroy() {
-    this.$bus.off(BUS_SIDEBAR.RENAME_FOLDER, this.handleRenameFolder);
+    this.$bus.off(BUS_SIDEBAR.RENAME, this.handleRename);
   }
 }
 </script>

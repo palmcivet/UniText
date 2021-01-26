@@ -23,21 +23,21 @@ const state: ISideBarState = {
 };
 
 const getters: GetterTree<ISideBarState, IRootState> = {
-  isEmptyFolder: (moduleState: ISideBarState) => {
-    return !hasKeys(moduleState.fileTree);
+  isEmptyFolder: (_: ISideBarState) => {
+    return !hasKeys(_.fileTree);
   },
 };
 
 const mutations: MutationTree<ISideBarState> = {
-  SET_FOLDER: (moduleState: ISideBarState, path: string) => {
-    moduleState.filesState.folderDir = path;
+  SET_FOLDER: (_: ISideBarState, path: string) => {
+    _.filesState.folderDir = path;
   },
-  CHOOSE_ITEM: (moduleState: ISideBarState, path: string) => {
-    moduleState.activeItem = path;
+  CHOOSE_ITEM: (_: ISideBarState, path: string) => {
+    _.activeItem = path;
   },
-  REVEAL_FILE: (moduleState: ISideBarState, path: string) => {},
-  TOGGLE_FOLDER: (moduleState: ISideBarState, route: TFileRoute) => {
-    let point = moduleState.fileTree;
+  REVEAL_FILE: (_: ISideBarState, path: string) => {},
+  TOGGLE_FOLDER: (_: ISideBarState, route: TFileRoute) => {
+    let point = _.fileTree;
     let target!: ITreeNode;
     route.forEach((key) => {
       target = point[key];
@@ -45,9 +45,9 @@ const mutations: MutationTree<ISideBarState> = {
     });
     target.collapse = !target.collapse;
   },
-  TOGGLE_ALL: (moduleState: ISideBarState, isOnce: boolean) => {
+  TOGGLE_ALL: (_: ISideBarState, isOnce: boolean) => {
     if (isOnce) {
-      Object.values(moduleState.fileTree).forEach((item) => {
+      Object.values(_.fileTree).forEach((item) => {
         item.collapse = true;
       });
     } else {
@@ -60,8 +60,8 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   /**
    * 点击按钮，选择笔记文件夹打开
    */
-  OPEN_PROJECT: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    const { commit, dispatch } = moduleState;
+  OPEN_PROJECT: async (_: ActionContext<ISideBarState, IRootState>) => {
+    const { commit, dispatch } = _;
 
     const res = await remote.dialog.showOpenDialog({
       // FEAT i18n
@@ -81,17 +81,16 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   /**
    * 构建文件树
    */
-  BUILD_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {
+  BUILD_TREE: (_: ActionContext<ISideBarState, IRootState>) => {
     const targetTree: ITree = {};
     buildTree(
-      moduleState.state.filesState.folderDir,
+      _.state.filesState.folderDir,
       "",
-      moduleState.state.filesState.ignoreFile,
+      _.state.filesState.ignoreFile,
       targetTree
     );
     setTimeout(() => {
-      moduleState.state.fileTree = targetTree;
-      moduleState.dispatch("SAVE_TREE");
+      _.state.fileTree = targetTree;
     }, 400);
   },
 
@@ -100,40 +99,13 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    * - 不为空，则在初始化时加载
    * - 若为空，则表明新建窗口，不需要操作
    */
-  LOAD_TREE: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    const { commit, dispatch, state } = moduleState;
-    const dir = state.filesState.folderDir;
-
-    if (dir === "") return;
-
-    const treeJSON = joinPath(dir, CONFIG_FILE.TREE);
-    if (fse.pathExistsSync(treeJSON)) {
-      try {
-        const res = await fse.readJSON(treeJSON);
-        moduleState.state.fileTree = res;
-        dispatch("CHECK_TREE");
-      } catch (err) {
-        commit("information/SET_ERROR", err, { root: true });
-      }
-    } else {
-      dispatch("BUILD_TREE");
-    }
+  LOAD_TREE: async (_: ActionContext<ISideBarState, IRootState>) => {
+    const { dispatch, state } = _;
+    if (state.filesState.folderDir === "") return;
+    dispatch("BUILD_TREE");
   },
 
-  /**
-   * 保存文件树
-   */
-  SAVE_TREE: async (moduleState: ActionContext<ISideBarState, IRootState>) => {
-    try {
-      await fse.writeJSON(
-        joinPath(moduleState.state.filesState.folderDir, CONFIG_FILE.TREE),
-        moduleState.state.fileTree
-      );
-    } catch (err) {
-      moduleState.commit("information/SET_ERROR", err, { root: true });
-    }
-  },
-  CHECK_TREE: (moduleState: ActionContext<ISideBarState, IRootState>) => {},
+  CHECK_TREE: (_: ActionContext<ISideBarState, IRootState>) => {},
 };
 
 export default {

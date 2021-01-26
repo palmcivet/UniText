@@ -37,7 +37,7 @@ export const folder = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => 
     label: localesMenu.edit.rename[locale],
     accelerator: keybinding.getItem("edit.rename"),
     click: (menu, win) => {
-      (win as BrowserWindow).webContents.send(IPC_FILE.RENAME_FOLDER, Bus.value);
+      (win as BrowserWindow).webContents.send(IPC_FILE.RENAME, Bus.value);
     },
   },
   {

@@ -12,13 +12,13 @@ const state: IInformationState = {};
 const getters: GetterTree<IInformationState, IRootState> = {};
 
 const mutations: MutationTree<IInformationState> = {
-  SET_INFO: (moduleState: IInformationState, msg: string) => {
+  SET_INFO: (_: IInformationState, msg: string) => {
     console.log(msg);
   },
-  SET_WARN: (moduleState: IInformationState, msg: string) => {
+  SET_WARN: (_: IInformationState, msg: string) => {
     console.log(msg);
   },
-  SET_ERROR: (moduleState: IInformationState, msg: string) => {
+  SET_ERROR: (_: IInformationState, msg: string) => {
     console.error(msg);
   },
 };
@@ -27,7 +27,7 @@ const actions: ActionTree<IInformationState, IRootState> = {
   /**
    * 获取发行说明，`""` 则表明未更新
    */
-  CHECK_UPDATE: (moduleState: ActionContext<IInformationState, IRootState>) => {
+  CHECK_UPDATE: (_: ActionContext<IInformationState, IRootState>) => {
     if (isDev) return;
 
     const getVersion = (ver: string) =>
@@ -53,11 +53,11 @@ const actions: ActionTree<IInformationState, IRootState> = {
 
     // FEAT 新版本通知
     if (releaseNotes !== "") {
-      moduleState.dispatch("");
+      _.dispatch("");
     }
   },
-  LISTEN_FOR_NOTIFY: (moduleState: ActionContext<IInformationState, IRootState>) => {
-    const { commit, dispatch } = moduleState;
+  LISTEN_FOR_NOTIFY: (_: ActionContext<IInformationState, IRootState>) => {
+    const { commit, dispatch } = _;
 
     ipcRenderer.on(IPC_OTHER.CHECK_UPDATE, (e) => {
       dispatch("CHECK_UPDATE");

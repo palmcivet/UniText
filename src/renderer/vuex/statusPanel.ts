@@ -10,14 +10,14 @@ const state: IStatusPanelState = {
 };
 
 const getters: GetterTree<IStatusPanelState, IRootState> = {
-  isEmptyToc: (moduleState: IStatusPanelState) => {
-    return !!moduleState.toc.length;
+  isEmptyToc: (_: IStatusPanelState) => {
+    return !!_.toc.length;
   },
 };
 
 const mutations: MutationTree<IStatusPanelState> = {
-  SYNC_TOC: (moduleState: IStatusPanelState, value: Array<ITocList>) => {
-    moduleState.toc = value;
+  SYNC_TOC: (_: IStatusPanelState, value: Array<ITocList>) => {
+    _.toc = value;
   },
 };
 

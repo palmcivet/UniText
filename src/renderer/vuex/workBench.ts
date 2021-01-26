@@ -10,7 +10,7 @@ import { formatDate, hashCode, notEmpty } from "@/common/utils";
 import { importFrontMatter, exportFrontMatter } from "@/common/editor/front-matter";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
-import { TFileRoute } from "@/typings/vuex/sideBar";
+import { ITree, TFileRoute } from "@/typings/vuex/sideBar";
 import { IDocumentFrontMatter } from "@/typings/document";
 import { IWorkBenchState, IFile, TTab } from "@/typings/vuex/workBench";
 
@@ -27,78 +27,78 @@ const state: IWorkBenchState = {
 };
 
 const getters: GetterTree<IWorkBenchState, IRootState> = {
-  currentFile: (moduleState: IWorkBenchState) => {
+  currentFile: (_: IWorkBenchState) => {
     return {
-      order: moduleState.currentIndex,
-      value: fileSelect(moduleState),
+      order: _.currentIndex,
+      value: fileSelect(_),
     };
   },
-  isBlank: (moduleState: IWorkBenchState) => {
-    return !notEmpty(moduleState.currentTabs);
+  isBlank: (_: IWorkBenchState) => {
+    return !notEmpty(_.currentTabs);
   },
 };
 
 const mutations: MutationTree<IWorkBenchState> = {
   /* 以下为编辑器设置 */
-  SET_INDENT: (moduleState: IWorkBenchState, indent: 2 | 4) => {
-    const curFile = fileSelect(moduleState);
+  SET_INDENT: (_: IWorkBenchState, indent: 2 | 4) => {
+    const curFile = fileSelect(_);
     curFile.format.indent = indent;
   },
 
-  SET_ENCODING: (moduleState: IWorkBenchState, encoding: string) => {
-    const curFile = fileSelect(moduleState);
+  SET_ENCODING: (_: IWorkBenchState, encoding: string) => {
+    const curFile = fileSelect(_);
     curFile.format.encoding = encoding;
   },
 
-  SET_END_OF_FILE: (moduleState: IWorkBenchState, eol: "LF" | "CRLF") => {
-    const curFile = fileSelect(moduleState);
+  SET_END_OF_FILE: (_: IWorkBenchState, eol: "LF" | "CRLF") => {
+    const curFile = fileSelect(_);
     curFile.format.endOfLine = eol;
   },
 
   /* 以下为修改文档信息 */
-  SET_TAG: (moduleState: IWorkBenchState, tag: string) => {
-    const curFile = fileSelect(moduleState);
+  SET_TAG: (_: IWorkBenchState, tag: string) => {
+    const curFile = fileSelect(_);
     curFile.tag = tag;
   },
 
-  SET_COMMENT: (moduleState: IWorkBenchState, remark: string) => {
-    const curFile = fileSelect(moduleState);
+  SET_COMMENT: (_: IWorkBenchState, remark: string) => {
+    const curFile = fileSelect(_);
     curFile.remark = remark;
   },
 
   /* 以下为设置附加属性 */
-  SET_PIC_STORAGE: (moduleState: IWorkBenchState, comment: string) => {},
-  SET_AUTO_SAVE: (moduleState: IWorkBenchState, comment: string) => {},
-  SET_AUTO_SYNC: (moduleState: IWorkBenchState, comment: string) => {},
-  SET_COMPLETE: (moduleState: IWorkBenchState, comment: string) => {},
+  SET_PIC_STORAGE: (_: IWorkBenchState, comment: string) => {},
+  SET_AUTO_SAVE: (_: IWorkBenchState, comment: string) => {},
+  SET_AUTO_SYNC: (_: IWorkBenchState, comment: string) => {},
+  SET_COMPLETE: (_: IWorkBenchState, comment: string) => {},
 
   /* 更新标签组，更新体现为添加和删除 */
-  SYNC_TABS: (moduleState: IWorkBenchState) => {
+  SYNC_TABS: (_: IWorkBenchState) => {
     const newTabs: Array<TTab> = [];
-    for (const [i, v] of Object.entries(moduleState.currentGroup)) {
+    for (const [i, v] of Object.entries(_.currentGroup)) {
       newTabs.push({
         order: i,
         title: v.fileName[v.fileName.length - 1],
       });
     }
-    moduleState.currentTabs = newTabs;
+    _.currentTabs = newTabs;
   },
 
   /* 切换标签页 */
-  SELECT_TAB: (moduleState: IWorkBenchState, payload: { cur: string; his?: string }) => {
+  SELECT_TAB: (_: IWorkBenchState, payload: { cur: string; his?: string }) => {
     const { his, cur } = payload;
-    moduleState.historyIndex = his !== undefined ? his : moduleState.currentIndex;
-    moduleState.currentIndex = cur;
+    _.historyIndex = his !== undefined ? his : _.currentIndex;
+    _.currentIndex = cur;
   },
 
   /* 拖拽更改标签位置 */
-  SWITCH_TABS: (moduleState: IWorkBenchState, value: Array<TTab>) => {
-    moduleState.currentTabs = value;
+  SWITCH_TABS: (_: IWorkBenchState, value: Array<TTab>) => {
+    _.currentTabs = value;
   },
 
   /* 标记文件修改状态 */
-  TOGGLE_MODIFY: (moduleState: IWorkBenchState) => {
-    const curFile = fileSelect(moduleState);
+  TOGGLE_MODIFY: (_: IWorkBenchState) => {
+    const curFile = fileSelect(_);
     curFile.needSave = !curFile.needSave;
   },
 };
@@ -110,11 +110,11 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 流程：SYNC_TABS => SELECT_TAB => sideBar/CHOOSE_ITEM
    */
   SYNC_LOAD: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    _: ActionContext<IWorkBenchState, IRootState>,
     payload: { file: IFile; index: string }
   ) => {
     const { index, file } = payload;
-    const { commit, state } = moduleState;
+    const { commit, state } = _;
     state.currentGroup[index] = file;
     commit("SYNC_TABS");
     commit("SELECT_TAB", { cur: index });
@@ -127,12 +127,9 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 根据是否传入 title 确定从资源管理器新建还是临时新建，前者需要写入磁盘
    * 流程：SYNC_LOAD => (SAVE_FILE)
    */
-  NEW_FILE: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    title?: TFileRoute
-  ) => {
-    const { dispatch } = moduleState;
-    const { tag, format, config } = moduleState.rootState.general.editor;
+  NEW_FILE: (_: ActionContext<IWorkBenchState, IRootState>, title?: TFileRoute) => {
+    const { dispatch } = _;
+    const { tag, format, config } = _.rootState.general.editor;
     const isTemp = title === undefined;
 
     let fileName: TFileRoute;
@@ -182,11 +179,11 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 流程：=> SYNC_LOAD
    */
   OPEN_FILE: async (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
+    _: ActionContext<IWorkBenchState, IRootState>,
     payload: { route: TFileRoute; isRead?: boolean }
   ) => {
-    const { dispatch } = moduleState;
-    const { general, sideBar } = moduleState.rootState;
+    const { dispatch } = _;
+    const { general, sideBar } = _.rootState;
     const { tag, format, config } = general.editor;
     const { route, isRead } = payload;
     const path = joinPath(sideBar.filesState.folderDir, ...route);
@@ -242,12 +239,9 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    *
    * 流程：=> SYNC_TABS => SELECT_TABS => (SELECT_TAB => sideBar/CHOOSE_ITEM)
    */
-  CLOSE_FILE: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    index: string
-  ) => {
-    const { commit } = moduleState;
-    const selectState = moduleState.state;
+  CLOSE_FILE: (_: ActionContext<IWorkBenchState, IRootState>, index: string) => {
+    const { commit } = _;
+    const selectState = _.state;
 
     /* 保存标签页的内容 */
     if (selectState.currentGroup[index].needSave) {
@@ -287,11 +281,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 保存文件
    * 目标文件将切换到当前活跃
    */
-  SAVE_FILE: async (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    content: string
-  ) => {
-    const { state, rootState, commit } = moduleState;
+  SAVE_FILE: async (_: ActionContext<IWorkBenchState, IRootState>, content: string) => {
+    const { state, rootState, commit } = _;
     const root = rootState.sideBar.filesState.folderDir;
     const {
       fileName,
@@ -335,20 +326,30 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     fse.writeFile(path, markdown);
   },
 
-  RENAME_FILE: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    title: string
-  ) => {},
+  RENAME: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {
+    const { fileTree, filesState, activeItem } = _.rootState.sideBar;
 
-  RENAME_FOLDER: (
-    moduleState: ActionContext<IWorkBenchState, IRootState>,
-    title: string
-  ) => {
-    console.log(title);
+    const file = activeItem.split("/");
+
+    let srcObj = fileTree;
+
+    for (let i = 0, item = file[i]; i < file.length - 1; i++) {
+      srcObj = fileTree[item].children as ITree;
+    }
+    const target = file[file.length - 1];
+    srcObj[title] = srcObj[target];
+    delete srcObj[target];
+
+    const src = joinPath(filesState.folderDir, ...file);
+    file[file.length - 1] = title;
+    const dst = joinPath(filesState.folderDir, ...file);
+    fse.rename(src, dst);
   },
 
-  LISTEN_FOR_FILE: (moduleState: ActionContext<IWorkBenchState, IRootState>) => {
-    const { dispatch, commit, rootState } = moduleState;
+  MOVE: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {},
+
+  LISTEN_FOR_FILE: (_: ActionContext<IWorkBenchState, IRootState>) => {
+    const { dispatch, commit, rootState } = _;
 
     ipcRenderer.on(IPC_FILE.OPEN, (e, route: TFileRoute) => {
       dispatch("OPEN_FILE", { route });
@@ -362,8 +363,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       dispatch("OPEN_FILE", { route, isRead: true });
     });
 
-    ipcRenderer.on(IPC_FILE.RENAME_FOLDER, (e, route: TFileRoute) => {
-      Bus.emit(BUS_SIDEBAR.RENAME_FOLDER);
+    ipcRenderer.on(IPC_FILE.RENAME, (e, route: TFileRoute) => {
+      Bus.emit(BUS_SIDEBAR.RENAME);
     });
 
     ipcRenderer.on(IPC_FILE.REVEAL, (e, route: TFileRoute) => {

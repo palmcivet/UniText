@@ -11,43 +11,43 @@ const getters: GetterTree<IGeneralState, IRootState> = {};
 
 const mutations: MutationTree<IGeneralState> = {
   /* TODO 合并、优化 */
-  TOGGLE_SIDE_BAR: (moduleState: IGeneralState) => {
-    moduleState.appearance.showSideBar = !moduleState.appearance.showSideBar;
+  TOGGLE_SIDE_BAR: (_: IGeneralState) => {
+    _.appearance.showSideBar = !_.appearance.showSideBar;
   },
-  TOGGLE_STATUS_BAR: (moduleState: IGeneralState) => {
-    moduleState.appearance.showStatusBar = !moduleState.appearance.showStatusBar;
+  TOGGLE_STATUS_BAR: (_: IGeneralState) => {
+    _.appearance.showStatusBar = !_.appearance.showStatusBar;
   },
-  TOGGLE_CHECK: (moduleState: IGeneralState) => {
-    moduleState.appearance.dbColumn = !moduleState.appearance.dbColumn;
+  TOGGLE_CHECK: (_: IGeneralState) => {
+    _.appearance.dbColumn = !_.appearance.dbColumn;
   },
-  TOGGLE_PANEL: (moduleState: IGeneralState) => {
-    moduleState.appearance.showPanel = !moduleState.appearance.showPanel;
+  TOGGLE_PANEL: (_: IGeneralState) => {
+    _.appearance.showPanel = !_.appearance.showPanel;
   },
-  TOGGLE_PANEL_STYLE: (moduleState: IGeneralState) => {
-    moduleState.appearance.panelFloat = !moduleState.appearance.panelFloat;
+  TOGGLE_PANEL_STYLE: (_: IGeneralState) => {
+    _.appearance.panelFloat = !_.appearance.panelFloat;
   },
-  SET_PANEL_TYPE: (moduleState: IGeneralState, type: EPanelType) => {
-    moduleState.appearance.panelType = type;
+  SET_PANEL_TYPE: (_: IGeneralState, type: EPanelType) => {
+    _.appearance.panelType = type;
   },
-  SET_READ_MODE: (moduleState: IGeneralState, mode: boolean) => {
-    moduleState.appearance.readMode = mode;
+  SET_READ_MODE: (_: IGeneralState, mode: boolean) => {
+    _.appearance.readMode = mode;
   },
-  SET_TYPE_MODE: (moduleState: IGeneralState, mode: ETypeMode) => {
-    moduleState.appearance.typeMode = mode;
+  SET_TYPE_MODE: (_: IGeneralState, mode: ETypeMode) => {
+    _.appearance.typeMode = mode;
   },
-  SET_EDIT_MODE: (moduleState: IGeneralState, mode: EEditMode) => {
-    moduleState.appearance.editMode = mode;
+  SET_EDIT_MODE: (_: IGeneralState, mode: EEditMode) => {
+    _.appearance.editMode = mode;
   },
 };
 
 const actions: ActionTree<IGeneralState, IRootState> = {
-  LISTEN_FOR_GENERAL: (moduleState: ActionContext<IGeneralState, IRootState>) => {
-    const { dispatch, commit } = moduleState;
+  LISTEN_FOR_GENERAL: (_: ActionContext<IGeneralState, IRootState>) => {
+    const { dispatch, commit } = _;
 
     ipcRenderer.on(IPC_OTHER.SET_READ_MODE, (e, mode: boolean) => {
       commit("SET_READ_MODE", mode);
-      moduleState.rootState.workBench.currentGroup[
-        moduleState.rootState.workBench.currentIndex
+      _.rootState.workBench.currentGroup[
+        _.rootState.workBench.currentIndex
       ].readMode = mode;
     });
   },

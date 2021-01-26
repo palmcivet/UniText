@@ -21,7 +21,7 @@ export const localesMenu = {
     open: ["打开"],
     newfile: ["新建文件"],
     newfolder: ["新建文件夹"],
-    reveal: ["在访达中打开"],
+    reveal: ["显示在文件管理器"],
   },
 
   edit: {
