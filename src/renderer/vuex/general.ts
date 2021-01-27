@@ -1,7 +1,9 @@
 import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
+import { BUS_EDITOR } from "@/common/channel/bus";
 import { IPC_OTHER } from "@/common/channel/ipc";
+import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
 
@@ -49,6 +51,7 @@ const actions: ActionTree<IGeneralState, IRootState> = {
       _.rootState.workBench.currentGroup[
         _.rootState.workBench.currentIndex
       ].readMode = mode;
+      Bus.emit(BUS_EDITOR.SYNC_VIEW);
     });
   },
 };

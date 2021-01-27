@@ -26,11 +26,11 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         },
         { type: "separator" },
         {
-          label: localesMenu.system.preference[locale],
+          label: localesMenu.system.setting[locale],
           submenu: [
             {
-              label: localesMenu.system.setting[locale],
-              accelerator: keybinding.getItem("system.setting"),
+              label: localesMenu.system.preference[locale],
+              accelerator: keybinding.getItem("system.preference"),
               click: () => {},
             },
             {

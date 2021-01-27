@@ -5,22 +5,12 @@
     :threWidth="[150, 250]"
   >
     <template v-slot:left>
-      <section>
-        <Tabs
-          v-show="!isBlank"
-          :openedFile="currentIndex"
-          :tabGroup="currentTabs"
-          @newFile="NEW_FILE()"
-          @switchTabs="SWITCH_TABS($event)"
-          @selectTab="SELECT_TAB({ cur: $event })"
-          @closeTab="CLOSE_FILE($event)"
-        />
-        <Blank v-show="isBlank" @newFile="NEW_FILE()" />
-        <MarkdownSource v-show="!isBlank" class="workbench" />
-      </section>
+      <TabsWithDoc v-show="!isBlank" />
+      <Startup v-show="isBlank" />
+      <Setting />
     </template>
     <template v-slot:right>
-      <panel :fixed="true" />
+      <Panel :fixed="true" />
     </template>
   </LayoutBox>
 </template>
@@ -29,14 +19,12 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import Tabs from "./Tabs.vue";
-import Blank from "./Blank.vue";
-import Panel from "./Panel/Index.vue";
-import MarkdownSource from "./Editor/MarkdownSource/Index.vue";
+import Panel from "../Panel/Index.vue";
+import Startup from "./Startup/Index.vue";
+import Setting from "./Setting/Index.vue";
+import TabsWithDoc from "./TabsWithDoc/Index.vue";
 import { BUS_UI } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
-import { TTab } from "@/typings/vuex/workBench";
-import { IDocument } from "@/typings/document";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
@@ -45,46 +33,28 @@ const workBench = namespace("workBench");
 @Component({
   name: "WorkBench",
   components: {
-    MarkdownSource,
     LayoutBox,
     Panel,
-    Blank,
-    Tabs,
+    Startup,
+    Setting,
+    TabsWithDoc,
   },
 })
 export default class WorkBench extends Vue {
-  @workBench.State("currentIndex")
-  currentIndex!: string;
-
-  @workBench.State("currentTabs")
-  currentTabs!: Array<TTab>;
-
-  @workBench.Mutation("SWITCH_TABS")
-  SWITCH_TABS!: (value: Array<IDocument>) => void;
-
-  @workBench.Mutation("TOGGLE_MODIFY")
-  TOGGLE_MODIFY!: () => void;
-
-  @workBench.Mutation("SELECT_TAB")
-  SELECT_TAB!: (index: string) => void;
-
-  @workBench.Action("CLOSE_FILE")
-  CLOSE_FILE!: (index: string) => void;
-
-  @workBench.Action("NEW_FILE")
-  NEW_FILE!: (title?: string) => void;
-
   @workBench.Getter("isBlank")
   isBlank!: boolean;
 
-  @general.State((state: IGeneralState) => state.editor.startUp)
-  startUp!: boolean;
+  @workBench.Action("NEW_FILE")
+  NEW_FILE!: (title?: string) => void;
 
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
 
   @general.State((state: IGeneralState) => state.appearance.panelFloat)
   isPanelFloat!: boolean;
+
+  @general.State((state: IGeneralState) => state.editor.startUp)
+  startUp!: boolean;
 
   containerWidth = 0;
 
@@ -111,17 +81,4 @@ export default class WorkBench extends Vue {
 }
 </script>
 
-<style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
-
-section {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.workbench {
-  height: calc(100% - 25px);
-  width: 100%;
-}
-</style>
+<style lang="less" scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    Marks
+    Settings
   </div>
 </template>
 
@@ -8,9 +8,9 @@
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
-  name: "Marks",
+  name: "Settings",
 })
-export default class Marks extends Vue {}
+export default class Settings extends Vue {}
 </script>
 
 <style lang="less" scoped></style>

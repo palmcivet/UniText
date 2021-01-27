@@ -39,12 +39,12 @@ const statusPanel = namespace("statusPanel");
 const DEFINE_BORDER = 16; // 边框大小
 
 @Component({
-  name: "MarkdownSource",
+  name: "Source",
   components: {
     LayoutBox,
   },
 })
-export default class MarkdownSource extends Vue {
+export default class Source extends Vue {
   @statusPanel.State("toc")
   tocTree!: Array<ITocList>;
 

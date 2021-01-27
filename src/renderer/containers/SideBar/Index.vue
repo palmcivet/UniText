@@ -25,8 +25,9 @@ import { namespace } from "vuex-class";
 
 import Tags from "./Tags.vue";
 import Files from "./Files.vue";
-import Marks from "./Marks.vue";
 import Search from "./Search.vue";
+import Bookmarks from "./Bookmarks.vue";
+import Settings from "./Settings.vue";
 import CheckList from "@/renderer/components/CheckList.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 
@@ -37,8 +38,9 @@ const general = namespace("general");
   components: {
     Tags,
     Files,
-    Marks,
     Search,
+    Settings,
+    Bookmarks,
     CheckList,
   },
 })
@@ -64,7 +66,7 @@ export default class SideBar extends Vue {
         icon: "ri-xl ri-search-line",
         title: this.$t("sidebar.search"),
       },
-      Marks: {
+      Bookmarks: {
         icon: "ri-xl ri-bookmark-3-line",
         title: this.$t("sidebar.bookmarks"),
       },
@@ -72,9 +74,9 @@ export default class SideBar extends Vue {
         icon: "ri-xl ri-price-tag-3-line",
         title: this.$t("sidebar.tags"),
       },
-      Setting: {
+      Settings: {
         icon: "ri-xl ri-settings-line",
-        title: this.$t("sidebar.setting"),
+        title: this.$t("sidebar.settings"),
       },
     };
   }

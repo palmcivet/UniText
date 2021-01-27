@@ -22,7 +22,7 @@ import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
-import Panel from "@/renderer/containers/WorkBench/Panel/Index.vue";
+import Panel from "@/renderer/containers/Panel/Index.vue";
 import { notEmpty } from "@/common/utils";
 import { BUS_UI } from "@/common/channel/bus";
 import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";

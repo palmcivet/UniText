@@ -1,65 +1,81 @@
 <template>
-  <Draggable
-    tag="ul"
-    ref="tabContainer"
-    v-model="openedTabs"
-    v-bind="dragOptions"
-    :component-data="getCompData()"
-    @start="drag = true"
-    @end="drag = false"
-  >
-    <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-      <li
-        v-for="v in openedTabs"
-        :key="v.order"
-        :class="v.order === openedFile ? 'current' : ''"
-        @click.stop="selectTab(v.order)"
-        @contextmenu="handleContextTab()"
-      >
-        <span>{{ v.title }}</span>
-        <i class="ri-close-line" @click.stop="closeTab(v.order)" />
-      </li>
-    </transition-group>
-  </Draggable>
+  <div>
+    <Draggable
+      tag="ul"
+      ref="tabContainer"
+      v-model="openedTabs"
+      v-bind="dragOptions"
+      :component-data="componentData()"
+      @start="drag = true"
+      @end="drag = false"
+    >
+      <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+        <li
+          v-for="v in openedTabs"
+          :key="v.order"
+          :class="v.order === currentIndex ? 'current' : ''"
+          @click.stop="SELECT_TAB({ cur: v.order })"
+          @contextmenu="handleTabContext()"
+        >
+          <span>{{ v.title }}</span>
+          <i class="ri-close-line" @click.stop="CLOSE_FILE(v.order)" />
+        </li>
+      </transition-group>
+    </Draggable>
+
+    <Source class="workbench" />
+  </div>
 </template>
 
 <script lang="ts">
 import { ipcRenderer } from "electron";
+import { namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
 import Draggable from "vuedraggable";
-import { Vue, Component, Prop } from "vue-property-decorator";
 
+import Source from "./Source/Index.vue";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
+import { TTab } from "@/typings/vuex/workBench";
 import { EMenuContextKey } from "@/typings/bootstrap";
 
+const workBench = namespace("workBench");
+
 @Component({
-  name: "Tabs",
+  name: "TabsWithDoc",
   components: {
     Draggable,
+    Source,
   },
 })
-export default class Tabs extends Vue {
-  @Prop({
-    type: String,
-    required: true,
-  })
-  openedFile!: string;
+export default class TabsWithDoc extends Vue {
+  @workBench.State("currentIndex")
+  currentIndex!: string;
 
-  @Prop({
-    type: Array,
-    required: true,
-  })
-  tabGroup!: Array<{ order: string; value: string }> | null;
+  @workBench.State("currentTabs")
+  currentTabs!: Array<TTab>;
+
+  @workBench.Mutation("SWITCH_TABS")
+  SWITCH_TABS!: (value: Array<TTab>) => void;
+
+  @workBench.Mutation("SELECT_TAB")
+  SELECT_TAB!: (payload: { cur: string; his?: string }) => void;
+
+  @workBench.Action("CLOSE_FILE")
+  CLOSE_FILE!: (index: string) => void;
+
+  @workBench.Action("NEW_FILE")
+  NEW_FILE!: (title?: string) => void;
 
   drag = false;
 
-  tabRef = this.$el as HTMLElement; // value for init
+  tabRef = this.$el as HTMLElement;
 
   get openedTabs() {
-    return this.tabGroup;
+    return this.currentTabs;
   }
 
   set openedTabs(value) {
-    this.$emit("switchTabs", value);
+    this.SWITCH_TABS(value);
   }
 
   get dragOptions() {
@@ -70,24 +86,16 @@ export default class Tabs extends Vue {
     };
   }
 
-  getCompData() {
+  componentData() {
     return {
       on: {
         dblclick: (e: MouseEvent) => {
           e.stopPropagation();
           e.preventDefault();
-          this.$emit("newFile");
+          this.NEW_FILE();
         },
       },
     };
-  }
-
-  selectTab(index: string) {
-    this.$emit("selectTab", index);
-  }
-
-  closeTab(index: string) {
-    this.$emit("closeTab", index);
   }
 
   handleTabScroll(e: WheelEvent) {
@@ -100,7 +108,7 @@ export default class Tabs extends Vue {
     tabs.scrollLeft = newLeft;
   }
 
-  handleContextTab() {
+  handleTabContext() {
     ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.WORKBENCH_TAB);
   }
 
@@ -168,5 +176,16 @@ ul {
       }
     }
   }
+}
+
+div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.workbench {
+  height: calc(100% - 25px);
+  width: 100%;
 }
 </style>

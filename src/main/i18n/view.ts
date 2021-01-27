@@ -6,7 +6,7 @@ export const localesView = {
     tags: ["标签"],
     sticky: ["便签"],
     schedule: ["日程"],
-    setting: ["设置"],
+    settings: ["设置"],
   },
 
   panel: {

@@ -1,22 +1,26 @@
 <template>
-  <article @dblclick.stop="newFile()">
+  <div @dblclick.stop="NEW_FILE()">
     <span>双击新建文件</span>
-  </article>
+  </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
-@Component({ name: "Blank" })
-export default class Blank extends Vue {
-  newFile() {
-    this.$emit("newFile");
-  }
+const workBench = namespace("workBench");
+
+@Component({
+  name: "Startup",
+})
+export default class Startup extends Vue {
+  @workBench.Action("NEW_FILE")
+  NEW_FILE!: (title?: string) => void;
 }
 </script>
 
 <style lang="less" scoped>
-article {
+div {
   display: flex;
   flex-direction: column;
   height: 100%;

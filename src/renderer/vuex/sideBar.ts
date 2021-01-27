@@ -1,10 +1,8 @@
 import { remote } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
-import * as fse from "fs-extra";
 
 import { hasKeys, notEmpty } from "@/common/utils";
-import { CONFIG_FILE } from "@/common/env";
-import { buildTree, joinPath } from "@/common/fileSystem";
+import { buildTree } from "@/common/fileSystem";
 import { IRootState } from "@/typings/vuex";
 import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/sideBar";
 
