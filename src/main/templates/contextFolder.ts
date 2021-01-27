@@ -57,6 +57,8 @@ export const folder = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => 
   {
     label: localesMenu.edit.delete[locale],
     accelerator: keybinding.getItem("edit.delete"),
-    click: () => {},
+    click: (menu, win) => {
+      (win as BrowserWindow).webContents.send(IPC_FILE.DELETE, Bus.value);
+    },
   },
 ];

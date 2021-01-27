@@ -25,6 +25,7 @@ export enum IPC_FILE {
   OPEN_FOR_VIEW = "IPC::OPEN_FOR_VIEW",
   REVEAL = "IPC::REVEAL",
   RENAME = "IPC::RENAME",
+  DELETE = "IPC::DELETE",
 }
 
 export enum IPC_OTHER {

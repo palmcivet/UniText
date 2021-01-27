@@ -2,6 +2,7 @@ import { ipcRenderer, remote } from "electron";
 import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
+import { isWin } from "@/common/env";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
 import { charCount, wordCount, timeCalc } from "@/common/editor";
@@ -346,6 +347,29 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     fse.rename(src, dst);
   },
 
+  DELETE: (_: ActionContext<IWorkBenchState, IRootState>) => {
+    const { fileTree, filesState, activeItem } = _.rootState.sideBar;
+
+    const file = activeItem.split("/");
+
+    let srcObj = fileTree;
+
+    for (let i = 0, item = file[i]; i < file.length - 1; i++) {
+      srcObj = fileTree[item].children as ITree;
+    }
+    const target = file[file.length - 1];
+    delete srcObj[target];
+
+    // FEAT 移至回收站
+    const { execSync } = require("child_process");
+    const DIR = joinPath(filesState.folderDir, ...file);
+    if (isWin) {
+      execSync(`del /s ${DIR}`);
+    } else {
+      execSync(`rm -r ${DIR}`);
+    }
+  },
+
   MOVE: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {},
 
   LISTEN_FOR_FILE: (_: ActionContext<IWorkBenchState, IRootState>) => {
@@ -361,6 +385,10 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     ipcRenderer.on(IPC_FILE.OPEN_FOR_VIEW, (e, route: TFileRoute) => {
       dispatch("OPEN_FILE", { route, isRead: true });
+    });
+
+    ipcRenderer.on(IPC_FILE.DELETE, (e, route: TFileRoute) => {
+      dispatch("DELETE");
     });
 
     ipcRenderer.on(IPC_FILE.RENAME, (e, route: TFileRoute) => {
