@@ -1,12 +1,20 @@
 export const localesView = {
   sidebar: {
     files: ["文件"],
+    filesTitle: ["文件管理"],
+    filesEmpty: ["无打开的文件/文件夹"],
+    filesToggle: ["收起"],
+    filesButton: ["打开文件夹"],
     search: ["搜索"],
     bookmarks: ["书签"],
     tags: ["标签"],
-    sticky: ["便签"],
+    notes: ["便签"],
     schedule: ["日程"],
     settings: ["设置"],
+    settingsPreference: ["首选项"],
+    settingsKeybinding: ["键映射"],
+    settingsSnippet: ["代码片段"],
+    settingsTheme: ["主题"],
   },
 
   panel: {

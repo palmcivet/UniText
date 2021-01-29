@@ -10,7 +10,7 @@
       <Setting />
     </template>
     <template v-slot:right>
-      <Panel :fixed="true" />
+      <SidePanel :fixed="true" />
     </template>
   </LayoutBox>
 </template>
@@ -19,9 +19,9 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import Panel from "../Panel/Index.vue";
 import Startup from "./Startup/Index.vue";
 import Setting from "./Setting/Index.vue";
+import SidePanel from "../SidePanel/Index.vue";
 import TabsWithDoc from "./TabsWithDoc/Index.vue";
 import { BUS_UI } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
@@ -34,9 +34,9 @@ const workBench = namespace("workBench");
   name: "WorkBench",
   components: {
     LayoutBox,
-    Panel,
     Startup,
     Setting,
+    SidePanel,
     TabsWithDoc,
   },
 })

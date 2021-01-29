@@ -221,11 +221,11 @@ export default class FileTreeNode extends Vue {
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/var.less";
+
 * {
   -webkit-user-select: none;
 }
-
-@line-height: 1.3rem;
 
 pre {
   display: inline-block;
@@ -245,11 +245,10 @@ pre {
   outline: none;
   cursor: pointer;
   width: 100%;
-  height: @line-height;
-  line-height: @line-height;
+  height: @sidebar-item-height;
 
   i {
-    line-height: @line-height;
+    line-height: @sidebar-item-height;
   }
 }
 

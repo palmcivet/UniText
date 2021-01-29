@@ -1,35 +1,40 @@
 <template>
-  <section>
-    <header>
-      <div v-if="isEmptyFolder">无打开的文件/文件夹</div>
-      <div v-else>
-        <span>文件管理</span>
-        <i class="ri-checkbox-indeterminate-line" @click="toggleAll()" title="收起" />
-      </div>
-    </header>
+  <!-- 更改上层 Component 组件后，删除 div -->
+  <div>
+    <BaseView :isBlank="isEmptyFolder">
+      <template slot="blank-title">{{ $t("sidebar.filesEmpty") }}</template>
 
-    <div v-if="isEmptyFolder" class="blank">
-      <button @click="OPEN_PROJECT()">打开文件夹</button>
-    </div>
+      <template slot="blank">
+        <button @click="OPEN_PROJECT()">{{ $t("sidebar.filesButton") }}</button>
+      </template>
 
-    <div
-      v-else
-      class="project"
-      @mouseenter="handleMouseEnter()"
-      @mouseleave="handleMouseLeave()"
-    >
-      <ul>
-        <FileTreeNode
-          v-for="(data, name) in fileTree"
-          :key="data.order"
-          :tier="0"
-          :node="data"
-          :route="[name]"
-          :isIndent="isIndent"
+      <template slot="view-title">
+        <span>{{ $t("sidebar.filesTitle") }}</span>
+        <i
+          class="ri-checkbox-indeterminate-line"
+          :title="$t('sidebar.filesToggle')"
+          @click="handleToggleAll()"
         />
-      </ul>
-    </div>
-  </section>
+      </template>
+
+      <template
+        slot="view"
+        @mouseenter="handleMouseEnter()"
+        @mouseleave="handleMouseLeave()"
+      >
+        <ul>
+          <FileTreeNode
+            v-for="(data, name) in fileTree"
+            :key="data.order"
+            :tier="0"
+            :node="data"
+            :route="[name]"
+            :isIndent="isIndent"
+          />
+        </ul>
+      </template>
+    </BaseView>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,6 +42,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import Draggable from "vuedraggable";
 
+import BaseView from "./BaseView.vue";
 import FileTreeNode from "./FileTreeNode.vue";
 import { ISideBarState, ITree } from "@/typings/vuex/sideBar";
 
@@ -47,6 +53,7 @@ const sideBar = namespace("sideBar");
   components: {
     FileTreeNode,
     Draggable,
+    BaseView,
   },
 })
 export default class Files extends Vue {
@@ -75,7 +82,7 @@ export default class Files extends Vue {
 
   isOnce = true;
 
-  toggleAll() {
+  handleToggleAll() {
     this.TOGGLE_ALL(this.isOnce);
     this.CHOOSE_ITEM("");
     this.isOnce = !this.isOnce;
@@ -95,66 +102,21 @@ export default class Files extends Vue {
 </script>
 
 <style lang="less" scoped>
-@header-height: 20px;
-
-section {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  > header {
-    color: #252525;
-    z-index: 999;
-    background-color: rgb(235, 238, 225);
-    box-shadow: 0px 1px 5px rgba(222, 241, 185, 0.6);
-
-    > div {
-      display: flex;
-
-      > span,
-      > i {
-        line-height: @header-height;
-        margin-left: 3px;
-      }
-
-      > i {
-        cursor: pointer;
-      }
-    }
-
-    * {
-      -webkit-user-select: none;
-    }
-  }
-
-  > div {
-    height: calc(100% - @header-height);
-    position: relative;
-
-    &.blank {
-      button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        padding: 0.5em;
-        cursor: pointer;
-        transform: translate(-50%, 50%);
-        color: whitesmoke;
-        background-color: #55aaf3;
-        box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
-        outline-style: none;
-        border-radius: 2px;
-        border-color: transparent;
-        -webkit-user-select: none;
-      }
-    }
-
-    &.project {
-      ul {
-        height: 100%;
-        overflow: auto;
-      }
-    }
+/deep/ .view {
+  button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 0.5em;
+    cursor: pointer;
+    transform: translate(-50%, 50%);
+    color: whitesmoke;
+    background-color: #55aaf3;
+    box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
+    outline-style: none;
+    border-radius: 2px;
+    border-color: transparent;
+    -webkit-user-select: none;
   }
 }
 </style>

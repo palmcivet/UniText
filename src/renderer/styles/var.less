@@ -17,11 +17,31 @@
 @layout-rightSide-bar: 150px;
 @layout-bottom-bar: 24px;
 
+/* SideBar */
+@sidebar-header-height: 20px;
+@sidebar-item-height: 1.3rem;
+
+/* WorkBench */
+@preview-font-size: 15px;
+
 /* TabBar */
 @tab-height: 25px;
 @tab-boxshadow: 1px;
 
-/* Panel */
+/* ResizeBar */
+@resize-bar: 1px solid rgba(216, 216, 216, 0.4); // DEV
+
+#resize-style {
+  width: 1.5px;
+  height: 100%;
+  cursor: col-resize;
+
+  &:hover {
+    background-color: rgba(216, 216, 216, 0.4);
+  }
+}
+
+/* SidePanel */
 @span-major: 1.4rem;
 @span-minor: 1rem;
 @span-common: 0.8rem;
@@ -37,21 +57,5 @@
   span {
     -webkit-user-select: none;
     font-size: @span-common;
-  }
-}
-
-/* WorkBench */
-@preview-font-size: 15px;
-
-/* ResizeBar */
-@resize-bar: 1px solid rgba(216, 216, 216, 0.4); // DEV
-
-#resize-style {
-  width: 1.5px;
-  height: 100%;
-  cursor: col-resize;
-
-  &:hover {
-    background-color: rgba(216, 216, 216, 0.4);
   }
 }

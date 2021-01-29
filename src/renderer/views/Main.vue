@@ -3,13 +3,13 @@
     <TitleBar class="layout-header" />
     <main class="layout-main">
       <aside class="left-side-bar">
-        <SideBar :sideWidth="finalLeftWidth - 1.5" />
+        <ActivityBar :sideWidth="finalLeftWidth - 1.5" />
         <span v-show="isShowSide" ref="leftResize" />
       </aside>
       <WorkBench class="center-container" :style="{ width: centerWidth }" />
     </main>
     <StatusBar class="layout-footer" />
-    <Panel :fixed="false" />
+    <SidePanel :fixed="false" />
   </div>
 </template>
 
@@ -18,11 +18,11 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 
-import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
+import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
-import Panel from "@/renderer/containers/Panel/Index.vue";
+import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
 import { notEmpty } from "@/common/utils";
 import { BUS_UI } from "@/common/channel/bus";
 import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
@@ -34,11 +34,11 @@ const general = namespace("general");
 @Component({
   name: "Main",
   components: {
-    Panel,
-    SideBar,
     TitleBar,
+    SidePanel,
     StatusBar,
     WorkBench,
+    ActivityBar,
   },
 })
 export default class Main extends Vue {

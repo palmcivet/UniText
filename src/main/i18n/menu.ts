@@ -6,6 +6,7 @@ export const localesMenu = {
     preference: ["首选项"],
     keybinding: ["快捷键"],
     snippet: ["代码片段"],
+    theme: ["主题"],
     services: ["服务"],
     hide: ["隐藏"],
     hideothers: ["隐藏其他"],

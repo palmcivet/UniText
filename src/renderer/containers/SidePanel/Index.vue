@@ -32,14 +32,14 @@ import { $ } from "@/common/utils";
 const general = namespace("general");
 
 @Component({
-  name: "Panel",
+  name: "SidePanel",
   components: {
     TOC,
     INFO,
     EXPORT,
   },
 })
-export default class Panel extends Vue {
+export default class SidePanel extends Vue {
   @Prop({
     type: Boolean,
     required: true,

@@ -23,18 +23,18 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import Tags from "./Tags.vue";
-import Files from "./Files.vue";
-import Search from "./Search.vue";
-import Bookmarks from "./Bookmarks.vue";
-import Settings from "./Settings.vue";
+import Tags from "@/renderer/containers/SideBar/Tags.vue";
+import Files from "@/renderer/containers/SideBar/Files.vue";
+import Search from "@/renderer/containers/SideBar/Search.vue";
+import Bookmarks from "@/renderer/containers/SideBar/Bookmarks.vue";
+import Settings from "@/renderer/containers/SideBar/Settings.vue";
 import CheckList from "@/renderer/components/CheckList.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
 
 @Component({
-  name: "SideBar",
+  name: "ActivityBar",
   components: {
     Tags,
     Files,
@@ -44,7 +44,7 @@ const general = namespace("general");
     CheckList,
   },
 })
-export default class SideBar extends Vue {
+export default class ActivityBar extends Vue {
   @Prop({ type: Number, required: true })
   sideWidth!: number;
 

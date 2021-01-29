@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer, IpcRendererEvent } from "electron";
+import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
 
@@ -11,7 +11,9 @@ import { State } from "vuex-class";
   name: "Setting",
 })
 export default class Setting extends Vue {
+  created() {}
 
+  beforeDestory() {}
 }
 </script>
 

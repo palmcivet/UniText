@@ -67,7 +67,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       properties: ["openDirectory", "createDirectory", "showHiddenFiles"],
     });
 
-    if (notEmpty(res.filePaths)) {
+    if (!notEmpty(res.filePaths)) {
       // TODO 完善报错信息
       commit("information/SET_ERROR", "", { root: true });
     } else {
