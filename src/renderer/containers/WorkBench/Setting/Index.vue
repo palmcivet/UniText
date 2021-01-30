@@ -1,7 +1,15 @@
 <template>
-  <div>
+  <div class="setting">
+    <!-- FEAT i18n -->
+    <div class="header">{{ "首选项" }}</div>
+
     <Preference />
-    <button>保存</button>
+
+    <div class="operate">
+      <button>查看存储位置</button>
+      <button>恢复默认值</button>
+      <button>保存(⌘S)</button>
+    </div>
   </div>
 </template>
 
@@ -43,4 +51,32 @@ export default class Setting extends Vue {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+@import "~@/renderer/styles/var.less";
+
+.setting {
+  height: 100%;
+  position: relative;
+  padding: 0rem 3rem;
+
+  > .header {
+    font-size: 1.8em;
+    font-weight: 500;
+    text-align: center;
+    -webkit-user-select: none;
+  }
+
+  > .operate {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+
+    button {
+      margin-left: 1em;
+      padding: 0.3em 0.4em;
+
+      #button-style();
+    }
+  }
+}
+</style>

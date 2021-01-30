@@ -2,7 +2,7 @@ export const localesView = {
   sidebar: {
     files: ["文件"],
     files_title: ["文件管理"],
-    files_empty: ["无打开的文件/文件夹"],
+    files_empty: ["无打开的文件夹"],
     files_toggle: ["收起"],
     files_button: ["打开文件夹"],
     search: ["搜索"],

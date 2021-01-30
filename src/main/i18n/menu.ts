@@ -2,7 +2,7 @@ export const localesMenu = {
   system: {
     about: ["关于 UniText"],
     check: ["检查更新"],
-    setting: ["设置"],
+    settings: ["设置"],
     preference: ["首选项"],
     keybinding: ["快捷键"],
     snippet: ["代码片段"],

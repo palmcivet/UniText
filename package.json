@@ -41,7 +41,6 @@
     "uslug": "^1.0.4",
     "v-emoji-picker": "^2.2.0",
     "vue": "^2.6.10",
-    "vue-custom-scrollbar": "^1.2.0",
     "vue-property-decorator": "^9.0.0",
     "vuedraggable": "^2.23.2",
     "vuex": "^3.5.1",

@@ -8,8 +8,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component({ name: "Range" })
-export default class Range extends Vue {
+@Component({ name: "TextBox" })
+export default class TextBox extends Vue {
   @Prop({ type: Object, required: true })
   properties!: any;
 }

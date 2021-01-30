@@ -30,7 +30,6 @@ const statusPanel = namespace("statusPanel");
 
 @Component({
   name: "Toc",
-  components: {},
 })
 export default class Toc extends Vue {
   @Prop({ type: Number, default: 2 })
@@ -66,7 +65,6 @@ export default class Toc extends Vue {
 
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
-@import "~@/renderer/styles/widget.less";
 
 @line-height: 1em;
 

@@ -10,7 +10,7 @@ export class Keybinding {
       /* system */
       ["system.about", ""],
       ["system.check", ""],
-      ["system.setting", ""],
+      ["system.settings", ""],
       ["system.keybinding", ""],
       ["system.snippet", ""],
       ["system.quit", "CmdOrCtrl+Q"],

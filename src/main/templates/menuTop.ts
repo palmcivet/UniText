@@ -26,7 +26,7 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         },
         { type: "separator" },
         {
-          label: localesMenu.system.setting[locale],
+          label: localesMenu.system.settings[locale],
           submenu: [
             {
               label: localesMenu.system.preference[locale],

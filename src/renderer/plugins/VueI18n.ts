@@ -46,7 +46,7 @@ function deepAssign(to: any, from: any) {
 
 /* -------------------------- types ------------------------------- */
 
-type TMessage = string[];
+type TMessage = Array<string | Function>;
 
 interface IMessageObject {
   [key: string]: IMessageObject | TMessage;
@@ -64,6 +64,7 @@ export interface IVueI18n {
     setLang: (msg: number) => void;
   };
   $t: (path: string, ...args: any) => any;
+  $g: (labels: TMessage, ...args: any) => string;
 }
 
 /* -------------------------- plugin ------------------------------- */
@@ -87,6 +88,11 @@ const install = (Vue: VueConstructor<Vue>, options: IPluginOptions) => {
   proto.$t = (path: string, ...args: any) => {
     const message = deepGet(_vm.messages, path);
     return typeof message === "function" ? message(...args) : message[_vm.lang] || path;
+  };
+
+  proto.$g = (labels: TMessage, ...args: any) => {
+    const message = labels[_vm.lang];
+    return typeof message === "function" ? message(...args) : message;
   };
 
   proto.$i18n.add = (messages = {}) => {

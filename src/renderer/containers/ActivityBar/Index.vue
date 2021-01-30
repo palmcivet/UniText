@@ -54,7 +54,8 @@ export default class ActivityBar extends Vue {
   @general.Mutation("TOGGLE_SIDE_BAR")
   TOGGLE_SIDE_BAR!: () => void;
 
-  activeItem = "Files";
+  // TODO
+  activeItem = "Settings";
 
   get menuList() {
     return {

@@ -77,7 +77,11 @@ li {
   align-items: center;
   cursor: pointer;
 
-  .space {
+  > i {
+    font-size: 18px;
+  }
+
+  > .space {
     width: 0.2em;
   }
 

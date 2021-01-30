@@ -102,21 +102,17 @@ export default class Files extends Vue {
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/var.less";
+
 /deep/ .view {
   button {
-    position: absolute;
     top: 50%;
     left: 50%;
-    padding: 0.5em;
-    cursor: pointer;
+    position: absolute;
     transform: translate(-50%, 50%);
-    color: whitesmoke;
-    background-color: #55aaf3;
-    box-shadow: 3px 3px 6px rgba(123, 194, 245, 0.6);
-    outline-style: none;
-    border-radius: 2px;
-    border-color: transparent;
-    -webkit-user-select: none;
+    padding: 0.5em;
+
+    #button-style();
   }
 }
 </style>
