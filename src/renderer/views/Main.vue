@@ -9,6 +9,7 @@
       <WorkBench class="center-container" :style="{ width: centerWidth }" />
     </main>
     <StatusBar class="layout-footer" />
+    <!-- TODO 放进 WorkBench -->
     <SidePanel :fixed="false" />
   </div>
 </template>
@@ -27,7 +28,7 @@ import { notEmpty } from "@/common/utils";
 import { BUS_UI } from "@/common/channel/bus";
 import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EI18n, IBootArgs } from "@/typings/bootstrap";
+import { EI18n, IBootArgs, IBootConfig } from "@/typings/bootstrap";
 
 const general = namespace("general");
 
@@ -73,9 +74,9 @@ export default class Main extends Vue {
 
     ipcRenderer.once(
       IPC_BOOTSTRAP.REPLY,
-      (event, msg: { lang: "ZH_CN" | "EN_US"; args: IBootArgs }) => {
-        const { lang, args } = msg;
-        this.$i18n.setLang(EI18n[lang]);
+      (event, msg: { sys: IBootConfig; args: IBootArgs }) => {
+        const { sys, args } = msg;
+        this.$i18n.setLang(EI18n[sys.language]);
 
         if (notEmpty(args.error)) {
           commit("information/SET_ERROR", args.error, { root: true });

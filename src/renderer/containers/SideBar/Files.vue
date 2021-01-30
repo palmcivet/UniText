@@ -2,17 +2,17 @@
   <!-- 更改上层 Component 组件后，删除 div -->
   <div>
     <BaseView :isBlank="isEmptyFolder">
-      <template slot="blank-title">{{ $t("sidebar.filesEmpty") }}</template>
+      <template slot="blank-title">{{ $t("sidebar.files_empty") }}</template>
 
       <template slot="blank">
-        <button @click="OPEN_PROJECT()">{{ $t("sidebar.filesButton") }}</button>
+        <button @click="OPEN_PROJECT()">{{ $t("sidebar.files_button") }}</button>
       </template>
 
       <template slot="view-title">
-        <span>{{ $t("sidebar.filesTitle") }}</span>
+        <span>{{ $t("sidebar.files_title") }}</span>
         <i
           class="ri-checkbox-indeterminate-line"
-          :title="$t('sidebar.filesToggle')"
+          :title="$t('sidebar.files_toggle')"
           @click="handleToggleAll()"
         />
       </template>

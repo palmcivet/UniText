@@ -7,7 +7,7 @@
 
       <template slot="view">
         <ul>
-          <li v-for="(i, k) in settingGroup" :key="k">
+          <li v-for="(i, k) in settingGroup" :key="k" @click="switchSetting(i.type)">
             <i :class="true ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
             <i :class="i.icon" />
             <pre class="space" />
@@ -23,6 +23,8 @@
 import { Vue, Component } from "vue-property-decorator";
 
 import BaseView from "./BaseView.vue";
+import { BUS_SIDEBAR } from "@/common/channel/bus";
+import { ESettingType } from "@/typings/vuex/workBench";
 
 @Component({
   name: "Settings",
@@ -35,21 +37,29 @@ export default class Settings extends Vue {
     return [
       {
         icon: "ri-settings-3-line",
-        title: this.$t("sidebar.settingsPreference"),
+        type: ESettingType.PREFERENCE,
+        title: this.$t("sidebar.settings_preference"),
       },
       {
         icon: "ri-keyboard-line",
-        title: this.$t("sidebar.settingsKeybinding"),
+        type: ESettingType.KEYBINDING,
+        title: this.$t("sidebar.settings_keybinding"),
       },
       {
         icon: "ri-braces-fill",
-        title: this.$t("sidebar.settingsSnippet"),
+        type: ESettingType.SNIPPET,
+        title: this.$t("sidebar.settings_snippet"),
       },
       {
         icon: "ri-t-shirt-2-line",
-        title: this.$t("sidebar.settingsTheme"),
+        type: ESettingType.THEME,
+        title: this.$t("sidebar.settings_theme"),
       },
     ];
+  }
+
+  switchSetting(type: ESettingType) {
+    this.$bus.emit(BUS_SIDEBAR.SWITCH_SETTING, type);
   }
 }
 </script>

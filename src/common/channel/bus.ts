@@ -4,6 +4,7 @@ export enum BUS_UI {
 }
 export enum BUS_SIDEBAR {
   RENAME = "SIDEBAR::RENAME",
+  SWITCH_SETTING = "SIDEBAR::SWITCH_SETTING",
 }
 
 export enum BUS_EDITOR {

@@ -5,9 +5,9 @@
     :threWidth="[150, 250]"
   >
     <template v-slot:left>
-      <TabsWithDoc v-show="!isBlank" />
-      <Startup v-show="isBlank" />
-      <Setting />
+      <TabsWithDoc v-show="currentView === 0 && !isBlank" />
+      <Startup v-show="currentView === 1 || isBlank" />
+      <Setting v-show="currentView === 2" />
     </template>
     <template v-slot:right>
       <SidePanel :fixed="true" />
@@ -26,6 +26,10 @@ import TabsWithDoc from "./TabsWithDoc/Index.vue";
 import { BUS_UI } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IGeneralState } from "@/typings/vuex/general";
+import { ipcRenderer } from "electron";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
+import { EView } from "@/typings/vuex/workBench";
+import { EStartupType } from "@/typings/bootstrap";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -41,20 +45,20 @@ const workBench = namespace("workBench");
   },
 })
 export default class WorkBench extends Vue {
-  @workBench.Getter("isBlank")
-  isBlank!: boolean;
-
-  @workBench.Action("NEW_FILE")
-  NEW_FILE!: (title?: string) => void;
-
   @general.State((state: IGeneralState) => state.appearance.showPanel)
   isShowPanel!: boolean;
 
   @general.State((state: IGeneralState) => state.appearance.panelFloat)
   isPanelFloat!: boolean;
 
-  @general.State((state: IGeneralState) => state.editor.startUp)
-  startUp!: boolean;
+  @workBench.State("currentView")
+  currentView!: EView.EDITOR;
+
+  @workBench.Getter("isBlank")
+  isBlank!: boolean;
+
+  @workBench.Action("NEW_FILE")
+  NEW_FILE!: (title?: string) => void;
 
   containerWidth = 0;
 
@@ -63,7 +67,8 @@ export default class WorkBench extends Vue {
   }
 
   created() {
-    if (this.startUp) {
+    const res = ipcRenderer.sendSync(IPC_PREFERENCE.GET_ITEM_SYNC, "system.startup");
+    if (res["system.startup"] === EStartupType.CREATE) {
       this.NEW_FILE();
     }
   }

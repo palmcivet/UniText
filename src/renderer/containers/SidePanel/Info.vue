@@ -18,25 +18,25 @@
     <div class="grid">
       <InfoCard
         :raw="file.wordCount"
-        :remark="$t('panel.wordCount')"
+        :remark="$t('panel.word_count')"
         :type="'NUM'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
       <InfoCard
         :raw="file.charCount"
-        :remark="$t('panel.charCount')"
+        :remark="$t('panel.char_count')"
         :type="'NUM'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
       <InfoCard
         :raw="file.readTime"
-        :remark="$t('panel.readTime')"
+        :remark="$t('panel.read_time')"
         :type="'TIME'"
         :style="{ width: 'calc(50% - 8px)' }"
       />
       <InfoCard
         :raw="file.editTime"
-        :remark="$t('panel.editTime')"
+        :remark="$t('panel.edit_time')"
         :type="'TIME'"
         :style="{ width: 'calc(50% - 8px)' }"
       />

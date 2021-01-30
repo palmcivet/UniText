@@ -1,5 +1,5 @@
-import { IDocument } from "@/typings/document";
 import { TFileRoute } from "./sideBar";
+import { IDocument } from "../document";
 
 /**
  * @type 标识打开的标签
@@ -38,6 +38,26 @@ export interface IFile extends IDocument {
 }
 
 /**
+ * @enum 工作台类别
+ */
+export enum EView {
+  EDITOR,
+  STARTUP,
+  SETTING,
+  SCHEDULE,
+}
+
+/**
+ * @enum 设置的类型
+ */
+export enum ESettingType {
+  PREFERENCE,
+  KEYBINDING,
+  SNIPPET,
+  THEME,
+}
+
+/**
  * @interface 工作台的 state
  */
 export interface IWorkBenchState {
@@ -57,4 +77,12 @@ export interface IWorkBenchState {
    * @field 打开的文档标签
    */
   currentTabs: Array<TTab>;
+  /**
+   * @field 工作台类型
+   */
+  currentView: EView;
+  /**
+   * @field 设置的类型
+   */
+  settingType: ESettingType;
 }

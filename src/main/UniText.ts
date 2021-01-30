@@ -5,7 +5,7 @@ import { autoUpdater } from "electron-updater";
 
 import { IPC_BOOTSTRAP } from "@/common/channel/ipc";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { IBootArgs, EI18n } from "@/typings/bootstrap";
+import { IBootArgs, EI18n, IBootConfig } from "@/typings/bootstrap";
 import { Preference } from "./modules/Preference";
 import { Keybinding } from "./modules/Keybinding";
 import { MenuManager } from "./modules/MenuManager";
@@ -13,7 +13,7 @@ import { MenuManager } from "./modules/MenuManager";
 export class UniText {
   private _args: IBootArgs;
 
-  private _language!: "ZH_CN" | "EN_US";
+  private _sysArgs!: IBootConfig;
 
   private _window!: BrowserWindow | null;
 
@@ -61,14 +61,14 @@ export class UniText {
 
     ipcMain.once(IPC_BOOTSTRAP.FETCH, (event) => {
       event.reply(IPC_BOOTSTRAP.REPLY, {
-        lang: this._language,
+        sys: this._sysArgs,
         args: this._args,
       });
     });
   }
 
   private async _createWindow() {
-    this._language = this._preference.getItem("system.language");
+    this._sysArgs = this._preference.getItem("system");
 
     // FEAT 读取工作区设置文件
 
@@ -95,7 +95,7 @@ export class UniText {
 
     win.setTitle("UniText");
 
-    this._menuManager.updateMenu(EI18n[this._language], this._keybinding);
+    this._menuManager.updateMenu(EI18n[this._sysArgs.language], this._keybinding);
 
     /**
      * 加载开发者工具

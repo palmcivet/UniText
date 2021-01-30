@@ -7,7 +7,8 @@
       "saveRecent": { "type": "boolean", "default": true },
       "autoOpen": { "type": "boolean", "default": true },
       "autoUpdate": { "type": "boolean", "default": true },
-      "language": { "enum": ["ZH_CN", "EN_US"], "default": "ZH_CN" }
+      "language": { "enum": ["ZH_CN", "EN_US"], "default": "ZH_CN" },
+      "startup": { "enum": ["BLANK", "CREATE", "SCHEDULE"], "default": "CREATE" }
     },
     "default": {}
   },
@@ -53,7 +54,6 @@
     "type": "object",
     "properties": {
       "tag": { "type": "string", "default": "Untaged" },
-      "startUp": { "type": "boolean", "default": true },
       "category": { "type": "string", "default": "Uncategory" },
       "format": {
         "type": "object",

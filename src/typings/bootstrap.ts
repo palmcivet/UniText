@@ -54,13 +54,17 @@ export interface IBootConfig {
   /**
    * @field 显示语言
    */
-  language: EI18n;
+  language: TI18n;
+  /**
+   * @file 启动后呈现的内容
+   */
+  startup: EStartupType;
 }
 
 /**
  * @interface preference 文件，除 `IBootConfig` 字段外，都是支持即时修改的 State
  */
-export interface IPreference {
+interface IPreference {
   system: IBootConfig;
   appearance: IGeneralStateAppearance;
   files: ISideBarStateFiles;
@@ -113,4 +117,18 @@ export type TMenuTemplate = Array<
 export enum EI18n {
   ZH_CN,
   EN_US,
+}
+
+/**
+ * @type i18n 字符串，出现于文件中，以易于读写
+ */
+export type TI18n = "ZH_CN" | "EN_US";
+
+/**
+ * @enum 启动后呈现的内容
+ */
+export enum EStartupType {
+  BLANK = "BLANK",
+  CREATE = "CREATE",
+  SCHEDULE = "SCHEDULE",
 }

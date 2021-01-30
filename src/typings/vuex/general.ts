@@ -72,11 +72,6 @@ export interface IGeneralStateAppearance {
 
 export interface IGeneralStateEditor {
   /**
-   * @field 启动后呈现的内容
-   * 暂定为是否新建文件
-   */
-  startUp: boolean;
-  /**
    * @field 默认标签
    */
   tag: string;

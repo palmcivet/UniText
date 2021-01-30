@@ -52,21 +52,21 @@ export default class Mode extends Vue {
       SOURCE: {
         false: {
           icon: "ri-code-s-slash-fill",
-          title: this.$t("status.sourceEdit"),
+          title: this.$t("status.source_edit"),
         },
         true: {
           icon: "ri-layout-column-fill",
-          title: this.$t("status.sourcePreview"),
+          title: this.$t("status.source_preview"),
         },
       },
       WYSIWYG: {
         false: {
           icon: "ri-text",
-          title: this.$t("status.wysiwygWrite"),
+          title: this.$t("status.wysiwyg_write"),
         },
         true: {
           icon: "ri-code-s-slash-fill",
-          title: this.$t("status.wysiwygSource"),
+          title: this.$t("status.wysiwyg_source"),
         },
       },
       RICHTEXT: [{}],
@@ -77,11 +77,11 @@ export default class Mode extends Vue {
     return {
       true: {
         icon: "ri-eye-line",
-        title: this.$t("status.presentPreview"),
+        title: this.$t("status.present_preview"),
       },
       false: {
         icon: "ri-pencil-line",
-        title: this.$t("status.presentEdit"),
+        title: this.$t("status.present_edit"),
       },
     };
   }

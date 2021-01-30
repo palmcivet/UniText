@@ -13,7 +13,13 @@ import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { ITree, TFileRoute } from "@/typings/vuex/sideBar";
 import { IDocumentFrontMatter } from "@/typings/document";
-import { IWorkBenchState, IFile, TTab } from "@/typings/vuex/workBench";
+import {
+  IFile,
+  TTab,
+  EView,
+  ESettingType,
+  IWorkBenchState,
+} from "@/typings/vuex/workBench";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
   stateTree.currentGroup[stateTree.currentIndex];
@@ -25,6 +31,8 @@ const state: IWorkBenchState = {
   currentIndex: "",
   currentGroup: {},
   currentTabs: [],
+  currentView: EView.EDITOR,
+  settingType: ESettingType.PREFERENCE,
 };
 
 const getters: GetterTree<IWorkBenchState, IRootState> = {
@@ -40,6 +48,14 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
 };
 
 const mutations: MutationTree<IWorkBenchState> = {
+  SET_VIEW: (_: IWorkBenchState, type: EView) => {
+    _.currentView = type;
+  },
+
+  SWITCH_SETTING: (_: IWorkBenchState, type: ESettingType) => {
+    _.settingType = type;
+  },
+
   /* 以下为编辑器设置 */
   SET_INDENT: (_: IWorkBenchState, indent: 2 | 4) => {
     const curFile = fileSelect(_);
