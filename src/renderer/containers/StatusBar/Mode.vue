@@ -14,13 +14,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-
-import CheckItem from "@/renderer/components/CheckItem.vue";
-import { EEditMode, IGeneralState } from "@/typings/vuex/general";
 import { ipcRenderer } from "electron";
+import { namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
+
 import { IPC_OTHER } from "@/common/channel/ipc";
+import CheckItem from "@/renderer/components/CheckItem.vue";
+import { EEditMode } from "@/typings/preference";
+import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
 

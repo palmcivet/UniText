@@ -9,7 +9,8 @@ import { dock } from "@/main/templates/menuDock";
 import { top } from "@/main/templates/menuTop";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { Keybinding } from "./Keybinding";
-import { EMenuContextKey, IMenuSet, EI18n } from "@/typings/bootstrap";
+import { EI18n } from "@/typings/preference";
+import { EMenuContextKey, IMenuSet } from "@/typings/bootstrap";
 
 export class MenuManager {
   private _menuSet!: IMenuSet;

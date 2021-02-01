@@ -19,16 +19,17 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 
+import { notEmpty } from "@/common/utils";
+import { BUS_UI } from "@/common/channel/bus";
+import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
-import { notEmpty } from "@/common/utils";
-import { BUS_UI } from "@/common/channel/bus";
-import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EI18n, IBootArgs, IBootConfig } from "@/typings/bootstrap";
+import { IBootArgs } from "@/typings/bootstrap";
+import { EI18n, IPreferenceSystem } from "@/typings/preference";
 
 const general = namespace("general");
 
@@ -74,7 +75,7 @@ export default class Main extends Vue {
 
     ipcRenderer.once(
       IPC_BOOTSTRAP.REPLY,
-      (event, msg: { sys: IBootConfig; args: IBootArgs }) => {
+      (event, msg: { sys: IPreferenceSystem; args: IBootArgs }) => {
         const { sys, args } = msg;
         this.$i18n.setLang(EI18n[sys.language]);
 
@@ -88,9 +89,12 @@ export default class Main extends Vue {
     commit("SET_STATE", {
       ...ipcRenderer.sendSync(
         IPC_PREFERENCE.GET_ITEM_SYNC,
-        "editor",
+        "system",
         "appearance",
-        "files"
+        "fileManager",
+        "editor",
+        "document",
+        "markdown"
       ),
     });
 

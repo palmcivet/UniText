@@ -26,8 +26,9 @@ import { namespace } from "vuex-class";
 import TOC from "./Toc.vue";
 import INFO from "./Info.vue";
 import EXPORT from "./Export.vue";
-import { IGeneralState, EPanelType } from "@/typings/vuex/general";
 import { $ } from "@/common/utils";
+import { IGeneralState } from "@/typings/vuex/general";
+import { EPanelType } from "@/typings/preference";
 
 const general = namespace("general");
 

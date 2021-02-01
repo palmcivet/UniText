@@ -5,38 +5,50 @@ import { BUS_EDITOR } from "@/common/channel/bus";
 import { IPC_OTHER } from "@/common/channel/ipc";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
-import { IGeneralState, EPanelType, ETypeMode, EEditMode } from "@/typings/vuex/general";
+import { IGeneralState } from "@/typings/vuex/general";
+import { EEditMode, EPanelType, ETypeMode } from "@/typings/preference";
 
 const state = {};
 
 const getters: GetterTree<IGeneralState, IRootState> = {};
 
 const mutations: MutationTree<IGeneralState> = {
-  /* TODO 合并、优化 */
+  SET_FOLDER: (_: IGeneralState, path: string) => {
+    _.fileManager.folderDir = path;
+  },
+
   TOGGLE_SIDE_BAR: (_: IGeneralState) => {
     _.appearance.showSideBar = !_.appearance.showSideBar;
   },
+
   TOGGLE_STATUS_BAR: (_: IGeneralState) => {
     _.appearance.showStatusBar = !_.appearance.showStatusBar;
   },
+
   TOGGLE_CHECK: (_: IGeneralState) => {
     _.appearance.dbColumn = !_.appearance.dbColumn;
   },
+
   TOGGLE_PANEL: (_: IGeneralState) => {
     _.appearance.showPanel = !_.appearance.showPanel;
   },
+
   TOGGLE_PANEL_STYLE: (_: IGeneralState) => {
     _.appearance.panelFloat = !_.appearance.panelFloat;
   },
+
   SET_PANEL_TYPE: (_: IGeneralState, type: EPanelType) => {
     _.appearance.panelType = type;
   },
+
   SET_READ_MODE: (_: IGeneralState, mode: boolean) => {
     _.appearance.readMode = mode;
   },
+
   SET_TYPE_MODE: (_: IGeneralState, mode: ETypeMode) => {
     _.appearance.typeMode = mode;
   },
+
   SET_EDIT_MODE: (_: IGeneralState, mode: EEditMode) => {
     _.appearance.editMode = mode;
   },

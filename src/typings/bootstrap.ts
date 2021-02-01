@@ -1,17 +1,14 @@
 import { Menu } from "electron";
 import Store from "electron-store";
 
-import { IGeneralStateAppearance, IGeneralStateEditor } from "./vuex/general";
-import { ISideBarStateFiles } from "./vuex/sideBar";
-
-/**
- * @enum 窗口的打开方式
- */
-export enum EWindow {
-  NEW,
-  VIEW,
-  NORMAL,
-}
+import {
+  IPreferenceSystem,
+  IPreferenceAppearance,
+  IPreferenceFileManager,
+  IPreferenceEditor,
+  IPreferenceDocument,
+  IPreferenceMarkdown,
+} from "@/typings/preference";
 
 /**
  * @interface 启动软件需要携带的参数
@@ -28,62 +25,33 @@ export interface IBootArgs {
 }
 
 /**
- * @interface preference 文件中的 `system` 字段。用于启动时设置
+ * @interface preference.json 的类型
  */
-export interface IBootConfig {
-  /**
-   * @field 显示托盘
-   */
-  showTray: boolean;
-  /**
-   * @field 最后一个窗口关闭时退出
-   */
-  exitWhenClosed: boolean;
-  /**
-   * @field 记录最近打开
-   */
-  saveRecent: boolean;
-  /**
-   * @field 自动打开上一次的文件
-   */
-  autoOpen: boolean;
-  /**
-   * @field 自动更新
-   */
-  autoUpdate: boolean;
-  /**
-   * @field 显示语言
-   */
-  language: TI18n;
-  /**
-   * @file 启动后呈现的内容
-   */
-  startup: EStartupType;
+export interface IPreference {
+  system: IPreferenceSystem;
+  appearance: IPreferenceAppearance;
+  fileManager: IPreferenceFileManager;
+  editor: IPreferenceEditor;
+  document: IPreferenceDocument;
+  markdown: IPreferenceMarkdown;
 }
 
 /**
- * @interface preference 文件，除 `IBootConfig` 字段外，都是支持即时修改的 State
- */
-interface IPreference {
-  system: IBootConfig;
-  appearance: IGeneralStateAppearance;
-  files: ISideBarStateFiles;
-  editor: IGeneralStateEditor;
-  markdown: {};
-}
+ * @type preference 的存储结构
 
-/**
- * @type preference 的存储结构，使用 electron-store
+ * - 使用 electron-store
+ * - 除 `IBootConfig` 字段外，都将存入 Vuex
+ * - 支持即时修改
  */
 export type TPreferenceSet = Store<IPreference>;
 
 /**
  * @interface keybinding 的存储结构
  */
-export type IKeybindingSet = Map<string, string>;
+export type TKeybindingSet = Map<string, string>;
 
 /**
- * @enum context menu 的访问键
+ * @enum { EMenuContextKey } context menu 的访问键
  */
 export enum EMenuContextKey {
   SIDEBAR_FOLDER = "SIDEBAR_FOLDER",
@@ -110,25 +78,3 @@ export interface IMenuSet {
 export type TMenuTemplate = Array<
   Electron.MenuItemConstructorOptions | Electron.MenuItem
 >;
-
-/**
- * @enum i18n 类型
- */
-export enum EI18n {
-  ZH_CN,
-  EN_US,
-}
-
-/**
- * @type i18n 字符串，出现于文件中，以易于读写
- */
-export type TI18n = "ZH_CN" | "EN_US";
-
-/**
- * @enum 启动后呈现的内容
- */
-export enum EStartupType {
-  BLANK = "BLANK",
-  CREATE = "CREATE",
-  SCHEDULE = "SCHEDULE",
-}

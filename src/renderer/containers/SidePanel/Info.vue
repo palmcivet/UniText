@@ -50,7 +50,7 @@ import { namespace } from "vuex-class";
 
 import InfoCard from "@/renderer/components/InfoCard.vue";
 import { IFile } from "@/typings/vuex/workBench";
-import { EI18n } from "@/typings/bootstrap";
+import { EI18n } from "@/typings/preference";
 
 const workBench = namespace("workBench");
 

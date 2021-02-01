@@ -19,7 +19,7 @@ import { namespace } from "vuex-class";
 
 import Preference from "./Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
-import { ESettingType, EView } from "@/typings/vuex/workBench";
+import { ESettingType, EViewType } from "@/typings/vuex/workBench";
 
 const workBench = namespace("workBench");
 
@@ -31,13 +31,13 @@ const workBench = namespace("workBench");
 })
 export default class Setting extends Vue {
   @workBench.Mutation("SET_VIEW")
-  SET_VIEW!: (type: EView) => void;
+  SET_VIEW!: (type: EViewType) => void;
 
   @workBench.Mutation("SWITCH_SETTING")
   SWITCH_SETTING!: (type: ESettingType) => void;
 
   handleSwtichSetting(type: ESettingType) {
-    this.SET_VIEW(EView.SETTING);
+    this.SET_VIEW(EViewType.SETTING);
     this.SWITCH_SETTING(type);
   }
 

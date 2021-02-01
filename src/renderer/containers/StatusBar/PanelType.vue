@@ -11,8 +11,9 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { IGeneralState, EPanelType } from "@/typings/vuex/general";
 import CheckList from "@/renderer/components/CheckList.vue";
+import { IGeneralState } from "@/typings/vuex/general";
+import { EPanelType } from "@/typings/preference";
 
 const general = namespace("general");
 

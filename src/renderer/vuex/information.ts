@@ -15,9 +15,11 @@ const mutations: MutationTree<IInformationState> = {
   SET_INFO: (_: IInformationState, msg: string) => {
     console.log(msg);
   },
+
   SET_WARN: (_: IInformationState, msg: string) => {
     console.log(msg);
   },
+
   SET_ERROR: (_: IInformationState, msg: string) => {
     console.error(msg);
   },
@@ -56,6 +58,7 @@ const actions: ActionTree<IInformationState, IRootState> = {
       _.dispatch("");
     }
   },
+
   LISTEN_FOR_NOTIFY: (_: ActionContext<IInformationState, IRootState>) => {
     const { commit, dispatch } = _;
 

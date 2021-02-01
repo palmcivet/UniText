@@ -4,7 +4,8 @@ import { isOsx } from "@/common/env";
 import { IPC_FILE, IPC_OTHER } from "@/common/channel/ipc";
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
-import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n } from "@/typings/preference";
 
 export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
   const menu: TMenuTemplate = [];

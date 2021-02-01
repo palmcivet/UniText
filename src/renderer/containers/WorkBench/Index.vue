@@ -16,20 +16,20 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
 
 import Startup from "./Startup/Index.vue";
 import Setting from "./Setting/Index.vue";
 import SidePanel from "../SidePanel/Index.vue";
 import TabsWithDoc from "./TabsWithDoc/Index.vue";
 import { BUS_UI } from "@/common/channel/bus";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { ipcRenderer } from "electron";
-import { IPC_PREFERENCE } from "@/common/channel/ipc";
-import { EView } from "@/typings/vuex/workBench";
-import { EStartupType } from "@/typings/bootstrap";
+import { EViewType } from "@/typings/vuex/workBench";
+import { EStartup } from "@/typings/preference";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -52,7 +52,7 @@ export default class WorkBench extends Vue {
   isPanelFloat!: boolean;
 
   @workBench.State("currentView")
-  currentView!: EView.EDITOR;
+  currentView!: EViewType.EDITOR;
 
   @workBench.Getter("isBlank")
   isBlank!: boolean;
@@ -68,7 +68,7 @@ export default class WorkBench extends Vue {
 
   created() {
     const res = ipcRenderer.sendSync(IPC_PREFERENCE.GET_ITEM_SYNC, "system.startup");
-    if (res["system.startup"] === EStartupType.CREATE) {
+    if (res["system.startup"] === EStartup.CREATE) {
       this.NEW_FILE();
     }
   }

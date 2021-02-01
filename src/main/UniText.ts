@@ -5,15 +5,16 @@ import { autoUpdater } from "electron-updater";
 
 import { IPC_BOOTSTRAP } from "@/common/channel/ipc";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { IBootArgs, EI18n, IBootConfig } from "@/typings/bootstrap";
 import { Preference } from "./modules/Preference";
 import { Keybinding } from "./modules/Keybinding";
 import { MenuManager } from "./modules/MenuManager";
+import { EI18n, IPreferenceSystem } from "@/typings/preference";
+import { IBootArgs } from "@/typings/bootstrap";
 
 export class UniText {
   private _args: IBootArgs;
 
-  private _sysArgs!: IBootConfig;
+  private _sysArgs!: IPreferenceSystem;
 
   private _window!: BrowserWindow | null;
 

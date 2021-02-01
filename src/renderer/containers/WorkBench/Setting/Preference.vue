@@ -1,13 +1,18 @@
 <template>
   <div class="preference">
-    <Group :properties="properties"></Group>
+    <Group :properties="data.system"></Group>
+    <Group :properties="data.appearance"></Group>
+    <Group :properties="data.fileManager"></Group>
+    <Group :properties="data.editor"></Group>
+    <Group :properties="data.document"></Group>
+    <Group :properties="data.markdown"></Group>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import { schema } from "@/main/config/preference";
+import { schema } from "@/main/config/schemaPreference";
 import Group from "@/renderer/components/Form/Group.vue";
 
 @Component({
@@ -15,11 +20,7 @@ import Group from "@/renderer/components/Form/Group.vue";
   components: { Group },
 })
 export default class Preference extends Vue {
-  data = schema.system;
-
-  get properties() {
-    return this.data;
-  }
+  data = schema;
 }
 </script>
 

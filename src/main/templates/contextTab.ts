@@ -1,6 +1,7 @@
 import { Keybinding } from "@/main/modules/Keybinding";
 import { localesMenu } from "@/main/i18n/menu";
-import { EI18n, TMenuTemplate } from "@/typings/bootstrap";
+import { TMenuTemplate } from "@/typings/bootstrap";
+import { EI18n } from "@/typings/preference";
 
 export const tab = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {

@@ -32,27 +32,13 @@ export interface ITree {
   [index: string]: ITreeNode;
 }
 
-/**
- * @interface 关于文件的设置项
- */
-export interface ISideBarStateFiles {
-  folderDir: string;
-  ignoreFile: Array<string>;
-  hideIgnore: boolean;
-  showIndent: boolean;
-}
-
-/**
- * @interface 侧边栏的 state
- */
 export interface ISideBarState {
+  /**
+   * @field 顶层文件树
+   */
   fileTree: ITree;
   /**
    * @field 描述运行时文件路径的字符串。平台无关
    */
   activeItem: string;
-  filesState: ISideBarStateFiles;
-  marksState: {};
-  searchState: {};
-  tagsState: {};
 }

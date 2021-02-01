@@ -1,4 +1,56 @@
 /**
+ * @enum { EIndent } 缩进
+ */
+export enum EIndent {
+  /**
+   * @field Tab 2
+   */
+  T2 = "T2",
+  /**
+   * @field Tab 4
+   */
+  T4 = "T4",
+  /**
+   * @field Space 2
+   */
+  S2 = "S2",
+  /**
+   * @field Space 4
+   */
+  S4 = "TS4",
+}
+
+/**
+ * @enum { ECoding } 编码
+ */
+export enum ECoding {
+  GBK = "GBK",
+  UTF8 = "UTF-8",
+  ASCII = "ASCII",
+  GB2312 = "GB2312",
+}
+
+/**
+ * @enum { EEoL } 行尾序列
+ */
+export enum EEoL {
+  LF = "LF",
+  CRLF = "CRLF",
+}
+
+/**
+ * @enum { EPicture } 图片存储方案
+ */
+export enum EPicture {
+  LOCAL = "LOCAL",
+  SMMS = "SMMS",
+  IMGUR = "IMGUR",
+  QIUNIU = "QIUNIU",
+  ALI = "ALI",
+  TENCENT = "TENCENT",
+}
+
+/**
  * @interface 文章的元信息，自动生成
  */
 export interface IDocumentMetaInfo {
@@ -29,49 +81,41 @@ export interface IDocumentMetaInfo {
 }
 
 /**
- * @interface 编辑器格式相关属性
+ * @interface 编辑器相关属性
  */
 export interface IDocumentFormat {
   /**
    * @field 缩进
    */
-  indent: 2 | 4;
+  indent: EIndent;
   /**
-   * @field 编码格式
+   * @field 编码
    */
-  encoding: string; // TODO 完善字符编码的接口
+  encoding: ECoding;
   /**
-   * @field 控制符
+   * @field 行尾序列
    */
-  endOfLine: "LF" | "CRLF";
+  endOfLine: EEoL;
 }
 
 /**
- * @interface 文件设置相关属性
+ * @interface 文档的默认设置
  */
 export interface IDocumentConfig {
   /**
+   * @field 文章标签
+   */
+  tag: string;
+  /**
    * @field 图片存储方案
    */
-  picStorage: string; // TODO 完善图片存储方案的接口
-  /**
-   * @field 自动保存
-   */
-  autoSave: boolean;
-  /**
-   * @field 自动同步
-   */
-  autoSync: boolean;
+  picture: EPicture;
 }
 
 /**
  * @interface Markdown 的 Front-Matter
  */
 export interface IDocumentFrontMatter {
-  /**
-   * @field 文章标签
-   */
-  tag: string;
   /**
    * @field 备注信息
    */
@@ -80,9 +124,18 @@ export interface IDocumentFrontMatter {
    * @field 是否标记为完成
    */
   complete: boolean;
-  metaInfo: IDocumentMetaInfo;
-  format: IDocumentFormat;
+  /**
+   * @field 文档的默认设置
+   */
   config: IDocumentConfig;
+  /**
+   * @field 文章的元信息，自动生成
+   */
+  metaInfo: IDocumentMetaInfo;
+  /**
+   * @field 编辑器相关属性
+   */
+  format: IDocumentFormat;
 }
 
 /**

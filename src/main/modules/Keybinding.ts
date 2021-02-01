@@ -1,9 +1,9 @@
 import * as fse from "fs-extra";
 
-import { IKeybindingSet } from "@/typings/bootstrap";
+import { TKeybindingSet } from "@/typings/bootstrap";
 
 export class Keybinding {
-  private readonly defaultSet!: IKeybindingSet;
+  private readonly defaultSet!: TKeybindingSet;
 
   constructor() {
     this.defaultSet = new Map<string, string>([

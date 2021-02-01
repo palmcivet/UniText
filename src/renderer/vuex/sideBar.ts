@@ -9,15 +9,6 @@ import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/side
 const state: ISideBarState = {
   activeItem: "",
   fileTree: {},
-  filesState: {
-    folderDir: "",
-    ignoreFile: [],
-    hideIgnore: false,
-    showIndent: false,
-  },
-  marksState: {},
-  searchState: {},
-  tagsState: {},
 };
 
 const getters: GetterTree<ISideBarState, IRootState> = {
@@ -27,13 +18,12 @@ const getters: GetterTree<ISideBarState, IRootState> = {
 };
 
 const mutations: MutationTree<ISideBarState> = {
-  SET_FOLDER: (_: ISideBarState, path: string) => {
-    _.filesState.folderDir = path;
-  },
   CHOOSE_ITEM: (_: ISideBarState, path: string) => {
     _.activeItem = path;
   },
+
   REVEAL_FILE: (_: ISideBarState, path: string) => {},
+
   TOGGLE_FOLDER: (_: ISideBarState, route: TFileRoute) => {
     let point = _.fileTree;
     let target!: ITreeNode;
@@ -43,6 +33,7 @@ const mutations: MutationTree<ISideBarState> = {
     });
     target.collapse = !target.collapse;
   },
+
   TOGGLE_ALL: (_: ISideBarState, isOnce: boolean) => {
     if (isOnce) {
       Object.values(_.fileTree).forEach((item) => {
@@ -71,7 +62,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       // TODO 完善报错信息
       commit("information/SET_ERROR", "", { root: true });
     } else {
-      commit("SET_FOLDER", res.filePaths[0]);
+      commit("general/SET_FOLDER", res.filePaths[0]);
       dispatch("BUILD_TREE");
     }
   },
@@ -80,13 +71,9 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    * 构建文件树
    */
   BUILD_TREE: (_: ActionContext<ISideBarState, IRootState>) => {
+    const { folderDir, ignoreFile } = _.rootState.general.fileManager;
     const targetTree: ITree = {};
-    buildTree(
-      _.state.filesState.folderDir,
-      "",
-      _.state.filesState.ignoreFile,
-      targetTree
-    );
+    buildTree(folderDir, "", ignoreFile, targetTree);
     setTimeout(() => {
       _.state.fileTree = targetTree;
     }, 400);
@@ -98,8 +85,8 @@ const actions: ActionTree<ISideBarState, IRootState> = {
    * - 若为空，则表明新建窗口，不需要操作
    */
   LOAD_TREE: async (_: ActionContext<ISideBarState, IRootState>) => {
-    const { dispatch, state } = _;
-    if (state.filesState.folderDir === "") return;
+    const { dispatch, rootState } = _;
+    if (rootState.general.fileManager.folderDir === "") return;
     dispatch("BUILD_TREE");
   },
 

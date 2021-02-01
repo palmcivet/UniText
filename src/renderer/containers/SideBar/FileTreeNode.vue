@@ -83,8 +83,10 @@ import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { IPC_FILE, IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { EMenuContextKey } from "@/typings/bootstrap";
 import { ISideBarState, ITree, TFileRoute } from "@/typings/vuex/sideBar";
+import { IGeneralState } from "@/typings/vuex/general";
 
 const sideBar = namespace("sideBar");
+const general = namespace("general");
 const workBench = namespace("workBench");
 
 @Component({
@@ -94,7 +96,7 @@ export default class FileTreeNode extends Vue {
   @sideBar.State((state: ISideBarState) => state.activeItem)
   activeItem!: string;
 
-  @sideBar.State((state: ISideBarState) => state.filesState.folderDir)
+  @general.State((state: IGeneralState) => state.fileManager.folderDir)
   folderDir!: string;
 
   @sideBar.Mutation("CHOOSE_ITEM")

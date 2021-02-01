@@ -45,8 +45,10 @@ import Draggable from "vuedraggable";
 import BaseView from "./BaseView.vue";
 import FileTreeNode from "./FileTreeNode.vue";
 import { ISideBarState, ITree } from "@/typings/vuex/sideBar";
+import { IGeneralState } from "@/typings/vuex/general";
 
 const sideBar = namespace("sideBar");
+const general = namespace("general");
 
 @Component({
   name: "Files",
@@ -57,11 +59,11 @@ const sideBar = namespace("sideBar");
   },
 })
 export default class Files extends Vue {
+  @general.State((state: IGeneralState) => state.fileManager.showIndent)
+  showIndent!: boolean;
+
   @sideBar.State((state: ISideBarState) => state.fileTree)
   fileTree!: ITree;
-
-  @sideBar.State((state: ISideBarState) => state.filesState.showIndent)
-  showIndent!: boolean;
 
   @sideBar.Getter("isEmptyFolder")
   isEmptyFolder!: boolean;

@@ -12,14 +12,14 @@ import { importFrontMatter, exportFrontMatter } from "@/common/editor/front-matt
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { ITree, TFileRoute } from "@/typings/vuex/sideBar";
-import { IDocumentFrontMatter } from "@/typings/document";
 import {
+  ITab,
   IFile,
-  TTab,
-  EView,
+  EViewType,
   ESettingType,
   IWorkBenchState,
 } from "@/typings/vuex/workBench";
+import { ECoding, EEoL, EIndent, IDocumentFrontMatter } from "@/typings/document";
 
 const fileSelect = (stateTree: IWorkBenchState) =>
   stateTree.currentGroup[stateTree.currentIndex];
@@ -31,7 +31,7 @@ const state: IWorkBenchState = {
   currentIndex: "",
   currentGroup: {},
   currentTabs: [],
-  currentView: EView.EDITOR,
+  viewType: EViewType.EDITOR,
   settingType: ESettingType.PREFERENCE,
 };
 
@@ -48,50 +48,51 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
 };
 
 const mutations: MutationTree<IWorkBenchState> = {
-  SET_VIEW: (_: IWorkBenchState, type: EView) => {
-    _.currentView = type;
+  /* 以下为修改文档信息 */
+  SET_REMARK: (_: IWorkBenchState, remark: string) => {
+    const curFile = fileSelect(_);
+    curFile.remark = remark;
+  },
+
+  SET_COMPLETE: (_: IWorkBenchState) => {
+    const curFile = fileSelect(_);
+    curFile.complete = true;
+  },
+
+  SET_TAG: (_: IWorkBenchState, tag: string) => {
+    const curFile = fileSelect(_);
+    curFile.config.tag = tag;
+  },
+
+  SET_PICTURE: (_: IWorkBenchState) => {},
+
+  SET_INDENT: (_: IWorkBenchState, indent: EIndent) => {
+    const curFile = fileSelect(_);
+    curFile.format.indent = indent;
+  },
+
+  SET_ENCODING: (_: IWorkBenchState, encoding: ECoding) => {
+    const curFile = fileSelect(_);
+    curFile.format.encoding = encoding;
+  },
+
+  SET_END_OF_LINE: (_: IWorkBenchState, eol: EEoL) => {
+    const curFile = fileSelect(_);
+    curFile.format.endOfLine = eol;
+  },
+
+  /* 以下为运行时界面状态切换 */
+  SET_VIEW: (_: IWorkBenchState, type: EViewType) => {
+    _.viewType = type;
   },
 
   SWITCH_SETTING: (_: IWorkBenchState, type: ESettingType) => {
     _.settingType = type;
   },
 
-  /* 以下为编辑器设置 */
-  SET_INDENT: (_: IWorkBenchState, indent: 2 | 4) => {
-    const curFile = fileSelect(_);
-    curFile.format.indent = indent;
-  },
-
-  SET_ENCODING: (_: IWorkBenchState, encoding: string) => {
-    const curFile = fileSelect(_);
-    curFile.format.encoding = encoding;
-  },
-
-  SET_END_OF_FILE: (_: IWorkBenchState, eol: "LF" | "CRLF") => {
-    const curFile = fileSelect(_);
-    curFile.format.endOfLine = eol;
-  },
-
-  /* 以下为修改文档信息 */
-  SET_TAG: (_: IWorkBenchState, tag: string) => {
-    const curFile = fileSelect(_);
-    curFile.tag = tag;
-  },
-
-  SET_COMMENT: (_: IWorkBenchState, remark: string) => {
-    const curFile = fileSelect(_);
-    curFile.remark = remark;
-  },
-
-  /* 以下为设置附加属性 */
-  SET_PIC_STORAGE: (_: IWorkBenchState, comment: string) => {},
-  SET_AUTO_SAVE: (_: IWorkBenchState, comment: string) => {},
-  SET_AUTO_SYNC: (_: IWorkBenchState, comment: string) => {},
-  SET_COMPLETE: (_: IWorkBenchState, comment: string) => {},
-
   /* 更新标签组，更新体现为添加和删除 */
   SYNC_TABS: (_: IWorkBenchState) => {
-    const newTabs: Array<TTab> = [];
+    const newTabs: Array<ITab> = [];
     for (const [i, v] of Object.entries(_.currentGroup)) {
       newTabs.push({
         order: i,
@@ -109,7 +110,7 @@ const mutations: MutationTree<IWorkBenchState> = {
   },
 
   /* 拖拽更改标签位置 */
-  SWITCH_TABS: (_: IWorkBenchState, value: Array<TTab>) => {
+  SWITCH_TABS: (_: IWorkBenchState, value: Array<ITab>) => {
     _.currentTabs = value;
   },
 
@@ -146,7 +147,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    */
   NEW_FILE: (_: ActionContext<IWorkBenchState, IRootState>, title?: TFileRoute) => {
     const { dispatch } = _;
-    const { tag, format, config } = _.rootState.general.editor;
+    const { document: doc } = _.rootState.general;
     const isTemp = title === undefined;
 
     let fileName: TFileRoute;
@@ -158,7 +159,6 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     }
 
     const untitled: IFile = {
-      tag,
       remark: "",
       complete: false,
       metaInfo: {
@@ -169,8 +169,15 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         readTime: 0,
         editTime: 0,
       },
-      format,
-      config,
+      format: {
+        indent: doc.indent,
+        encoding: doc.encoding,
+        endOfLine: doc.endOfLine,
+      },
+      config: {
+        tag: doc.tag,
+        picture: doc.picture,
+      },
       content: "",
       fileName,
       needSave: isTemp,
@@ -200,10 +207,9 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     payload: { route: TFileRoute; isRead?: boolean }
   ) => {
     const { dispatch } = _;
-    const { general, sideBar } = _.rootState;
-    const { tag, format, config } = general.editor;
+    const { document, fileManager } = _.rootState.general;
     const { route, isRead } = payload;
-    const path = joinPath(sideBar.filesState.folderDir, ...route);
+    const path = joinPath(fileManager.folderDir, ...route);
     const { data, content } = importFrontMatter((await fse.readFile(path)).toString());
 
     let doc: IDocumentFrontMatter;
@@ -212,7 +218,6 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     if (data === undefined) {
       const { createDate, modifyDate } = await fetchFileInfo(path);
       doc = {
-        tag: tag,
         remark: "",
         complete: false,
         metaInfo: {
@@ -224,10 +229,13 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
           editTime: 0,
         },
         format: {
-          ...format,
+          indent: document.indent,
+          encoding: document.encoding,
+          endOfLine: document.endOfLine,
         },
         config: {
-          ...config,
+          tag: document.tag,
+          picture: document.picture,
         },
       };
     } else {
@@ -273,7 +281,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
      * 数组特性，使得每个 `order` 唯一对应，且最后一次关闭时仍不为空
      * 传入非 `-1` 值表示删除
      */
-    const tIndex = selectState.currentTabs.findIndex((tab: TTab) => tab.order === index);
+    const tIndex = selectState.currentTabs.findIndex((tab: ITab) => tab.order === index);
     commit("SYNC_TABS");
 
     /**
@@ -300,7 +308,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    */
   SAVE_FILE: async (_: ActionContext<IWorkBenchState, IRootState>, content: string) => {
     const { state, rootState, commit } = _;
-    const root = rootState.sideBar.filesState.folderDir;
+    const root = rootState.general.fileManager.folderDir;
     const {
       fileName,
       tempFile,
@@ -344,7 +352,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
   },
 
   RENAME: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {
-    const { fileTree, filesState, activeItem } = _.rootState.sideBar;
+    const { folderDir } = _.rootState.general.fileManager;
+    const { fileTree, activeItem } = _.rootState.sideBar;
 
     const file = activeItem.split("/");
 
@@ -357,14 +366,15 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     srcObj[title] = srcObj[target];
     delete srcObj[target];
 
-    const src = joinPath(filesState.folderDir, ...file);
+    const src = joinPath(folderDir, ...file);
     file[file.length - 1] = title;
-    const dst = joinPath(filesState.folderDir, ...file);
+    const dst = joinPath(folderDir, ...file);
     fse.rename(src, dst);
   },
 
   DELETE: (_: ActionContext<IWorkBenchState, IRootState>) => {
-    const { fileTree, filesState, activeItem } = _.rootState.sideBar;
+    const { folderDir } = _.rootState.general.fileManager;
+    const { fileTree, activeItem } = _.rootState.sideBar;
 
     const file = activeItem.split("/");
 
@@ -378,7 +388,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     // FEAT 移至回收站
     const { execSync } = require("child_process");
-    const DIR = joinPath(filesState.folderDir, ...file);
+    const DIR = joinPath(folderDir, ...file);
     if (isWin) {
       execSync(`del /s ${DIR}`);
     } else {
@@ -413,7 +423,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     ipcRenderer.on(IPC_FILE.REVEAL, (e, route: TFileRoute) => {
       remote.shell.showItemInFolder(
-        joinPath(rootState.sideBar.filesState.folderDir, ...route)
+        joinPath(rootState.general.fileManager.folderDir, ...route)
       );
     });
   },

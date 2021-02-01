@@ -2,9 +2,9 @@ import { TFileRoute } from "./sideBar";
 import { IDocument } from "../document";
 
 /**
- * @type 标识打开的标签
+ * @interface 打开的标签
  */
-export type TTab = {
+export interface ITab {
   /**
    * @field 索引，标题的哈希字符串
    */
@@ -13,7 +13,7 @@ export type TTab = {
    * @field 标题
    */
   title: string;
-};
+}
 
 /**
  * @interface 打开的文件除自身属性外需附加在编辑器中的状态
@@ -38,9 +38,9 @@ export interface IFile extends IDocument {
 }
 
 /**
- * @enum 工作台类别
+ * @enum { EViewType } 工作台类型
  */
-export enum EView {
+export enum EViewType {
   EDITOR,
   STARTUP,
   SETTING,
@@ -48,7 +48,7 @@ export enum EView {
 }
 
 /**
- * @enum 设置的类型
+ * @enum { ESettingType } 设置的类型
  */
 export enum ESettingType {
   PREFERENCE,
@@ -57,10 +57,8 @@ export enum ESettingType {
   THEME,
 }
 
-/**
- * @interface 工作台的 state
- */
 export interface IWorkBenchState {
+  // FEAT 将 IPreferenceEditor 导入，用于运行时切换
   /**
    * @field 上一个标签
    */
@@ -76,11 +74,11 @@ export interface IWorkBenchState {
   /**
    * @field 打开的文档标签
    */
-  currentTabs: Array<TTab>;
+  currentTabs: Array<ITab>;
   /**
    * @field 工作台类型
    */
-  currentView: EView;
+  viewType: EViewType;
   /**
    * @field 设置的类型
    */

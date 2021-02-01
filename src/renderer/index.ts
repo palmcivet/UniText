@@ -1,12 +1,13 @@
 import Vue from "vue";
 import "remixicon/fonts/remixicon.css";
 
+import { localesView } from "@/main/i18n/view";
 import Main from "@/renderer/views/Main.vue";
 import store from "@/renderer/vuex";
 import VueBus from "@/renderer/plugins/VueBus";
 import VueI18n from "@/renderer/plugins/VueI18n";
-import { localesView } from "@/main/i18n/view";
-import { EI18n } from "@/typings/bootstrap";
+import { EI18n } from "@/typings/preference";
+
 import "@/renderer/styles/main.less";
 
 Vue.use(VueBus);

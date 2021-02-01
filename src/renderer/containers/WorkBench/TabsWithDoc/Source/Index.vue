@@ -29,7 +29,8 @@ import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
-import { IGeneralState, EPanelType } from "@/typings/vuex/general";
+import { IGeneralState } from "@/typings/vuex/general";
+import { EPanelType } from "@/typings/preference";
 import { theme } from "./theme";
 import { init } from "./option";
 

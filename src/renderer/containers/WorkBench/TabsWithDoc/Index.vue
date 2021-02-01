@@ -35,7 +35,7 @@ import Draggable from "vuedraggable";
 
 import Source from "./Source/Index.vue";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
-import { TTab } from "@/typings/vuex/workBench";
+import { ITab } from "@/typings/vuex/workBench";
 import { EMenuContextKey } from "@/typings/bootstrap";
 
 const workBench = namespace("workBench");
@@ -52,10 +52,10 @@ export default class TabsWithDoc extends Vue {
   currentIndex!: string;
 
   @workBench.State("currentTabs")
-  currentTabs!: Array<TTab>;
+  currentTabs!: Array<ITab>;
 
   @workBench.Mutation("SWITCH_TABS")
-  SWITCH_TABS!: (value: Array<TTab>) => void;
+  SWITCH_TABS!: (value: Array<ITab>) => void;
 
   @workBench.Mutation("SELECT_TAB")
   SELECT_TAB!: (payload: { cur: string; his?: string }) => void;
