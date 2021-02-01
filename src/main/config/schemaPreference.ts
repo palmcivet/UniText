@@ -37,6 +37,7 @@ interface ITextBox {
   type: "TextBox";
   title: Array<string>;
   default: string;
+  pattern?: string;
   description: Array<string>;
 }
 
@@ -334,9 +335,11 @@ const markdown: IGroup<IPreferenceMarkdown> = {
   default: {},
 };
 
-export const schema: {
+type TSchema = {
   [key in keyof IPreference]: IGroup<IPreference[key]>;
-} = {
+};
+
+export const schemaPreference: TSchema = {
   system,
   appearance,
   fileManager,
@@ -345,13 +348,77 @@ export const schema: {
   markdown,
 };
 
-export default ((data: any) => {
+export default ((data: TSchema) => {
   enum ETypeMap {
     Group = "object",
     Range = "number",
     Boolean = "boolean",
     TextBox = "string",
-    TextGroup = "string",
-    DropDown = "",
+    TextGroup = "array",
+    DropDown = "string",
   }
-})(schema);
+
+  interface IObjAny {
+    [i: string]: any;
+  }
+
+  const res: IObjAny = {};
+
+  for (const key in data) {
+    const element = data[key as keyof IPreference];
+    const properties: IObjAny = element.properties;
+
+    const subProperties: IObjAny = {};
+
+    for (const subKey in properties) {
+      const subElement = properties[subKey];
+
+      let value: IObjAny = {};
+
+      switch (subElement.type) {
+        case "Range":
+          value = {
+            type: ETypeMap.Range,
+          };
+          subElement.maximum && (value["maximum"] = subElement.maximum);
+          subElement.minimum && (value["minimum"] = subElement.minimum);
+          break;
+        case "TextBox":
+          value = {
+            type: ETypeMap.TextBox,
+          };
+          subElement.pattern && (value["pattern"] = subElement.pattern);
+          break;
+        case "Boolean":
+          value = {
+            type: ETypeMap.Boolean,
+          };
+          break;
+        case "TextGroup":
+          value = {
+            type: ETypeMap.TextGroup,
+          };
+          break;
+        case "DropDown":
+          value = {
+            type: ETypeMap.DropDown,
+            enum: subElement.enum,
+          };
+          break;
+      }
+
+      subProperties[subKey] = {
+        default: subElement.default,
+        ...value,
+      };
+    }
+
+    res[key] = {
+      type: "object",
+      properties: subProperties,
+      default: element.default,
+    };
+  }
+
+  return res;
+})(schemaPreference);

@@ -5,49 +5,49 @@ export enum EIndent {
   /**
    * @field Tab 2
    */
-  T2 = "T2",
+  T2,
   /**
    * @field Tab 4
    */
-  T4 = "T4",
+  T4,
   /**
    * @field Space 2
    */
-  S2 = "S2",
+  S2,
   /**
    * @field Space 4
    */
-  S4 = "TS4",
+  S4,
 }
 
 /**
  * @enum { ECoding } 编码
  */
 export enum ECoding {
-  GBK = "GBK",
-  UTF8 = "UTF-8",
-  ASCII = "ASCII",
-  GB2312 = "GB2312",
+  GBK,
+  UTF8,
+  ASCII,
+  GB2312,
 }
 
 /**
  * @enum { EEoL } 行尾序列
  */
 export enum EEoL {
-  LF = "LF",
-  CRLF = "CRLF",
+  LF,
+  CRLF,
 }
 
 /**
  * @enum { EPicture } 图片存储方案
  */
 export enum EPicture {
-  LOCAL = "LOCAL",
-  SMMS = "SMMS",
-  IMGUR = "IMGUR",
-  QIUNIU = "QIUNIU",
-  ALI = "ALI",
-  TENCENT = "TENCENT",
+  LOCAL,
+  SMMS,
+  IMGUR,
+  QIUNIU,
+  ALI,
+  TENCENT,
 }
 
 /**

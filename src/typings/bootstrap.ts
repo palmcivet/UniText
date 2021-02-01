@@ -54,10 +54,10 @@ export type TKeybindingSet = Map<string, string>;
  * @enum { EMenuContextKey } context menu 的访问键
  */
 export enum EMenuContextKey {
-  SIDEBAR_FOLDER = "SIDEBAR_FOLDER",
-  SIDEBAR_FILE = "SIDEBAR_FILE",
-  PANEL_TOC = "PANEL_TOC",
-  WORKBENCH_TAB = "WORKBENCH_TAB",
+  SIDEBAR_FOLDER,
+  SIDEBAR_FILE,
+  PANEL_TOC,
+  WORKBENCH_TAB,
 }
 
 /**

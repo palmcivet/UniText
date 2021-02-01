@@ -17,16 +17,18 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 import Range from "./Range.vue";
 import Boolean from "./Boolean.vue";
-import TextBox from "./TextBox.vue";
 import DropDown from "./DropDown.vue";
+import TextBox from "./TextBox.vue";
+import TextGroup from "./TextGroup.vue";
 
 @Component({
   name: "Group",
   components: {
     Range,
     Boolean,
-    TextBox,
     DropDown,
+    TextBox,
+    TextGroup,
   },
 })
 export default class Group extends Vue {

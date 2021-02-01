@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import { schema } from "@/main/config/schemaPreference";
+import { schemaPreference } from "@/main/config/schemaPreference";
 import Group from "@/renderer/components/Form/Group.vue";
 
 @Component({
@@ -20,7 +20,7 @@ import Group from "@/renderer/components/Form/Group.vue";
   components: { Group },
 })
 export default class Preference extends Vue {
-  data = schema;
+  data = schemaPreference;
 }
 </script>
 

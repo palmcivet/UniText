@@ -5,9 +5,9 @@ import * as fse from "fs-extra";
 import { joinPath } from "@/common/fileSystem";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
-import { TPreferenceSet } from "@/typings/bootstrap";
 import { UNITEXT_SYSTEM } from "@/main/config";
-import schema from "@/main/config/preference.json";
+import schema from "@/main/config/schemaPreference";
+import { IPreference, TPreferenceSet } from "@/typings/bootstrap";
 import logger from "./Logger";
 
 /**
@@ -32,7 +32,7 @@ export class Preference {
     this._preferenceSet = new Store({
       cwd,
       name: "preference",
-      schema,
+      schema: schema as Store.Schema<IPreference>,
     });
 
     this._preferenceSet.set("files.folderDir", base);

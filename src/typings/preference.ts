@@ -26,14 +26,15 @@ export type TI18n = "ZH_CN" | "EN_US";
  * @enum { EStartup } 启动后呈现的内容
  */
 export enum EStartup {
-  BLANK = "BLANK",
-  CREATE = "CREATE",
-  SCHEDULE = "SCHEDULE",
+  BLANK,
+  CREATE,
+  SCHEDULE,
 }
 
 /**
  * @enum { EPanelType } 右侧面板展示的信息类型
  */
+// TODO 需要更改 sidePanel.vue
 export enum EPanelType {
   TOC = "TOC",
   INFO = "INFO",
@@ -44,27 +45,27 @@ export enum EPanelType {
  * @enum { EEditMode } 编辑模式
  */
 export enum EEditMode {
-  SOURCE = "SOURCE",
-  WYSIWYG = "WYSIWYG",
-  RICHTEXT = "RICHTEXT",
+  SOURCE,
+  WYSIWYG,
+  RICHTEXT,
 }
 
 /**
  * @enum { ETypeMode } 打字模式
  */
 export enum ETypeMode {
-  ZEN = "ZEN",
-  FOCUS = "FOCUS",
-  TYPER = "TYPER",
-  NORMAL = "NORMAL",
+  ZEN,
+  FOCUS,
+  TYPER,
+  NORMAL,
 }
 
 /**
  * @enum { EMarkdownScheme } 语法方案
  */
 export enum EMarkdownScheme {
-  STD = "STD",
-  GFM = "GFM",
+  STD,
+  GFM,
 }
 
 /**
