@@ -121,14 +121,14 @@ const system: IGroup<IPreferenceSystem> = {
     },
     saveDelay: {
       type: "Range",
-      title: ["自动保存"],
+      title: ["自动保存时间间隔"],
       minimum: 1000,
       default: 5000,
       description: [""],
     },
     language: {
       type: "DropDown",
-      enum: reduceType(EI18n),
+      enum: reduceType(EI18n).filter((v) => isNaN(Number.parseInt(v))),
       default: "ZH_CN",
       title: ["界面语言"],
       description: ["软件界面所呈现的语言"],

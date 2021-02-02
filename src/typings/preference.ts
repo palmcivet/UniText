@@ -1,4 +1,4 @@
-import { EPicture, IDocumentConfig, IDocumentFormat } from "./document";
+import { IDocumentConfig, IDocumentFormat } from "./document";
 
 /**
  * @enum { EWindow } 窗口的打开方式
@@ -26,15 +26,14 @@ export type TI18n = "ZH_CN" | "EN_US";
  * @enum { EStartup } 启动后呈现的内容
  */
 export enum EStartup {
-  BLANK,
-  CREATE,
-  SCHEDULE,
+  BLANK = "BLANK",
+  CREATE = "CREATE",
+  SCHEDULE = "SCHEDULE",
 }
 
 /**
  * @enum { EPanelType } 右侧面板展示的信息类型
  */
-// TODO 需要更改 sidePanel.vue
 export enum EPanelType {
   TOC = "TOC",
   INFO = "INFO",
@@ -45,27 +44,27 @@ export enum EPanelType {
  * @enum { EEditMode } 编辑模式
  */
 export enum EEditMode {
-  SOURCE,
-  WYSIWYG,
-  RICHTEXT,
+  SOURCE = "SOURCE",
+  WYSIWYG = "WYSIWYG",
+  RICHTEXT = "RICHTEXT",
 }
 
 /**
  * @enum { ETypeMode } 打字模式
  */
 export enum ETypeMode {
-  ZEN,
-  FOCUS,
-  TYPER,
-  NORMAL,
+  ZEN = "ZEN",
+  FOCUS = "FOCUS",
+  TYPER = "TYPER",
+  NORMAL = "NORMAL",
 }
 
 /**
  * @enum { EMarkdownScheme } 语法方案
  */
 export enum EMarkdownScheme {
-  STD,
-  GFM,
+  STD = "STD",
+  GFM = "GFM",
 }
 
 /**

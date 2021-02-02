@@ -1,9 +1,6 @@
 <template>
   <div class="setting">
-    <!-- FEAT i18n -->
-    <div class="header">{{ "首选项" }}</div>
-
-    <Preference />
+    <Preference class="type" />
 
     <div class="operate">
       <button>查看存储位置</button>
@@ -57,22 +54,27 @@ export default class Setting extends Vue {
 .setting {
   height: 100%;
   position: relative;
-  padding: 0rem 3rem;
+  display: flex;
+  flex-direction: column;
+  background: @primary-bg;
 
-  > .header {
-    font-size: 1.8em;
-    font-weight: 500;
-    text-align: center;
-    -webkit-user-select: none;
+  > .type {
+    overflow-y: auto;
+    height: 100%;
+    padding-bottom: 2em;
   }
 
   > .operate {
+    width: 100%;
+    bottom: 0;
+    right: 0;
     position: absolute;
-    bottom: 1em;
-    right: 1em;
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: flex-end;
 
     button {
-      margin-left: 1em;
+      margin: 0 0.5em 0.5em 0;
       padding: 0.3em 0.4em;
 
       #button-style();

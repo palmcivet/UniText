@@ -47,9 +47,6 @@
     "**/dist": true,
     "**/*.lock": true
   },
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabSize": 2,
   "eslint.packageManager": "yarn",
@@ -70,5 +67,5 @@
   "prettier.packageManager": "yarn",
   "prettier.printWidth": 90,
   "npm.packageManager": "yarn",
-  "npm.exclude": "dist_electron"
+  "npm.exclude": "dist"
 }

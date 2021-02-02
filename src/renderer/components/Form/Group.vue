@@ -1,11 +1,12 @@
 <template>
   <div class="group">
-    <div>{{ $g(properties.title) }}</div>
-    <div>
+    <div class="title">{{ $g(properties.title) }}</div>
+    <div class="items">
       <component
         v-for="(v, k, i) of properties.properties"
         :key="i"
         :is="v.type"
+        :field="`${field}.${k}`"
         :properties="v"
       />
     </div>
@@ -34,24 +35,33 @@ import TextGroup from "./TextGroup.vue";
 export default class Group extends Vue {
   @Prop({ type: Object, required: true })
   properties!: any;
+
+  @Prop({ type: String, required: true })
+  field!: string;
 }
 </script>
 
 <style lang="less" scoped>
 .group {
-  margin: 15px 0;
+  padding: 15px 8em 15px 8em;
 
-  > div:first-child {
+  > .title {
     width: 100%;
     font-size: 1.5em;
     font-weight: 400;
-    border-left: solid 3px #bbd457;
-    padding-left: 7px;
-    margin-bottom: 10px;
+    border-left: solid 5px #bbd457;
+    padding-left: 15px;
   }
 
-  > div:last-child {
-    margin-left: 10px;
+  > .items {
+    > * {
+      padding: 0.5em 0 0.5em 20px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: rgba(230, 230, 230, 0.6);
+      }
+    }
   }
 }
 </style>

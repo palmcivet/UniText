@@ -5,9 +5,9 @@
     :threWidth="[150, 250]"
   >
     <template v-slot:left>
-      <TabsWithDoc v-show="currentView === 0 && !isBlank" />
-      <Startup v-show="currentView === 1 || isBlank" />
-      <Setting v-show="currentView === 2" />
+      <TabsWithDoc v-show="viewType === 0" />
+      <Startup v-show="viewType === 1" />
+      <Setting v-show="viewType === 2" />
     </template>
     <template v-slot:right>
       <SidePanel :fixed="true" />
@@ -51,11 +51,8 @@ export default class WorkBench extends Vue {
   @general.State((state: IGeneralState) => state.appearance.panelFloat)
   isPanelFloat!: boolean;
 
-  @workBench.State("currentView")
-  currentView!: EViewType.EDITOR;
-
-  @workBench.Getter("isBlank")
-  isBlank!: boolean;
+  @workBench.State("viewType")
+  viewType!: EViewType.EDITOR;
 
   @workBench.Action("NEW_FILE")
   NEW_FILE!: (title?: string) => void;

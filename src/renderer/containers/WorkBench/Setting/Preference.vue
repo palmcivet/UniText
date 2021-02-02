@@ -1,11 +1,6 @@
 <template>
-  <div class="preference">
-    <Group :properties="data.system"></Group>
-    <Group :properties="data.appearance"></Group>
-    <Group :properties="data.fileManager"></Group>
-    <Group :properties="data.editor"></Group>
-    <Group :properties="data.document"></Group>
-    <Group :properties="data.markdown"></Group>
+  <div>
+    <Group v-for="(v, k, i) of data" :key="i" :properties="v" :field="k" :id="k" />
   </div>
 </template>
 

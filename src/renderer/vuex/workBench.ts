@@ -43,7 +43,12 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
     };
   },
   isBlank: (_: IWorkBenchState) => {
-    return !notEmpty(_.currentTabs);
+    if (!notEmpty(_.currentTabs)) {
+      _.viewType = EViewType.STARTUP;
+      return true;
+    } else {
+      return false;
+    }
   },
 };
 
