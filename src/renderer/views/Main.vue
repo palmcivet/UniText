@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TitleBar class="layout-header" />
+    <TitleBar v-show="showTitle" class="layout-header" />
     <main class="layout-main">
       <aside class="left-side-bar">
         <ActivityBar :sideWidth="finalLeftWidth - 1.5" />
@@ -30,6 +30,7 @@ import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { IBootArgs } from "@/typings/bootstrap";
 import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
+import { isOsx } from "@/common/env";
 
 const general = namespace("general");
 
@@ -51,6 +52,8 @@ export default class Main extends Vue {
   isShowPanel!: boolean;
 
   leftViewWidth = 200;
+
+  showTitle = isOsx;
 
   get finalLeftWidth() {
     return this.leftViewWidth;

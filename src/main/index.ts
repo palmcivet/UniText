@@ -6,7 +6,13 @@ import { UNITEXT_SYSTEM } from "@/main/config";
 import { UniText } from "./UniText";
 
 protocol.registerSchemesAsPrivileged([
-  { scheme: "unitext", privileges: { secure: true, standard: true } },
+  {
+    scheme: "unitext",
+    privileges: {
+      secure: true,
+      standard: true,
+    },
+  },
 ]);
 
 let UniTextApp: UniText;
@@ -22,6 +28,10 @@ let UniTextApp: UniText;
     error: [],
   };
 
+  if (!fse.existsSync(UNITEXT_SYSTEM.DEFAULT_DIR)) {
+    fse.mkdirSync(UNITEXT_SYSTEM.DEFAULT_DIR);
+  }
+
   const bootFile = UNITEXT_SYSTEM.BOOT_FILE;
 
   try {
@@ -35,9 +45,7 @@ let UniTextApp: UniText;
       bootArgs.notesPath = res.notesPath;
     }
   } catch (err) {
-    await fse.writeJSON(bootFile, {
-      notesPath: "",
-    });
+    await fse.writeJSON(bootFile, bootArgs);
     bootArgs.error.push(err);
   }
 

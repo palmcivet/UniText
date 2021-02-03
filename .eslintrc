@@ -44,6 +44,7 @@
     "no-unused-vars": 0,
     "no-param-reassign": ["warn", { "props": false }],
     "vue/script-indent": ["warn", 2, { "baseIndent": 0 }],
+    "vue/experimental-script-setup-vars": 0,
     "import/extensions": [
       "warn",
       "always",

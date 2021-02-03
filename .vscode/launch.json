@@ -13,10 +13,10 @@
       "preLaunchTask": "Debug",
       "args": [
         "--remote-debugging-port=8081",
-        "./dist_electron"
+        "./dist"
       ],
       "outFiles": [
-        "${workspaceFolder}/dist_electron/**/*.js"
+        "${workspaceFolder}/dist/**/*.js"
       ]
     },
     {

@@ -332,6 +332,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     let path = joinPath(root, ...fileName);
 
     if (tempFile) {
+      // TODO 弃用 remote
       const res = await remote.dialog.showSaveDialog({
         // FEAT i18n
         title: "保存到",
@@ -392,13 +393,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     delete srcObj[target];
 
     // FEAT 移至回收站
-    const { execSync } = require("child_process");
     const DIR = joinPath(folderDir, ...file);
-    if (isWin) {
-      execSync(`del /s ${DIR}`);
-    } else {
-      execSync(`rm -r ${DIR}`);
-    }
+    fse.remove(DIR);
   },
 
   MOVE: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {},

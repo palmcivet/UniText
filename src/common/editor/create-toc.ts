@@ -69,8 +69,8 @@ interface IOption extends MarkdownIt.Options {
   [index: string]: any;
 }
 
-const TOC = "@[toc]";
-const TOC_RE = /^@\[toc\]/im;
+const TOC = "[toc]";
+const TOC_RE = /^\[toc\]/im;
 
 let headingIds: { [index: string]: number } = {};
 let tocHtml = "";

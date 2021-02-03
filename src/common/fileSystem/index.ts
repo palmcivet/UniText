@@ -5,6 +5,31 @@ import { ITree, ITreeNode } from "@/typings/vuex/sideBar";
 
 export const joinPath = (...args: Array<string>) => path.normalize(path.join(...args));
 
+export const exists = async (p: string) => {
+  try {
+    await fse.access(p);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
+export const deleteall = (path: string) => {
+  var files = [];
+  if (fse.existsSync(path)) {
+    files = fse.readdirSync(path);
+    files.forEach((file) => {
+      var curPath = path + "/" + file;
+      if (fse.statSync(curPath).isDirectory()) {
+        deleteall(curPath);
+      } else {
+        fse.unlinkSync(curPath);
+      }
+    });
+    fse.rmdirSync(path);
+  }
+};
+
 export const fetchFileInfo = async (path: string) => {
   const res = await fse.stat(path);
 

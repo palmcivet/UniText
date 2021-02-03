@@ -2,6 +2,7 @@ const path = require("path");
 
 module.exports = {
   runtimeCompiler: true,
+  outputDir: "build",
   pages: {
     index: {
       entry: path.join(__dirname, "src/renderer/index.ts"),
@@ -14,6 +15,7 @@ module.exports = {
     electronBuilder: {
       nodeIntegration: true,
       externals: ["fs"],
+      customFileProtocol: "unitext://./",
       nodeModulesPath: ["node_modules"],
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
@@ -24,6 +26,7 @@ module.exports = {
         appId: "com.github.unitext",
         directories: {
           buildResources: "resources",
+          output: "dist",
         },
         electronDownload: {
           mirror: "https://npm.taobao.org/mirrors/electron/",
@@ -37,37 +40,20 @@ module.exports = {
           createStartMenuShortcut: true,
           shortcutName: "UniText",
         },
+        dmg: {
+          title: "${productName}",
+        },
         mac: {
-          target: "dmg",
+          target: ["dmg"],
           darkModeSupport: true,
         },
         win: {
-          target: [
-            {
-              target: "zip",
-              arch: ["ia32", "x64"],
-            },
-            {
-              target: "msi",
-              arch: ["ia32", "x64"],
-            },
-          ],
+          target: ["zip", "nsis"],
         },
         linux: {
-          target: [
-            {
-              target: "deb",
-            },
-            {
-              target: "rpm",
-            },
-            {
-              target: "AppImage",
-            },
-            {
-              target: "snap",
-            },
-          ],
+          category: "Office;TextEditor;Utility",
+          mimeTypes: ["text/markdown"],
+          target: ["deb", "rpm", "AppImage", "snap"],
         },
       },
     },

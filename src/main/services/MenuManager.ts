@@ -11,6 +11,7 @@ import { Bus } from "@/renderer/plugins/VueBus";
 import { Keybinding } from "./Keybinding";
 import { EI18n } from "@/typings/service/preference";
 import { EMenuContextKey, IMenuSet } from "@/typings/service/menu";
+import { isOsx } from "@/common/env";
 
 export class MenuManager {
   private _menuSet!: IMenuSet;
@@ -33,7 +34,7 @@ export class MenuManager {
   updateMenu(lang: EI18n, key: Keybinding) {
     this._buildMenuSet(lang, key);
     Menu.setApplicationMenu(this._menuSet.MENU_BAR);
-    app.dock.setMenu(this._menuSet.DOCK_BAR);
+    if (isOsx) app.dock.setMenu(this._menuSet.DOCK_BAR);
   }
 
   getContextMenu(key: keyof IMenuSet) {

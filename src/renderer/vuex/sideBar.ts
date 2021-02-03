@@ -52,6 +52,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   OPEN_PROJECT: async (_: ActionContext<ISideBarState, IRootState>) => {
     const { commit, dispatch } = _;
 
+    // TODO 弃用 remote
     const res = await remote.dialog.showOpenDialog({
       // FEAT i18n
       title: "打开项目文件夹",
