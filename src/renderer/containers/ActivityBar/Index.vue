@@ -4,7 +4,7 @@
       class="left-column"
       :listGroup="menuList"
       :condition="activeItem"
-      :activeStyle="{ color: this.isShowSide ? '#f9d757' : '' }"
+      :activeStyle="{ color: this.isShowSide ? 'var(--activityBar-activeFg)' : '' }"
       @click="handleClick($event)"
     />
 
@@ -54,8 +54,7 @@ export default class ActivityBar extends Vue {
   @general.Mutation("TOGGLE_SIDE_BAR")
   TOGGLE_SIDE_BAR!: () => void;
 
-  // TODO
-  activeItem = "Settings";
+  activeItem = "Files";
 
   get menuList() {
     return {
@@ -106,13 +105,15 @@ aside {
 
   .left-column {
     position: relative;
-    width: @layout-leftSide-left-column;
+    width: @layout-leftSide-left-width;
     height: 100%;
+    background: var(--activityBar-Bg);
 
     /deep/ li {
       padding: 11.5px;
       margin: 8px 0;
       cursor: pointer;
+      color: var(--activityBar-inactiveFg);
 
       &:last-child {
         position: absolute;
@@ -122,7 +123,8 @@ aside {
   }
 
   .right-column {
-    background: @primary-bg;
+    background: var(--sideBar-Bg);
+    color: var(--sideBar-Fg);
   }
 }
 </style>

@@ -88,7 +88,7 @@ export class UniText {
       },
       frame: false,
       vibrancy: "titlebar",
-      backgroundColor: "#52525200",
+      backgroundColor: "#00000000",
       transparent: true,
       titleBarStyle: "hidden",
     };

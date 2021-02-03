@@ -14,6 +14,22 @@ export const exists = async (p: string) => {
   }
 };
 
+export const create = (pathname: string, type: "directory" | "file") => {
+  if (type === "directory") {
+    return fse.ensureDir(pathname);
+  } else {
+    return fse.outputFile(pathname, "");
+  }
+};
+
+export const paste = (src: string, dest: string, type: "cut" | "copy") => {
+  return type === "cut" ? fse.move(src, dest) : fse.copy(src, dest);
+};
+
+export const rename = (src: string, dest: string) => {
+  return fse.move(src, dest);
+};
+
 export const deleteall = (path: string) => {
   var files = [];
   if (fse.existsSync(path)) {

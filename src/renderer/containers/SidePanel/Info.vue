@@ -78,6 +78,10 @@ export default class Info extends Vue {
 @import "~@/renderer/styles/var.less";
 
 section {
+  height: 100%;
+  color: var(--sidePanel-Fg);
+  background: var(--sidePanel-Bg);
+
   .grid {
     display: flex;
     flex-flow: row;

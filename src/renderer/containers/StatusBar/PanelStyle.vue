@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Mutation, namespace } from "vuex-class";
+import { namespace } from "vuex-class";
 
 import { IGeneralState } from "@/typings/vuex/general";
 import CheckItem from "@/renderer/components/CheckItem.vue";

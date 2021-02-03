@@ -68,11 +68,11 @@ export default class Settings extends Vue {
 @import "~@/renderer/styles/var.less";
 
 * {
-  -webkit-user-select: none;
+  user-select: none;
 }
 
 li {
-  height: @sidebar-item-height;
+  height: @sideBar-item-height;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -86,7 +86,8 @@ li {
   }
 
   &:hover {
-    background-color: #e8e7e1;
+    color: var(--sideBarItem-hoverFg);
+    background: var(--sideBarItem-hoverBg);
   }
 }
 </style>

@@ -17,15 +17,17 @@ export default class TitleBar extends Vue {}
 @import "~@/renderer/styles/var.less";
 
 header {
-  height: @layout-top-bar;
-  -webkit-user-select: none;
+  height: @layout-titleBar-height;
+  user-select: none;
   -webkit-app-region: drag;
+  background: var(--titleBar-activeBg);
 
   span {
     position: absolute;
-    transform: translateX(-50%);
     left: 50%;
-    font-size: 13px;
+    transform: translateX(-50%);
+    font-size: @titleBar-font-size;
+    color: var(--titleBar-activeFg);
   }
 }
 </style>

@@ -5,7 +5,9 @@
       <template slot="blank-title">{{ $t("sidebar.files_empty") }}</template>
 
       <template slot="blank">
-        <button @click="OPEN_PROJECT()">{{ $t("sidebar.files_button") }}</button>
+        <button @click="OPEN_PROJECT()" class="unitext-button">
+          {{ $t("sidebar.files_button") }}
+        </button>
       </template>
 
       <template slot="view-title">
@@ -17,12 +19,8 @@
         />
       </template>
 
-      <template
-        slot="view"
-        @mouseenter="handleMouseEnter()"
-        @mouseleave="handleMouseLeave()"
-      >
-        <ul>
+      <template slot="view">
+        <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
           <FileTreeNode
             v-for="(data, name) in fileTree"
             :key="data.order"
@@ -104,8 +102,6 @@ export default class Files extends Vue {
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
-
 /deep/ .view {
   button {
     top: 50%;
@@ -113,8 +109,6 @@ export default class Files extends Vue {
     position: absolute;
     transform: translate(-50%, 50%);
     padding: 0.5em;
-
-    #button-style();
   }
 }
 </style>

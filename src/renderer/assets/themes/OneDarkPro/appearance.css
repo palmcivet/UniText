@@ -1,0 +1,68 @@
+:root {
+  --button-Bg: #404754;
+  --button-Fg: #ffffff;
+  --button-hoverBg: #4d5565;
+  --button-hoverFg: #ffffff;
+
+  --inputBox-Bg: #21252b;
+  --inputBox-Fg: #f0f0f0;
+  --inputBox-hoverBg: #21252b;
+  --inputBox-hoverFg: #f0f0f0;
+
+  --scrollBar-Bg: #4e566660;
+  --scrollBar-hoverBg: #5a637580;
+  --scrollBar-activeBg: #747d9180;
+
+  --titleBar-activeBg: #282c34;
+  --titleBar-activeFg: #9da5b4;
+  --titleBar-inactiveBg: #21252b;
+  --titleBar-inactiveFg: #6b717d;
+
+  --activityBar-Bg: #282c34;
+  --activityBar-activeFg: #d7dae0;
+  --activityBar-inactiveFg: #d7dae066;
+
+  --sideBar-Bg: #21252b;
+  --sideBar-Fg: #cccccc;
+  --sideBarHeader-Bg: #282c34;
+  --sideBarHeader-Fg: #d7dae0;
+  --sideBarItem-selectFg: #2c313a;
+  --sideBarItem-hoverBg: #292d35;
+  --sideBarItem-hoverFg: var(--sideBar-Fg);
+  --sideBarIndent-activeFg: #585858;
+  --sideBarIndent-inactiveFg: #58585866;
+
+  --tabBar-Bg: #21252b;
+  --tabBar-Fg: #dcdcdc;
+  --tabBar-activeBg: var(--tabBar-Bg);
+  --tabBar-activeFg: #dcdcdc;
+  --tabBar-inactiveBg: #21252b;
+  --tabBar-inactiveFg: #dcdcdc80;
+  --tabBarRightBorder-Color: #181a1f;
+  --tabBarUnderline-Color: #57c0b6;
+  --tabBar-hoverBg: #323842;
+  --tabBarShadow-Color: #0b0d0f;
+  --tabBarClose-hoverFg: #323842;
+  --tabBarClose-hoverBg: #323842;
+
+  --statusBar-Bg: #21252b;
+  --statusBar-Fg: #9da5b4;
+  --statusBar-hoverBg: #2c313a;
+  --statusBar-hoverFg: #ccd2dd;
+  --statusBar-activeBg: #2560cf;
+  --statusBar-activeFg: #ccd2dd;
+
+  --workBench-Bg: #282c34;
+  --workBench-Fg: #abb2bf;
+
+  --sidePanel-Bg: var(--sideBar-Bg);
+  --sidePanel-Fg: var(--sideBar-Fg);
+  --sidePanelItem-hoverBg: var(--sideBarItem-hoverBg);
+  --sidePanelItem-hoverFg: var(--sideBarItem-hoverFg);
+
+  --formGroupTitle-Bg: var(--workBench-Bg);
+  --formGroupTitle-Fg: var(--workBench-Fg);
+  --formGroupTitleBorder-Color: #bbd457;
+  --formGroup-hoverBg: #80808012;
+  --formGroup-hoverFg: #ccd2dd;
+}

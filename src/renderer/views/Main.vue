@@ -1,14 +1,14 @@
 <template>
   <div>
-    <TitleBar v-show="showTitle" class="layout-header" />
+    <TitleBar v-show="showTitle" />
     <main class="layout-main">
       <aside class="left-side-bar">
         <ActivityBar :sideWidth="finalLeftWidth - 1.5" />
-        <span v-show="isShowSide" ref="leftResize" />
+        <span v-show="isShowSide" ref="leftResize" class="unitext-resize" />
       </aside>
       <WorkBench class="center-container" :style="{ width: centerWidth }" />
     </main>
-    <StatusBar class="layout-footer" />
+    <StatusBar />
     <!-- TODO 放进 WorkBench -->
     <SidePanel :fixed="false" />
   </div>
@@ -101,6 +101,7 @@ export default class Main extends Vue {
       ),
     });
 
+    dispatch("SET_THEME");
     dispatch("information/CHECK_UPDATE");
     dispatch("general/LISTEN_FOR_GENERAL");
     dispatch("workBench/LISTEN_FOR_FILE");
@@ -132,7 +133,7 @@ export default class Main extends Vue {
       const mouseUpHandler = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mouseMoveHandler, false);
         document.removeEventListener("mouseup", mouseUpHandler, false);
-        // DEV @layout-leftSide-right-column;
+        // DEV @layout-leftSide-left-width;
         if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
           this.leftViewWidth = leftSideBarWidth;
         }
@@ -161,44 +162,18 @@ export default class Main extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-/* 以下为布局 */
-
-.layout-header,
-.layout-main,
-.layout-footer {
-  background: #efefef;
-  font-family: "PingFang SC";
-}
-
 .layout-main {
-  height: calc(100vh - @layout-top-bar - @layout-bottom-bar);
   display: flex;
-  flex-shrink: 0;
-  flex-grow: 0;
 }
-
-.layout-footer {
-  height: @layout-bottom-bar;
-}
-
-/* 以下为分区 */
 
 .left-side-bar,
 .center-container {
-  height: calc(100vh - @layout-top-bar - @layout-bottom-bar);
+  height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
 }
 
 .left-side-bar {
   left: 0;
   width: auto;
   display: flex;
-}
-
-/* 以下为 resize */
-
-.layout-main {
-  span {
-    #resize-style();
-  }
 }
 </style>

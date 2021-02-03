@@ -225,69 +225,73 @@ export default class FileTreeNode extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-* {
-  -webkit-user-select: none;
-}
-
-pre {
-  display: inline-block;
-
-  &.icon {
-    width: 1em;
-  }
-
-  &.space {
-    width: 0.2em;
-  }
-}
-
 .file,
 .folder {
   display: flex;
   outline: none;
   cursor: pointer;
   width: 100%;
-  height: @sidebar-item-height;
+  height: @sideBar-item-height;
+
+  * {
+    user-select: none;
+    height: @sideBar-item-height;
+    line-height: @sideBar-item-height;
+  }
+
+  .indent {
+    width: 0.5em;
+    margin-right: 0.2em;
+    border-right: 0.1px solid transparent;
+  }
+
+  .indent-show {
+    border-right: 0.1px solid var(--sideBarIndent-activeFg);
+  }
 
   i {
-    line-height: @sidebar-item-height;
+    font-size: 1rem;
+  }
+
+  pre {
+    display: inline-block;
+    margin: 0;
+
+    &.icon {
+      width: 1em;
+    }
+
+    &.space {
+      width: 0.2em;
+    }
+  }
+
+  .title {
+    width: 100%;
+
+    input {
+      width: 100%;
+      outline: none;
+      padding: 1px 0;
+      border-width: 0.5px 0;
+      border-style: solid;
+      border-color: white;
+      background-color: #faf9f4;
+    }
   }
 }
 
 .file:hover,
 .folder:hover {
-  background-color: #e8e7e1;
+  background: var(--sideBarItem-selectFg);
 }
 
 details > summary::-webkit-details-marker {
   display: none;
 }
 
-.title {
-  width: 100%;
-
-  input {
-    width: 100%;
-    outline: none;
-    padding: 1px 0;
-    border-width: 0.5px 0;
-    border-style: solid;
-    border-color: white;
-    background-color: #faf9f4;
-  }
-}
-
-.indent {
-  width: 0.5em;
-  margin-right: 0.2em;
-  border-right: 0.1px solid rgba(255, 255, 255, 0);
-}
-
-.indent-show {
-  border-right: 0.1px solid rgba(200, 200, 200, 0.6);
-}
-
 .active {
-  background-color: #e2e1da;
+  color: var(--sideBarItem-hoverFg);
+  background: var(--sideBarItem-hoverBg);
 }
 </style>

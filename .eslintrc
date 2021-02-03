@@ -63,7 +63,10 @@
         "extensions": [".js", ".ts"]
       },
       "alias": {
-        "map": [["@", "./src"]],
+        "map": [
+          ["@", "./src"],
+          ["&", "./public"]
+        ],
         "extensions": [".js", ".ts", ".vue"]
       }
     },

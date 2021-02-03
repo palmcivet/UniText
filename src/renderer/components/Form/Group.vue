@@ -48,8 +48,9 @@ export default class Group extends Vue {
   > .title {
     width: 100%;
     font-size: 1.5em;
-    font-weight: 400;
-    border-left: solid 5px #bbd457;
+    color: var(--formGroupTitle-Fg);
+    background: var(--formGroupTitle-Bg);
+    border-left: solid 5px var(--formGroupTitleBorder-Color);
     padding-left: 15px;
   }
 
@@ -60,7 +61,8 @@ export default class Group extends Vue {
 
       &:hover {
         cursor: pointer;
-        background-color: rgba(230, 230, 230, 0.6);
+        color: var(--formGroup-hoverFg);
+        background: var(--formGroup-hoverBg);
       }
     }
   }

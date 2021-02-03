@@ -51,8 +51,10 @@ footer {
   display: flex;
   justify-content: space-between;
   position: relative;
-  height: 100%;
+  height: @layout-statusBar-height;
   padding: 0 0.5em;
+  color: var(--statusBar-Fg);
+  background: var(--statusBar-Bg);
 
   > ul {
     display: flex;
@@ -64,11 +66,12 @@ footer {
     /deep/ li {
       padding: 0 0.25em;
       cursor: pointer;
-      -webkit-user-select: none;
-      line-height: @layout-bottom-bar;
+      user-select: none;
+      line-height: @layout-statusBar-height;
 
       &:hover {
-        color: rgb(36, 36, 36); // DEV
+        color: var(--statusBar-hoverFg);
+        background: var(--statusBar-hoverBg);
       }
 
       i {

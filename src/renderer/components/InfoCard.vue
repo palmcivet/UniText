@@ -126,7 +126,15 @@ export default class InfoCard extends Vue {
 @import "~@/renderer/styles/var.less";
 
 section {
-  #block-style();
+  padding: 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+
+  span {
+    user-select: none;
+    font-size: @span-common;
+  }
 
   .major {
     font-size: @span-major;

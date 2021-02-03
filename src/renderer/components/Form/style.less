@@ -11,17 +11,26 @@
   display: flex;
   flex-direction: column;
 
+  label:first-child {
+    margin-bottom: 5px;
+  }
+
   input[type="text"] {
     max-width: 30em;
 
     &:focus {
-      background-color: rgb(210, 246, 142);
+      color: var(--inputBox-hoverFg);
+      background: var(--inputBox-hoverBg);
     }
   }
 
   input,
   select {
+    font-size: 1em;
+    height: 1.5rem;
     outline-style: none;
     border: 0px;
+    color: var(--inputBox-Fg);
+    background: var(--inputBox-Bg);
   }
 }

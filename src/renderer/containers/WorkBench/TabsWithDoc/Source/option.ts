@@ -3,12 +3,11 @@ import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 export const init: editor.IEditorConstructionOptions = {
   language: "markdown-math",
   fontSize: 16,
-  theme: "CyanLight",
   lineNumbers: "on",
   minimap: {
     enabled: false,
   },
-  wordWrap: "off",
+  wordWrap: "on",
   cursorWidth: 2,
   cursorSmoothCaretAnimation: true,
   cursorBlinking: "smooth",
@@ -20,8 +19,8 @@ export const init: editor.IEditorConstructionOptions = {
   scrollbar: {
     vertical: "auto",
     horizontal: "auto",
-    verticalScrollbarSize: 6,
-    horizontalScrollbarSize: 6,
+    verticalScrollbarSize: 8,
+    horizontalScrollbarSize: 8,
   },
   lineHeight: 26,
   scrollBeyondLastLine: true,

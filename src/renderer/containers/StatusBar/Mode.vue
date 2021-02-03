@@ -89,8 +89,4 @@ export default class Mode extends Vue {
 }
 </script>
 
-<style lang="less" scoped>
-li.active {
-  background-color: rgb(207, 231, 174); // DEV
-}
-</style>
+<style lang="less" scoped></style>

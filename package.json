@@ -13,6 +13,7 @@
   "main": "background.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
+    "electron:build": "vue-cli-service build",
     "electron:serve": "vue-cli-service electron:serve",
     "release:mac": "vue-cli-service electron:build --mac dmg",
     "release:all": "vue-cli-service electron:build --mac --win --linux --x64"

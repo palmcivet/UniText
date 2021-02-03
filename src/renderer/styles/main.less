@@ -1,16 +1,54 @@
 @import "./var.less";
 
 body {
+  margin: 0;
+
+  // DEV 校验样式粒度
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
-  margin: 0;
+  font-family: @interface-font-family;
 }
 
+ol,
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 以下为组件效果 */
+
+.unitext-resize {
+  width: 1.5px;
+  height: 100%;
+  cursor: col-resize;
+  background: var(--titleBar-activeBg);
+
+  &:hover {
+    background: var(--titleBar-activeFg);
+  }
+}
+
+.unitext-button {
+  cursor: pointer;
+  color: var(--button-Fg);
+  background: var(--button-Bg);
+  border-color: transparent;
+  outline-style: none;
+  user-select: none;
+
+  &:hover {
+    color: var(--button-hoverFg);
+    background: var(--button-hoverBg);
+  }
+}
+
+/* 以下为滚动条 */
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: @scrollBar-width;
+  height: @scrollBar-width;
   border-radius: 1px;
-  background-color: rgba(255, 255, 255, 0);
 }
 
 ::-webkit-scrollbar-button {
@@ -26,11 +64,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #eee;
+  background: var(--scrollBar-Bg);
   border-radius: 1px;
 
   &:hover {
-    background-color: #999;
+    background: var(--scrollBar-hoverBg);
   }
 }
 
@@ -40,11 +78,4 @@ body {
 
 ::-webkit-resizer {
   display: none;
-}
-
-ol,
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }

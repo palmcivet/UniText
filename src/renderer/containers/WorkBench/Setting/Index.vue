@@ -3,9 +3,9 @@
     <Preference class="type" />
 
     <div class="operate">
-      <button>查看存储位置</button>
-      <button>恢复默认值</button>
-      <button>保存(⌘S)</button>
+      <button class="unitext-button">查看存储位置</button>
+      <button class="unitext-button">恢复默认值</button>
+      <button class="unitext-button">保存(⌘S)</button>
     </div>
   </div>
 </template>
@@ -56,7 +56,10 @@ export default class Setting extends Vue {
   position: relative;
   display: flex;
   flex-direction: column;
-  background: @primary-bg;
+
+  // TODO 统一工作台背景
+  color: var(--workBench-Fg);
+  background: var(--workBench-Bg);
 
   > .type {
     overflow-y: auto;
@@ -76,8 +79,6 @@ export default class Setting extends Vue {
     button {
       margin: 0 0.5em 0.5em 0;
       padding: 0.3em 0.4em;
-
-      #button-style();
     }
   }
 }

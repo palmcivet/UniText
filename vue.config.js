@@ -1,15 +1,22 @@
 const path = require("path");
 
 module.exports = {
-  runtimeCompiler: true,
   outputDir: "build",
   pages: {
     index: {
-      entry: path.join(__dirname, "src/renderer/index.ts"),
+      entry: "src/renderer/index.ts",
+      template: "src/renderer/assets/index.html",
+      title: "UniText",
     },
   },
   configureWebpack: {
     devtool: "source-map",
+  },
+  chainWebpack: (config) => {
+    config.resolve.alias.set("vue$", "vue/dist/vue.esm.js");
+    config.resolve.alias.set("@", path.join(__dirname, "src"));
+    config.resolve.alias.set("&", path.join(__dirname, "public"));
+    config.target("electron-renderer");
   },
   pluginOptions: {
     electronBuilder: {

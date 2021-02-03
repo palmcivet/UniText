@@ -69,7 +69,7 @@ export default class Toc extends Vue {
 @line-height: 1em;
 
 * {
-  -webkit-user-select: none;
+  user-select: none;
   font-family: @normal-font-family;
 }
 
@@ -77,7 +77,8 @@ section {
   height: 100%;
   width: 100%;
   position: relative;
-  background-color: #f7f7f7; // DEV
+  color: var(--sidePanel-Fg);
+  background: var(--sidePanel-Bg);
 
   > div {
     top: 50%;
@@ -95,9 +96,11 @@ section {
       display: -webkit-box;
       white-space: nowrap;
       overflow: hidden;
+      padding: 2px 0;
 
       &:hover {
-        background-color: #e2dac3;
+        color: var(--sidePanelItem-hoverFg);
+        background: var(--sidePanelItem-hoverBg);
       }
 
       div {

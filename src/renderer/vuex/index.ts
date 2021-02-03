@@ -1,11 +1,13 @@
 import Vue from "vue";
-import Vuex, { MutationTree } from "vuex";
+import Vuex, { ActionContext, ActionTree, MutationTree } from "vuex";
 
 import general from "./general";
 import sideBar from "./sideBar";
 import workBench from "./workBench";
 import statusPanel from "./statusPanel";
 import information from "./information";
+import { $ } from "@/common/utils";
+import { THEME_ID_APPEARANCE } from "@/common/env";
 import { IRootState } from "@/typings/vuex";
 import { IPreference } from "@/typings/bootstrap";
 
@@ -22,8 +24,24 @@ const mutations: MutationTree<IRootState> = {
   },
 };
 
+const actions: ActionTree<IRootState, IRootState> = {
+  SET_THEME: async (_: ActionContext<IRootState, IRootState>, theme?: string) => {
+    let themeStyleEl = $(`#${THEME_ID_APPEARANCE}`);
+    if (!themeStyleEl) {
+      themeStyleEl = document.createElement("style");
+      themeStyleEl.id = THEME_ID_APPEARANCE;
+      themeStyleEl.setAttribute("type", "text/css");
+      document.head.appendChild(themeStyleEl);
+    }
+
+    themeStyleEl.innerHTML = "";
+  },
+};
+
 export default new Vuex.Store({
   strict: true,
+  actions,
+  mutations,
   modules: {
     general,
     sideBar,
@@ -31,5 +49,4 @@ export default new Vuex.Store({
     statusPanel,
     information,
   },
-  mutations,
 });

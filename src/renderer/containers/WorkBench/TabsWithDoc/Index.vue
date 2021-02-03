@@ -13,7 +13,7 @@
         <li
           v-for="v in openedTabs"
           :key="v.order"
-          :class="v.order === currentIndex ? 'current' : ''"
+          :class="v.order === currentIndex ? 'active' : 'inactive'"
           @click.stop="SELECT_TAB({ cur: v.order })"
           @contextmenu="handleTabContext()"
         >
@@ -128,64 +128,82 @@ export default class TabsWithDoc extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-ul {
-  cursor: pointer;
-
-  & > span {
-    display: flex;
-    overflow: auto;
-    line-height: @tab-height;
-
-    & > li {
-      background-color: rgba(227, 233, 209, 0.5); // DEV
-      border-right: 1px solid rgba(200, 200, 200, 0.2); // DEV
-      padding: 0 1.5em 0 0.8em;
-      position: relative;
-
-      & > span {
-        max-width: 200px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        display: block;
-        -webkit-user-select: none;
-      }
-
-      /deep/ i {
-        line-height: 12px;
-        font-size: 12px;
-        border-radius: 50%;
-        position: absolute;
-        right: 0.5em;
-        top: 50%;
-        transform: translateY(-50%);
-
-        &:hover {
-          background-color: rgba(148, 148, 148, 0.2); // DEV
-        }
-      }
-
-      &.current {
-        background-color: rgba(225, 235, 197, 0.7); // DEV
-        border-bottom: 1px solid rgb(4, 174, 38);
-      }
-
-      &.ghost {
-        opacity: 0.5;
-        background: #c8ebfb;
-      }
-    }
-  }
-}
-
 div {
   height: 100%;
   display: flex;
   flex-direction: column;
-}
 
-.workbench {
-  height: calc(100% - 25px);
-  width: 100%;
+  ul {
+    cursor: pointer;
+
+    > span {
+      display: flex;
+      overflow: auto;
+      line-height: @tabBar-height;
+      color: var(--tabBar-Fg);
+      background: var(--tabBar-Bg);
+
+      > li {
+        height: calc(@tabBar-height - @tabBar-underline-width);
+        border-right: 1px solid var(--tabBarRightBorder-Color);
+        padding: 0 1.8em 0 0.8em;
+        position: relative;
+
+        > span {
+          max-width: 200px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: inline-block;
+          user-select: none;
+        }
+
+        > i {
+          line-height: 13px;
+          font-size: 13px;
+          border-radius: 50%;
+          position: absolute;
+          right: 0.5em;
+          top: 50%;
+          transform: translateY(-50%);
+
+          &:hover {
+            color: var(--tabBarClose-hoverFg);
+            background: var(--tabBarClose-hoverBg);
+          }
+        }
+
+        &.active {
+          color: var(--tabBar-activeFg);
+          background: var(--tabBar-activeBg);
+          border-bottom: @tabBar-underline-width solid var(--tabBarUnderline-Color);
+
+          > i {
+            color: var(--tabBarClose-activeFg);
+          }
+        }
+
+        &.inactive {
+          color: var(--tabBar-inactiveFg);
+          background: var(--tabBar-inactiveBg);
+
+          > i {
+            color: var(--tabBarClose-inactiveFg);
+          }
+        }
+
+        &.ghost {
+          opacity: 0.5;
+          color: var(--tabBar-inactiveFg);
+          background: var(--tabBar-inactiveBg);
+        }
+      }
+    }
+  }
+
+  .workbench {
+    height: calc(100% - @tabBar-height);
+    width: 100%;
+  }
 }
 </style>

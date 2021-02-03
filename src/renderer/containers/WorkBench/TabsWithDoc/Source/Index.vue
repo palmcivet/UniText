@@ -34,7 +34,7 @@ import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EPanelType } from "@/typings/service/preference";
-import { theme } from "./theme";
+import { OneDarkPro } from "./theme";
 import { init } from "./option";
 
 const general = namespace("general");
@@ -144,8 +144,8 @@ export default class Source extends Vue {
     this.refEditor = $("#markdown-editor");
     this.refPreview = $("#markdown-preview");
 
-    MonacoEditor.defineTheme("CyanLight", theme);
-
+    MonacoEditor.defineTheme("OneDarkPro", OneDarkPro);
+    init.theme = "OneDarkPro";
     this.editor = MonacoEditor.create(this.refEditor, init);
 
     this.modelStack[this.currentIndex] = MonacoEditor.createModel(
@@ -347,11 +347,11 @@ export default class Source extends Vue {
 
   /deep/ .monaco-editor {
     .scrollbar .slider {
-      background: #eee;
+      background: var(--scrollBar-Bg);
     }
 
     .scroll-decoration {
-      box-shadow: #efefef 0 2px 2px -2px inset;
+      box-shadow: var(--tabBarShadow-Color) 0 2px 2px -2px inset;
     }
   }
 }

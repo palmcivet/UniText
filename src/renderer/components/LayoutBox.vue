@@ -7,7 +7,7 @@
     >
       <slot name="left" />
     </div>
-    <span v-show="showMinor && showMain" ref="resize" />
+    <span v-show="showMinor && showMain" ref="resize" class="unitext-resize" />
     <div
       v-show="showMinor"
       :style="{
@@ -136,9 +136,5 @@ article {
   width: 100%;
   height: 100%;
   display: flex;
-
-  & > span {
-    #resize-style();
-  }
 }
 </style>

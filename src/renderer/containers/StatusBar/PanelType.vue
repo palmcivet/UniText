@@ -2,7 +2,14 @@
   <CheckList
     :listGroup="typeList"
     :condition="panelType"
-    :activeStyle="{ backgroundColor: this.showPanel ? '#d7e8a1' : '' }"
+    :activeStyle="
+      this.showPanel
+        ? {
+            color: 'var(--statusBar-activeFg)',
+            backgroundColor: 'var(--statusBar-activeBg)',
+          }
+        : {}
+    "
     @click="handleClick($event)"
   />
 </template>

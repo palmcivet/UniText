@@ -151,11 +151,9 @@ section {
   > div {
     position: absolute;
     z-index: 99;
-    border-radius: 2px;
-    box-shadow: -3px 3px 10px #e6e6e6;
   }
 
-  > div.float {
+  .float {
     width: 150px;
     display: flex;
     flex-direction: column;
@@ -177,13 +175,14 @@ section {
     }
   }
 
-  > div.panel {
+  .panel {
     max-height: 80%;
     min-height: 50px;
     width: 150px;
     right: @right-gap;
-    background-color: white;
-    bottom: calc(@layout-bottom-bar + @dialog-gap);
+    color: var(--sidePanel-Fg);
+    background: var(--sidePanel-Bg);
+    bottom: calc(@layout-statusBar-height + @dialog-gap);
 
     > .arrow {
       position: absolute;
@@ -196,7 +195,7 @@ section {
         position: absolute;
         border-style: solid;
         border-width: @dialog-gap;
-        border-color: rgb(226, 226, 226) transparent transparent transparent;
+        border-color: var(--sidePanel-Bg) transparent transparent transparent;
       }
     }
   }

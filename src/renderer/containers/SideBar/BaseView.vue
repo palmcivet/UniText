@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">
+    <div class="header">
       <slot v-if="isBlank" name="blank-title" />
       <slot v-else name="view-title" />
     </div>
@@ -28,13 +28,12 @@ export default class Base extends Vue {
 div {
   height: 100%;
 
-  .title {
+  .header {
     display: flex;
-    height: @sidebar-header-height;
-    z-index: 999;
-    color: #474747;
-    background-color: rgb(235, 238, 225);
-    box-shadow: 0px 1px 5px rgba(222, 241, 185, 0.6);
+    height: @sideBar-header-height;
+    line-height: @sideBar-header-height;
+    color: var(--sideBarHeader-Fg);
+    background: var(--sideBarHeader-Bg);
 
     > span {
       margin-left: 1em;
@@ -42,17 +41,17 @@ div {
     }
 
     > i {
-      line-height: @sidebar-header-height;
+      line-height: @sideBar-header-height;
       cursor: pointer;
     }
 
     * {
-      -webkit-user-select: none;
+      user-select: none;
     }
   }
 
   .view {
-    height: calc(100% - @sidebar-header-height);
+    height: calc(100% - @sideBar-header-height);
     position: relative;
 
     ul {

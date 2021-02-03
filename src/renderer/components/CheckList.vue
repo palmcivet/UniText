@@ -38,9 +38,7 @@ export default class CheckList extends Vue {
 
   @Prop({
     type: Object,
-    default: () => ({
-      backgroundColor: "#d7e8a1",
-    }),
+    required: true,
   })
   activeStyle!: object;
 }

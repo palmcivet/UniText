@@ -1,6 +1,4 @@
-@primary-color: #555;
-@primary-bg: #f7f6f6;
-@primary-fg: #e1ebc5b3;
+/* -------------------------- Fonts -------------------------- */
 
 @interface-font-family: "PingFang SC", "-apple-system", "SF UI Text", "Lucida Grande",
   "STheiti", "Microsoft YaHei", "sans-serif";
@@ -9,64 +7,39 @@
 @code-font-family: "Source Code Pro", "Monaco", "Consolas", "Menlo", "Courier New",
   "monospace";
 
-/* General */
-#button-style {
-  cursor: pointer;
-  color: whitesmoke;
-  background-color: #bbd457;
-  box-shadow: 3px 3px 6px #deeeb7b3;
-  outline-style: none;
-  border-radius: 2px;
-  border-color: transparent;
-  -webkit-user-select: none;
-}
+/* -------------------------- Layout --------------------------*/
 
-/* Layout */
-@layout-top-bar: 22px;
-@layout-leftSide-left-column: 45px;
-@layout-leftSide-right-column: 180px;
+@layout-titleBar-height: 22px;
+@layout-statusBar-height: 24px;
+@layout-leftSide-left-width: 45px;
+@layout-leftSide-right-width: 180px;
 @layout-rightSide-bar: 150px;
-@layout-bottom-bar: 24px;
+
+/* -------------------------- Appearance -------------------------- */
+
+/* TitleBar */
+@titleBar-font-size: 13px;
 
 /* SideBar */
-@sidebar-header-height: 20px;
-@sidebar-item-height: 1.3rem;
+@sideBar-header-height: 25px;
+@sideBar-item-height: 1.5rem;
+
+/* TabBar */
+@tabBar-height: 25px;
+@tabBar-underline-width: 1px;
 
 /* WorkBench */
 @preview-font-size: 15px;
 
-/* TabBar */
-@tab-height: 25px;
-@tab-boxshadow: 1px;
+/* StatusBar */
 
-/* ResizeBar */
-@resize-bar: 1px solid rgba(216, 216, 216, 0.4); // DEV
+/* -------------------------- Widgets -------------------------- */
 
-#resize-style {
-  width: 1.5px;
-  height: 100%;
-  cursor: col-resize;
-
-  &:hover {
-    background-color: rgba(216, 216, 216, 0.4);
-  }
-}
+/* ScrollBar */
+@scrollBar-width: 8px;
 
 /* SidePanel */
 @span-major: 1.4rem;
 @span-minor: 1rem;
 @span-common: 0.8rem;
 @span-remark: 0.7rem;
-
-#block-style {
-  margin: 4px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 2px 3px 2px rgb(243, 245, 239);
-
-  span {
-    -webkit-user-select: none;
-    font-size: @span-common;
-  }
-}

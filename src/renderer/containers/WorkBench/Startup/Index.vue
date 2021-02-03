@@ -26,7 +26,7 @@ div {
   height: 100%;
   align-items: center;
   justify-content: space-around;
-  -webkit-user-select: none;
+  user-select: none;
 
   & > span {
     font-size: 1.8em;
