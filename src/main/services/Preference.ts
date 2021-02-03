@@ -6,7 +6,7 @@ import { joinPath } from "@/common/fileSystem";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
 import { UNITEXT_SYSTEM } from "@/main/config";
-import schema from "@/main/config/schemaPreference";
+import schema from "@/main/schema/sPreference";
 import { IPreference, TPreferenceSet } from "@/typings/bootstrap";
 import logger from "./Logger";
 

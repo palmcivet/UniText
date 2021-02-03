@@ -48,7 +48,7 @@ export default class ActivityBar extends Vue {
   @Prop({ type: Number, required: true })
   sideWidth!: number;
 
-  @general.State((state: IGeneralState) => state.appearance.showSideBar)
+  @general.State((state: IGeneralState) => state.userInterface.showSideBar)
   isShowSide!: boolean;
 
   @general.Mutation("TOGGLE_SIDE_BAR")

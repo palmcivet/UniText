@@ -1,6 +1,7 @@
+import { localesCommon } from "./iCommon";
 export const localesView = {
   sidebar: {
-    files: ["文件"],
+    files: localesCommon.files,
     files_title: ["文件管理"],
     files_empty: ["无打开的文件夹"],
     files_toggle: ["收起"],
@@ -11,10 +12,14 @@ export const localesView = {
     notes: ["便签"],
     schedule: ["日程"],
     settings: ["设置"],
-    settings_preference: ["首选项"],
-    settings_keybinding: ["键映射"],
-    settings_snippet: ["代码片段"],
-    settings_theme: ["主题"],
+    settings_preference: localesCommon.preference,
+    settings_keybinding: localesCommon.keybinding,
+    settings_snippet: localesCommon.snippet,
+    settings_theme: localesCommon.theme,
+    settings_theme_appearence: localesCommon.appearence,
+    settings_theme_editor: localesCommon.editor,
+    settings_theme_view: localesCommon.view,
+    settings_theme_icon: localesCommon.icon,
   },
 
   panel: {

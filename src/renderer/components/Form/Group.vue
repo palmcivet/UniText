@@ -56,6 +56,7 @@ export default class Group extends Vue {
   > .items {
     > * {
       padding: 0.5em 0 0.5em 20px;
+      user-select: none;
 
       &:hover {
         cursor: pointer;

@@ -28,7 +28,7 @@ import INFO from "./Info.vue";
 import EXPORT from "./Export.vue";
 import { $ } from "@/common/utils";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EPanelType } from "@/typings/preference";
+import { EPanelType } from "@/typings/service/preference";
 
 const general = namespace("general");
 
@@ -47,13 +47,13 @@ export default class SidePanel extends Vue {
   })
   fixed!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  @general.State((state: IGeneralState) => state.userInterface.showPanel)
   showPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.panelFloat)
+  @general.State((state: IGeneralState) => state.userInterface.panelFloat)
   panelFloat!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.panelType)
+  @general.State((state: IGeneralState) => state.userInterface.panelType)
   panelType!: EPanelType;
 
   get arrowPos() {

@@ -10,9 +10,17 @@ export class Keybinding {
       /* system */
       ["system.about", ""],
       ["system.check", ""],
-      ["system.settings", ""],
+      ["system.preference", "CmdOrCtrl+,"],
       ["system.keybinding", ""],
+      ["system.keybinding.default", ""],
+      ["system.keybinding.user", ""],
       ["system.snippet", ""],
+      ["system.snippet.view", ""],
+      ["system.snippet.create", ""],
+      ["system.theme.appearance", ""],
+      ["system.theme.editor", ""],
+      ["system.theme.view", ""],
+      ["system.theme.icon", ""],
       ["system.quit", "CmdOrCtrl+Q"],
 
       /* file */

@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import { schemaPreference } from "@/main/config/schemaPreference";
+import { schemaPreference } from "@/main/schema/sPreference";
 import Group from "@/renderer/components/Form/Group.vue";
 
 @Component({

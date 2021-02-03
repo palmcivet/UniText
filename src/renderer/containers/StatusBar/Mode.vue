@@ -20,7 +20,7 @@ import { Vue, Component } from "vue-property-decorator";
 
 import { IPC_OTHER } from "@/common/channel/ipc";
 import CheckItem from "@/renderer/components/CheckItem.vue";
-import { EEditMode } from "@/typings/preference";
+import { EEditMode } from "@/typings/service/preference";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
@@ -32,13 +32,13 @@ const general = namespace("general");
   },
 })
 export default class Mode extends Vue {
-  @general.State((state: IGeneralState) => state.appearance.editMode)
+  @general.State((state: IGeneralState) => state.userInterface.editMode)
   editMode!: EEditMode;
 
-  @general.State((state: IGeneralState) => state.appearance.dbColumn)
+  @general.State((state: IGeneralState) => state.userInterface.dbColumn)
   dbColumn!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.readMode)
+  @general.State((state: IGeneralState) => state.userInterface.readMode)
   readMode!: boolean;
 
   @general.Mutation("TOGGLE_CHECK")

@@ -6,7 +6,7 @@ import { IPC_OTHER } from "@/common/channel/ipc";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EEditMode, EPanelType, ETypeMode } from "@/typings/preference";
+import { EEditMode, EPanelType, ETypeMode } from "@/typings/service/preference";
 
 const state = {};
 
@@ -18,39 +18,39 @@ const mutations: MutationTree<IGeneralState> = {
   },
 
   TOGGLE_SIDE_BAR: (_: IGeneralState) => {
-    _.appearance.showSideBar = !_.appearance.showSideBar;
+    _.userInterface.showSideBar = !_.userInterface.showSideBar;
   },
 
   TOGGLE_STATUS_BAR: (_: IGeneralState) => {
-    _.appearance.showStatusBar = !_.appearance.showStatusBar;
+    _.userInterface.showStatusBar = !_.userInterface.showStatusBar;
   },
 
   TOGGLE_CHECK: (_: IGeneralState) => {
-    _.appearance.dbColumn = !_.appearance.dbColumn;
+    _.userInterface.dbColumn = !_.userInterface.dbColumn;
   },
 
   TOGGLE_PANEL: (_: IGeneralState) => {
-    _.appearance.showPanel = !_.appearance.showPanel;
+    _.userInterface.showPanel = !_.userInterface.showPanel;
   },
 
   TOGGLE_PANEL_STYLE: (_: IGeneralState) => {
-    _.appearance.panelFloat = !_.appearance.panelFloat;
+    _.userInterface.panelFloat = !_.userInterface.panelFloat;
   },
 
   SET_PANEL_TYPE: (_: IGeneralState, type: EPanelType) => {
-    _.appearance.panelType = type;
+    _.userInterface.panelType = type;
   },
 
   SET_READ_MODE: (_: IGeneralState, mode: boolean) => {
-    _.appearance.readMode = mode;
+    _.userInterface.readMode = mode;
   },
 
   SET_TYPE_MODE: (_: IGeneralState, mode: ETypeMode) => {
-    _.appearance.typeMode = mode;
+    _.userInterface.typeMode = mode;
   },
 
   SET_EDIT_MODE: (_: IGeneralState, mode: EEditMode) => {
-    _.appearance.editMode = mode;
+    _.userInterface.editMode = mode;
   },
 };
 

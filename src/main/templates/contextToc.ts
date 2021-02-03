@@ -1,7 +1,7 @@
-import { Keybinding } from "@/main/modules/Keybinding";
-import { localesMenu } from "@/main/i18n/menu";
-import { TMenuTemplate } from "@/typings/bootstrap";
-import { EI18n } from "@/typings/preference";
+import { Keybinding } from "@/main/services/Keybinding";
+import { localesMenu } from "@/main/i18n/iMenu";
+import { TMenuTemplate } from "@/typings/service/menu";
+import { EI18n } from "@/typings/service/preference";
 
 export const toc = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {

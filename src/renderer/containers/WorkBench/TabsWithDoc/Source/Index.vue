@@ -19,7 +19,10 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 import * as monacoMarkdown from "monaco-markdown";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import {
+  editor as MonacoEditor,
+  IScrollEvent,
+} from "monaco-editor/esm/vs/editor/editor.api";
 import Prism from "prismjs";
 
 import { debounce, $, notEmpty } from "@/common/utils";
@@ -30,7 +33,7 @@ import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EPanelType } from "@/typings/preference";
+import { EPanelType } from "@/typings/service/preference";
 import { theme } from "./theme";
 import { init } from "./option";
 
@@ -49,13 +52,13 @@ export default class Source extends Vue {
   @statusPanel.State("toc")
   tocTree!: Array<ITocList>;
 
-  @general.State((state: IGeneralState) => state.appearance.dbColumn)
+  @general.State((state: IGeneralState) => state.userInterface.dbColumn)
   dbColumn!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.readMode)
+  @general.State((state: IGeneralState) => state.userInterface.readMode)
   isReadMode!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.panelType)
+  @general.State((state: IGeneralState) => state.userInterface.panelType)
   panelType!: EPanelType;
 
   @general.Mutation("SET_READ_MODE")
@@ -70,9 +73,9 @@ export default class Source extends Vue {
   @workBench.Action("SAVE_FILE")
   SAVE_FILE!: (content: string) => void;
 
-  editor!: monaco.editor.IStandaloneCodeEditor;
+  editor!: MonacoEditor.IStandaloneCodeEditor;
 
-  modelStack: { [key: string]: monaco.editor.IModel } = {};
+  modelStack: { [key: string]: MonacoEditor.IModel } = {};
 
   refPreview!: HTMLElement;
 
@@ -89,7 +92,7 @@ export default class Source extends Vue {
     let mod = this.modelStack[newValue.order];
 
     if (!mod) {
-      mod = monaco.editor.createModel(newValue.value.content, "markdown-math");
+      mod = MonacoEditor.createModel(newValue.value.content, "markdown-math");
       this.modelStack[newValue.order] = mod;
     }
 
@@ -122,7 +125,7 @@ export default class Source extends Vue {
   }
 
   handleRevealSection(value: Array<number>) {
-    this.editor.revealLineInCenter(value[1], monaco.editor.ScrollType.Smooth);
+    this.editor.revealLineInCenter(value[1], MonacoEditor.ScrollType.Smooth);
     this.editor.setPosition({ column: 1, lineNumber: value[1] });
   }
 
@@ -141,11 +144,11 @@ export default class Source extends Vue {
     this.refEditor = $("#markdown-editor");
     this.refPreview = $("#markdown-preview");
 
-    monaco.editor.defineTheme("CyanLight", theme);
+    MonacoEditor.defineTheme("CyanLight", theme);
 
-    this.editor = monaco.editor.create(this.refEditor, init);
+    this.editor = MonacoEditor.create(this.refEditor, init);
 
-    this.modelStack[this.currentIndex] = monaco.editor.createModel(
+    this.modelStack[this.currentIndex] = MonacoEditor.createModel(
       this.currentFile.value.content,
       "markdown-math"
     );
@@ -180,7 +183,7 @@ export default class Source extends Vue {
       let currentHeadElement: HTMLElement | null = null; // 当前预览区最高的完整标题元素
 
       /* 编辑区滚动条变化触发函数 */
-      this.editor.onDidScrollChange((e: monaco.IScrollEvent) => {
+      this.editor.onDidScrollChange((e: IScrollEvent) => {
         if (!this.dbColumn) return;
 
         topPosition = this.editor.getScrollTop();

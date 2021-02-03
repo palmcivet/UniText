@@ -29,7 +29,7 @@ import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { IBootArgs } from "@/typings/bootstrap";
-import { EI18n, IPreferenceSystem } from "@/typings/preference";
+import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
 
 const general = namespace("general");
 
@@ -44,10 +44,10 @@ const general = namespace("general");
   },
 })
 export default class Main extends Vue {
-  @general.State((state: IGeneralState) => state.appearance.showSideBar)
+  @general.State((state: IGeneralState) => state.userInterface.showSideBar)
   isShowSide!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  @general.State((state: IGeneralState) => state.userInterface.showPanel)
   isShowPanel!: boolean;
 
   leftViewWidth = 200;
@@ -90,7 +90,7 @@ export default class Main extends Vue {
       ...ipcRenderer.sendSync(
         IPC_PREFERENCE.GET_ITEM_SYNC,
         "system",
-        "appearance",
+        "userInterface",
         "fileManager",
         "editor",
         "document",

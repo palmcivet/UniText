@@ -15,8 +15,7 @@
     "postinstall": "electron-builder install-app-deps",
     "electron:serve": "vue-cli-service electron:serve",
     "release:mac": "vue-cli-service electron:build --mac dmg",
-    "release:win": "vue-cli-service electron:build --win nsis",
-    "release:all": "vue-cli-service electron:build --mac dmg --win nsis --linux deb rpm"
+    "release:all": "vue-cli-service electron:build"
   },
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^4.0.0",

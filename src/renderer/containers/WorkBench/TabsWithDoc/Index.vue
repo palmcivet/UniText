@@ -36,7 +36,7 @@ import Draggable from "vuedraggable";
 import Source from "./Source/Index.vue";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { ITab } from "@/typings/vuex/workBench";
-import { EMenuContextKey } from "@/typings/bootstrap";
+import { EMenuContextKey } from "@/typings/service/menu";
 
 const workBench = namespace("workBench");
 

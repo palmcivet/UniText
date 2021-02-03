@@ -7,40 +7,28 @@ module.exports = {
       entry: path.join(__dirname, "src/renderer/index.ts"),
     },
   },
-  css: {
-    loaderOptions: {
-      less: {
-        lessOptions: {
-          javascriptEnabled: true,
-        },
-      },
-    },
-  },
   configureWebpack: {
     devtool: "source-map",
   },
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
+      externals: ["fs"],
+      nodeModulesPath: ["node_modules"],
       disableMainProcessTypescript: false,
       mainProcessTypeChecking: false,
       mainProcessFile: "src/main/index.ts",
       outputDir: "dist",
       builderOptions: {
         productName: "UniText",
-        win: {
-          target: [
-            {
-              target: "nsis",
-              arch: ["ia32", "x64"],
-            },
-          ],
+        appId: "com.github.unitext",
+        directories: {
+          buildResources: "resources",
         },
-        mac: {},
-        linux: {
-          target: [{ target: "AppImage" }, { target: "deb" }, { target: "snap" }],
+        electronDownload: {
+          mirror: "https://npm.taobao.org/mirrors/electron/",
         },
-        asar: false,
+        asar: true,
         nsis: {
           oneClick: false,
           allowElevation: true,
@@ -49,7 +37,38 @@ module.exports = {
           createStartMenuShortcut: true,
           shortcutName: "UniText",
         },
-        publish: ["github"],
+        mac: {
+          target: "dmg",
+          darkModeSupport: true,
+        },
+        win: {
+          target: [
+            {
+              target: "zip",
+              arch: ["ia32", "x64"],
+            },
+            {
+              target: "msi",
+              arch: ["ia32", "x64"],
+            },
+          ],
+        },
+        linux: {
+          target: [
+            {
+              target: "deb",
+            },
+            {
+              target: "rpm",
+            },
+            {
+              target: "AppImage",
+            },
+            {
+              target: "snap",
+            },
+          ],
+        },
       },
     },
   },

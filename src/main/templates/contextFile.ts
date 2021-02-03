@@ -1,11 +1,11 @@
 import { BrowserWindow } from "electron";
 
 import { IPC_FILE } from "@/common/channel/ipc";
-import { localesMenu } from "@/main/i18n/menu";
-import { Keybinding } from "@/main/modules/Keybinding";
+import { localesMenu } from "@/main/i18n/iMenu";
+import { Keybinding } from "@/main/services/Keybinding";
 import { Bus } from "@/renderer/plugins/VueBus";
-import { TMenuTemplate } from "@/typings/bootstrap";
-import { EI18n } from "@/typings/preference";
+import { TMenuTemplate } from "@/typings/service/menu";
+import { EI18n } from "@/typings/service/preference";
 
 export const file = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {

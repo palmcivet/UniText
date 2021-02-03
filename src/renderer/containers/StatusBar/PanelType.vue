@@ -13,7 +13,7 @@ import { namespace } from "vuex-class";
 
 import CheckList from "@/renderer/components/CheckList.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EPanelType } from "@/typings/preference";
+import { EPanelType } from "@/typings/service/preference";
 
 const general = namespace("general");
 
@@ -24,10 +24,10 @@ const general = namespace("general");
   },
 })
 export default class PanelType extends Vue {
-  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  @general.State((state: IGeneralState) => state.userInterface.showPanel)
   showPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.panelType)
+  @general.State((state: IGeneralState) => state.userInterface.panelType)
   panelType!: EPanelType;
 
   @general.Mutation("SET_PANEL_TYPE")

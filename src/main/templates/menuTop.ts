@@ -2,10 +2,10 @@ import { app, BrowserWindow, shell } from "electron";
 
 import { isOsx } from "@/common/env";
 import { IPC_FILE, IPC_OTHER } from "@/common/channel/ipc";
-import { Keybinding } from "@/main/modules/Keybinding";
-import { localesMenu } from "@/main/i18n/menu";
-import { TMenuTemplate } from "@/typings/bootstrap";
-import { EI18n } from "@/typings/preference";
+import { Keybinding } from "@/main/services/Keybinding";
+import { localesMenu } from "@/main/i18n/iMenu";
+import { TMenuTemplate } from "@/typings/service/menu";
+import { EI18n } from "@/typings/service/preference";
 
 export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
   const menu: TMenuTemplate = [];
@@ -27,22 +27,64 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         },
         { type: "separator" },
         {
-          label: localesMenu.system.settings[locale],
+          label: localesMenu.system.preference[locale],
+          accelerator: keybinding.getItem("system.preference"),
+          click: (menu, win) => {},
+        },
+        {
+          label: localesMenu.system.theme[locale],
           submenu: [
             {
-              label: localesMenu.system.preference[locale],
-              accelerator: keybinding.getItem("system.preference"),
+              label: localesMenu.system.themeappearence[locale],
+              accelerator: keybinding.getItem("system.theme.appearance"),
               click: () => {},
             },
             {
-              label: localesMenu.system.keybinding[locale],
-              accelerator: keybinding.getItem("system.keybinding"),
+              label: localesMenu.system.themeeditor[locale],
+              accelerator: keybinding.getItem("system.theme.editor"),
               click: () => {},
             },
             {
-              label: localesMenu.system.snippet[locale],
-              accelerator: keybinding.getItem("system.snippet"),
+              label: localesMenu.system.themeview[locale],
+              accelerator: keybinding.getItem("system.theme.view"),
               click: () => {},
+            },
+            {
+              label: localesMenu.system.themeicon[locale],
+              accelerator: keybinding.getItem("system.theme.icon"),
+              click: () => {},
+            },
+          ],
+        },
+        {
+          label: localesMenu.system.keybinding[locale],
+          accelerator: keybinding.getItem("system.keybinding"),
+          submenu: [
+            {
+              label: localesMenu.system.keybindingdefault[locale],
+              accelerator: keybinding.getItem("system.keybinding.default"),
+              click: (menu, win) => {},
+            },
+            {
+              label: localesMenu.system.keybindinguser[locale],
+              accelerator: keybinding.getItem("system.keybinding.user"),
+              click: (menu, win) => {},
+            },
+          ],
+        },
+        {
+          label: localesMenu.system.snippet[locale],
+          accelerator: keybinding.getItem("system.snippet"),
+          submenu: [
+            {
+              label: localesMenu.system.snippetview[locale],
+              accelerator: keybinding.getItem("system.snippet.view"),
+              click: (menu, win) => {},
+            },
+            {
+              label: localesMenu.system.snippetcreate[locale],
+              accelerator: keybinding.getItem("system.snippet.create"),
+              click: (menu, win) => {},
             },
           ],
         },

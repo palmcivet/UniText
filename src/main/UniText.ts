@@ -1,14 +1,14 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, ipcMain, BrowserWindow, BrowserWindowConstructorOptions } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
 import { IPC_BOOTSTRAP } from "@/common/channel/ipc";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { Preference } from "./modules/Preference";
-import { Keybinding } from "./modules/Keybinding";
-import { MenuManager } from "./modules/MenuManager";
-import { EI18n, IPreferenceSystem } from "@/typings/preference";
+import { Preference } from "./services/Preference";
+import { Keybinding } from "./services/Keybinding";
+import { MenuManager } from "./services/MenuManager";
+import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
 import { IBootArgs } from "@/typings/bootstrap";
 
 export class UniText {
@@ -75,7 +75,7 @@ export class UniText {
 
     // FEAT 提取部分设置
 
-    const winOption: any = {
+    const winOption: BrowserWindowConstructorOptions = {
       width: 1294,
       height: 800,
       minWidth: 1000,
@@ -85,11 +85,10 @@ export class UniText {
         nodeIntegration: true,
         enableRemoteModule: true,
       },
-      titleBarStyle: "hidden" as
-        | "hidden"
-        | "default"
-        | "hiddenInset"
-        | "customButtonsOnHover",
+      vibrancy: "medium-light",
+      backgroundColor: "#52525200",
+      transparent: true,
+      titleBarStyle: "hidden",
     };
 
     let win: BrowserWindow | null = new BrowserWindow(winOption);

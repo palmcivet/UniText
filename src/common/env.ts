@@ -6,15 +6,16 @@ export const isLinux = process.platform === "linux";
 export const isDev = process.env.NODE_ENV !== "production";
 
 export const CONFIG_FOLDER = {
-  CONFIG: joinPath(".CONFIG", "sync", "settings"),
-  PICTURE: joinPath(".CONFIG", "sync", "pictures"),
-  CACHE_IMAGE: joinPath(".CONFIG", "cache", "image"),
-  CACHE_UNCATEGORY: joinPath(".CONFIG", "cache", "uncategory"),
+  CONFIG: joinPath(".CONFIG", "Settings"),
+  PICTURE: joinPath(".CONFIG", "Pictures"),
+  CACHE_IMAGE: joinPath(".CONFIG", "Cache", "Image"),
+  CACHE_UNCATEGORY: joinPath(".CONFIG", "Cache", "Uncategory"),
 };
 
 export const CONFIG_FILE = {
-  TAG: joinPath(".CONFIG", "sync", "tag.json"),
-  SNIPPET: joinPath(".CONFIG", "sync", "settings", "snippet.json"),
-  PREFERENCE: joinPath(".CONFIG", "sync", "settings", "preference.json"),
-  KEYBINDING: joinPath(".CONFIG", "sync", "settings", "keybinding.json"),
+  TAG: joinPath(".CONFIG", "tag.json"),
+  ICON: joinPath(".CONFIG", "icon.json"),
+  SNIPPET: joinPath(".CONFIG", "Settings", "snippet.json"),
+  PREFERENCE: joinPath(".CONFIG", "Settings", "preference.json"),
+  KEYBINDING: joinPath(".CONFIG", "Settings", "keybinding.json"),
 };

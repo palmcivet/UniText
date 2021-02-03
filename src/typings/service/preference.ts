@@ -1,4 +1,4 @@
-import { IDocumentConfig, IDocumentFormat } from "./document";
+import { IDocumentConfig, IDocumentFormat } from "../document";
 
 /**
  * @enum { EWindow } 窗口的打开方式
@@ -10,6 +10,8 @@ export enum EWindow {
 }
 
 /**
+ * TI18n 为其字符形式，方便修改
+ *
  * @enum { EI18n } i18n 类型
  */
 export enum EI18n {
@@ -116,7 +118,7 @@ export interface IPreferenceSystem {
 /**
  * @interface 界面的默认设置，加载时载入
  */
-export interface IPreferenceAppearance {
+export interface IPreferenceUserInterface {
   /**
    * @field 显示左侧边栏
    */

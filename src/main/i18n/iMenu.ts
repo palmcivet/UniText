@@ -1,12 +1,21 @@
+import { localesCommon } from "./iCommon";
+
 export const localesMenu = {
   system: {
     about: ["关于 UniText"],
     check: ["检查更新"],
-    settings: ["设置"],
-    preference: ["首选项"],
-    keybinding: ["快捷键"],
-    snippet: ["代码片段"],
-    theme: ["主题"],
+    preference: localesCommon.preference,
+    theme: localesCommon.theme,
+    themeappearence: localesCommon.appearence,
+    themeeditor: localesCommon.editor,
+    themeview: localesCommon.view,
+    themeicon: localesCommon.icon,
+    keybinding: localesCommon.keybinding,
+    keybindingdefault: ["默认设置"],
+    keybindinguser: ["用户设置"],
+    snippet: localesCommon.snippet,
+    snippetview: ["查看"],
+    snippetcreate: ["新建"],
     services: ["服务"],
     hide: ["隐藏"],
     hideothers: ["隐藏其他"],
@@ -15,7 +24,7 @@ export const localesMenu = {
   },
 
   file: {
-    label: ["文件"],
+    label: localesCommon.files,
     read: ["阅读"],
     edit: ["编辑"],
     save: ["保存"],

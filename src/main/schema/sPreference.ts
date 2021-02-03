@@ -8,12 +8,12 @@ import {
   ETypeMode,
   EMarkdownScheme,
   IPreferenceSystem,
-  IPreferenceAppearance,
+  IPreferenceUserInterface,
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
   IPreferenceMarkdown,
-} from "@/typings/preference";
+} from "@/typings/service/preference";
 
 const reduceType = (type: any) => {
   const resArr = [];
@@ -144,7 +144,7 @@ const system: IGroup<IPreferenceSystem> = {
   default: {},
 };
 
-const appearance: IGroup<IPreferenceAppearance> = {
+const userInterface: IGroup<IPreferenceUserInterface> = {
   type: "Group",
   title: ["界面"],
   description: ["界面的默认设置，加载时载入"],
@@ -341,7 +341,7 @@ type TSchema = {
 
 export const schemaPreference: TSchema = {
   system,
-  appearance,
+  userInterface,
   fileManager,
   editor,
   document,

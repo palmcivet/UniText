@@ -1,6 +1,6 @@
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 
-export const init: monaco.editor.IEditorConstructionOptions = {
+export const init: editor.IEditorConstructionOptions = {
   language: "markdown-math",
   fontSize: 16,
   theme: "CyanLight",

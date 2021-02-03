@@ -62,7 +62,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       // TODO 完善报错信息
       commit("information/SET_ERROR", "", { root: true });
     } else {
-      commit("general/SET_FOLDER", res.filePaths[0]);
+      commit("general/SET_FOLDER", res.filePaths[0], { root: true });
       dispatch("BUILD_TREE");
     }
   },

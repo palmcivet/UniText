@@ -22,7 +22,7 @@ const general = namespace("general");
   },
 })
 export default class PanelStyle extends Vue {
-  @general.State((state: IGeneralState) => state.appearance.panelFloat)
+  @general.State((state: IGeneralState) => state.userInterface.panelFloat)
   panelFloat!: boolean;
 
   @general.Mutation("TOGGLE_PANEL_STYLE")

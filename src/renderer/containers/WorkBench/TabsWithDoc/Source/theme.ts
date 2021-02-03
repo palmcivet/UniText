@@ -1,6 +1,6 @@
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 
-export const theme: monaco.editor.IStandaloneThemeData = {
+export const theme: editor.IStandaloneThemeData = {
   base: "vs",
   inherit: true,
   rules: [
@@ -56,7 +56,6 @@ export const theme: monaco.editor.IStandaloneThemeData = {
       fontStyle: "italic",
       token: "markup.italic",
     },
-    // ie bold/italic/heading/list marks
     {
       foreground: "999999",
       token: "punctuation.definition.constant.markdown",
@@ -125,7 +124,6 @@ export const theme: monaco.editor.IStandaloneThemeData = {
       foreground: "999999",
       token: "punctuation.definition.link.end.markdown",
     },
-
     {
       foreground: "b7791f",
       token: "support.constant.property-value",

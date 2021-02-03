@@ -29,7 +29,7 @@ import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EViewType } from "@/typings/vuex/workBench";
-import { EStartup } from "@/typings/preference";
+import { EStartup } from "@/typings/service/preference";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -45,10 +45,10 @@ const workBench = namespace("workBench");
   },
 })
 export default class WorkBench extends Vue {
-  @general.State((state: IGeneralState) => state.appearance.showPanel)
+  @general.State((state: IGeneralState) => state.userInterface.showPanel)
   isShowPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.appearance.panelFloat)
+  @general.State((state: IGeneralState) => state.userInterface.panelFloat)
   isPanelFloat!: boolean;
 
   @workBench.State("viewType")

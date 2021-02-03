@@ -14,7 +14,7 @@ Vue.use(Vuex);
 const mutations: MutationTree<IRootState> = {
   SET_STATE: (_: IRootState, msg: IPreference) => {
     Vue.set(_.general, "system", msg.system);
-    Vue.set(_.general, "appearance", msg.appearance);
+    Vue.set(_.general, "userInterface", msg.userInterface);
     Vue.set(_.general, "fileManager", msg.fileManager);
     Vue.set(_.general, "editor", msg.editor);
     Vue.set(_.general, "document", msg.document);
