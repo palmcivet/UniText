@@ -58,7 +58,7 @@ export default class SidePanel extends Vue {
 
   get arrowPos() {
     const o = $(`footer li[title=${this.$t("status." + this.panelType)}]`);
-    // @dialog-gap/2 - @right-gap
+    // DEV @dialog-gap/2 - @right-gap
     return $("body").offsetWidth - o.offsetLeft - o.offsetWidth + 8 / 2 - 10;
   }
 

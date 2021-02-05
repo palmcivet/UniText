@@ -9,7 +9,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       token:
         "punctuation.definition.delayed.unison,punctuation.definition.list.begin.unison,punctuation.definition.list.end.unison,punctuation.definition.ability.begin.unison,punctuation.definition.ability.end.unison,punctuation.operator.assignment.as.unison,punctuation.separator.pipe.unison,punctuation.separator.delimiter.unison,punctuation.definition.hash.unison",
     },
-    { foreground: "c678dd", token: "variable.other.generic-type.haskell" },
+    { foreground: "E06C75", token: "variable.other.generic-type.haskell" },
     { foreground: "d19a66", token: "storage.type.haskell" },
     { foreground: "e06c75", token: "support.variable.magic.python" },
     {
@@ -25,7 +25,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "61afef", token: "support.function.std.rust" },
     { foreground: "e5c07b", token: "entity.name.lifetime.rust" },
     { foreground: "e06c75", token: "variable.language.rust" },
-    { foreground: "c678dd", token: "support.constant.edge" },
+    { foreground: "E06C75", token: "support.constant.edge" },
     { foreground: "e06c75", token: "constant.other.character-class.regexp" },
     { foreground: "d19a66", token: "keyword.operator.quantifier.regexp" },
     {
@@ -68,7 +68,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       foreground: "e5c07b",
       token: "storage.modifier.import.java,storage.type.java,storage.type.generic.java",
     },
-    { foreground: "c678dd", token: "keyword.operator.instanceof.java" },
+    { foreground: "E06C75", token: "keyword.operator.instanceof.java" },
     { foreground: "e06c75", token: "meta.definition.variable.name.java" },
     { foreground: "56b6c2", token: "keyword.operator.logical" },
     { foreground: "56b6c2", token: "keyword.operator.bitwise" },
@@ -104,7 +104,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     },
     { foreground: "d19a66", token: "support.constant.json" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "keyword.operator.expression.instanceof, keyword.operator.new, keyword.operator.ternary, keyword.operator.optional, keyword.operator.expression.keyof",
     },
@@ -112,8 +112,8 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "d19a66", token: "support.variable.property.process" },
     { foreground: "61afef", token: "entity.name.function,support.function.console" },
     { foreground: "abb2bf", token: "keyword.operator.misc.rust" },
-    { foreground: "c678dd", token: "keyword.operator.sigil.rust" },
-    { foreground: "c678dd", token: "keyword.operator.delete" },
+    { foreground: "E06C75", token: "keyword.operator.sigil.rust" },
+    { foreground: "E06C75", token: "keyword.operator.delete" },
     { foreground: "56b6c2", token: "support.type.object.dom" },
     {
       foreground: "e06c75",
@@ -125,23 +125,23 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
         "keyword.operator.arithmetic,keyword.operator.comparison,keyword.operator.decrement,keyword.operator.increment,keyword.operator.relational",
     },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "keyword.operator.assignment.c,keyword.operator.comparison.c,keyword.operator.c,keyword.operator.increment.c,keyword.operator.decrement.c,keyword.operator.bitwise.shift.c,keyword.operator.assignment.cpp,keyword.operator.comparison.cpp,keyword.operator.cpp,keyword.operator.increment.cpp,keyword.operator.decrement.cpp,keyword.operator.bitwise.shift.cpp",
     },
     { foreground: "abb2bf", token: "punctuation.separator.delimiter" },
-    { foreground: "c678dd", token: "punctuation.separator.c,punctuation.separator.cpp" },
+    { foreground: "E06C75", token: "punctuation.separator.c,punctuation.separator.cpp" },
     {
       foreground: "56b6c2",
       token: "support.type.posix-reserved.c,support.type.posix-reserved.cpp",
     },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token: "keyword.operator.sizeof.c,keyword.operator.sizeof.cpp",
     },
     { foreground: "d19a66", token: "variable.parameter.function.language.python" },
     { foreground: "56b6c2", token: "support.type.python" },
-    { foreground: "c678dd", token: "keyword.operator.logical.python" },
+    { foreground: "E06C75", token: "keyword.operator.logical.python" },
     { foreground: "d19a66", token: "variable.parameter.function.python" },
     {
       foreground: "abb2bf",
@@ -154,20 +154,20 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       token: "constant.character.format.placeholder.other.python",
     },
     { foreground: "abb2bf", token: "keyword.operator" },
-    { foreground: "c678dd", token: "keyword.operator.assignment.compound" },
+    { foreground: "E06C75", token: "keyword.operator.assignment.compound" },
     {
       foreground: "56b6c2",
       token:
         "keyword.operator.assignment.compound.js,keyword.operator.assignment.compound.ts",
     },
-    { foreground: "c678dd", token: "keyword" },
+    { foreground: "E06C75", token: "keyword" },
     { foreground: "e5c07b", token: "entity.name.namespace" },
     { foreground: "e06c75", token: "variable" },
     { foreground: "abb2bf", token: "variable.c" },
     { foreground: "e5c07b", token: "variable.language" },
     { foreground: "abb2bf", token: "token.variable.parameter.java" },
     { foreground: "e5c07b", token: "import.storage.java" },
-    { foreground: "c678dd", token: "token.package.keyword" },
+    { foreground: "E06C75", token: "token.package.keyword" },
     { foreground: "abb2bf", token: "token.package" },
     {
       foreground: "61afef",
@@ -183,13 +183,13 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     },
     { foreground: "e06c75", token: "variable.other.class.php" },
     { foreground: "e5c07b", token: "entity.name.type" },
-    { foreground: "c678dd", token: "keyword.control" },
+    { foreground: "E06C75", token: "keyword.control" },
     { foreground: "d19a66", token: "control.elements, keyword.operator.less" },
     { foreground: "61afef", token: "keyword.other.special-method" },
-    { foreground: "c678dd", token: "storage" },
-    { foreground: "c678dd", token: "token.storage" },
+    { foreground: "E06C75", token: "storage" },
+    { foreground: "E06C75", token: "token.storage" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "keyword.operator.expression.delete,keyword.operator.expression.in,keyword.operator.expression.of,keyword.operator.expression.instanceof,keyword.operator.new,keyword.operator.expression.typeof,keyword.operator.expression.void",
     },
@@ -209,7 +209,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "d19a66", token: "entity.other.attribute-name" },
     { foreground: "61afef", token: "entity.other.attribute-name.id" },
     { foreground: "d19a66", token: "entity.other.attribute-name.class.css" },
-    { foreground: "c678dd", token: "meta.selector" },
+    { foreground: "E06C75", token: "meta.selector" },
     { foreground: "e06c75", token: "markup.heading" },
     {
       foreground: "61afef",
@@ -219,11 +219,15 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "d19a66", token: "markup.bold,todo.bold" },
     { foreground: "e5c07b", token: "punctuation.definition.bold" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token: "markup.italic, punctuation.definition.italic,todo.emphasis",
     },
-    { foreground: "c678dd", token: "emphasis md" },
-    { foreground: "e06c75", token: "entity.name.section.markdown, heading.3.markdown, markup.heading.markdown ,text.html.markdown" },
+    { foreground: "E06C75", token: "emphasis md" },
+    {
+      foreground: "e06c75",
+      token:
+        "entity.name.section.markdown, heading.3.markdown, markup.heading.markdown ,text.html.markdown",
+    },
     { foreground: "e06c75", token: "punctuation.definition.heading.markdown" },
     { foreground: "e06c75", token: "punctuation.definition.list.begin.markdown" },
     { foreground: "abb2bf", token: "markup.heading.setext" },
@@ -239,7 +243,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "e06c75", token: "beginning.punctuation.definition.list.markdown" },
     { foreground: "e06c75", token: "punctuation.definition.metadata.markdown" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token: "markup.underline.link.markdown,markup.underline.link.image.markdown",
     },
     {
@@ -253,7 +257,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       token: "punctuation.section.embedded, variable.interpolation",
     },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token: "punctuation.section.embedded.begin,punctuation.section.embedded.end",
     },
     { foreground: "ffffff", token: "invalid.illegal" },
@@ -283,12 +287,12 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "e06c75", token: "support.type.property-name.json" },
     { foreground: "e06c75", token: "support.type.property-name.json punctuation" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "text.html.laravel-blade source.php.embedded.line.html entity.name.tag.laravel-blade",
     },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "text.html.laravel-blade source.php.embedded.line.html support.constant.laravel-blade",
     },
@@ -297,8 +301,8 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       token:
         "support.other.namespace.use.php,support.other.namespace.use-as.php,support.other.namespace.php,entity.other.alias.php,meta.interface.php",
     },
-    { foreground: "c678dd", token: "keyword.operator.error-control.php" },
-    { foreground: "c678dd", token: "keyword.operator.type.php" },
+    { foreground: "E06C75", token: "keyword.operator.error-control.php" },
+    { foreground: "E06C75", token: "keyword.operator.type.php" },
     { foreground: "abb2bf", token: "punctuation.section.array.begin.php" },
     { foreground: "abb2bf", token: "punctuation.section.array.end.php" },
     { foreground: "f44747", token: "invalid.illegal.non-null-typehinted.php" },
@@ -329,10 +333,10 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       token:
         "keyword.operator.logical.php,keyword.operator.bitwise.php,keyword.operator.arithmetic.php",
     },
-    { foreground: "c678dd", token: "keyword.operator.regexp.php" },
+    { foreground: "E06C75", token: "keyword.operator.regexp.php" },
     { foreground: "56b6c2", token: "keyword.operator.comparison.php" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token: "keyword.operator.heredoc.php,keyword.operator.nowdoc.php",
     },
     { foreground: "61afef", token: "meta.function.decorator.python" },
@@ -359,14 +363,14 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "61afef", token: "token.info-token" },
     { foreground: "d19a66", token: "token.warn-token" },
     { foreground: "f44747", token: "token.error-token" },
-    { foreground: "c678dd", token: "token.debug-token" },
+    { foreground: "E06C75", token: "token.debug-token" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "punctuation.definition.template-expression.begin, punctuation.definition.template-expression.end, punctuation.section.embedded",
     },
     { foreground: "abb2bf", token: "meta.template.expression" },
-    { foreground: "c678dd", token: "keyword.operator.module" },
+    { foreground: "E06C75", token: "keyword.operator.module" },
     { foreground: "61afef", token: "support.type.type.flowtype" },
     { foreground: "e5c07b", token: "support.type.primitive" },
     { foreground: "e06c75", token: "meta.property.object" },
@@ -378,13 +382,13 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "56b6c2", token: "keyword.operator.assignment" },
     { foreground: "e5c07b", token: "keyword.operator.assignment.go" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token: "keyword.operator.arithmetic.go, keyword.operator.address.go",
     },
     { foreground: "e5c07b", token: "entity.name.package.go" },
     { foreground: "56b6c2", token: "support.type.prelude.elm" },
     { foreground: "d19a66", token: "support.constant.elm" },
-    { foreground: "c678dd", token: "punctuation.quasi.element" },
+    { foreground: "E06C75", token: "punctuation.quasi.element" },
     { foreground: "e06c75", token: "constant.character.entity" },
     {
       foreground: "56b6c2",
@@ -407,7 +411,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "98c379", token: "meta.definition.class.inherited.classes.groovy" },
     { foreground: "e5c07b", token: "support.variable.semantic.hlsl" },
     {
-      foreground: "c678dd",
+      foreground: "E06C75",
       token:
         "support.type.texture.hlsl, support.type.sampler.hlsl, support.type.object.hlsl, support.type.object.rw.hlsl, support.type.fx.hlsl, support.type.object.hlsl",
     },
@@ -416,7 +420,7 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
     { foreground: "e5c07b", token: "entity.name.function.xi" },
     { foreground: "56b6c2", token: "entity.name.class.xi" },
     { foreground: "e06c75", token: "constant.character.character-class.regexp.xi" },
-    { foreground: "c678dd", token: "constant.regexp.xi" },
+    { foreground: "E06C75", token: "constant.regexp.xi" },
     { foreground: "56b6c2", token: "keyword.control.xi" },
     { foreground: "abb2bf", token: "invalid.xi" },
     {
@@ -470,15 +474,15 @@ export const OneDarkPro: editor.IStandaloneThemeData = {
       token: "keyword.control.import.python,keyword.control.flow.python",
       fontStyle: "italic",
     },
-    { token: "markup.italic.markdown", fontStyle: "italic" },
+    { token: "markup.italic.markdown", fontStyle: "italic", foreground: "C678DD" },
   ],
   colors: {
-    "editor.background": "#282c3490",
+    "editor.background": "#282c34",
     "editor.foreground": "#abb2bf",
     "editor.findMatchBackground": "#42557b",
     "editor.findMatchBorder": "#457dff",
     "editor.findMatchHighlightBackground": "#6199ff2f",
-    "editor.lineHighlightBackground": "#2c313c90",
+    "editor.lineHighlightBackground": "#2c313c",
     "editor.selectionBackground": "#67769660",
     "editor.inactiveSelectionBackground": "#67769630",
     "editor.selectionHighlightBackground": "#ffffff10",

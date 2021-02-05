@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 const fs = require("fs");
 const path = require("path");
 
@@ -54,6 +52,7 @@ const parseTheme = (input) => {
     }
 
     const { tokenColors } = input;
+
     tokenColors.forEach((item) => {
       const sub = {};
 
@@ -94,6 +93,7 @@ const parseTheme = (input) => {
 (async function(argv) {
   if (argv.length === 2) {
     console.log("Missing input file");
+    console.log("Usage: node themePorting.js <one-dark-pro.json>");
     return;
   }
 

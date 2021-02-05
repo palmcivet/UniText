@@ -18,7 +18,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
-import * as monacoMarkdown from "monaco-markdown";
+import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import {
   editor as MonacoEditor,
   IScrollEvent,
@@ -153,7 +153,7 @@ export default class Source extends Vue {
       "markdown-math"
     );
 
-    const extension = new monacoMarkdown.MonacoMarkdownExtension();
+    const extension = new MonacoMarkdownExtension();
     extension.activate(this.editor);
 
     this.$nextTick(() => {

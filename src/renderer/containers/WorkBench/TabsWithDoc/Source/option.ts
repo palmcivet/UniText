@@ -1,6 +1,6 @@
 import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 
-export const init: editor.IEditorConstructionOptions = {
+const init: editor.IStandaloneEditorConstructionOptions = {
   language: "markdown-math",
   fontSize: 16,
   lineNumbers: "on",
@@ -33,3 +33,7 @@ export const init: editor.IEditorConstructionOptions = {
   fontFamily:
     "Source Code Pro, STZhongSong, PingFang SC, SF UI Text, STheiti, Microsoft YaHei, sans-serif",
 };
+
+init["semanticHighlighting.enabled"] = true;
+
+export { init };
