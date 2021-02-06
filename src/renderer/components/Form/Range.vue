@@ -7,7 +7,7 @@
     </div>
     <div class="option" :title="properties.description">
       <label>{{ $g(properties.title) }}</label>
-      <input type="text" />
+      <input type="text" :value="val" />
     </div>
   </div>
 </template>
@@ -25,6 +25,9 @@ export default class Range extends Vue {
 
   @Prop({ type: String, required: true })
   field!: string;
+
+  @Prop({ type: Number, default: false })
+  val!: number;
 }
 </script>
 

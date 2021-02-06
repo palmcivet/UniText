@@ -1,21 +1,26 @@
 <template>
   <div class="setting">
-    <div class="operate">
+    <div class="operate-bar">
+      <button class="unitext-button" @click="handleLoad()">载入设置</button>
       <button class="unitext-button" @click="handleReveal()">存储位置</button>
       <button class="unitext-button" @click="handleClose()">关闭</button>
     </div>
 
-    <Preference class="type" />
+    <Preference v-if="settingType === 0" class="data-form" />
+    <Theme v-if="settingType === 1" class="data-form" />
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
 
+import Theme from "./Theme.vue";
 import Preference from "./Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
-import { ESettingType, EWorkBenchType } from "@/typings/vuex/workBench";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
+import { ESettingType, EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
 
 const workBench = namespace("workBench");
 
@@ -23,14 +28,24 @@ const workBench = namespace("workBench");
   name: "Setting",
   components: {
     Preference,
+    Theme,
   },
 })
 export default class Setting extends Vue {
+  @workBench.State((state: IWorkBenchState) => state.settingType)
+  settingType!: ESettingType;
+
   @workBench.Mutation("SET_VIEW")
   SET_VIEW!: (type: EWorkBenchType) => void;
 
   @workBench.Mutation("SWITCH_SETTING")
   SWITCH_SETTING!: (type: ESettingType) => void;
+
+  handleLoad() {
+    this.$store.commit("SET_STATE", {
+      ...ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC),
+    });
+  }
 
   handleReveal() {}
 
@@ -62,13 +77,7 @@ export default class Setting extends Vue {
   display: flex;
   flex-direction: column;
 
-  > .type {
-    overflow-y: auto;
-    height: 100%;
-    padding-top: 2em;
-  }
-
-  > .operate {
+  .operate-bar {
     width: calc(100% - @scrollBar-width);
     top: 0;
     right: @scrollBar-width;
@@ -82,6 +91,12 @@ export default class Setting extends Vue {
       margin: 0 0.5em 0.5em 0;
       padding: 0.3em 0.4em;
     }
+  }
+
+  .data-form {
+    overflow-y: auto;
+    height: 100%;
+    padding-top: 2em;
   }
 }
 </style>

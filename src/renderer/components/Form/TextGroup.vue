@@ -7,7 +7,13 @@
     </div>
     <div class="option" :title="properties.description">
       <label>{{ $g(properties.title) }}</label>
-      <input type="text" />
+      <li v-for="(v, i) in val" :key="i">{{ v }}</li>
+      <div v-if="!isAddItem" @click="isAddItem = true">添加</div>
+      <div v-else>
+        <input type="text" />
+        <button @click="handleSubmit()">确定</button>
+        <button @click="isAddItem = false">取消</button>
+      </div>
     </div>
   </div>
 </template>
@@ -25,6 +31,15 @@ export default class TextGroup extends Vue {
 
   @Prop({ type: String, required: true })
   field!: string;
+
+  @Prop({ type: Array, default: false })
+  val!: Array<string>;
+
+  isAddItem = false;
+
+  handleSubmit() {
+    this.isAddItem = false;
+  }
 }
 </script>
 

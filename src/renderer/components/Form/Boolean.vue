@@ -6,7 +6,7 @@
       <span>{{ field }}</span>
     </div>
     <div class="option" :title="properties.description">
-      <input type="checkbox" :checked="val" @click="handleClick()" />
+      <input type="checkbox" :checked="val" @change="handleCheck()" />
       <label>{{ $g(properties.title) }}</label>
     </div>
   </div>
@@ -29,10 +29,9 @@ export default class Boolean extends Vue {
   @Prop({ type: Boolean, default: false })
   val!: boolean;
 
-  handleClick() {
+  handleCheck() {
+    this.$emit("item-change", [this.group, this.field, !this.val]);
   }
-
-  handleCheck() {}
 }
 </script>
 

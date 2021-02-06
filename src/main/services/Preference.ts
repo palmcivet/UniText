@@ -45,8 +45,6 @@ export class Preference {
   }
 
   private _listenForIpcMain() {
-    ipcMain.on(IPC_PREFERENCE.LOAD, () => {});
-
     ipcMain.on(IPC_PREFERENCE.SET_ITEM, (event, key: string, val: any) => {
       this._preferenceSet.set(key, val);
     });

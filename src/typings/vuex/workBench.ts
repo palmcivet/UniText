@@ -51,9 +51,9 @@ export enum EWorkBenchType {
  */
 export enum ESettingType {
   PREFERENCE,
+  THEME,
   KEYBINDING,
   SNIPPET,
-  THEME,
 }
 
 export interface IWorkBenchState {

@@ -10,7 +10,7 @@
         :group="field"
         :field="k"
         :val="getVal(field, k)"
-        @pref-change="handleChange($event)"
+        @item-change="$emit('item-submit', $event)"
       />
     </div>
   </div>
@@ -24,7 +24,6 @@ import Boolean from "./Boolean.vue";
 import DropDown from "./DropDown.vue";
 import TextBox from "./TextBox.vue";
 import TextGroup from "./TextGroup.vue";
-import { deepGet } from "@/common/utils";
 
 @Component({
   name: "Group",
@@ -47,7 +46,7 @@ export default class Group extends Vue {
   field!: string;
 
   getVal(g: string, f: string) {
-    return deepGet(this.userData, `${g}.${f}`);
+    return this.userData[g][f];
   }
 }
 </script>

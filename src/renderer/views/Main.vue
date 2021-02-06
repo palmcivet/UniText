@@ -3,7 +3,7 @@
     <TitleBar v-show="showTitle" />
     <main>
       <ActivityBar />
-      <SideBar :style="{ width: `${finalLeftWidth}px` }" />
+      <SideBar :style="{ width: `${finalLeftWidth - 2}px` }" />
       <span class="unitext-resize" v-show="isShowSide" ref="leftResize" />
       <WorkBench :style="{ width: centerWidth }" />
     </main>

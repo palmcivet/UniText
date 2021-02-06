@@ -7,29 +7,48 @@
       :userData="userData"
       :properties="v"
       :field="k"
+      @item-submit="handleSubmit($event)"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { namespace } from "vuex-class";
+import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 
+import { debounce } from "@/common/utils";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { schemaPreference } from "@/main/schema/sPreference";
 import Group from "@/renderer/components/Form/Group.vue";
-import { IGeneralState } from "@/typings/vuex/general";
-
-const general = namespace("general");
 
 @Component({
   name: "Preference",
   components: { Group },
 })
 export default class Preference extends Vue {
-  @general.State((state: IGeneralState) => state)
-  userData!: IGeneralState;
-
   schema = schemaPreference;
+
+  userData: any;
+
+  data() {
+    return {
+      userData: {},
+    };
+  }
+
+  setVal(g: string, f: string, v: any) {
+    this.userData[g][f] = v;
+  }
+
+  handleSubmit = debounce((val: [string, string, any]) => {
+    const [g, f, v] = val;
+    this.setVal(g, f, v);
+    ipcRenderer.send(IPC_PREFERENCE.SET_ITEM, `${g}.${f}`, v);
+  }, 200);
+
+  created() {
+    this.userData = ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC);
+  }
 }
 </script>
 
