@@ -17,12 +17,10 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
 import { BUS_UI } from "@/common/channel/bus";
-import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import Startup from "@/renderer/containers/WorkBench/Startup/Index.vue";
 import Setting from "@/renderer/containers/WorkBench/Setting/Index.vue";
@@ -52,6 +50,9 @@ export default class WorkBench extends Vue {
   @general.State((state: IGeneralState) => state.userInterface.panelFloat)
   isPanelFloat!: boolean;
 
+  @general.State((state: IGeneralState) => state.system.startup)
+  startup!: EStartup;
+
   @workBench.State((state: IWorkBenchState) => state.workBenchType)
   workBenchType!: EWorkBenchType;
 
@@ -65,8 +66,7 @@ export default class WorkBench extends Vue {
   }
 
   created() {
-    const res = ipcRenderer.sendSync(IPC_PREFERENCE.GET_ITEM_SYNC, "system.startup");
-    if (res["system.startup"] === EStartup.CREATE) {
+    if (this.startup === EStartup.CREATE) {
       this.NEW_FILE();
     }
   }

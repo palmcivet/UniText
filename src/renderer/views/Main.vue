@@ -87,15 +87,7 @@ export default class Main extends Vue {
     ipcRenderer.send(IPC_BOOTSTRAP.FETCH);
 
     commit("SET_STATE", {
-      ...ipcRenderer.sendSync(
-        IPC_PREFERENCE.GET_ITEM_SYNC,
-        "system",
-        "userInterface",
-        "fileManager",
-        "editor",
-        "document",
-        "markdown"
-      ),
+      ...ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC),
     });
 
     dispatch("SET_THEME");

@@ -39,7 +39,7 @@
   --tabBar-inactiveBg: #21252b;
   --tabBar-inactiveFg: #dcdcdc80;
   --tabBarRightBorder-Color: #181a1f;
-  --tabBarUnderline-Color: #57c0b6;
+  --tabBarUnderline-Color: #2d77f6;
   --tabBar-hoverBg: #323842;
   --tabBarShadow-Color: #0b0d0f;
   --tabBarClose-hoverFg: #323842;
@@ -49,7 +49,7 @@
   --statusBar-Fg: #9da5b4;
   --statusBar-hoverBg: #2c313a;
   --statusBar-hoverFg: #ccd2dd;
-  --statusBar-activeBg: #45ada3;
+  --statusBar-activeBg: #2d77f6;
   --statusBar-activeFg: #ccd2dd;
 
   --workBench-Bg: #282c34;
@@ -62,7 +62,7 @@
 
   --formGroupTitle-Bg: var(--workBench-Bg);
   --formGroupTitle-Fg: var(--workBench-Fg);
-  --formGroupTitleBorder-Color: #bbd457;
+  --formGroupTitleBorder-Color: #2d77f6;
   --formGroup-hoverBg: #80808012;
   --formGroup-hoverFg: #ccd2dd;
 }

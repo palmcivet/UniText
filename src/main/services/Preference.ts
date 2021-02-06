@@ -35,7 +35,7 @@ export class Preference {
       schema: schema as Store.Schema<IPreference>,
     });
 
-    this._preferenceSet.set("files.folderDir", base);
+    this._preferenceSet.set("fileManager.folderDir", base);
 
     this._listenForIpcMain();
   }
@@ -47,8 +47,8 @@ export class Preference {
   private _listenForIpcMain() {
     ipcMain.on(IPC_PREFERENCE.LOAD, () => {});
 
-    ipcMain.on(IPC_PREFERENCE.GET_ALL, (event) => {
-      event.reply(IPC_PREFERENCE.REPLY_GET_ALL, this._preferenceSet.store);
+    ipcMain.on(IPC_PREFERENCE.SET_ITEM, (event, key: string, val: any) => {
+      this._preferenceSet.set(key, val);
     });
 
     ipcMain.on(IPC_PREFERENCE.GET_ITEM, (event, ...keys: Array<string>) => {
@@ -56,19 +56,11 @@ export class Preference {
       keys.forEach((k) => {
         res[k] = this._preferenceSet.get(k);
       });
-      event.reply(IPC_PREFERENCE.REPLY_GET_ITEM, res);
+      event.reply(IPC_PREFERENCE.GET_ITEM_REPLY, res);
     });
 
-    ipcMain.on(IPC_PREFERENCE.GET_ITEM_SYNC, (event, ...keys: Array<string>) => {
-      const res: { [key: string]: any } = {};
-      keys.forEach((k) => {
-        res[k] = this._preferenceSet.get(k);
-      });
-      event.returnValue = res;
-    });
-
-    ipcMain.on(IPC_PREFERENCE.SET_ITEM, (event, key: string, val: any) => {
-      this._preferenceSet.set(key, val);
+    ipcMain.on(IPC_PREFERENCE.GET_ALL_SYNC, (event) => {
+      event.returnValue = this._preferenceSet.store;
     });
   }
 }

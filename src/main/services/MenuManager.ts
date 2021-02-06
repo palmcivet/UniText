@@ -1,5 +1,6 @@
 import { app, ipcMain, Menu } from "electron";
 
+import { isOsx } from "@/common/env";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
 import { folder } from "@/main/templates/contextFolder";
 import { file } from "@/main/templates/contextFile";
@@ -11,7 +12,6 @@ import { Bus } from "@/renderer/plugins/VueBus";
 import { Keybinding } from "./Keybinding";
 import { EI18n } from "@/typings/service/preference";
 import { EMenuContextKey, IMenuSet } from "@/typings/service/menu";
-import { isOsx } from "@/common/env";
 
 export class MenuManager {
   private _menuSet!: IMenuSet;

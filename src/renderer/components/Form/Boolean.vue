@@ -1,8 +1,12 @@
 <template>
   <div @click="handleCheck()">
-    <div class="code">{{ field }}</div>
-    <div class="option">
-      <input type="checkbox" :checked="value" />
+    <div class="code">
+      <span>{{ group }}</span>
+      <span>.</span>
+      <span>{{ field }}</span>
+    </div>
+    <div class="option" :title="properties.description">
+      <input type="checkbox" :checked="val" @click="handleClick()" />
       <label>{{ $g(properties.title) }}</label>
     </div>
   </div>
@@ -17,10 +21,16 @@ export default class Boolean extends Vue {
   properties!: any;
 
   @Prop({ type: String, required: true })
+  group!: string;
+
+  @Prop({ type: String, required: true })
   field!: string;
 
   @Prop({ type: Boolean, default: false })
-  value!: boolean;
+  val!: boolean;
+
+  handleClick() {
+  }
 
   handleCheck() {}
 }

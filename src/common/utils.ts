@@ -34,6 +34,20 @@ export const cloneObj = (obj: object, deepCopy = true) => {
   return deepCopy ? JSON.parse(JSON.stringify(obj)) : Object.assign({}, obj);
 };
 
+export const deepGet = (object: any, path: string) => {
+  const keys = path.split(".");
+  let result = object;
+
+  for (let idx = 0, key = keys[idx]; idx < keys.length; idx++, key = keys[idx]) {
+    result = result[key];
+    if (!result) {
+      return result;
+    }
+  }
+
+  return result;
+};
+
 export const hashCode = (plain: string) => {
   let hash = 0;
   let chr;

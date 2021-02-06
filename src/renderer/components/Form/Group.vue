@@ -6,8 +6,11 @@
         v-for="(v, k, i) of properties.properties"
         :key="i"
         :is="v.type"
-        :field="`${field}.${k}`"
         :properties="v"
+        :group="field"
+        :field="k"
+        :val="getVal(field, k)"
+        @pref-change="handleChange($event)"
       />
     </div>
   </div>
@@ -21,6 +24,7 @@ import Boolean from "./Boolean.vue";
 import DropDown from "./DropDown.vue";
 import TextBox from "./TextBox.vue";
 import TextGroup from "./TextGroup.vue";
+import { deepGet } from "@/common/utils";
 
 @Component({
   name: "Group",
@@ -34,10 +38,17 @@ import TextGroup from "./TextGroup.vue";
 })
 export default class Group extends Vue {
   @Prop({ type: Object, required: true })
+  userData!: any;
+
+  @Prop({ type: Object, required: true })
   properties!: any;
 
   @Prop({ type: String, required: true })
   field!: string;
+
+  getVal(g: string, f: string) {
+    return deepGet(this.userData, `${g}.${f}`);
+  }
 }
 </script>
 

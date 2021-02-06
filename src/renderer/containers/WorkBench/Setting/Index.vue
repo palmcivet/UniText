@@ -1,13 +1,11 @@
 <template>
   <div class="setting">
-    <Preference class="type" />
-
     <div class="operate">
-      <button class="unitext-button">存储位置</button>
-      <button class="unitext-button">恢复默认值</button>
+      <button class="unitext-button" @click="handleReveal()">存储位置</button>
       <button class="unitext-button" @click="handleClose()">关闭</button>
-      <button class="unitext-button" @click="handleSave()">保存</button>
     </div>
+
+    <Preference class="type" />
   </div>
 </template>
 
@@ -34,31 +32,30 @@ export default class Setting extends Vue {
   @workBench.Mutation("SWITCH_SETTING")
   SWITCH_SETTING!: (type: ESettingType) => void;
 
-  handleSave() {
-    // TODO
-    this.SET_VIEW(EWorkBenchType.EDITOR);
-  }
+  handleReveal() {}
 
   handleClose() {
     this.SET_VIEW(EWorkBenchType.EDITOR);
   }
 
-  handleSwtichSetting(type: ESettingType) {
+  onSwtichSetting(type: ESettingType) {
     this.SET_VIEW(EWorkBenchType.SETTING);
     this.SWITCH_SETTING(type);
   }
 
   created() {
-    this.$bus.on(BUS_SIDEBAR.SWITCH_SETTING, this.handleSwtichSetting);
+    this.$bus.on(BUS_SIDEBAR.SWITCH_SETTING, this.onSwtichSetting);
   }
 
-  beforeDestory() {
-    this.$bus.off(BUS_SIDEBAR.SWITCH_SETTING, this.handleSwtichSetting);
+  beforeDestroy() {
+    this.$bus.off(BUS_SIDEBAR.SWITCH_SETTING, this.onSwtichSetting);
   }
 }
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/var.less";
+
 .setting {
   height: 100%;
   position: relative;
@@ -68,17 +65,18 @@ export default class Setting extends Vue {
   > .type {
     overflow-y: auto;
     height: 100%;
-    padding-bottom: 2em;
+    padding-top: 2em;
   }
 
   > .operate {
-    width: 100%;
-    bottom: 0;
-    right: 0;
+    width: calc(100% - @scrollBar-width);
+    top: 0;
+    right: @scrollBar-width;
     position: absolute;
     backdrop-filter: blur(2px);
     display: flex;
     justify-content: flex-end;
+    box-shadow: var(--tabBarShadow-Color) 0 -2px 2px -2px inset;
 
     button {
       margin: 0 0.5em 0.5em 0;
