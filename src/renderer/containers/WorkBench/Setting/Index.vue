@@ -3,9 +3,10 @@
     <Preference class="type" />
 
     <div class="operate">
-      <button class="unitext-button">查看存储位置</button>
+      <button class="unitext-button">存储位置</button>
       <button class="unitext-button">恢复默认值</button>
-      <button class="unitext-button">保存(⌘S)</button>
+      <button class="unitext-button" @click="handleClose()">关闭</button>
+      <button class="unitext-button" @click="handleSave()">保存</button>
     </div>
   </div>
 </template>
@@ -32,6 +33,15 @@ export default class Setting extends Vue {
 
   @workBench.Mutation("SWITCH_SETTING")
   SWITCH_SETTING!: (type: ESettingType) => void;
+
+  handleSave() {
+    // TODO
+    this.SET_VIEW(EWorkBenchType.EDITOR);
+  }
+
+  handleClose() {
+    this.SET_VIEW(EWorkBenchType.EDITOR);
+  }
 
   handleSwtichSetting(type: ESettingType) {
     this.SET_VIEW(EWorkBenchType.SETTING);

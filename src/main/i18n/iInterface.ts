@@ -32,6 +32,7 @@ export const localesView = {
   },
 
   status: {
+    tag_add: ["增加标签"],
     source_edit: ["编辑"],
     source_preview: ["预览"],
     wysiwyg_write: ["书写"],

@@ -1,9 +1,9 @@
 <template>
   <footer>
-    <ul>
+    <ul class="left-status-bar">
       <component v-for="(v, i) in leftGroup" :is="v" :key="i" />
     </ul>
-    <ul>
+    <ul class="right-status-bar">
       <component v-for="(v, i) in rightGroup" :is="v" :key="i" />
     </ul>
   </footer>
@@ -55,7 +55,8 @@ footer {
   color: var(--statusBar-Fg);
   background: var(--statusBar-Bg);
 
-  > ul {
+  .left-status-bar,
+  .right-status-bar {
     display: flex;
 
     /deep/ ol {

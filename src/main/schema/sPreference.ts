@@ -297,9 +297,9 @@ const document: IGroup<IPreferenceDocument> = {
       description: [""],
     },
     tag: {
-      type: "TextBox",
+      type: "TextGroup",
       title: ["默认标签"],
-      default: "Untaged",
+      default: ["Untaged"],
       description: ["未分类标签归到该类别"],
     },
     picture: {

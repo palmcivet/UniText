@@ -49,13 +49,13 @@
   --statusBar-Fg: #9da5b4;
   --statusBar-hoverBg: #2c313a;
   --statusBar-hoverFg: #ccd2dd;
-  --statusBar-activeBg: #2560cf;
+  --statusBar-activeBg: #45ada3;
   --statusBar-activeFg: #ccd2dd;
 
   --workBench-Bg: #282c34;
   --workBench-Fg: #abb2bf;
 
-  --sidePanel-Bg: var(--sideBar-Bg);
+  --sidePanel-Bg: #2c333a;
   --sidePanel-Fg: var(--sideBar-Fg);
   --sidePanelItem-hoverBg: var(--sideBarItem-hoverBg);
   --sidePanelItem-hoverFg: var(--sideBarItem-hoverFg);

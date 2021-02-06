@@ -105,7 +105,7 @@ export interface IDocumentConfig {
   /**
    * @field 文章标签
    */
-  tag: string;
+  tag: Array<string>;
   /**
    * @field 图片存储方案
    */

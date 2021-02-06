@@ -63,7 +63,7 @@ const mutations: MutationTree<IWorkBenchState> = {
     curFile.complete = true;
   },
 
-  SET_TAG: (_: IWorkBenchState, tag: string) => {
+  SET_TAG: (_: IWorkBenchState, tag: Array<string>) => {
     const curFile = fileSelect(_);
     curFile.config.tag = tag;
   },
@@ -245,6 +245,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     } else {
       doc = { ...data };
     }
+
     dispatch("SYNC_LOAD", {
       file: {
         fileName: route,
