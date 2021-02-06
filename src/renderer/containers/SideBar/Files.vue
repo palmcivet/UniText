@@ -1,38 +1,35 @@
 <template>
-  <!-- 更改上层 Component 组件后，删除 div -->
-  <div>
-    <BaseView :isBlank="isEmptyFolder">
-      <template slot="blank-title">{{ $t("sidebar.files_empty") }}</template>
+  <BaseView :isBlank="isEmptyFolder">
+    <template slot="blank-title">{{ $t("sidebar.files_empty") }}</template>
 
-      <template slot="blank">
-        <button @click="OPEN_PROJECT()" class="unitext-button">
-          {{ $t("sidebar.files_button") }}
-        </button>
-      </template>
+    <template slot="blank">
+      <button @click="OPEN_PROJECT()" class="unitext-button">
+        {{ $t("sidebar.files_button") }}
+      </button>
+    </template>
 
-      <template slot="view-title">
-        <span>{{ $t("sidebar.files_title") }}</span>
-        <i
-          class="ri-checkbox-indeterminate-line"
-          :title="$t('sidebar.files_toggle')"
-          @click="handleToggleAll()"
+    <template slot="view-title">
+      <span>{{ $t("sidebar.files_title") }}</span>
+      <i
+        class="ri-checkbox-indeterminate-line"
+        :title="$t('sidebar.files_toggle')"
+        @click="handleToggleAll()"
+      />
+    </template>
+
+    <template slot="view">
+      <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
+        <FileTreeNode
+          v-for="(data, name) in fileTree"
+          :key="data.order"
+          :tier="0"
+          :node="data"
+          :route="[name]"
+          :isIndent="isIndent"
         />
-      </template>
-
-      <template slot="view">
-        <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
-          <FileTreeNode
-            v-for="(data, name) in fileTree"
-            :key="data.order"
-            :tier="0"
-            :node="data"
-            :route="[name]"
-            :isIndent="isIndent"
-          />
-        </ul>
-      </template>
-    </BaseView>
-  </div>
+      </ul>
+    </template>
+  </BaseView>
 </template>
 
 <script lang="ts">

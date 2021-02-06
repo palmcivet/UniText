@@ -105,6 +105,7 @@ export default class LayoutBox extends Vue {
 
     const mouseUpHandler = (e: MouseEvent) => {
       document.removeEventListener("mousemove", mouseMoveHandler, false);
+      document.removeEventListener("mouseup", mouseUpHandler, false);
       if (
         this.totalWidth - leftSide >= this.minWidth &&
         this.totalWidth - leftSide <= this.maxWidth
@@ -136,5 +137,9 @@ article {
   width: 100%;
   height: 100%;
   display: flex;
+
+  // TODO 统一工作台背景
+  color: var(--workBench-Fg);
+  background: var(--workBench-Bg);
 }
 </style>

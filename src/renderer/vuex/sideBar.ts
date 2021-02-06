@@ -4,9 +4,16 @@ import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import { hasKeys, notEmpty } from "@/common/utils";
 import { buildTree } from "@/common/fileSystem";
 import { IRootState } from "@/typings/vuex";
-import { ISideBarState, ITree, ITreeNode, TFileRoute } from "@/typings/vuex/sideBar";
+import {
+  ITree,
+  ITreeNode,
+  TFileRoute,
+  ISideBarState,
+  EActivityType,
+} from "@/typings/vuex/sideBar";
 
 const state: ISideBarState = {
+  activity: EActivityType.FILES,
   activeItem: "",
   fileTree: {},
 };
@@ -18,6 +25,10 @@ const getters: GetterTree<ISideBarState, IRootState> = {
 };
 
 const mutations: MutationTree<ISideBarState> = {
+  CHOOSE_ACTIVITY: (_: ISideBarState, type: EActivityType) => {
+    _.activity = type;
+  },
+
   CHOOSE_ITEM: (_: ISideBarState, path: string) => {
     _.activeItem = path;
   },

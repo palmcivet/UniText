@@ -2,7 +2,6 @@ import { ipcRenderer, remote } from "electron";
 import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
-import { isWin } from "@/common/env";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
 import { charCount, wordCount, timeCalc } from "@/common/editor";
@@ -15,9 +14,9 @@ import { ITree, TFileRoute } from "@/typings/vuex/sideBar";
 import {
   ITab,
   IFile,
-  EViewType,
-  ESettingType,
   IWorkBenchState,
+  EWorkBenchType,
+  ESettingType,
 } from "@/typings/vuex/workBench";
 import { ECoding, EEoL, EIndent, IDocumentFrontMatter } from "@/typings/document";
 
@@ -31,7 +30,7 @@ const state: IWorkBenchState = {
   currentIndex: "",
   currentGroup: {},
   currentTabs: [],
-  viewType: EViewType.EDITOR,
+  workBenchType: EWorkBenchType.EDITOR,
   settingType: ESettingType.PREFERENCE,
 };
 
@@ -44,7 +43,7 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
   },
   isBlank: (_: IWorkBenchState) => {
     if (!notEmpty(_.currentTabs)) {
-      _.viewType = EViewType.STARTUP;
+      _.workBenchType = EWorkBenchType.STARTUP;
       return true;
     } else {
       return false;
@@ -87,8 +86,8 @@ const mutations: MutationTree<IWorkBenchState> = {
   },
 
   /* 以下为运行时界面状态切换 */
-  SET_VIEW: (_: IWorkBenchState, type: EViewType) => {
-    _.viewType = type;
+  SET_VIEW: (_: IWorkBenchState, type: EWorkBenchType) => {
+    _.workBenchType = type;
   },
 
   SWITCH_SETTING: (_: IWorkBenchState, type: ESettingType) => {

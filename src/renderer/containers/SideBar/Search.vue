@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <BaseView>
-      <template slot="view-title">
-        <span>{{ $t("sidebar.search") }}</span>
-      </template>
+  <BaseView>
+    <template slot="view-title">
+      <span>{{ $t("sidebar.search") }}</span>
+    </template>
 
-      <template slot="view"></template>
-    </BaseView>
-  </div>
+    <template slot="view"></template>
+  </BaseView>
 </template>
 
 <script lang="ts">

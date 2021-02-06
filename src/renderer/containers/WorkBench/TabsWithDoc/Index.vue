@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tabs-with-doc">
     <Draggable
       tag="ul"
       ref="tabContainer"
@@ -23,7 +23,7 @@
       </transition-group>
     </Draggable>
 
-    <Source class="workbench" />
+    <Source class="markdown-editor" />
   </div>
 </template>
 
@@ -128,7 +128,7 @@ export default class TabsWithDoc extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-div {
+.tabs-with-doc {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -201,7 +201,7 @@ div {
     }
   }
 
-  .workbench {
+  .markdown-editor {
     height: calc(100% - @tabBar-height);
     width: 100%;
   }

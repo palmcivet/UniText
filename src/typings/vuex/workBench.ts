@@ -38,13 +38,12 @@ export interface IFile extends IDocument {
 }
 
 /**
- * @enum { EViewType } 工作台类型
+ * @enum { EWorkBenchType } 工作台类型
  */
-export enum EViewType {
+export enum EWorkBenchType {
   EDITOR,
   STARTUP,
   SETTING,
-  SCHEDULE,
 }
 
 /**
@@ -58,7 +57,6 @@ export enum ESettingType {
 }
 
 export interface IWorkBenchState {
-  // FEAT 将 IPreferenceEditor 导入，用于运行时切换
   /**
    * @field 上一个标签
    */
@@ -78,7 +76,7 @@ export interface IWorkBenchState {
   /**
    * @field 工作台类型
    */
-  viewType: EViewType;
+  workBenchType: EWorkBenchType;
   /**
    * @field 设置的类型
    */

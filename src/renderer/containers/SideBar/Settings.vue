@@ -1,22 +1,20 @@
 <template>
-  <div>
-    <BaseView>
-      <template slot="view-title">
-        <span>{{ $t("sidebar.settings") }}</span>
-      </template>
+  <BaseView>
+    <template slot="view-title">
+      <span>{{ $t("sidebar.settings") }}</span>
+    </template>
 
-      <template slot="view">
-        <ul>
-          <li v-for="(i, k) in settingGroup" :key="k" @click="switchSetting(i.type)">
-            <i :class="true ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
-            <i :class="i.icon" />
-            <pre class="space" />
-            <span>{{ i.title }}</span>
-          </li>
-        </ul>
-      </template>
-    </BaseView>
-  </div>
+    <template slot="view">
+      <ul>
+        <li v-for="(i, k) in settingGroup" :key="k" @click="switchSetting(i.type)">
+          <i :class="true ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'" />
+          <i :class="i.icon" />
+          <pre class="space" />
+          <span>{{ i.title }}</span>
+        </li>
+      </ul>
+    </template>
+  </BaseView>
 </template>
 
 <script lang="ts">

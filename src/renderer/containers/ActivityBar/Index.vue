@@ -1,26 +1,15 @@
 <template>
-  <aside>
-    <CheckList
-      class="left-column"
-      :listGroup="menuList"
-      :condition="activeItem"
-      :activeStyle="{ color: this.isShowSide ? 'var(--activityBar-activeFg)' : '' }"
-      @click="handleClick($event)"
-    />
-
-    <keep-alive>
-      <component
-        class="right-column"
-        v-show="isShowSide"
-        :style="{ width: `${sideWidth}px` }"
-        :is="activeItem"
-      />
-    </keep-alive>
-  </aside>
+  <CheckList
+    class="activity-bar"
+    :listGroup="menuList"
+    :condition="activity"
+    :activeStyle="{ color: this.isShowSide ? 'var(--activityBar-activeFg)' : '' }"
+    @click="handleClick($event)"
+  />
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 import Tags from "@/renderer/containers/SideBar/Tags.vue";
@@ -30,7 +19,9 @@ import Bookmarks from "@/renderer/containers/SideBar/Bookmarks.vue";
 import Settings from "@/renderer/containers/SideBar/Settings.vue";
 import CheckList from "@/renderer/components/CheckList.vue";
 import { IGeneralState } from "@/typings/vuex/general";
+import { EActivityType, ISideBarState } from "@/typings/vuex/sideBar";
 
+const sideBar = namespace("sideBar");
 const general = namespace("general");
 
 @Component({
@@ -45,16 +36,17 @@ const general = namespace("general");
   },
 })
 export default class ActivityBar extends Vue {
-  @Prop({ type: Number, required: true })
-  sideWidth!: number;
-
   @general.State((state: IGeneralState) => state.userInterface.showSideBar)
   isShowSide!: boolean;
 
   @general.Mutation("TOGGLE_SIDE_BAR")
   TOGGLE_SIDE_BAR!: () => void;
 
-  activeItem = "Files";
+  @sideBar.State((state: ISideBarState) => state.activity)
+  activity!: EActivityType;
+
+  @sideBar.Mutation("CHOOSE_ACTIVITY")
+  CHOOSE_ACTIVITY!: (type: EActivityType) => void;
 
   get menuList() {
     return {
@@ -81,17 +73,17 @@ export default class ActivityBar extends Vue {
     };
   }
 
-  handleClick(e: string) {
+  handleClick(e: EActivityType) {
     if (!this.isShowSide) {
       this.TOGGLE_SIDE_BAR();
-      this.activeItem = e;
+      this.CHOOSE_ACTIVITY(e);
       return;
     }
 
-    if (this.activeItem === e) {
+    if (this.activity === e) {
       this.TOGGLE_SIDE_BAR();
     } else {
-      this.activeItem = e;
+      this.CHOOSE_ACTIVITY(e);
     }
   }
 }
@@ -100,31 +92,21 @@ export default class ActivityBar extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-aside {
-  display: flex;
+.activity-bar {
+  position: relative;
+  width: @layout-leftSide-left-width;
+  background: var(--activityBar-Bg);
 
-  .left-column {
-    position: relative;
-    width: @layout-leftSide-left-width;
-    height: 100%;
-    background: var(--activityBar-Bg);
+  /deep/ li {
+    padding: 11.5px;
+    margin-top: 8px;
+    cursor: pointer;
+    color: var(--activityBar-inactiveFg);
 
-    /deep/ li {
-      padding: 11.5px;
-      margin: 8px 0;
-      cursor: pointer;
-      color: var(--activityBar-inactiveFg);
-
-      &:last-child {
-        position: absolute;
-        bottom: 0px;
-      }
+    &:last-child {
+      position: absolute;
+      bottom: 0px;
     }
-  }
-
-  .right-column {
-    background: var(--sideBar-Bg);
-    color: var(--sideBar-Fg);
   }
 }
 </style>

@@ -75,8 +75,6 @@ export default class Info extends Vue {
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
-
 section {
   height: 100%;
   color: var(--sidePanel-Fg);

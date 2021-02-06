@@ -1,16 +1,13 @@
 <template>
-  <div>
+  <div class="main-window">
     <TitleBar v-show="showTitle" />
-    <main class="layout-main">
-      <aside class="left-side-bar">
-        <ActivityBar :sideWidth="finalLeftWidth - 1.5" />
-        <span v-show="isShowSide" ref="leftResize" class="unitext-resize" />
-      </aside>
-      <WorkBench class="center-container" :style="{ width: centerWidth }" />
+    <main>
+      <ActivityBar />
+      <SideBar :style="{ width: `${finalLeftWidth}px` }" />
+      <span class="unitext-resize" v-show="isShowSide" ref="leftResize" />
+      <WorkBench :style="{ width: centerWidth }" />
     </main>
     <StatusBar />
-    <!-- TODO 放进 WorkBench -->
-    <SidePanel :fixed="false" />
   </div>
 </template>
 
@@ -19,26 +16,26 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 
+import { isOsx } from "@/common/env";
 import { notEmpty } from "@/common/utils";
 import { BUS_UI } from "@/common/channel/bus";
 import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
+import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
-import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
-import { IGeneralState } from "@/typings/vuex/general";
 import { IBootArgs } from "@/typings/bootstrap";
+import { IGeneralState } from "@/typings/vuex/general";
 import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
-import { isOsx } from "@/common/env";
 
 const general = namespace("general");
 
 @Component({
   name: "Main",
   components: {
+    SideBar,
     TitleBar,
-    SidePanel,
     StatusBar,
     WorkBench,
     ActivityBar,
@@ -162,18 +159,10 @@ export default class Main extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-.layout-main {
-  display: flex;
-}
-
-.left-side-bar,
-.center-container {
-  height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
-}
-
-.left-side-bar {
-  left: 0;
-  width: auto;
-  display: flex;
+.main-window {
+  > main {
+    display: flex;
+    height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
+  }
 }
 </style>

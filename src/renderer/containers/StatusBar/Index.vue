@@ -1,5 +1,4 @@
 <template>
-  <!-- 本组件中，父组件只用作组合，不含业务逻辑，而子组件拥有各自的逻辑，相互独立 -->
   <footer>
     <ul>
       <component v-for="(v, i) in leftGroup" :is="v" :key="i" />

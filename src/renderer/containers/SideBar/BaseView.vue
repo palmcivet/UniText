@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="side-bar">
     <div class="header">
       <slot v-if="isBlank" name="blank-title" />
       <slot v-else name="view-title" />
@@ -15,8 +15,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component({ name: "Base" })
-export default class Base extends Vue {
+@Component({ name: "BaseView" })
+export default class BaseView extends Vue {
   @Prop({ type: Boolean, default: false })
   isBlank!: boolean;
 }
@@ -25,8 +25,9 @@ export default class Base extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-div {
-  height: 100%;
+.side-bar {
+  background: var(--sideBar-Bg);
+  color: var(--sideBar-Fg);
 
   .header {
     display: flex;

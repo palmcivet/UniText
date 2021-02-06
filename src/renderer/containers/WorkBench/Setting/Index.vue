@@ -16,7 +16,7 @@ import { namespace } from "vuex-class";
 
 import Preference from "./Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
-import { ESettingType, EViewType } from "@/typings/vuex/workBench";
+import { ESettingType, EWorkBenchType } from "@/typings/vuex/workBench";
 
 const workBench = namespace("workBench");
 
@@ -28,13 +28,13 @@ const workBench = namespace("workBench");
 })
 export default class Setting extends Vue {
   @workBench.Mutation("SET_VIEW")
-  SET_VIEW!: (type: EViewType) => void;
+  SET_VIEW!: (type: EWorkBenchType) => void;
 
   @workBench.Mutation("SWITCH_SETTING")
   SWITCH_SETTING!: (type: ESettingType) => void;
 
   handleSwtichSetting(type: ESettingType) {
-    this.SET_VIEW(EViewType.SETTING);
+    this.SET_VIEW(EWorkBenchType.SETTING);
     this.SWITCH_SETTING(type);
   }
 
@@ -49,17 +49,11 @@ export default class Setting extends Vue {
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
-
 .setting {
   height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
-
-  // TODO 统一工作台背景
-  color: var(--workBench-Fg);
-  background: var(--workBench-Bg);
 
   > .type {
     overflow-y: auto;

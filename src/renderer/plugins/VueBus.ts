@@ -6,6 +6,7 @@
 import { VueConstructor } from "vue/types/umd";
 
 /* -------------------------- types ------------------------------- */
+
 export type EventType = string | symbol;
 
 // An event handler can take an optional event argument

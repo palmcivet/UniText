@@ -32,7 +32,23 @@ export interface ITree {
   [index: string]: ITreeNode;
 }
 
+/**
+ * @enum { EActivityType } 侧边栏类型
+ */
+export enum EActivityType {
+  FILES = "Files",
+  SEARCH = "Search",
+  BOOKMARKS = "Bookmarks",
+  TAGS = "Tags",
+  SETTINGS = "Settings",
+  SCHEDULE = "Schedule",
+}
+
 export interface ISideBarState {
+  /**
+   * @field 活动类型
+   */
+  activity: EActivityType;
   /**
    * @field 顶层文件树
    */
