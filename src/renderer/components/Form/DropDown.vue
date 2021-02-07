@@ -7,7 +7,7 @@
     </div>
     <div class="option" :title="properties.description">
       <label>{{ $g(properties.title) }}</label>
-      <select>
+      <select v-model="res" @change="handleSubmit()">
         <option v-for="(i, k) in properties.enum" :value="i" :key="k">{{ i }}</option>
       </select>
     </div>
@@ -27,15 +27,23 @@ export default class DropDown extends Vue {
 
   @Prop({ type: String, required: true })
   field!: string;
+
+  @Prop({ type: String, default: false })
+  val!: string;
+
+  res = this.val;
+
+  handleSubmit() {
+    this.$emit("item-change", [this.group, this.field, this.res]);
+  }
 }
 </script>
 
 <style lang="less" scoped>
 @import "./style.less";
 
-.option {
-  select {
-    max-width: 15em;
-  }
+select {
+  cursor: pointer;
+  max-width: 15em;
 }
 </style>

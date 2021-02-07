@@ -6,14 +6,32 @@
       <span>{{ field }}</span>
     </div>
     <div class="option" :title="properties.description">
-      <label>{{ $g(properties.title) }}</label>
-      <li v-for="(v, i) in val" :key="i">{{ v }}</li>
-      <div v-if="!isAddItem" @click="isAddItem = true">添加</div>
-      <div v-else>
-        <input type="text" />
-        <button @click="handleSubmit()">确定</button>
-        <button @click="isAddItem = false">取消</button>
-      </div>
+      <label :style="{ marginBottom: '5px' }">{{ $g(properties.title) }}</label>
+
+      <li v-for="(v, i) in res" :key="i">
+        <div v-if="lock === i" class="text-item">
+          <i
+            class="ri-close-line"
+            @click="handleCancel()"
+            @keydown.stop.esc="handleCancel()"
+          />
+          <i class="ri-check-line" @click="handleModify()" />
+          <input type="text" v-model="newVal" @keydown.stop.enter="handleModify()" />
+        </div>
+        <div v-else class="text-item unedit" :style="{ paddingLeft: '2px' }">
+          <i class="ri-pencil-line" @click="handleEdit(i, v)" />
+          <i class="ri-delete-bin-4-line" @click="handleDelete(i)" />
+          <div>{{ v }}</div>
+        </div>
+      </li>
+      <li class="text-item" :style="{ marginTop: '5px' }">
+        <i
+          class="ri-play-list-add-line"
+          @click="handleAdd()"
+          :style="{ margin: '0.8em' }"
+        />
+        <input type="text" v-model="addVal" />
+      </li>
     </div>
   </div>
 </template>
@@ -35,14 +53,74 @@ export default class TextGroup extends Vue {
   @Prop({ type: Array, default: false })
   val!: Array<string>;
 
-  isAddItem = false;
+  res = this.val;
+
+  lock = -1;
+
+  newVal = "";
+
+  addVal = "";
+
+  handleModify() {
+    this.res[this.lock] = this.newVal;
+    this.handleSubmit();
+
+    this.lock = -1;
+    this.newVal = "";
+  }
+
+  handleEdit(idx: number, old: string) {
+    this.newVal = old;
+    this.lock = idx;
+  }
+
+  handleCancel() {
+    this.lock = -1;
+  }
+
+  handleDelete(idx: number) {
+    this.res.splice(idx, 1);
+    this.handleSubmit();
+  }
+
+  handleAdd() {
+    this.res.push(this.addVal);
+    this.handleSubmit();
+
+    this.addVal = "";
+  }
 
   handleSubmit() {
-    this.isAddItem = false;
+    this.$emit("item-change", [this.group, this.field, this.res]);
   }
 }
 </script>
 
 <style lang="less" scoped>
 @import "./style.less";
+
+li {
+  list-style: none;
+}
+
+.text-item {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+
+  input,
+  div {
+    width: 100%;
+  }
+
+  i {
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0 5px;
+  }
+}
+
+div.text-item.unedit:hover {
+  background: var(--formGroupTitle-Bg);
+}
 </style>

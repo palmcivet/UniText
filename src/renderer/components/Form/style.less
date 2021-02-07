@@ -24,21 +24,29 @@
     }
   }
 
-  input[type="text"] {
-    max-width: 25rem;
+  input[type="text"],
+  .text-item,
+  li {
+    max-width: 35em;
+    font-family: @normal-font-family;
+  }
 
-    &:focus {
-      color: var(--inputBox-hoverFg);
-      background: var(--inputBox-hoverBg);
-    }
+  input[type="text"]:focus {
+    color: var(--inputBox-hoverFg);
+    background: var(--inputBox-hoverBg);
+  }
+
+  input,
+  select,
+  .text-item {
+    font-size: 1em;
+    height: 1.8em;
   }
 
   input,
   select {
-    font-size: 1em;
-    height: 1.6em;
-    outline-style: none;
     border: 0px;
+    outline-style: none;
     color: var(--inputBox-Fg);
     background: var(--inputBox-Bg);
   }

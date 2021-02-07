@@ -38,8 +38,12 @@ export default class Boolean extends Vue {
 <style lang="less" scoped>
 @import "./style.less";
 
-.option {
-  flex-direction: row;
-  align-items: center;
+div {
+  cursor: pointer;
+
+  .option {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 </style>

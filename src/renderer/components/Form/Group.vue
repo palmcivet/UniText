@@ -70,7 +70,6 @@ export default class Group extends Vue {
       user-select: none;
 
       &:hover {
-        cursor: pointer;
         color: var(--formGroup-hoverFg);
         background: var(--formGroup-hoverBg);
       }

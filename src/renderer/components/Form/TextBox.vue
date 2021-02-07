@@ -7,7 +7,7 @@
     </div>
     <div class="option" :title="properties.description">
       <label>{{ $g(properties.title) }}</label>
-      <input type="text" :value="val" />
+      <input type="text" v-model="res" @change="handleSubmit()" />
     </div>
   </div>
 </template>
@@ -28,6 +28,12 @@ export default class TextBox extends Vue {
 
   @Prop({ type: String, default: false })
   val!: string;
+
+  res = this.val;
+
+  handleSubmit() {
+    this.$emit("item-change", [this.group, this.field, this.res]);
+  }
 }
 </script>
 

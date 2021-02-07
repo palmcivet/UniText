@@ -81,7 +81,7 @@ export default class Mode extends Vue {
         title: this.$t("status.present_preview"),
       },
       false: {
-        icon: "ri-pencil-line",
+        icon: "ri-edit-line",
         title: this.$t("status.present_edit"),
       },
     };
