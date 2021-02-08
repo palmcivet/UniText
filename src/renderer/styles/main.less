@@ -10,6 +10,8 @@ body {
   font-family: @interface-font-family;
 }
 
+/* Clear default styles */
+
 ol,
 ul {
   list-style: none;
@@ -17,7 +19,14 @@ ul {
   padding: 0;
 }
 
-/* 以下为组件效果 */
+input,
+select,
+textarea {
+  border: 0px;
+  outline-style: none;
+}
+
+/* Styles for components */
 
 .unitext-resize {
   width: 2px;
@@ -40,7 +49,7 @@ ul {
   }
 }
 
-/* 以下为滚动条 */
+/* Styles for ScrollBar */
 
 ::-webkit-scrollbar {
   width: @scrollBar-width;

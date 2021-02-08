@@ -10,9 +10,10 @@ import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 
-import { Bus } from "@/renderer/plugins/VueBus";
 import { BUS_EDITOR } from "@/common/channel/bus";
-import markdownItTocAndAnchor, { ITocList } from "@/common/editor/create-toc";
+import { Bus } from "@/renderer/plugins/VueBus";
+import { ITocList } from "@/renderer/utils";
+import markdownItTocAndAnchor from "@/renderer/utils/create-toc";
 
 const markdownEngine = new MarkdownIt({
   html: true,

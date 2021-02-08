@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
     <Group
       v-for="(v, k, i) of schema"
       :id="k"

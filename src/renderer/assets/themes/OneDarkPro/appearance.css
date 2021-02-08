@@ -1,6 +1,6 @@
 :root {
   --button-Bg: #404754;
-  --button-Fg: #ffffff;
+  --button-Fg: #dddddd;
   --button-hoverBg: #4d5565;
   --button-hoverFg: #ffffff;
 
@@ -65,4 +65,8 @@
   --formGroupTitleBorder-Color: #2d77f6;
   --formGroup-hoverBg: #80808012;
   --formGroup-hoverFg: #ccd2dd;
+
+  --snipetMask-Color: #c0c2c746;
+  --snipetShadow-Color: #0b0d0f;
+  --snipetShadow-hoverColor: #0b0d0f;
 }

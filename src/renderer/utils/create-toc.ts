@@ -15,7 +15,7 @@ import Token from "markdown-it/lib/token";
 import StateCore from "markdown-it/lib/rules_core/state_core";
 import MarkdownIt from "markdown-it";
 
-export interface ITocList {
+interface ITocList {
   content: string;
   anchor: string;
   level: number;
@@ -316,9 +316,7 @@ export default function(md: MarkdownIt, opt: IOption) {
     let match;
 
     if (
-      // Reject if the token does not start with @[
-      state.src.charCodeAt(state.pos) !== 0x40 ||
-      state.src.charCodeAt(state.pos + 1) !== 0x5b ||
+      state.src.charCodeAt(state.pos) !== 0x5b ||
       // Don’t run any pairs in validation mode
       silent
     ) {

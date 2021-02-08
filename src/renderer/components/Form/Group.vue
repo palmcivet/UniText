@@ -53,7 +53,8 @@ export default class Group extends Vue {
 
 <style lang="less" scoped>
 .group {
-  padding: 15px 8em 15px 8em;
+  padding-top: 15px;
+  padding-bottom: 15px;
 
   > .title {
     width: 100%;

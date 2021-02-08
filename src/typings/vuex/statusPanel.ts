@@ -1,4 +1,4 @@
-import { ITocList } from "@/common/editor/create-toc";
+import { ITocList } from "@/renderer/utils";
 
 export interface IStatusPanelState {
   toc: Array<ITocList>;

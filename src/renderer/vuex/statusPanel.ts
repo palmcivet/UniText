@@ -1,8 +1,8 @@
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 
-import { ITocList } from "@/common/editor/create-toc";
-import { IStatusPanelState } from "@/typings/vuex/statusPanel";
+import { ITocList } from "@/renderer/utils";
 import { IRootState } from "@/typings/vuex";
+import { IStatusPanelState } from "@/typings/vuex/statusPanel";
 
 const state: IStatusPanelState = {
   toc: [],

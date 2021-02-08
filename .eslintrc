@@ -25,6 +25,7 @@
     "keyword-spacing": ["warn", { "before": true }],
     "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
     "no-mixed-spaces-and-tabs": ["warn"],
+    "no-useless-escape": 0,
     "no-trailing-spaces": ["warn", { "skipBlankLines": true }],
     "no-restricted-syntax": ["warn", "WithStatement", "BinaryExpression[operator='in']"],
     "no-unused-expressions": [

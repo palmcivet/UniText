@@ -4,10 +4,10 @@ import * as fse from "fs-extra";
 
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
-import { charCount, wordCount, timeCalc } from "@/common/editor";
 import { fetchFileInfo, joinPath } from "@/common/fileSystem";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
-import { importFrontMatter, exportFrontMatter } from "@/common/editor/front-matter";
+import { importFrontMatter, exportFrontMatter } from "@/renderer/utils/front-matter";
+import { charCount, wordCount, timeCalc } from "@/renderer/utils/statistics";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { ITree, TFileRoute } from "@/typings/vuex/sideBar";
@@ -46,6 +46,7 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
       _.workBenchType = EWorkBenchType.STARTUP;
       return true;
     } else {
+      _.workBenchType = EWorkBenchType.EDITOR;
       return false;
     }
   },

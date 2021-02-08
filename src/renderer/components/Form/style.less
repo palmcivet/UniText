@@ -25,13 +25,15 @@
   }
 
   input[type="text"],
+  input[type="number"],
   .text-item,
   li {
     max-width: 35em;
     font-family: @normal-font-family;
   }
 
-  input[type="text"]:focus {
+  input[type="text"]:focus,
+  input[type="number"]:focus {
     color: var(--inputBox-hoverFg);
     background: var(--inputBox-hoverBg);
   }
@@ -45,8 +47,6 @@
 
   input,
   select {
-    border: 0px;
-    outline-style: none;
     color: var(--inputBox-Fg);
     background: var(--inputBox-Bg);
   }

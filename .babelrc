@@ -6,6 +6,7 @@
       {
         "languages": [
           "javascript",
+          "markdown",
           "css",
           "markup",
           "json",
@@ -27,7 +28,14 @@
           "yaml",
           "sql"
         ],
-        "plugins": ["line-numbers"],
+        "plugins": [
+          "autoloader",
+          "line-numbers",
+          "command-line",
+          "show-language",
+          "match-braces",
+          "copy-to-clipboard"
+        ],
         "theme": "default",
         "css": true
       }

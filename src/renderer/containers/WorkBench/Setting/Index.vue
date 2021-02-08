@@ -8,6 +8,7 @@
 
     <Preference v-if="settingType === 0" class="data-form" />
     <Theme v-if="settingType === 1" class="data-form" />
+    <Snippet v-if="settingType === 3" class="data-form" />
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
 import Theme from "./Theme.vue";
+import Snippet from "./Snippet.vue";
 import Preference from "./Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
@@ -28,6 +30,7 @@ const workBench = namespace("workBench");
   name: "Setting",
   components: {
     Preference,
+    Snippet,
     Theme,
   },
 })
@@ -84,6 +87,7 @@ export default class Setting extends Vue {
     position: absolute;
     backdrop-filter: blur(2px);
     display: flex;
+    z-index: 999;
     justify-content: flex-end;
     box-shadow: var(--tabBarShadow-Color) 0 -2px 2px -2px inset;
 
@@ -96,7 +100,7 @@ export default class Setting extends Vue {
   .data-form {
     overflow-y: auto;
     height: 100%;
-    padding-top: 2em;
+    padding-top: 3em;
   }
 }
 </style>

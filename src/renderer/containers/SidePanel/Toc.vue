@@ -21,9 +21,9 @@ import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-import { ITocList } from "@/common/editor/create-toc";
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
+import { ITocList } from "@/renderer/utils";
 import { EMenuContextKey } from "@/typings/service/menu";
 
 const statusPanel = namespace("statusPanel");

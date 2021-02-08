@@ -8,6 +8,7 @@
       <TabsWithDoc v-show="workBenchType === 0" />
       <Startup v-show="workBenchType === 1" />
       <Setting v-show="workBenchType === 2" />
+      <!-- TODO 将 panel 放入 TabsWithDoc -->
       <SidePanel :fixed="false" />
     </template>
     <template v-slot:right>

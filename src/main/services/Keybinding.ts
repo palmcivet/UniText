@@ -21,7 +21,7 @@ export class Keybinding {
       ["system.theme.editor", ""],
       ["system.theme.view", ""],
       ["system.theme.icon", ""],
-      ["system.quit", "CmdOrCtrl+Q"],
+      ["system.quit", ""],
 
       /* file */
       ["file.read", ""],

@@ -16,7 +16,7 @@
             @keydown.stop.esc="handleCancel()"
           />
           <i class="ri-check-line" @click="handleModify()" />
-          <input type="text" v-model="newVal" @keydown.stop.enter="handleModify()" />
+          <input type="text" v-model.trim="newVal" @keydown.stop.enter="handleModify()" />
         </div>
         <div v-else class="text-item unedit" :style="{ paddingLeft: '2px' }">
           <i class="ri-pencil-line" @click="handleEdit(i, v)" />
@@ -30,7 +30,7 @@
           @click="handleAdd()"
           :style="{ margin: '0.8em' }"
         />
-        <input type="text" v-model="addVal" />
+        <input type="text" v-model.trim="addVal" />
       </li>
     </div>
   </div>
@@ -62,6 +62,8 @@ export default class TextGroup extends Vue {
   addVal = "";
 
   handleModify() {
+    if (this.newVal === "") return;
+
     this.res[this.lock] = this.newVal;
     this.handleSubmit();
 
@@ -84,6 +86,8 @@ export default class TextGroup extends Vue {
   }
 
   handleAdd() {
+    if (this.addVal === "") return;
+
     this.res.push(this.addVal);
     this.handleSubmit();
 
