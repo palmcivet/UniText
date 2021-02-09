@@ -20,7 +20,6 @@ import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import {
-  languages,
   editor as MonacoEditor,
   IScrollEvent,
 } from "monaco-editor/esm/vs/editor/editor.api";
@@ -30,7 +29,7 @@ import { debounce, $, notEmpty } from "@/common/utils";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import { ITocList } from "@/renderer/utils";
-import { markdownEngine } from "@/renderer/utils/markdown";
+import { markdownEngine } from "@/renderer/utils/markdownEngine";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";

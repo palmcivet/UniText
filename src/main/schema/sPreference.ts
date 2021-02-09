@@ -1,3 +1,4 @@
+import { TSchema, IGroup, reduceType, reduceSchema } from "@/main/utils/schema";
 import { IPreference } from "@/typings/bootstrap";
 import { ECoding, EEoL, EIndent, EPicture } from "@/typings/document";
 import {
@@ -6,71 +7,12 @@ import {
   EPanelType,
   EEditMode,
   ETypeMode,
-  EMarkdownScheme,
   IPreferenceSystem,
   IPreferenceUserInterface,
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
-  IPreferenceMarkdown,
 } from "@/typings/service/preference";
-
-const reduceType = (type: any) => {
-  const resArr = [];
-  for (let key in type) {
-    resArr.push(key);
-  }
-  return resArr;
-};
-
-interface IGroup<T> {
-  type: "Group";
-  title: Array<string | Function>;
-  properties: {
-    [key in keyof T]: ITextBox | ITextGroup | IBoolean | IRange | IDropDown;
-  };
-  default: { [key: string]: any };
-  description: Array<string>;
-}
-
-interface ITextBox {
-  type: "TextBox";
-  title: Array<string>;
-  default: string;
-  pattern?: string;
-  description: Array<string>;
-}
-
-interface ITextGroup {
-  type: "TextGroup";
-  title: Array<string>;
-  default: Array<string>;
-  description: Array<string>;
-}
-
-interface IBoolean {
-  type: "Boolean";
-  title: Array<string>;
-  default: boolean;
-  description: Array<string>;
-}
-
-interface IRange {
-  type: "Range";
-  title: Array<string>;
-  maximum?: number;
-  minimum?: number;
-  default: number;
-  description: Array<string>;
-}
-
-interface IDropDown {
-  type: "DropDown";
-  title: Array<string>;
-  enum: Array<any>;
-  default: any;
-  description: Array<string>;
-}
 
 const system: IGroup<IPreferenceSystem> = {
   type: "Group",
@@ -319,106 +261,12 @@ const document: IGroup<IPreferenceDocument> = {
   default: {},
 };
 
-const markdown: IGroup<IPreferenceMarkdown> = {
-  type: "Group",
-  title: ["Markdown"],
-  description: ["Markdown 语法的设置"],
-  properties: {
-    scheme: {
-      type: "DropDown",
-      title: ["语法方案"],
-      enum: reduceType(EMarkdownScheme),
-      default: EMarkdownScheme.GFM,
-      description: ["基础语法方案。可被单独设置覆盖"],
-    },
-  },
-  default: {},
-};
-
-type TSchema = {
-  [key in keyof IPreference]: IGroup<IPreference[key]>;
-};
-
-export const schemaPreference: TSchema = {
+export const schemaPreference: TSchema<IPreference> = {
   system,
   userInterface,
   fileManager,
   editor,
   document,
-  markdown,
 };
 
-export default ((data: TSchema) => {
-  enum ETypeMap {
-    Group = "object",
-    Range = "number",
-    Boolean = "boolean",
-    TextBox = "string",
-    TextGroup = "array",
-    DropDown = "string",
-  }
-
-  interface IObjAny {
-    [i: string]: any;
-  }
-
-  const res: IObjAny = {};
-
-  for (const key in data) {
-    const element = data[key as keyof IPreference];
-    const properties: IObjAny = element.properties;
-
-    const subProperties: IObjAny = {};
-
-    for (const subKey in properties) {
-      const subElement = properties[subKey];
-
-      let value: IObjAny = {};
-
-      switch (subElement.type) {
-        case "Range":
-          value = {
-            type: ETypeMap.Range,
-          };
-          subElement.maximum && (value["maximum"] = subElement.maximum);
-          subElement.minimum && (value["minimum"] = subElement.minimum);
-          break;
-        case "TextBox":
-          value = {
-            type: ETypeMap.TextBox,
-          };
-          subElement.pattern && (value["pattern"] = subElement.pattern);
-          break;
-        case "Boolean":
-          value = {
-            type: ETypeMap.Boolean,
-          };
-          break;
-        case "TextGroup":
-          value = {
-            type: ETypeMap.TextGroup,
-          };
-          break;
-        case "DropDown":
-          value = {
-            type: ETypeMap.DropDown,
-            enum: subElement.enum,
-          };
-          break;
-      }
-
-      subProperties[subKey] = {
-        default: subElement.default,
-        ...value,
-      };
-    }
-
-    res[key] = {
-      type: "object",
-      properties: subProperties,
-      default: element.default,
-    };
-  }
-
-  return res;
-})(schemaPreference);
+export default reduceSchema(schemaPreference);

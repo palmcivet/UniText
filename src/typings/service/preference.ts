@@ -62,14 +62,6 @@ export enum ETypeMode {
 }
 
 /**
- * @enum { EMarkdownScheme } 语法方案
- */
-export enum EMarkdownScheme {
-  STD = "STD",
-  GFM = "GFM",
-}
-
-/**
  * @interface 软件的默认设置，启动时载入
  */
 export interface IPreferenceSystem {
@@ -208,14 +200,4 @@ export interface IPreferenceDocument extends IDocumentFormat, IDocumentConfig {
    * @field 默认分类
    */
   category: string;
-}
-
-/**
- * @interface Markdown 语法的设置
- */
-export interface IPreferenceMarkdown {
-  /**
-   * @field 语法方案
-   */
-  scheme: EMarkdownScheme;
 }

@@ -6,7 +6,6 @@ import {
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
-  IPreferenceMarkdown,
 } from "@/typings/service/preference";
 import {
   IThemeWindow,
@@ -15,6 +14,7 @@ import {
   IThemeView,
   IThemeIcon,
 } from "./service/theme";
+import { IMarkdownBase, IMarkdownExtend, IMarkdownFeature } from "./service/markdown";
 
 /**
  * @interface 启动软件需要携带的参数
@@ -39,7 +39,15 @@ export interface IPreference {
   fileManager: IPreferenceFileManager;
   editor: IPreferenceEditor;
   document: IPreferenceDocument;
-  markdown: IPreferenceMarkdown;
+}
+
+/**
+ * @interface Markdown.json 的类型
+ */
+export interface IMarkdown {
+  base: IMarkdownBase;
+  extend: IMarkdownExtend;
+  feature: IMarkdownFeature;
 }
 
 /**

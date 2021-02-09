@@ -20,7 +20,6 @@ const mutations: MutationTree<IRootState> = {
     Vue.set(_.general, "fileManager", msg.fileManager);
     Vue.set(_.general, "editor", msg.editor);
     Vue.set(_.general, "document", msg.document);
-    Vue.set(_.general, "markdown", msg.markdown);
   },
 };
 
