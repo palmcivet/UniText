@@ -187,10 +187,6 @@ li {
       margin-top: @item-spacing-width;
       margin-bottom: 2 * @item-spacing-width;
       width: 70%;
-      height: 1.8em;
-      line-height: 1.8em;
-      text-align: center;
-      vertical-align: baseline;
       align-self: center;
     }
 

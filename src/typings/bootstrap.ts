@@ -14,7 +14,7 @@ import {
   IThemeView,
   IThemeIcon,
 } from "./service/theme";
-import { IMarkdownBase, IMarkdownExtend, IMarkdownFeature } from "./service/markdown";
+import { IMarkdownHabit, IMarkdownExtend, IMarkdownFeature } from "./service/markdown";
 
 /**
  * @interface 启动软件需要携带的参数
@@ -45,7 +45,7 @@ export interface IPreference {
  * @interface Markdown.json 的类型
  */
 export interface IMarkdown {
-  base: IMarkdownBase;
+  base: IMarkdownHabit;
   extend: IMarkdownExtend;
   feature: IMarkdownFeature;
 }

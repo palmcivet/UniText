@@ -48,7 +48,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import InfoCard from "@/renderer/components/InfoCard.vue";
+import InfoCard from "@/renderer/components/Panel/InfoCard.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { EI18n } from "@/typings/service/preference";
 

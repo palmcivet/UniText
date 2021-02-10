@@ -7,11 +7,7 @@ export enum EPreset {
   EVN = "Evernote",
   YDN = "YoudaoNote",
   WZN = "WizNote",
-}
-
-export enum EHeading {
-  ATA = "ATA",
-  SETEXT = "Setext",
+  RAW = "Raw",
 }
 
 export enum ECodeBlocks {
@@ -22,7 +18,7 @@ export enum ECodeBlocks {
 /**
  * @interface Markdown 基础语法
  */
-export interface IMarkdownBase {
+export interface IMarkdownHabit {
   /**
    * @field 语法预设
    */
@@ -36,18 +32,9 @@ export interface IMarkdownBase {
    */
   linkify: boolean;
   /**
-   * @field 标题
-   */
-  heading: EHeading;
-  /**
    * @field 代码块
    */
   codeBlocks: ECodeBlocks;
-  /**
-   * @field 有序列表
-   */
-  orderList: boolean;
-  unorderList: boolean;
 }
 
 /**
@@ -68,9 +55,24 @@ export interface IMarkdownExtend {
    * ^[footnote]
    */
   footnote: boolean;
+  /**
+   * @field 目录
+   * @example
+   * [toc]
+   */
   toc: boolean;
-  sub: boolean;
+  /**
+   * @field 上标
+   * @example
+   * x~3~
+   */
   sup: boolean;
+  /**
+   * @field 下标
+   * @example
+   * x^3^
+   */
+  sub: boolean;
   /**
    * @field 插入
    * @example
@@ -93,6 +95,7 @@ export interface IMarkdownExtend {
    * @field 属性
    * @example
    * *[HTML]: Hyper Text Markup Language
+   * _[HTML]: Hyper Text Markup Language
    * The HTML is maintained by W3C
    */
   abbr: boolean;
@@ -105,7 +108,14 @@ export interface IMarkdownFeature {
   /**
    * @field 启用合并单元格
    */
-  multitable: boolean;
+  tableMerge: boolean;
+  /**
+   * @field 单元格居中
+   * @example
+   * | cell |
+   * |:---:|
+   */
+  tableAlign: boolean;
   /**
    * @field 启用文档导入
    */
@@ -126,4 +136,13 @@ export interface IMarkdownFeature {
    * @field 启用图表
    */
   mermaid: boolean;
+}
+
+export interface IMarkdownExport {
+  addToc: boolean;
+  refCheck: boolean;
+  lintCheck: boolean;
+  addPageNum: boolean;
+  defStyle: string;
+  postHook: string;
 }
