@@ -29,7 +29,13 @@ export default class Range extends Vue {
   @Prop({ type: Number, default: false })
   val!: number;
 
-  res = this.val;
+  res!: number;
+
+  data() {
+    return {
+      res: this.val,
+    };
+  }
 
   handleSubmit() {
     this.$emit("item-change", [this.group, this.field, this.res]);

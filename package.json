@@ -88,7 +88,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx,vue}": [
-      "vue-cli-service lint",
+      "eslint",
       "git add"
     ]
   }

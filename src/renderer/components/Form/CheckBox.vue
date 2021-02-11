@@ -15,8 +15,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component({ name: "Boolean" })
-export default class Boolean extends Vue {
+@Component({ name: "CheckBox" })
+export default class CheckBox extends Vue {
   @Prop({ type: Object, required: true })
   properties!: any;
 

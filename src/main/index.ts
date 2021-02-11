@@ -1,19 +1,8 @@
-import { protocol } from "electron";
 import * as fse from "fs-extra";
 
 import { IBootArgs } from "@/typings/bootstrap";
 import { UNITEXT_SYSTEM } from "@/main/config";
 import { UniText } from "./UniText";
-
-protocol.registerSchemesAsPrivileged([
-  {
-    scheme: "unitext",
-    privileges: {
-      secure: true,
-      standard: true,
-    },
-  },
-]);
 
 let UniTextApp: UniText;
 

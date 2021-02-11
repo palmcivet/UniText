@@ -1,4 +1,4 @@
-import { editor } from "monaco-editor/esm/vs/editor/editor.api";
+import { editor } from "monaco-editor";
 
 const init: editor.IStandaloneEditorConstructionOptions = {
   language: "markdown-math",

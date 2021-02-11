@@ -39,6 +39,11 @@ export default class Settings extends Vue {
         title: this.$t("sidebar.settings_preference"),
       },
       {
+        icon: "ri-markdown-line",
+        type: ESettingType.PREFERENCE,
+        title: this.$t("sidebar.settings_markdown"),
+      },
+      {
         icon: "ri-t-shirt-2-line",
         type: ESettingType.THEME,
         title: this.$t("sidebar.settings_theme"),

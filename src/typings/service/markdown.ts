@@ -48,6 +48,9 @@ export interface IMarkdownExtend {
    * - [x] DO
    */
   todoList: boolean;
+  /**
+   * @field 启用表格
+   */
   tables: boolean;
   /**
    * @field 脚注

@@ -14,7 +14,7 @@ export interface IGroup<T> {
   type: "Group";
   title: Array<string | Function>;
   properties: {
-    [key in keyof T]: ITextBox | ITextGroup | IBoolean | IRange | IDropDown;
+    [key in keyof T]: ITextBox | ITextGroup | ICheckBox | IRange | IDropDown;
   };
   default: { [key: string]: any };
   description: Array<string>;
@@ -35,8 +35,8 @@ export interface ITextGroup {
   description: Array<string>;
 }
 
-export interface IBoolean {
-  type: "Boolean";
+export interface ICheckBox {
+  type: "CheckBox";
   title: Array<string>;
   default: boolean;
   description: Array<string>;
@@ -63,7 +63,7 @@ export function reduceSchema<T>(data: TSchema<T>) {
   enum ETypeMap {
     Group = "object",
     Range = "number",
-    Boolean = "boolean",
+    CheckBox = "boolean",
     TextBox = "string",
     TextGroup = "array",
     DropDown = "string",
@@ -100,9 +100,9 @@ export function reduceSchema<T>(data: TSchema<T>) {
           };
           subElement.pattern && (value["pattern"] = subElement.pattern);
           break;
-        case "Boolean":
+        case "CheckBox":
           value = {
-            type: ETypeMap.Boolean,
+            type: ETypeMap.CheckBox,
           };
           break;
         case "TextGroup":

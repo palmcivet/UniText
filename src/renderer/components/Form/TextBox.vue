@@ -29,7 +29,13 @@ export default class TextBox extends Vue {
   @Prop({ type: String, default: false })
   val!: string;
 
-  res = this.val;
+  res!: string;
+
+  data() {
+    return {
+      res: this.val,
+    };
+  }
 
   handleSubmit() {
     this.$emit("item-change", [this.group, this.field, this.res]);

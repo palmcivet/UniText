@@ -20,7 +20,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 import Range from "./Range.vue";
-import Boolean from "./Boolean.vue";
+import CheckBox from "./CheckBox.vue";
 import DropDown from "./DropDown.vue";
 import TextBox from "./TextBox.vue";
 import TextGroup from "./TextGroup.vue";
@@ -29,7 +29,7 @@ import TextGroup from "./TextGroup.vue";
   name: "Group",
   components: {
     Range,
-    Boolean,
+    CheckBox,
     DropDown,
     TextBox,
     TextGroup,

@@ -53,7 +53,13 @@ export default class TextGroup extends Vue {
   @Prop({ type: Array, default: false })
   val!: Array<string>;
 
-  res = this.val;
+  res!: Array<string>;
+
+  data() {
+    return {
+      res: this.val,
+    };
+  }
 
   lock = -1;
 

@@ -3,7 +3,7 @@ import * as fse from "fs-extra";
 
 import { ITree, ITreeNode } from "@/typings/vuex/sideBar";
 
-export const joinPath = (...args: Array<string>) => path.normalize(path.join(...args));
+export const joinPath = (...args: Array<string>) => path.join(...args);
 
 export const exists = async (p: string) => {
   try {

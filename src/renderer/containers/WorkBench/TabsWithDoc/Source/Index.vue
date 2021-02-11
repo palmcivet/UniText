@@ -19,10 +19,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import { ipcRenderer } from "electron";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
-import {
-  editor as MonacoEditor,
-  IScrollEvent,
-} from "monaco-editor/esm/vs/editor/editor.api";
+import { editor as MonacoEditor, IScrollEvent } from "monaco-editor";
 import Prism from "prismjs";
 
 import { debounce, $, notEmpty } from "@/common/utils";
