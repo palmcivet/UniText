@@ -1,5 +1,4 @@
 import { app, ipcMain, BrowserWindow, BrowserWindowConstructorOptions } from "electron";
-import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
@@ -99,15 +98,11 @@ export class UniText {
 
     this._menuManager.updateMenu(EI18n[this._sysArgs.language], this._keybinding);
 
-    /**
-     * 加载开发者工具
-     */
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-      if (!process.env.IS_TEST) win.webContents.openDevTools();
+    if (isDev) {
+      await win.loadURL("http://localhost:9091/index.html");
+      win.webContents.openDevTools();
     } else {
-      createProtocol("unitext");
-      await win.loadURL("unitext://./index.html");
+      await win.loadURL(`file://${__dirname}/index.html`);
     }
 
     win.on("closed", () => {

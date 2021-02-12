@@ -1,6 +1,26 @@
 {
-  "presets": ["@vue/app"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage",
+        "corejs": 3,
+        "targets": {
+          "electron": "11"
+        }
+      }
+    ],
+    [
+      "@babel/preset-typescript",
+      {
+        "allExtensions": true,
+        "allowNamespaces": true
+      }
+    ]
+  ],
   "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
     [
       "prismjs",
       {

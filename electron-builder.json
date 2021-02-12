@@ -1,0 +1,36 @@
+{
+  "productName": "UniText",
+  "appId": "com.github.unitext",
+  "directories": {
+    "buildResources": "resources",
+    "output": "dist/release",
+    "app": "dist/build"
+  },
+  "electronDownload": {
+    "mirror": "https://npm.taobao.org/mirrors/electron/"
+  },
+  "asar": false,
+  "nsis": {
+    "oneClick": false,
+    "allowElevation": true,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "UniText"
+  },
+  "dmg": {
+    "title": "${productName}"
+  },
+  "mac": {
+    "target": ["dmg"],
+    "darkModeSupport": true
+  },
+  "win": {
+    "target": ["zip", "nsis"]
+  },
+  "linux": {
+    "category": "Office;TextEditor;Utility",
+    "mimeTypes": ["text/markdown"],
+    "target": ["deb", "rpm", "AppImage", "snap"]
+  }
+}

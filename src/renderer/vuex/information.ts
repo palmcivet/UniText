@@ -5,7 +5,7 @@ import { isDev } from "@/common/env";
 import { IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { IInformationState } from "@/typings/vuex/information";
-import * as pkg from "@/../package.json";
+const  pkg =require("@/../package.json");
 
 const state: IInformationState = {};
 
