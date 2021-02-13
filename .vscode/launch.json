@@ -3,41 +3,41 @@
   "configurations": [
     {
       "type": "node",
-      "name": "Main",
       "request": "launch",
-      "protocol": "inspector",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-      "windows": {
-        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      "name": "Serve UniText",
+      "program": "${workspaceFolder}/scripts/dev.js",
+      "env": {
+        "NODE_ENV": "development"
       },
-      "preLaunchTask": "Debug",
-      "args": [
-        "--remote-debugging-port=8081",
-        "./dist"
-      ],
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
+      "outFiles": ["${workspaceFolder}/dist/build/background.js"]
     },
     {
-      "type": "chrome",
-      "name": "Renderer",
-      "request": "attach",
-      "port": 8081,
-      "urlFilter": "http://localhost:*",
-      "webRoot": "${workspaceFolder}/src",
-      "sourceMapPathOverrides": {
-        "webpack:///./src/*": "${webRoot}/*"
-      }
+      "type": "node",
+      "request": "launch",
+      "name": "Main Process",
+      "port": 5861,
+      "timeout": 60000,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/build/background.js"]
+    },
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Renderer Process",
+      "reAttach": true,
+      "reloadOnChange": {
+        "watch": "${workspaceFolder}/src/renderer/*.js",
+        "ignore": "**/node_modules/**"
+      },
+      "port": 8315,
+      "url": "http://localhost:9091/index.html",
+      "webRoot": "${workspaceFolder}/src/renderer"
     }
   ],
   "compounds": [
     {
-      "name": "All",
-      "configurations": [
-        "Main",
-        "Renderer"
-      ]
+      "name": "Debug UniText",
+      "configurations": ["Serve UniText", "Main Process", "Renderer Process"]
     }
   ]
 }
