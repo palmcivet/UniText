@@ -1,7 +1,5 @@
 "use strict";
 
-const path = require("path");
-
 const chalk = require("chalk");
 const electron = require("electron");
 const { spawn } = require("child_process");

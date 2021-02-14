@@ -30,7 +30,7 @@ const rendererConfig = {
   },
   resolve: {
     alias: {
-      "vue$": "vue/dist/vue.esm.js",
+      "vue$": isDev ? "vue/dist/vue.esm.js" : "vue/dist/vue.runtime.esm.js",
       "@": getPath.src(),
       "&": getPath.public(),
     },

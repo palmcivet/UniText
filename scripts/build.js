@@ -7,6 +7,7 @@ const webpack = require("webpack");
 const { getPath } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
 const rendererConfig = require("./config/webpack.renderer");
+const { getLicenses } = require("./tools/thirdParty");
 
 const doneLog = chalk.bgGreen.white(" DONE ") + " ";
 const okayLog = chalk.bgBlue.white(" OKAY ") + " ";
@@ -75,6 +76,8 @@ function build(config) {
   await copyResources();
 
   await copyPackageJson();
+
+  getLicenses(process.cwd(), getPath.build("THIRD-PARTY-LICENSES.txt"));
 
   build(mainConfig)
     .then((result) => {
