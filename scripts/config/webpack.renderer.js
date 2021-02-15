@@ -1,13 +1,12 @@
 "use strict";
 
-const path = require("path");
 const webpack = require("webpack");
 const ESLintPlugin = require("eslint-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const { getRendererEnvironmentDefinitions, getPath } = require("./environment");
+const { getPath, getRendererEnv } = require("./environment");
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -25,12 +24,12 @@ const rendererConfig = {
     publicPath: "./",
   },
   node: {
-    __dirname: isDev,
-    __filename: isDev,
+    __dirname: false,
+    __filename: false,
   },
   resolve: {
     alias: {
-      "vue$": isDev ? "vue/dist/vue.esm.js" : "vue/dist/vue.runtime.esm.js",
+      "vue$": "vue/dist/vue.esm.js",
       "@": getPath.src(),
       "&": getPath.public(),
     },
@@ -41,14 +40,12 @@ const rendererConfig = {
       title: "UniText",
       filename: "index.html",
       template: getPath.public("index.html"),
-      templateParameters: {
-        BASE_URL: "",
-      },
+      inject: "body",
     }),
     new VueLoaderPlugin(),
     new ESLintPlugin({ failOnError: true }),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.DefinePlugin(getRendererEnvironmentDefinitions()),
+    new webpack.DefinePlugin(getRendererEnv(isDev)),
   ],
   module: {
     rules: [
@@ -81,14 +78,20 @@ const rendererConfig = {
       },
       {
         test: /\.css$/i,
-        use: [isDev ? "style-loader" : MiniCssExtractPlugin.loader, "css-loader"],
+        use: [
+          isDev
+            ? "style-loader"
+            : { loader: MiniCssExtractPlugin.loader, options: { publicPath: "../" } },
+          "css-loader",
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|bmp|svg)$/i,
         use: {
           loader: "file-loader",
           options: {
-            name: isDev ? "img/[name].[ext]" : "img/[hash:5].[ext]",
+            name: isDev ? "[name].[ext]" : "[hash:5].[ext]",
+            outputPath: "img",
           },
         },
       },
@@ -97,7 +100,8 @@ const rendererConfig = {
         use: {
           loader: "file-loader",
           options: {
-            name: isDev ? "font/[name].[ext]" : "font/[hash:5].[ext]",
+            name: isDev ? "[name].[ext]" : "[hash:5].[ext]",
+            outputPath: "font",
           },
         },
       },
@@ -106,12 +110,7 @@ const rendererConfig = {
 };
 
 if (isDev) {
-  rendererConfig.plugins.push(
-    new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, "../public").replace(/\\/g, "\\\\")}"`,
-    }),
-    new webpack.HotModuleReplacementPlugin()
-  );
+  rendererConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 
 if (!isDev) {
@@ -120,7 +119,6 @@ if (!isDev) {
   rendererConfig.plugins.push(
     new MiniCssExtractPlugin({
       filename: "css/[name].[chunkhash:5].css",
-      chunkFilename: "css/[id].[chunkhash:5].css",
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,

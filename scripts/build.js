@@ -13,6 +13,22 @@ const doneLog = chalk.bgGreen.white(" DONE ") + " ";
 const okayLog = chalk.bgBlue.white(" OKAY ") + " ";
 const errorLog = chalk.bgRed.white(" ERROR ") + " ";
 
+const bundledPkg = ["clipboard"];
+
+const filterPkg = [
+  "demo",
+  ".github",
+  "src",
+  ".babelrc",
+  "babel.config.js",
+  "bower.json",
+  "karma.conf.js",
+  "webpack.config.js",
+  "webpack.dev.config.js",
+  "webpack.web.config.js",
+  "composer.json",
+];
+
 async function preBuild() {
   console.log(chalk.greenBright.bold("UniText Building"));
 
@@ -26,7 +42,17 @@ async function copyResources() {
   await fse.copy(from, to);
 }
 
-async function copyPackageJson() {
+function copyPackages() {
+  bundledPkg.forEach(async (key) => {
+    const from = getPath.cwd("node_modules", key);
+    const to = getPath.build("node_modules", key);
+    await fse.copy(from, to, {
+      filter: (src, dst) => !filterPkg.some((item) => src.indexOf(item) !== -1),
+    });
+  });
+}
+
+async function getPackageJson() {
   const pkgPath = getPath.cwd("package.json");
   const raw = await fse.readFile(pkgPath, "utf-8");
   const pkgJson = JSON.parse(raw);
@@ -73,12 +99,6 @@ function build(config) {
 (async () => {
   await preBuild();
 
-  await copyResources();
-
-  await copyPackageJson();
-
-  getLicenses(process.cwd(), getPath.build("THIRD-PARTY-LICENSES.txt"));
-
   build(mainConfig)
     .then((result) => {
       console.log(`${okayLog}Main process built successfully`);
@@ -98,4 +118,12 @@ function build(config) {
       console.error(`\n${err}\n`);
       process.exit(1);
     });
+
+  await copyResources();
+
+  copyPackages();
+
+  await getPackageJson();
+
+  getLicenses(process.cwd(), getPath.build("THIRD-PARTY-LICENSES.txt"));
 })();

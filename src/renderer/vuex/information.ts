@@ -5,7 +5,6 @@ import { isDev } from "@/common/env";
 import { IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { IInformationState } from "@/typings/vuex/information";
-const  pkg =require("@/../package.json");
 
 const state: IInformationState = {};
 
@@ -37,7 +36,7 @@ const actions: ActionTree<IInformationState, IRootState> = {
         .substring(1)
         .split(".")
         .map((item: string) => parseInt(item, 10));
-    const currentVersion = getVersion((pkg as any).version);
+    const currentVersion = getVersion(process.versions.UNITEXT_VERSION as string);
 
     let releaseNotes = "";
 

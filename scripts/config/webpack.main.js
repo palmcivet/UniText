@@ -1,11 +1,9 @@
 "use strict";
 
-const path = require("path");
 const webpack = require("webpack");
 const ESLintPlugin = require("eslint-webpack-plugin");
 
-const { getEnvironmentDefinitions, getPath } = require("./environment");
-const { dependencies } = require("../../package.json");
+const { getPath, getMainEnv } = require("./environment");
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -21,10 +19,9 @@ const mainConfig = {
     filename: "background.js",
     libraryTarget: "commonjs2",
   },
-  externals: [...Object.keys(dependencies || {})],
   node: {
-    __dirname: !isDev,
-    __filename: !isDev,
+    __dirname: false,
+    __filename: false,
   },
   resolve: {
     alias: {
@@ -33,7 +30,11 @@ const mainConfig = {
     },
     extensions: [".ts", ".js", ".json"],
   },
-  plugins: [new ESLintPlugin({ failOnError: true }), new webpack.NoEmitOnErrorsPlugin()],
+  plugins: [
+    new ESLintPlugin({ failOnError: true }),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.DefinePlugin(getMainEnv(isDev)),
+  ],
   module: {
     rules: [
       {
@@ -53,12 +54,6 @@ const mainConfig = {
 if (!isDev) {
   mainConfig.devtool = "nosources-source-map";
   mainConfig.mode = "production";
-  mainConfig.plugins.push(
-    new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, "../static").replace(/\\/g, "\\\\")}"`,
-      ...getEnvironmentDefinitions(),
-    })
-  );
 }
 
 module.exports = mainConfig;

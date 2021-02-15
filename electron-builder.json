@@ -9,6 +9,12 @@
   "electronDownload": {
     "mirror": "https://npm.taobao.org/mirrors/electron/"
   },
+  "extraResources": [
+    {
+      "from": "dist/build/node_modules",
+      "to":"app/node_modules"
+    }
+  ],
   "asar": false,
   "nsis": {
     "oneClick": false,

@@ -7,7 +7,7 @@ const checker = require("license-checker");
 const additionalPackages = {};
 
 const getLicenses = (root, dst) => {
-  const callback = (err, packages) => {
+  const callback = async (err, packages) => {
     if (err) {
       console.log(`[ERROR] ${err}`);
       return;
@@ -66,7 +66,7 @@ ${summary}
   ${licenseList}
   `;
 
-    fse.writeFileSync(dst, output);
+    await fse.writeFile(dst, output);
   };
 
   checker.init(

@@ -8,7 +8,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackDevServer = require("webpack-dev-server");
 const WebpackHotMiddleware = require("webpack-hot-middleware");
 
-const { getPath } = require("./config/environment");
+const { getPath, getDevEnv } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
 const rendererConfig = require("./config/webpack.renderer");
 
@@ -93,7 +93,7 @@ function startRenderer() {
       },
     });
 
-    server.listen(9091);
+    server.listen(getDevEnv.rendererPort);
   });
 }
 
@@ -133,8 +133,8 @@ function startMain() {
 
 function startElectron() {
   electronProcess = spawn(electron.toString(), [
-    "--inspect=5861",
-    "--remote-debugging-port=8315",
+    `--inspect=${getDevEnv.inspectPort}`,
+    `--remote-debugging-port=${getDevEnv.debugPort}`,
     "--nolazy",
     getPath.build("background.js"),
   ]);
