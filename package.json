@@ -10,6 +10,7 @@
     "name": "Palm Civet",
     "email": "palmcivet_email@qq.com"
   },
+  "license": "Apache-2.0",
   "main": "background.js",
   "scripts": {
     "preinstall": "node scripts/preinstall.js",
