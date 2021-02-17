@@ -10,13 +10,8 @@ export enum EPreset {
   RAW = "Raw",
 }
 
-export enum ECodeBlocks {
-  INDENT = "Indent",
-  FENCE = "Fence",
-}
-
 /**
- * @interface Markdown 基础语法
+ * @interface 书写习惯
  */
 export interface IMarkdownHabit {
   /**
@@ -31,14 +26,40 @@ export interface IMarkdownHabit {
    * @field 自动探测可点击的地址
    */
   linkify: boolean;
-  /**
-   * @field 代码块
-   */
-  codeBlocks: ECodeBlocks;
 }
 
 /**
- * @interface Markdown 扩展语法
+ * @interface 导出设置
+ */
+export interface IMarkdownExport {
+  /**
+   * @field 添加目录
+   */
+  addToc: boolean;
+  /**
+   * @field 添加页号
+   */
+  addPageNum: boolean;
+  /**
+   * @field 自定义样式
+   */
+  addStyle: string;
+  /**
+   * @field 引用检查
+   */
+  refCheck: boolean;
+  /**
+   * @field 语法检查
+   */
+  lintCheck: boolean;
+  /**
+   * @field Post Hook。操作完成后执行用户定义的脚本
+   */
+  postHook: string;
+}
+
+/**
+ * @interface 扩展语法
  */
 export interface IMarkdownExtend {
   /**
@@ -53,49 +74,49 @@ export interface IMarkdownExtend {
    */
   tables: boolean;
   /**
-   * @field 脚注
-   * @example
-   * ^[footnote]
-   */
-  footnote: boolean;
-  /**
-   * @field 目录
+   * @field 启用目录
    * @example
    * [toc]
    */
   toc: boolean;
   /**
-   * @field 上标
+   * @field  启用脚注
+   * @example
+   * ^[footnote]
+   */
+  footnote: boolean;
+  /**
+   * @field 启用上标
    * @example
    * x~3~
    */
   sup: boolean;
   /**
-   * @field 下标
+   * @field 启用下标
    * @example
    * x^3^
    */
   sub: boolean;
   /**
-   * @field 插入
+   * @field 启用插入线
    * @example
    * ++insert++
    */
   insert: boolean;
   /**
-   * @field 删除
+   * @field 启用删除线
    * @example
    * ~~delete~~
    */
   delete: boolean;
   /**
-   * @field 高亮
+   * @field 启用高亮
    * @example
    * ==Mark==
    */
   mark: boolean;
   /**
-   * @field 属性
+   * @field 启用 abbr 属性
    * @example
    * *[HTML]: Hyper Text Markup Language
    * _[HTML]: Hyper Text Markup Language
@@ -105,7 +126,7 @@ export interface IMarkdownExtend {
 }
 
 /**
- * @interface Markdown 扩展功能
+ * @interface 扩展功能
  */
 export interface IMarkdownFeature {
   /**
@@ -113,16 +134,32 @@ export interface IMarkdownFeature {
    */
   tableMerge: boolean;
   /**
-   * @field 单元格居中
+   * @field 启用单元格居中
    * @example
    * | cell |
    * |:---:|
    */
   tableAlign: boolean;
   /**
+   * @field 启用自定义容器
+   * @example
+   * ::: warn
+   * Note
+   * :::
+   */
+  container: boolean;
+  /**
+   * @field 启用行高亮
+   * @example
+   * ```js {1,4-6}
+   * let a;
+   * ```
+   */
+  linehighlight: boolean;
+  /**
    * @field 启用文档导入
    */
-  import: boolean;
+  fileImport: boolean;
   /**
    * @field 启用 Emoji
    */
@@ -136,16 +173,7 @@ export interface IMarkdownFeature {
    */
   typographer: boolean;
   /**
-   * @field 启用图表
+   * @field 启用 Mermaid
    */
   mermaid: boolean;
-}
-
-export interface IMarkdownExport {
-  addToc: boolean;
-  refCheck: boolean;
-  lintCheck: boolean;
-  addPageNum: boolean;
-  defStyle: string;
-  postHook: string;
 }

@@ -31,10 +31,10 @@ const general = namespace("general");
   },
 })
 export default class PanelType extends Vue {
-  @general.State((state: IGeneralState) => state.userInterface.showPanel)
+  @general.State((state: IGeneralState) => state.interface.showPanel)
   showPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.panelType)
+  @general.State((state: IGeneralState) => state.interface.panelType)
   panelType!: EPanelType;
 
   @general.Mutation("SET_PANEL_TYPE")

@@ -19,7 +19,7 @@
     "release:all": "NODE_ENV=production node scripts/build.js && electron-builder build --mac --win --linux --x64"
   },
   "dependencies": {
-    "@iktakahiro/markdown-it-katex": "^4.0.0",
+    "@iktakahiro/markdown-it-katex": "^4.0.1",
     "clone": "^2.1.2",
     "electron-store": "^6.0.0",
     "electron-updater": "^4.3.5",

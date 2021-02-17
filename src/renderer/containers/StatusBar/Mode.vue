@@ -32,13 +32,13 @@ const general = namespace("general");
   },
 })
 export default class Mode extends Vue {
-  @general.State((state: IGeneralState) => state.userInterface.editMode)
+  @general.State((state: IGeneralState) => state.interface.editMode)
   editMode!: EEditMode;
 
-  @general.State((state: IGeneralState) => state.userInterface.dbColumn)
+  @general.State((state: IGeneralState) => state.interface.dbColumn)
   dbColumn!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.readMode)
+  @general.State((state: IGeneralState) => state.interface.readMode)
   readMode!: boolean;
 
   @general.Mutation("TOGGLE_CHECK")

@@ -8,13 +8,13 @@ import {
   EEditMode,
   ETypeMode,
   IPreferenceSystem,
-  IPreferenceUserInterface,
+  IPreferenceInterface,
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
 } from "@/typings/service/preference";
 
-const system: IGroup<IPreferenceSystem> = {
+const pSystem: IGroup<IPreferenceSystem> = {
   type: "Group",
   title: ["系统", "System"],
   description: ["软件的默认设置，启动时载入"],
@@ -86,7 +86,7 @@ const system: IGroup<IPreferenceSystem> = {
   default: {},
 };
 
-const userInterface: IGroup<IPreferenceUserInterface> = {
+const pInterface: IGroup<IPreferenceInterface> = {
   type: "Group",
   title: ["界面"],
   description: ["界面的默认设置，加载时载入"],
@@ -152,7 +152,7 @@ const userInterface: IGroup<IPreferenceUserInterface> = {
   default: {},
 };
 
-const fileManager: IGroup<IPreferenceFileManager> = {
+const pFileManager: IGroup<IPreferenceFileManager> = {
   type: "Group",
   title: ["文件管理"],
   description: ["文件管理器的默认设置"],
@@ -179,7 +179,7 @@ const fileManager: IGroup<IPreferenceFileManager> = {
   default: {},
 };
 
-const editor: IGroup<IPreferenceEditor> = {
+const pEditor: IGroup<IPreferenceEditor> = {
   type: "Group",
   title: ["编辑器"],
   description: ["编辑器的默认设置"],
@@ -212,7 +212,7 @@ const editor: IGroup<IPreferenceEditor> = {
   default: {},
 };
 
-const document: IGroup<IPreferenceDocument> = {
+const pDocument: IGroup<IPreferenceDocument> = {
   type: "Group",
   title: ["文档"],
   description: ["新建一份文档时默认采用的设置"],
@@ -262,11 +262,11 @@ const document: IGroup<IPreferenceDocument> = {
 };
 
 export const schemaPreference: TSchema<IPreference> = {
-  system,
-  userInterface,
-  fileManager,
-  editor,
-  document,
+  system: pSystem,
+  interface: pInterface,
+  fileManager: pFileManager,
+  editor: pEditor,
+  document: pDocument,
 };
 
 export default reduceSchema(schemaPreference);

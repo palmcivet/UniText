@@ -110,7 +110,7 @@ export interface IPreferenceSystem {
 /**
  * @interface 界面的默认设置，加载时载入
  */
-export interface IPreferenceUserInterface {
+export interface IPreferenceInterface {
   /**
    * @field 显示左侧边栏
    */

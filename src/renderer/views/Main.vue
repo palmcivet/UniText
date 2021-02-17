@@ -42,10 +42,10 @@ const general = namespace("general");
   },
 })
 export default class Main extends Vue {
-  @general.State((state: IGeneralState) => state.userInterface.showSideBar)
+  @general.State((state: IGeneralState) => state.interface.showSideBar)
   isShowSide!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.showPanel)
+  @general.State((state: IGeneralState) => state.interface.showPanel)
   isShowPanel!: boolean;
 
   leftViewWidth = 200;

@@ -49,6 +49,7 @@
         "plugins": [
           "autoloader",
           "line-numbers",
+          "line-highlight",
           "command-line",
           "show-language",
           "match-braces",

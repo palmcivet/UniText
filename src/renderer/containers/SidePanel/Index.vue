@@ -47,13 +47,13 @@ export default class SidePanel extends Vue {
   })
   fixed!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.showPanel)
+  @general.State((state: IGeneralState) => state.interface.showPanel)
   showPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.panelFloat)
+  @general.State((state: IGeneralState) => state.interface.panelFloat)
   panelFloat!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.panelType)
+  @general.State((state: IGeneralState) => state.interface.panelType)
   panelType!: EPanelType;
 
   get arrowPos() {

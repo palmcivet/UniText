@@ -51,6 +51,7 @@ export enum EWorkBenchType {
  */
 export enum ESettingType {
   PREFERENCE,
+  MARKDOWN,
   THEME,
   KEYBINDING,
   SNIPPET,

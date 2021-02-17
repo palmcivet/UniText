@@ -2,7 +2,7 @@ import Store from "electron-store";
 
 import {
   IPreferenceSystem,
-  IPreferenceUserInterface,
+  IPreferenceInterface,
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
@@ -14,7 +14,12 @@ import {
   IThemeView,
   IThemeIcon,
 } from "./service/theme";
-import { IMarkdownHabit, IMarkdownExtend, IMarkdownFeature } from "./service/markdown";
+import {
+  IMarkdownHabit,
+  IMarkdownExtend,
+  IMarkdownFeature,
+  IMarkdownExport,
+} from "./service/markdown";
 
 /**
  * @interface 启动软件需要携带的参数
@@ -35,7 +40,7 @@ export interface IBootArgs {
  */
 export interface IPreference {
   system: IPreferenceSystem;
-  userInterface: IPreferenceUserInterface;
+  interface: IPreferenceInterface;
   fileManager: IPreferenceFileManager;
   editor: IPreferenceEditor;
   document: IPreferenceDocument;
@@ -45,7 +50,8 @@ export interface IPreference {
  * @interface Markdown.json 的类型
  */
 export interface IMarkdown {
-  base: IMarkdownHabit;
+  habit: IMarkdownHabit;
+  export: IMarkdownExport;
   extend: IMarkdownExtend;
   feature: IMarkdownFeature;
 }

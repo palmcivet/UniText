@@ -902,7 +902,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@iktakahiro/markdown-it-katex@^4.0.0":
+"@iktakahiro/markdown-it-katex@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@iktakahiro/markdown-it-katex/-/markdown-it-katex-4.0.1.tgz#65ff9d12afd4c0b7684dd247abe7ce42fc1edac3"
   integrity sha512-kGFooO7fIOgY34PSG8ZNVsUlKhhNoqhzW2kq94TNGa8COzh73PO4KsEoPOsQVG1mEAe8tg7GqG0FoVao0aMHaw==

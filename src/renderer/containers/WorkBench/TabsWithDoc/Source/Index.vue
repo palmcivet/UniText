@@ -49,13 +49,13 @@ export default class Source extends Vue {
   @statusPanel.State("toc")
   tocTree!: Array<ITocList>;
 
-  @general.State((state: IGeneralState) => state.userInterface.dbColumn)
+  @general.State((state: IGeneralState) => state.interface.dbColumn)
   dbColumn!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.readMode)
+  @general.State((state: IGeneralState) => state.interface.readMode)
   isReadMode!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.panelType)
+  @general.State((state: IGeneralState) => state.interface.panelType)
   panelType!: EPanelType;
 
   @general.Mutation("SET_READ_MODE")

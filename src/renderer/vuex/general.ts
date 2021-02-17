@@ -18,39 +18,39 @@ const mutations: MutationTree<IGeneralState> = {
   },
 
   TOGGLE_SIDE_BAR: (_: IGeneralState) => {
-    _.userInterface.showSideBar = !_.userInterface.showSideBar;
+    _.interface.showSideBar = !_.interface.showSideBar;
   },
 
   TOGGLE_STATUS_BAR: (_: IGeneralState) => {
-    _.userInterface.showStatusBar = !_.userInterface.showStatusBar;
+    _.interface.showStatusBar = !_.interface.showStatusBar;
   },
 
   TOGGLE_CHECK: (_: IGeneralState) => {
-    _.userInterface.dbColumn = !_.userInterface.dbColumn;
+    _.interface.dbColumn = !_.interface.dbColumn;
   },
 
   TOGGLE_PANEL: (_: IGeneralState) => {
-    _.userInterface.showPanel = !_.userInterface.showPanel;
+    _.interface.showPanel = !_.interface.showPanel;
   },
 
   TOGGLE_PANEL_STYLE: (_: IGeneralState) => {
-    _.userInterface.panelFloat = !_.userInterface.panelFloat;
+    _.interface.panelFloat = !_.interface.panelFloat;
   },
 
   SET_PANEL_TYPE: (_: IGeneralState, type: EPanelType) => {
-    _.userInterface.panelType = type;
+    _.interface.panelType = type;
   },
 
   SET_READ_MODE: (_: IGeneralState, mode: boolean) => {
-    _.userInterface.readMode = mode;
+    _.interface.readMode = mode;
   },
 
   SET_TYPE_MODE: (_: IGeneralState, mode: ETypeMode) => {
-    _.userInterface.typeMode = mode;
+    _.interface.typeMode = mode;
   },
 
   SET_EDIT_MODE: (_: IGeneralState, mode: EEditMode) => {
-    _.userInterface.editMode = mode;
+    _.interface.editMode = mode;
   },
 };
 

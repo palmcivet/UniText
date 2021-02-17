@@ -10,10 +10,15 @@ import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 
+import MarkdownItTocAndAnchor from "@/library/markdown-it-toc-and-anchor";
+import MarkdownItHighlightLines from "@/library/markdown-it-hightlight-lines";
+
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { ITocList } from "@/renderer/utils";
-import markdownItTocAndAnchor from "@/renderer/utils/create-toc";
+
+const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
+const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
 const markdownEngine = new MarkdownIt({
   html: true,
@@ -21,16 +26,13 @@ const markdownEngine = new MarkdownIt({
   linkify: true,
 });
 
-const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
-const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
-
 markdownEngine.validateLink = (url) => {
   let str = url.trim().toLowerCase();
   return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
 };
 
-markdownEngine.use(MarkdownItKatex);
-markdownEngine.use(markdownItTocAndAnchor, {
+markdownEngine.use(MarkdownItHighlightLines);
+markdownEngine.use(MarkdownItTocAndAnchor, {
   toc: true,
   tocClassName: "toc-list",
   tocFirstLevel: 2,
@@ -40,16 +42,18 @@ markdownEngine.use(markdownItTocAndAnchor, {
     Bus.emit(BUS_EDITOR.SYNC_TOC, tocArray);
   },
 });
+
+markdownEngine.use(MarkdownItSup);
+markdownEngine.use(MarkdownItSub);
+markdownEngine.use(MarkdownItMark);
+markdownEngine.use(MarkdownItEmoji);
+markdownEngine.use(MarkdownItImsize);
+markdownEngine.use(MarkdownItFootnote);
+markdownEngine.use(MarkdownItKatex);
 markdownEngine.use(MarkdownItTaskLists, {
   label: true,
   labelAfter: true,
 });
-markdownEngine.use(MarkdownItMark);
-markdownEngine.use(MarkdownItSup);
-markdownEngine.use(MarkdownItSub);
-markdownEngine.use(MarkdownItFootnote);
-markdownEngine.use(MarkdownItEmoji);
-markdownEngine.use(MarkdownItImsize);
 markdownEngine.use(MarkdownItImplicitFigures, {
   dataType: true,
   figcaption: false,

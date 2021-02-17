@@ -40,7 +40,7 @@ export default class Settings extends Vue {
       },
       {
         icon: "ri-markdown-line",
-        type: ESettingType.PREFERENCE,
+        type: ESettingType.MARKDOWN,
         title: this.$t("sidebar.settings_markdown"),
       },
       {

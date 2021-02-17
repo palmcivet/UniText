@@ -36,7 +36,7 @@ const general = namespace("general");
   },
 })
 export default class ActivityBar extends Vue {
-  @general.State((state: IGeneralState) => state.userInterface.showSideBar)
+  @general.State((state: IGeneralState) => state.interface.showSideBar)
   isShowSide!: boolean;
 
   @general.Mutation("TOGGLE_SIDE_BAR")

@@ -33,7 +33,7 @@ export default class SideBar extends Vue {
   @sideBar.State((state: ISideBarState) => state.activity)
   activity!: EActivityType.FILES;
 
-  @general.State((state: IGeneralState) => state.userInterface.showSideBar)
+  @general.State((state: IGeneralState) => state.interface.showSideBar)
   isShowSide!: boolean;
 }
 </script>

@@ -45,10 +45,10 @@ const workBench = namespace("workBench");
   },
 })
 export default class WorkBench extends Vue {
-  @general.State((state: IGeneralState) => state.userInterface.showPanel)
+  @general.State((state: IGeneralState) => state.interface.showPanel)
   isShowPanel!: boolean;
 
-  @general.State((state: IGeneralState) => state.userInterface.panelFloat)
+  @general.State((state: IGeneralState) => state.interface.panelFloat)
   isPanelFloat!: boolean;
 
   @general.State((state: IGeneralState) => state.system.startup)
