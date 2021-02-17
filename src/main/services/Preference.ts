@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import Store from "electron-store";
-import * as fse from "fs-extra";
+import { pathExistsSync } from "fs-extra";
 
 import { joinPath } from "@/common/fileSystem";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
@@ -24,7 +24,7 @@ export class Preference {
     let cwd = joinPath(base, CONFIG_FOLDER.CONFIG);
     const filePath = joinPath(base, CONFIG_FILE.PREFERENCE);
 
-    if (!fse.pathExistsSync(filePath)) {
+    if (!pathExistsSync(filePath)) {
       cwd = UNITEXT_SYSTEM.DEFAULT_DIR;
       logger.error(`Can't find ${filePath}`);
     }

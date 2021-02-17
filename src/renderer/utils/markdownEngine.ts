@@ -32,7 +32,7 @@ markdownEngine.validateLink = (url) => {
 markdownEngine.use(MarkdownItKatex);
 markdownEngine.use(markdownItTocAndAnchor, {
   toc: true,
-  tocClassName: "markdownIt-TOC",
+  tocClassName: "toc-list",
   tocFirstLevel: 2,
   tocLastLevel: 6,
   anchorLink: false,

@@ -5,14 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" id="appearance" href="" />
+    <link rel="stylesheet" id="render_view" href="" />
+    <link rel="stylesheet" id="render_code" href="" />
   </head>
   <body>
-    <noscript>
-      <strong>
-        We're sorry but UniText doesn't work properly without JavaScript enabled. Please
-        enable it to continue.
-      </strong>
-    </noscript>
     <div id="app">
       <style>
         .landing {
@@ -249,7 +246,7 @@
           }
         }
       </style>
-      <div id="landing" class="landing">
+      <div class="landing">
         <div class="pulse-spinner">
           <div class="pulse-spinner__nib pulse-spinner__nib-0"></div>
           <div class="pulse-spinner__nib pulse-spinner__nib-1"></div>
@@ -266,6 +263,7 @@
         </div>
       </div>
     </div>
+    <link rel="stylesheet" href="lib/katex@0.12.0.min.css" />
     <!-- built files will be auto injected -->
   </body>
 </html>

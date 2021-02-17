@@ -1,6 +1,6 @@
 import { Console } from "console";
-import * as fse from "fs-extra";
-import * as fs from "fs";
+import { ensureFileSync } from "fs-extra";
+import { createWriteStream } from "fs";
 
 import { isDev } from "@/common/env";
 import { formatDate } from "@/common/utils";
@@ -22,14 +22,14 @@ class Logger {
     const infoPath = UNITEXT_SYSTEM.INFO_LOG;
     const errorPath = UNITEXT_SYSTEM.ERROR_LOG;
 
-    fse.ensureFileSync(infoPath);
-    fse.ensureFileSync(errorPath);
+    ensureFileSync(infoPath);
+    ensureFileSync(errorPath);
 
     // FEAT 切分
 
     return {
-      info: fs.createWriteStream(infoPath),
-      error: fs.createWriteStream(errorPath),
+      info: createWriteStream(infoPath),
+      error: createWriteStream(errorPath),
     };
   }
 

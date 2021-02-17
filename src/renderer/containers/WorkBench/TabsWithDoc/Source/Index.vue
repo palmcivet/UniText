@@ -358,9 +358,5 @@ export default class Source extends Vue {
 #markdown-preview {
   height: 100%;
   overflow: auto;
-  padding: 2em;
-  background-color: #fafafa;
-  font-family: @normal-font-family;
-  font-size: @preview-font-size;
 }
 </style>

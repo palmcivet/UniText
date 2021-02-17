@@ -4,8 +4,9 @@
   "todo-tree.general.tags": [
     "FIX", // 待修复 Bug
     "TODO", // 待办
-    "ALTER", // 需要个性化修改
-    "DEV" // 开发时参数
+    "FEAT", // 后期添加特性
+    "DEV", // 开发时参数
+    "NOTE" // 通知
   ],
   "todo-tree.highlights.defaultHighlight": {
     "type": "tag-comment",
@@ -26,6 +27,11 @@
       "foreground": "#F9811F",
       "iconColour": "#F9811F",
       "icon": "pencil"
+    },
+    "NOTE": {
+      "foreground": "#F9811F",
+      "iconColour": "#F9811F",
+      "icon": "bell"
     },
     "DEV": {
       "foreground": "#409dff",

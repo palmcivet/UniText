@@ -169,7 +169,7 @@ export default class FileTreeNode extends Vue {
       case "Enter":
         this.isEdit = false;
         if (this.newTitle.search(/[/|\\]/) !== -1) {
-          // TODO 完善报错信息
+          // NOTE 完善报错信息
           return;
         } else {
           this.RENAME(this.newTitle.trim());

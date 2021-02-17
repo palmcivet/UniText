@@ -5,9 +5,11 @@ export const isWin = process.platform === "win32";
 export const isLinux = process.platform === "linux";
 export const isDev = process.env.NODE_ENV !== "production";
 
-export const THEME_ID_APPEARANCE = "appearance";
-export const THEME_ID_EDITOR = "editor";
-export const THEME_ID_VIEW = "view";
+export enum THEME_ID {
+  APPEARANCE = "appearance",
+  RENDER_VIEW = "render_view",
+  RENDER_CODE = "render_code",
+}
 
 export const CONFIG_FOLDER = {
   THEME: joinPath(".CONFIG", "Theme"),

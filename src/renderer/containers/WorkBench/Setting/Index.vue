@@ -48,6 +48,8 @@ export default class Setting extends Vue {
     this.$store.commit("SET_STATE", {
       ...ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC),
     });
+    // NOTE 完善通知信息
+    this.$store.commit("information/SET_INFO", "OK");
   }
 
   handleReveal() {}

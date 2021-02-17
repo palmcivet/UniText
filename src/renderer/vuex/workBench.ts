@@ -342,13 +342,13 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       });
 
       if (res.filePath === undefined || res.filePath === "") {
-        // TODO 完善报错信息
+        // NOTE 完善报错信息
         commit("information/SET_ERROR", "", { root: true });
         return;
       }
 
       if (res.filePath.indexOf(root) === -1) {
-        // TODO 完善报错信息
+        // NOTE 完善报错信息
         commit("information/SET_ERROR", "", { root: true });
       }
 

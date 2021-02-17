@@ -52,7 +52,7 @@ const actions: ActionTree<IInformationState, IRootState> = {
         }
       });
 
-    // FEAT 新版本通知
+    // NOTE 新版本通知
     if (releaseNotes !== "") {
       _.dispatch("");
     }

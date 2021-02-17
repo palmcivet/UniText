@@ -7,7 +7,8 @@ import workBench from "./workBench";
 import statusPanel from "./statusPanel";
 import information from "./information";
 import { $ } from "@/common/utils";
-import { THEME_ID_APPEARANCE } from "@/common/env";
+import { THEME_ID } from "@/common/env";
+import { joinPath } from "@/common/fileSystem";
 import { IRootState } from "@/typings/vuex";
 import { IPreference } from "@/typings/bootstrap";
 
@@ -25,15 +26,20 @@ const mutations: MutationTree<IRootState> = {
 
 const actions: ActionTree<IRootState, IRootState> = {
   SET_THEME: async (_: ActionContext<IRootState, IRootState>, theme?: string) => {
-    let themeStyleEl = $(`#${THEME_ID_APPEARANCE}`);
-    if (!themeStyleEl) {
-      themeStyleEl = document.createElement("style");
-      themeStyleEl.id = THEME_ID_APPEARANCE;
-      themeStyleEl.setAttribute("type", "text/css");
-      document.head.appendChild(themeStyleEl);
-    }
+    $(`#${THEME_ID.APPEARANCE}`).setAttribute(
+      "href",
+      joinPath("themes", "OneDarkPro", "appearance.css")
+    );
 
-    themeStyleEl.innerHTML = "";
+    $(`#${THEME_ID.RENDER_VIEW}`).setAttribute(
+      "href",
+      joinPath("themes", "OneDarkPro", "render_view.css")
+    );
+
+    $(`#${THEME_ID.RENDER_CODE}`).setAttribute(
+      "href",
+      joinPath("themes", "OneDarkPro", "render_code.css")
+    );
   },
 };
 

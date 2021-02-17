@@ -135,7 +135,7 @@ export interface IPreferenceUserInterface {
    * @field 阅读模式
    * @deprecated
    */
-  readMode: boolean; // TODO 现有文档模型下，无法响应文档 readmode 属性的更改
+  readMode: boolean;
   /**
    * @field 查看编辑状态
    * - 对于源码模式，查看预览

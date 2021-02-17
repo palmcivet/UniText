@@ -9,8 +9,8 @@ const mainConfig = require("./config/webpack.main");
 const rendererConfig = require("./config/webpack.renderer");
 const { getLicenses } = require("./tools/thirdParty");
 
-const doneLog = chalk.bgGreen.white(" DONE ") + " ";
-const okayLog = chalk.bgBlue.white(" OKAY ") + " ";
+const okayLog = chalk.bgGreen.white(" OKAY ") + " ";
+const doneLog = chalk.bgBlue.white(" DONE ") + " ";
 const errorLog = chalk.bgRed.white(" ERROR ") + " ";
 
 const bundledPkg = ["clipboard"];
@@ -40,6 +40,7 @@ async function copyResources() {
   const from = getPath.public();
   const to = getPath.build();
   await fse.copy(from, to);
+  console.log(`${okayLog}Copy resources`);
 }
 
 function copyPackages() {
@@ -50,6 +51,7 @@ function copyPackages() {
       filter: (src, dst) => !filterPkg.some((item) => src.indexOf(item) !== -1),
     });
   });
+  console.log(`${okayLog}Copy Packages`);
 }
 
 async function getPackageJson() {
@@ -64,6 +66,7 @@ async function getPackageJson() {
   delete pkgJson["lint-staged"];
 
   await fse.writeFile(getPath.build("package.json"), JSON.stringify(pkgJson));
+  console.log(`${okayLog}Truncate package.json`);
 }
 
 function build(config) {
@@ -125,5 +128,7 @@ function build(config) {
 
   await getPackageJson();
 
-  getLicenses(process.cwd(), getPath.build("THIRD-PARTY-LICENSES.txt"));
+  getLicenses(process.cwd(), getPath.build("THIRD-PARTY-LICENSES.txt"), () => {
+    console.log(`${okayLog}Generate License statement`);
+  });
 })();

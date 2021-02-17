@@ -86,7 +86,7 @@ export class UniText {
         worldSafeExecuteJavaScript: true,
       },
       frame: false,
-      vibrancy: "window",
+      vibrancy: "titlebar",
       backgroundColor: "#00000000",
       transparent: true,
       titleBarStyle: "hidden",

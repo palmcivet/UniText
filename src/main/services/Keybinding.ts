@@ -1,4 +1,4 @@
-import * as fse from "fs-extra";
+import { readJsonSync } from "fs-extra";
 
 import { TKeybindingSet } from "@/typings/bootstrap";
 
@@ -68,7 +68,7 @@ export class Keybinding {
    * @param path 用户自定义文件路径
    */
   load(path: string) {
-    const json = fse.readJsonSync(path);
+    const json = readJsonSync(path);
 
     if (!json || typeof json !== "object") {
       return;

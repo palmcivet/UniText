@@ -32,7 +32,7 @@ const getMainEnv = (isDev) => {
     "global.UNITEXT_VERSION": JSON.stringify(version),
     "global.__static": !isDev
       ? JSON.stringify(`http://localhost:${getDevEnv.rendererPort}/public`)
-      : JSON.stringify(join(__dirname, "asset")),
+      : JSON.stringify(getPath.public()),
   };
 };
 

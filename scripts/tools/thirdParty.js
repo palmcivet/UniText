@@ -1,12 +1,12 @@
 "use strict";
 
-const fse = require("fs");
+const fse = require("fs-extra");
 const { resolve } = require("path");
 const checker = require("license-checker");
 
 const additionalPackages = {};
 
-const getLicenses = (root, dst) => {
+const getLicenses = (root, dst, call) => {
   const callback = async (err, packages) => {
     if (err) {
       console.log(`[ERROR] ${err}`);
@@ -24,6 +24,8 @@ const getLicenses = (root, dst) => {
     const addedKeys = {};
 
     Object.keys(packages).forEach((key) => {
+      if (/^unitext/.test(key)) return;
+
       let packageName = key;
 
       const nameRegex = /(^.+)(?:@)/.exec(key);
@@ -67,6 +69,7 @@ ${summary}
   `;
 
     await fse.writeFile(dst, output);
+    call();
   };
 
   checker.init(
