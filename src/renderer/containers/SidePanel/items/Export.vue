@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import CheckGroup from "@/renderer/components/Panel/CheckGroup.vue";
+import CheckGroup from "../widgets/CheckGroup.vue";
 
 @Component({
   name: "Export",

@@ -8,11 +8,11 @@
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
-import Tags from "@/renderer/containers/SideBar/Tags.vue";
-import Files from "@/renderer/containers/SideBar/Files.vue";
-import Search from "@/renderer/containers/SideBar/Search.vue";
-import Bookmarks from "@/renderer/containers/SideBar/Bookmarks.vue";
-import Settings from "@/renderer/containers/SideBar/Settings.vue";
+import Tags from "@/renderer/containers/SideBar/items/Tags.vue";
+import Files from "@/renderer/containers/SideBar/items/Files.vue";
+import Search from "@/renderer/containers/SideBar/items/Search.vue";
+import Bookmarks from "@/renderer/containers/SideBar/items/Bookmarks.vue";
+import Settings from "@/renderer/containers/SideBar/items/Settings.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EActivityType, ISideBarState } from "@/typings/vuex/sideBar";
 

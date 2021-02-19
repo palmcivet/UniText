@@ -12,11 +12,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import Tags from "@/renderer/containers/SideBar/Tags.vue";
-import Files from "@/renderer/containers/SideBar/Files.vue";
-import Search from "@/renderer/containers/SideBar/Search.vue";
-import Bookmarks from "@/renderer/containers/SideBar/Bookmarks.vue";
-import Settings from "@/renderer/containers/SideBar/Settings.vue";
 import CheckList from "@/renderer/components/CheckList.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EActivityType, ISideBarState } from "@/typings/vuex/sideBar";
@@ -27,11 +22,6 @@ const general = namespace("general");
 @Component({
   name: "ActivityBar",
   components: {
-    Tags,
-    Files,
-    Search,
-    Settings,
-    Bookmarks,
     CheckList,
   },
 })

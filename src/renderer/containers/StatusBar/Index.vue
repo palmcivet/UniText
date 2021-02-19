@@ -12,13 +12,13 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import Mode from "./Mode.vue";
-import Message from "./Message.vue";
-import TagList from "./TagList.vue";
-import PanelType from "./PanelType.vue";
-import PanelStyle from "./PanelStyle.vue";
-import SyncStatus from "./SyncStatus.vue";
-import SyncScheme from "./SyncScheme.vue";
+import Mode from "./items/Mode.vue";
+import Message from "./items/Message.vue";
+import TagList from "./items/TagList.vue";
+import PanelType from "./items/PanelType.vue";
+import PanelStyle from "./items/PanelStyle.vue";
+import SyncStatus from "./items/SyncStatus.vue";
+import SyncScheme from "./items/SyncScheme.vue";
 
 const Space = {
   template: `<span style="width: ${1}em;"></span>`,

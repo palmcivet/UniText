@@ -29,8 +29,10 @@ export const localesMenu = {
     edit: ["编辑"],
     save: ["保存"],
     open: ["打开"],
-    newfile: ["新建文件"],
-    newfolder: ["新建文件夹"],
+    new_file: ["新建文件"],
+    new_folder: ["新建文件夹"],
+    open_project: localesCommon.open_project,
+    close_project: ["关闭笔记文件夹"],
     reveal: ["显示在文件管理器"],
   },
 

@@ -9,13 +9,13 @@ import { EI18n } from "@/typings/service/preference";
 
 export const folder = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
-    label: localesMenu.file.newfile[locale],
-    accelerator: keybinding.getItem("file.newfile"),
+    label: localesMenu.file.new_file[locale],
+    accelerator: keybinding.getItem("file.new_file"),
     click: () => {},
   },
   {
-    label: localesMenu.file.newfolder[locale],
-    accelerator: keybinding.getItem("file.newfolder"),
+    label: localesMenu.file.new_folder[locale],
+    accelerator: keybinding.getItem("file.new_folder"),
     click: () => {},
   },
   { type: "separator" },

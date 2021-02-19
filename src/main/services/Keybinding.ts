@@ -26,8 +26,10 @@ export class Keybinding {
       /* file */
       ["file.read", ""],
       ["file.edit", ""],
-      ["file.newfile", "CmdOrCtrl+N"],
-      ["file.newfolder", ""],
+      ["file.new_file", "CmdOrCtrl+N"],
+      ["file.new_folder", ""],
+      ["file.open_project", ""],
+      ["file.close_project", ""],
       ["file.reveal", ""],
       ["file.save", "CmdOrCtrl+S"],
       ["file.copy", "CmdOrCtrl+C"],

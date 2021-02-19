@@ -37,8 +37,8 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import Draggable from "vuedraggable";
 
-import BaseView from "./BaseView.vue";
-import FileTreeNode from "./FileTreeNode.vue";
+import BaseView from "../widgets/BaseView.vue";
+import FileTreeNode from "../widgets/FileTreeNode.vue";
 import { ISideBarState, ITree } from "@/typings/vuex/sideBar";
 import { IGeneralState } from "@/typings/vuex/general";
 
@@ -57,6 +57,9 @@ export default class Files extends Vue {
   @general.State((state: IGeneralState) => state.fileManager.showIndent)
   showIndent!: boolean;
 
+  @general.State((state: IGeneralState) => state.fileManager.folderDir)
+  folderDir!: string;
+
   @sideBar.State((state: ISideBarState) => state.fileTree)
   fileTree!: ITree;
 
@@ -68,9 +71,6 @@ export default class Files extends Vue {
 
   @sideBar.Mutation("TOGGLE_ALL")
   TOGGLE_ALL!: (isOnce: boolean) => void;
-
-  @sideBar.Action("LOAD_TREE")
-  LOAD_TREE!: () => void;
 
   @sideBar.Action("OPEN_PROJECT")
   OPEN_PROJECT!: () => void;
@@ -93,7 +93,9 @@ export default class Files extends Vue {
   }
 
   mounted() {
-    this.LOAD_TREE();
+    const { dispatch } = this.$store;
+    if (this.folderDir === "") return;
+    dispatch("sideBar/BUILD_TREE");
   }
 }
 </script>

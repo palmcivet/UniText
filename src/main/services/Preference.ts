@@ -21,6 +21,11 @@ export class Preference {
   private _preferenceSet!: TPreferenceSet;
 
   constructor(base: string) {
+    this.changeProject(base);
+    this._listenForIpcMain();
+  }
+
+  changeProject(base: string) {
     let cwd = joinPath(base, CONFIG_FOLDER.CONFIG);
     const filePath = joinPath(base, CONFIG_FILE.PREFERENCE);
 
@@ -35,9 +40,8 @@ export class Preference {
       schema: schema as Store.Schema<IPreference>,
     });
 
+    // 放入 system 组
     this._preferenceSet.set("fileManager.folderDir", base);
-
-    this._listenForIpcMain();
   }
 
   getItem(key: string): any {
@@ -59,6 +63,10 @@ export class Preference {
 
     ipcMain.on(IPC_PREFERENCE.GET_ALL_SYNC, (event) => {
       event.returnValue = this._preferenceSet.store;
+    });
+
+    ipcMain.on(IPC_PREFERENCE.CHANGE_PROJECT, (event, base: string) => {
+      this.changeProject(base);
     });
   }
 }

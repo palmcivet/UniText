@@ -14,7 +14,6 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
@@ -23,7 +22,6 @@ import Snippet from "./Snippet.vue";
 import Markdown from "./Markdown.vue";
 import Preference from "./Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
-import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { ESettingType, EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
 
 const workBench = namespace("workBench");
@@ -48,11 +46,10 @@ export default class Setting extends Vue {
   SWITCH_SETTING!: (type: ESettingType) => void;
 
   handleLoad() {
-    this.$store.commit("SET_STATE", {
-      ...ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC),
-    });
+    const { commit, dispatch } = this.$store;
+    dispatch("LOAD_STATE");
     // NOTE 完善通知信息
-    this.$store.commit("information/SET_INFO", "OK");
+    commit("information/SET_INFO", "OK");
   }
 
   handleReveal() {}

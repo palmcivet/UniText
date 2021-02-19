@@ -58,6 +58,18 @@ const mutations: MutationTree<ISideBarState> = {
 
 const actions: ActionTree<ISideBarState, IRootState> = {
   /**
+   * 构建文件树
+   */
+  BUILD_TREE: (_: ActionContext<ISideBarState, IRootState>) => {
+    const { folderDir, ignoreFile } = _.rootState.general.fileManager;
+    const targetTree: ITree = {};
+    buildTree(folderDir, "", ignoreFile, targetTree);
+    setTimeout(() => {
+      _.state.fileTree = targetTree;
+    }, 400);
+  },
+
+  /**
    * 点击按钮，选择笔记文件夹打开
    */
   OPEN_PROJECT: async (_: ActionContext<ISideBarState, IRootState>) => {
@@ -76,34 +88,12 @@ const actions: ActionTree<ISideBarState, IRootState> = {
     } else {
       // FEAT 提示是否初始化、作为默认文件夹
       commit("general/SET_FOLDER", res.filePaths[0], { root: true });
-      dispatch("BUILD_TREE");
+      dispatch("sideBar/BUILD_TREE");
+      dispatch("LOAD_STATE");
     }
   },
 
-  /**
-   * 构建文件树
-   */
-  BUILD_TREE: (_: ActionContext<ISideBarState, IRootState>) => {
-    const { folderDir, ignoreFile } = _.rootState.general.fileManager;
-    const targetTree: ITree = {};
-    buildTree(folderDir, "", ignoreFile, targetTree);
-    setTimeout(() => {
-      _.state.fileTree = targetTree;
-    }, 400);
-  },
-
-  /**
-   * 加载文件树
-   * - 不为空，则在初始化时加载
-   * - 若为空，则表明新建窗口，不需要操作
-   */
-  LOAD_TREE: async (_: ActionContext<ISideBarState, IRootState>) => {
-    const { dispatch, rootState } = _;
-    if (rootState.general.fileManager.folderDir === "") return;
-    dispatch("BUILD_TREE");
-  },
-
-  CHECK_TREE: (_: ActionContext<ISideBarState, IRootState>) => {},
+  CLOSE_PROJECT: async (_: ActionContext<ISideBarState, IRootState>) => {},
 };
 
 export default {

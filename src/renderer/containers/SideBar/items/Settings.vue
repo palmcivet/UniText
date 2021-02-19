@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import BaseView from "./BaseView.vue";
+import BaseView from "../widgets/BaseView.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { ESettingType } from "@/typings/vuex/workBench";
 

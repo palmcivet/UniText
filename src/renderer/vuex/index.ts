@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { ipcRenderer } from "electron";
 import Vuex, { ActionContext, ActionTree, MutationTree } from "vuex";
 
 import general from "./general";
@@ -9,6 +10,7 @@ import information from "./information";
 import { $ } from "@/common/utils";
 import { THEME_ID } from "@/common/env";
 import { joinPath } from "@/common/fileSystem";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { IPreference } from "@/typings/bootstrap";
 
@@ -25,7 +27,11 @@ const mutations: MutationTree<IRootState> = {
 };
 
 const actions: ActionTree<IRootState, IRootState> = {
-  SET_THEME: async (_: ActionContext<IRootState, IRootState>, theme?: string) => {
+  LOAD_STATE: (_: ActionContext<IRootState, IRootState>) => {
+    _.commit("SET_STATE", ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC));
+  },
+
+  LOAD_THEME: async (_: ActionContext<IRootState, IRootState>, theme?: string) => {
     $(`#${THEME_ID.APPEARANCE}`).setAttribute(
       "href",
       joinPath("themes", "OneDarkPro", "appearance.css")

@@ -23,9 +23,9 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import TOC from "./Toc.vue";
-import INFO from "./Info.vue";
-import EXPORT from "./Export.vue";
+import TOC from "./items/Toc.vue";
+import INFO from "./items/Info.vue";
+import EXPORT from "./items/Export.vue";
 import { $ } from "@/common/utils";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EPanelType } from "@/typings/service/preference";

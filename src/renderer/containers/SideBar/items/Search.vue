@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import BaseView from "./BaseView.vue";
+import BaseView from "../widgets/BaseView.vue";
 
 @Component({
   name: "Search",

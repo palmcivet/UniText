@@ -6,7 +6,13 @@ import {
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
-} from "@/typings/service/preference";
+} from "./service/preference";
+import {
+  IMarkdownHabit,
+  IMarkdownExport,
+  IMarkdownExtend,
+  IMarkdownFeature,
+} from "./service/markdown";
 import {
   IThemeWindow,
   IThemeAppearance,
@@ -14,12 +20,6 @@ import {
   IThemeView,
   IThemeIcon,
 } from "./service/theme";
-import {
-  IMarkdownHabit,
-  IMarkdownExtend,
-  IMarkdownFeature,
-  IMarkdownExport,
-} from "./service/markdown";
 
 /**
  * @interface 启动软件需要携带的参数

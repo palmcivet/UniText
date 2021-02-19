@@ -119,6 +119,28 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
       label: localesMenu.file.label[locale],
       submenu: [
         {
+          label: localesMenu.file.open_project[locale],
+          accelerator: keybinding.getItem("file.open_project"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.file.close_project[locale],
+          accelerator: keybinding.getItem("file.close_project"),
+          click: () => {},
+        },
+        { type: "separator" },
+        {
+          label: localesMenu.file.new_file[locale],
+          accelerator: keybinding.getItem("file.new_file"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.file.new_folder[locale],
+          accelerator: keybinding.getItem("file.new_folder"),
+          click: () => {},
+        },
+        { type: "separator" },
+        {
           label: localesMenu.file.read[locale],
           accelerator: keybinding.getItem("file.read"),
           click: () => {},
@@ -137,17 +159,6 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         {
           label: localesMenu.edit.cut[locale],
           accelerator: keybinding.getItem("edit.cut"),
-          click: () => {},
-        },
-        { type: "separator" },
-        {
-          label: localesMenu.file.newfile[locale],
-          accelerator: keybinding.getItem("file.newfile"),
-          click: () => {},
-        },
-        {
-          label: localesMenu.file.newfolder[locale],
-          accelerator: keybinding.getItem("file.newfolder"),
           click: () => {},
         },
         { type: "separator" },
