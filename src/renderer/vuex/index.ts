@@ -39,12 +39,12 @@ const actions: ActionTree<IRootState, IRootState> = {
 
     $(`#${THEME_ID.RENDER_VIEW}`).setAttribute(
       "href",
-      joinPath("themes", "OneDarkPro", "render_view.css")
+      joinPath("themes", "OneDarkPro", "renderView.css")
     );
 
     $(`#${THEME_ID.RENDER_CODE}`).setAttribute(
       "href",
-      joinPath("themes", "OneDarkPro", "render_code.css")
+      joinPath("themes", "OneDarkPro", "renderCode.css")
     );
   },
 };

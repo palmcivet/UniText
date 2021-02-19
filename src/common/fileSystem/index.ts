@@ -3,7 +3,21 @@ import * as fse from "fs-extra";
 
 import { ITree, ITreeNode } from "@/typings/vuex/sideBar";
 
+const _IGNORE = [".DS_Store"];
+
+export const shouldIgnore = (item: string) => _IGNORE.indexOf(item) !== -1;
+
 export const joinPath = (...args: Array<string>) => path.join(...args);
+
+export const checkDir = async (base: string, samp: Array<string>) => {
+  let flag = true;
+  for await (const item of samp) {
+    if (shouldIgnore(item)) return;
+    flag = await fse.pathExists(joinPath(base, item));
+    if (!flag) break;
+  }
+  return flag;
+};
 
 export const exists = async (p: string) => {
   try {

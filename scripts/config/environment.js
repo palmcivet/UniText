@@ -30,7 +30,7 @@ const getMainEnv = (isDev) => {
     "global.GIT_SHORT_HASH": JSON.stringify(shortHash),
     "global.GIT_COMMIT_DATE": JSON.stringify(commitDate),
     "global.UNITEXT_VERSION": JSON.stringify(version),
-    "global.__static": !isDev
+    "__static": !isDev
       ? JSON.stringify(`http://localhost:${getDevEnv.rendererPort}/public`)
       : JSON.stringify(getPath.public()),
   };
@@ -40,7 +40,7 @@ const getRendererEnv = (isDev) => {
   const env = getMainEnv(isDev);
   return {
     "process.versions.UNITEXT_VERSION": env["global.UNITEXT_VERSION"],
-    "__static": env["global.__static"],
+    "__static": env["__static"],
   };
 };
 

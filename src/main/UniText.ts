@@ -4,9 +4,10 @@ import { autoUpdater } from "electron-updater";
 
 import { IPC_BOOTSTRAP } from "@/common/channel/ipc";
 import { isDev, isOsx, isWin } from "@/common/env";
-import { Preference } from "./services/Preference";
-import { Keybinding } from "./services/Keybinding";
-import { MenuManager } from "./services/MenuManager";
+import { MenuManager } from "@/main/services/MenuManager";
+import { Keybinding } from "@/main/services/Keybinding";
+import { Preference } from "@/main/services/Preference";
+import { Theme } from "@/main/services/Theme";
 import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
 import { IBootArgs } from "@/typings/bootstrap";
 
@@ -25,6 +26,8 @@ export class UniText {
 
   private _snippet!: any;
 
+  private _theme!: Theme;
+
   /**
    * @param args 启动参数
    */
@@ -34,6 +37,7 @@ export class UniText {
     this._menuManager = new MenuManager();
     this._keybinding = new Keybinding();
     this._preference = new Preference(args.notesPath);
+    this._theme = new Theme(args.notesPath);
   }
 
   private _listenForIpcMain() {
@@ -70,26 +74,19 @@ export class UniText {
   private async _createWindow() {
     this._sysArgs = this._preference.getItem("system");
 
-    // FEAT 读取工作区设置文件
-
-    // FEAT 提取部分设置
-
     const winOption: BrowserWindowConstructorOptions = {
-      width: 1294,
-      height: 800,
-      minWidth: 1000,
-      minHeight: 618,
+      minWidth: 647,
+      minHeight: 400,
       webPreferences: {
         nodeIntegration: true,
         enableRemoteModule: true,
         contextIsolation: false,
         worldSafeExecuteJavaScript: true,
       },
-      frame: false,
       vibrancy: "titlebar",
       backgroundColor: "#00000000",
       transparent: true,
-      titleBarStyle: "hidden",
+      ...this._theme.getWindowStyle(),
     };
 
     let win: BrowserWindow | null = new BrowserWindow(winOption);

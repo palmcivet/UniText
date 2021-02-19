@@ -5,7 +5,7 @@ export type TSchema<T> = {
 export const reduceType = (type: any) => {
   const resArr = [];
   for (let key in type) {
-    resArr.push(key);
+    resArr.push(type[key]);
   }
   return resArr;
 };

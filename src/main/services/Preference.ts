@@ -3,12 +3,12 @@ import Store from "electron-store";
 import { pathExistsSync } from "fs-extra";
 
 import { joinPath } from "@/common/fileSystem";
-import { IPC_PREFERENCE } from "@/common/channel/ipc";
+import { IPC_OTHER, IPC_PREFERENCE } from "@/common/channel/ipc";
 import { CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
 import { UNITEXT_SYSTEM } from "@/main/config";
 import schema from "@/main/schema/sPreference";
+import logger from "@/main/services/Logger";
 import { IPreference, TPreferenceSet } from "@/typings/bootstrap";
-import logger from "./Logger";
 
 /**
  * 有以下功能：
@@ -26,7 +26,7 @@ export class Preference {
   }
 
   changeProject(base: string) {
-    let cwd = joinPath(base, CONFIG_FOLDER.CONFIG);
+    let cwd = joinPath(base, CONFIG_FOLDER.SETTINGS);
     const filePath = joinPath(base, CONFIG_FILE.PREFERENCE);
 
     if (!pathExistsSync(filePath)) {
@@ -49,6 +49,10 @@ export class Preference {
   }
 
   private _listenForIpcMain() {
+    ipcMain.on(IPC_OTHER.CHANGE_PROJECT, (event, base: string) => {
+      this.changeProject(base);
+    });
+
     ipcMain.on(IPC_PREFERENCE.SET_ITEM, (event, key: string, val: any) => {
       this._preferenceSet.set(key, val);
     });
@@ -63,10 +67,6 @@ export class Preference {
 
     ipcMain.on(IPC_PREFERENCE.GET_ALL_SYNC, (event) => {
       event.returnValue = this._preferenceSet.store;
-    });
-
-    ipcMain.on(IPC_PREFERENCE.CHANGE_PROJECT, (event, base: string) => {
-      this.changeProject(base);
     });
   }
 }

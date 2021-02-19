@@ -7,7 +7,13 @@
     </div>
     <div class="option" :title="properties.description">
       <label>{{ $g(properties.title) }}</label>
-      <input type="number" v-model.number="res" @change="handleSubmit()" />
+      <input
+        type="number"
+        :max="properties.maximum && properties.maximum"
+        :min="properties.minimum && properties.minimum"
+        v-model.number="res"
+        @change="handleSubmit()"
+      />
     </div>
   </div>
 </template>

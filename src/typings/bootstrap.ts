@@ -13,13 +13,7 @@ import {
   IMarkdownExtend,
   IMarkdownFeature,
 } from "./service/markdown";
-import {
-  IThemeWindow,
-  IThemeAppearance,
-  IThemeEditor,
-  IThemeView,
-  IThemeIcon,
-} from "./service/theme";
+import { IThemeWindow, IThemeColor } from "./service/theme";
 
 /**
  * @interface 启动软件需要携带的参数
@@ -70,10 +64,7 @@ export type TPreferenceSet = Store<IPreference>;
  */
 export interface ITheme {
   window: IThemeWindow;
-  appearance: IThemeAppearance;
-  editor: IThemeEditor;
-  view: IThemeView;
-  icon: IThemeIcon;
+  color: IThemeColor;
 }
 
 /**
