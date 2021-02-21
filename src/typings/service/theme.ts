@@ -32,6 +32,10 @@ export interface IThemeColor {
    */
   dynamic: boolean;
   /**
+   * @field 预设
+   */
+  preset: string;
+  /**
    * @field 外观主题
    */
   appearance: string;

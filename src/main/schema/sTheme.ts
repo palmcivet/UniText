@@ -34,13 +34,19 @@ const tWindow: IGroup<IThemeWindow> = {
 
 const tColor: IGroup<IThemeColor> = {
   type: "Group",
-  title: ["外观主题"],
+  title: ["主题样式"],
   properties: {
     dynamic: {
       type: "CheckBox",
       title: ["动态主题"],
       description: ["是否启用动态主题"],
       default: false,
+    },
+    preset: {
+      type: "TextBox",
+      title: ["预设"],
+      description: ["预设主题"],
+      default: "OneDarkPro",
     },
     appearance: {
       type: "TextBox",

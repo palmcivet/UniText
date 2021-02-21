@@ -1,7 +1,7 @@
 <template>
   <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
     <Group
-      v-for="(v, k, i) of scheme.otherGroup"
+      v-for="(v, k, i) of schema.otherGroup"
       :key="i"
       :userData="userData"
       :properties="v"
@@ -9,32 +9,38 @@
       @item-submit="handleSubmit($event)"
     />
 
-    <CheckBox
-      :group="'color'"
-      :field="'dynamic'"
-      :properties="scheme.dynamic"
-      :val="userData['color']['dynamic']"
-      @item-change="$emit('item-submit', $event)"
-    />
+    <div class="group">
+      <div class="title">{{ $g(schema.title) }}</div>
+      <div class="items">
+        <CheckBox
+          :group="'color'"
+          :field="'dynamic'"
+          :properties="schema.dynamic"
+          :val="getVal('color', 'dynamic')"
+          @item-change="handleSubmit($event)"
+        />
 
-    <div v-if="isPreset" :title="$g(selectScheme.description)">
-      <label>{{ $g(selectScheme.title) }}</label>
-      <select v-model="selectedItem" @change="handleChoose()">
-        <option v-for="(i, k) in selectScheme.enum" :value="i[1]" :key="k">
-          {{ i[0] }}
-        </option>
-      </select>
+        <DropDown
+          :group="'color'"
+          :field="'preset'"
+          :properties="selectScheme"
+          :val="getVal('color', 'preset')"
+          @item-change="handleSubmit($event)"
+        />
+
+        <TextBox
+          v-for="(v, k, i) of schema.customGroup"
+          :key="i"
+          :field="k"
+          :group="'color'"
+          :properties="v"
+          :userData="userData"
+          :isDisable="!isCustom"
+          :val="getVal('color', k)"
+          @item-change="handleSubmit($event)"
+        />
+      </div>
     </div>
-
-    <Group
-      v-else
-      v-for="(v, k, i) of scheme.customGroup"
-      :key="i"
-      :userData="userData"
-      :properties="v"
-      :field="k"
-      @item-submit="handleSubmit($event)"
-    />
   </div>
 </template>
 
@@ -50,7 +56,9 @@ import { checkDir, joinPath } from "@/common/fileSystem";
 import { CONFIG_FOLDER, THEME_FILENAME, THEME_PRESET } from "@/common/env";
 import { schemaTheme } from "@/main/schema/sTheme";
 import Group from "@/renderer/components/Form/Group.vue";
+import TextBox from "@/renderer/components/Form/TextBox.vue";
 import CheckBox from "@/renderer/components/Form/CheckBox.vue";
+import DropDown from "@/renderer/components/Form/DropDown.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
@@ -59,7 +67,9 @@ const general = namespace("general");
   name: "Theme",
   components: {
     Group,
+    TextBox,
     CheckBox,
+    DropDown,
   },
 })
 export default class Theme extends Vue {
@@ -68,11 +78,7 @@ export default class Theme extends Vue {
 
   userData: any = {};
 
-  isPreset = true;
-
   watcher!: fse.FSWatcher;
-
-  selectedItem = "";
 
   selectScheme = {
     title: ["主题方案"],
@@ -80,6 +86,11 @@ export default class Theme extends Vue {
     enum: [...THEME_PRESET],
     default: THEME_PRESET[0][0],
   };
+
+  get isCustom() {
+    const selected = this.getVal("color", "preset");
+    return selected === THEME_PRESET[THEME_PRESET.length - 1];
+  }
 
   data() {
     return {
@@ -91,14 +102,19 @@ export default class Theme extends Vue {
     this.userData[g][f] = v;
   }
 
+  getVal(g: string, f: string) {
+    return this.userData[g][f];
+  }
+
   get themeDir() {
     return joinPath(this.folderDir, CONFIG_FOLDER.THEMES);
   }
 
-  get scheme() {
+  get schema() {
     const { color, ...otherGroup } = schemaTheme;
     const { dynamic, ...customGroup } = color.properties;
     return {
+      title: color.title,
       dynamic,
       otherGroup,
       customGroup,
@@ -106,34 +122,19 @@ export default class Theme extends Vue {
   }
 
   async updateSelectScheme() {
-    const selfValue: Array<string[]> = [];
+    const selfValue: Array<string> = [];
     const themeSet = await fse.readdir(this.themeDir);
 
     for await (const sub of themeSet) {
       const dir = joinPath(this.themeDir, sub);
       const res = await checkDir(dir, THEME_FILENAME);
-      if (res) selfValue.push([sub, dir]);
+      if (res) selfValue.push(sub);
     }
 
     this.selectScheme = {
       ...this.selectScheme,
       enum: [...THEME_PRESET, ...selfValue],
     };
-  }
-
-  handleChoose() {
-    ["appearance", "renderCode", "renderView"].forEach((item) => {
-      ipcRenderer.send(
-        IPC_THEME.SET_ITEM,
-        `color.${item}`,
-        joinPath(this.selectedItem, `${item}.css`)
-      );
-    });
-    ipcRenderer.send(
-      IPC_THEME.SET_ITEM,
-      "color.monacoEditor",
-      joinPath(this.selectedItem, "monacoEditor.js")
-    );
   }
 
   handleSubmit = debounce((val: [string, string, any]) => {
@@ -144,7 +145,6 @@ export default class Theme extends Vue {
 
   created() {
     this.userData = ipcRenderer.sendSync(IPC_THEME.GET_ALL_SYNC);
-    this.selectedItem = this.userData.color.appearance;
   }
 
   mounted() {

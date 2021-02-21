@@ -20,6 +20,7 @@
       "@/*": ["src/*"],
       "&/*": ["public/*"]
     },
+    "outDir": "dist",
     "lib": ["ESNext", "DOM", "DOM.Iterable", "scripthost"]
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "test/**/*.ts"],

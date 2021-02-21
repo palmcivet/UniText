@@ -19,10 +19,7 @@ export const THEME_FILENAME = [
   `${THEME_ID.MONACO_EDITOR}.js`,
 ];
 
-export const THEME_PRESET = [
-  ["OneDarkPro", joinPath(__static, "themes", "OneDarkPro")],
-  ["OneDarkCyber", joinPath(__static, "themes", "OneDarkCyber")],
-];
+export const THEME_PRESET = ["OneDarkPro", "OneDarkCyber", "Custom"];
 
 export const CONFIG_FOLDER = {
   THEMES: joinPath(".CONFIG", "Themes"),

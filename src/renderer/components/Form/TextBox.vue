@@ -7,7 +7,7 @@
     </div>
     <div class="option" :title="properties.description">
       <label>{{ $g(properties.title) }}</label>
-      <input type="text" v-model="res" @change="handleSubmit()" />
+      <input type="text" v-model="res" @change="handleSubmit()" :disabled="isDisable" />
     </div>
   </div>
 </template>
@@ -28,6 +28,9 @@ export default class TextBox extends Vue {
 
   @Prop({ type: String, default: false })
   val!: string;
+
+  @Prop({ type: Boolean, default: false })
+  isDisable!: boolean;
 
   res!: string;
 
