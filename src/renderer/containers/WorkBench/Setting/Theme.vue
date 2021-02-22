@@ -25,7 +25,7 @@
           :field="'preset'"
           :properties="selectScheme"
           :val="getVal('color', 'preset')"
-          @item-change="handleSubmit($event)"
+          @item-change="handleSubmitChoose($event)"
         />
 
         <TextBox
@@ -37,7 +37,7 @@
           :userData="userData"
           :isDisable="!isCustom"
           :val="getVal('color', k)"
-          @item-change="handleSubmit($event)"
+          @item-change="handleSubmitCheck($event)"
         />
       </div>
     </div>
@@ -52,8 +52,8 @@ import * as fse from "fs-extra";
 
 import { debounce } from "@/common/utils";
 import { IPC_THEME } from "@/common/channel/ipc";
-import { checkDir, joinPath } from "@/common/fileSystem";
-import { CONFIG_FOLDER, THEME_FILENAME, THEME_PRESET } from "@/common/env";
+import { checkFilesExist, joinPath } from "@/common/fileSystem";
+import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
 import { schemaTheme } from "@/main/schema/sTheme";
 import Group from "@/renderer/components/Form/Group.vue";
 import TextBox from "@/renderer/components/Form/TextBox.vue";
@@ -62,6 +62,11 @@ import DropDown from "@/renderer/components/Form/DropDown.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
+
+const themeFileName = [
+  ...THEME_CSS.map((item) => item + ".css"),
+  ...THEME_JS.map((item) => item + ".js"),
+];
 
 @Component({
   name: "Theme",
@@ -89,7 +94,7 @@ export default class Theme extends Vue {
 
   get isCustom() {
     const selected = this.getVal("color", "preset");
-    return selected === THEME_PRESET[THEME_PRESET.length - 1];
+    return selected === "Custom";
   }
 
   data() {
@@ -112,7 +117,7 @@ export default class Theme extends Vue {
 
   get schema() {
     const { color, ...otherGroup } = schemaTheme;
-    const { dynamic, ...customGroup } = color.properties;
+    const { dynamic, preset, ...customGroup } = color.properties;
     return {
       title: color.title,
       dynamic,
@@ -127,7 +132,7 @@ export default class Theme extends Vue {
 
     for await (const sub of themeSet) {
       const dir = joinPath(this.themeDir, sub);
-      const res = await checkDir(dir, THEME_FILENAME);
+      const res = await checkFilesExist(dir, themeFileName);
       if (res) selfValue.push(sub);
     }
 
@@ -137,7 +142,22 @@ export default class Theme extends Vue {
     };
   }
 
-  handleSubmit = debounce((val: [string, string, any]) => {
+  async handleSubmitCheck(val: [string, string, string]) {
+    const dir = joinPath(this.folderDir, val[2]);
+    if (await fse.pathExists(dir)) {
+      this.handleSubmit(val);
+    } else {
+      // NOTE 路径错误
+      console.log("路径错误");
+    }
+  }
+
+  handleSubmitChoose(val: [string, string, string]) {
+    // FEAT 实时预览
+    this.handleSubmit(val);
+  }
+
+  handleSubmit = debounce((val: [string, string, string]) => {
     const [g, f, v] = val;
     this.setVal(g, f, v);
     ipcRenderer.send(IPC_THEME.SET_ITEM, `${g}.${f}`, v);

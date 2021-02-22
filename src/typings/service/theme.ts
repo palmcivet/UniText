@@ -24,17 +24,9 @@ export interface IThemeWindow {
 }
 
 /**
- * @interface 颜色主题
+ * @interface 文件路径
  */
-export interface IThemeColor {
-  /**
-   * @field 动态主题
-   */
-  dynamic: boolean;
-  /**
-   * @field 预设
-   */
-  preset: string;
+export interface IThemeColorCustom {
   /**
    * @field 外观主题
    */
@@ -51,4 +43,18 @@ export interface IThemeColor {
    * @field 渲染文章主题
    */
   renderView: string;
+}
+
+/**
+ * @interface 颜色主题
+ */
+export interface IThemeColor extends IThemeColorCustom {
+  /**
+   * @field 动态主题
+   */
+  dynamic: boolean;
+  /**
+   * @field 预设
+   */
+  preset: string;
 }

@@ -7,12 +7,13 @@ import sideBar from "./sideBar";
 import workBench from "./workBench";
 import statusPanel from "./statusPanel";
 import information from "./information";
-import { $ } from "@/common/utils";
-import { THEME_ID } from "@/common/env";
-import { joinPath } from "@/common/fileSystem";
-import { IPC_PREFERENCE } from "@/common/channel/ipc";
+import { $id } from "@/common/utils";
+import { THEME_PRESET, THEME_CSS, PUBLIC } from "@/common/env";
+import { joinPath, checkStringExist } from "@/common/fileSystem";
+import { IPC_PREFERENCE, IPC_THEME } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
-import { IPreference } from "@/typings/bootstrap";
+import { IPreference, ITheme } from "@/typings/bootstrap";
+import { IThemeColorCustom } from "@/typings/service/theme";
 
 Vue.use(Vuex);
 
@@ -31,21 +32,29 @@ const actions: ActionTree<IRootState, IRootState> = {
     _.commit("SET_STATE", ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC));
   },
 
-  LOAD_THEME: async (_: ActionContext<IRootState, IRootState>, theme?: string) => {
-    $(`#${THEME_ID.APPEARANCE}`).setAttribute(
-      "href",
-      joinPath("themes", "OneDarkPro", "appearance.css")
-    );
+  LOAD_THEME: async (_: ActionContext<IRootState, IRootState>) => {
+    const { color } = ipcRenderer.sendSync(IPC_THEME.GET_ALL_SYNC) as ITheme;
+    const { dynamic, preset, ...data } = color;
+    const base = _.rootState.general.fileManager.folderDir;
 
-    $(`#${THEME_ID.RENDER_VIEW}`).setAttribute(
-      "href",
-      joinPath("themes", "OneDarkPro", "renderView.css")
-    );
+    // TODO 更新 monacoEditor.js
 
-    $(`#${THEME_ID.RENDER_CODE}`).setAttribute(
-      "href",
-      joinPath("themes", "OneDarkPro", "renderCode.css")
-    );
+    if (preset === "Custom") {
+      THEME_CSS.forEach((key) => {
+        $id(key).setAttribute(
+          "href",
+          joinPath(base, data[key as keyof IThemeColorCustom])
+        );
+      });
+    } else if (checkStringExist(preset, THEME_PRESET)) {
+      THEME_CSS.forEach((key) => {
+        $id(key).setAttribute("href", joinPath(PUBLIC.themes, preset, `${key}.css`));
+      });
+    } else {
+      THEME_CSS.forEach((key) => {
+        $id(key).setAttribute("href", joinPath(base, preset, `${key}.css`));
+      });
+    }
   },
 };
 

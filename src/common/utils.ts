@@ -26,6 +26,8 @@ export function throttle(fn: Function, delay: number = 1000): Function {
 
 export const $ = (q: string) => document.querySelector(q) as HTMLElement;
 
+export const $id = (q: string) => document.getElementById(q) as HTMLElement;
+
 export const hasKeys = (obj: object) => Object.keys(obj).length > 0;
 
 export const notEmpty = (arr: Array<any>) => arr.length !== 0;

@@ -5,21 +5,15 @@ export const isWin = process.platform === "win32";
 export const isLinux = process.platform === "linux";
 export const isDev = process.env.NODE_ENV !== "production";
 
-export enum THEME_ID {
-  APPEARANCE = "appearance",
-  RENDER_VIEW = "renderView",
-  RENDER_CODE = "renderCode",
-  MONACO_EDITOR = "monacoEditor",
-}
-
-export const THEME_FILENAME = [
-  `${THEME_ID.APPEARANCE}.css`,
-  `${THEME_ID.RENDER_VIEW}.css`,
-  `${THEME_ID.RENDER_CODE}.css`,
-  `${THEME_ID.MONACO_EDITOR}.js`,
-];
+export const THEME_CSS = ["appearance", "renderView", "renderCode"];
+export const THEME_JS = ["monacoEditor"];
 
 export const THEME_PRESET = ["OneDarkPro", "OneDarkCyber", "Custom"];
+
+export const PUBLIC = {
+  lib: "lib",
+  themes: "themes",
+};
 
 export const CONFIG_FOLDER = {
   THEMES: joinPath(".CONFIG", "Themes"),
