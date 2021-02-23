@@ -1,0 +1,23 @@
+.group {
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  /deep/ .label {
+    padding-left: 15px;
+    margin-bottom: 0.2em;
+    font-size: 1.5em;
+    border-left: solid 5px var(--formGroupTitleBorder-Color);
+  }
+
+  /deep/ .items {
+    > * {
+      padding: 0.3em 0 0.3em 20px;
+      user-select: none;
+
+      &:hover {
+        color: var(--formGroup-hoverFg);
+        background: var(--formGroup-hoverBg);
+      }
+    }
+  }
+}

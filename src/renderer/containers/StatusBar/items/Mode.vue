@@ -18,8 +18,8 @@ import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
+import CheckItem from "../widgets/CheckItem.vue";
 import { IPC_OTHER } from "@/common/channel/ipc";
-import CheckItem from "@/renderer/components/CheckItem.vue";
 import { EEditMode } from "@/typings/service/preference";
 import { IGeneralState } from "@/typings/vuex/general";
 

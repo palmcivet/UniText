@@ -4,10 +4,10 @@
       v-for="(v, k, i) of schema"
       :id="k"
       :key="i"
+      :field="k"
       :userData="userData"
       :properties="v"
-      :field="k"
-      @item-submit="handleSubmit($event)"
+      @submit="handleSubmit($event)"
     />
   </div>
 </template>
@@ -19,7 +19,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { debounce } from "@/common/utils";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { schemaPreference } from "@/main/schema/sPreference";
-import Group from "@/renderer/components/Form/Group.vue";
+import Group from "../widgets/Group.vue";
 
 @Component({
   name: "Preference",

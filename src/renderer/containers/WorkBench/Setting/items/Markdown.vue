@@ -18,7 +18,7 @@ import { Vue, Component } from "vue-property-decorator";
 
 import { debounce } from "@/common/utils";
 import { schemaMarkdown } from "@/main/schema/sMarkdown";
-import Group from "@/renderer/components/Form/Group.vue";
+import Group from "../widgets/Group.vue";
 
 @Component({
   name: "Markdown",
@@ -46,9 +46,7 @@ export default class Markdown extends Vue {
     ipcRenderer.send("", `${g}.${f}`, v);
   }, 200);
 
-  created() {
-    this.userData = ipcRenderer.sendSync("");
-  }
+  created() {}
 }
 </script>
 

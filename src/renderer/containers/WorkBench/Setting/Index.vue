@@ -17,10 +17,10 @@
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
-import Theme from "./Theme.vue";
-import Snippet from "./Snippet.vue";
-import Markdown from "./Markdown.vue";
-import Preference from "./Preference.vue";
+import Theme from "./items/Theme.vue";
+import Snippet from "./items/Snippet.vue";
+import Markdown from "./items/Markdown.vue";
+import Preference from "./items/Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { ESettingType, EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
 

@@ -3,44 +3,41 @@
     <Group
       v-for="(v, k, i) of schema.otherGroup"
       :key="i"
-      :userData="userData"
-      :properties="v"
       :field="k"
-      @item-submit="handleSubmit($event)"
+      :properties="v"
+      :userData="userData"
+      @submit="handleSubmit($event)"
     />
 
-    <div class="group">
-      <div class="title">{{ $g(schema.title) }}</div>
-      <div class="items">
-        <CheckBox
-          :group="'color'"
-          :field="'dynamic'"
-          :properties="schema.dynamic"
-          :val="getVal('color', 'dynamic')"
-          @item-change="handleSubmit($event)"
-        />
-
-        <DropDown
-          :group="'color'"
-          :field="'preset'"
-          :properties="selectScheme"
-          :val="getVal('color', 'preset')"
-          @item-change="handleSubmitChoose($event)"
-        />
-
-        <TextBox
-          v-for="(v, k, i) of schema.customGroup"
-          :key="i"
-          :field="k"
-          :group="'color'"
-          :properties="v"
-          :userData="userData"
-          :isDisable="!isCustom"
-          :val="getVal('color', k)"
-          @item-change="handleSubmitCheck($event)"
+    <UFormGroup :label="schema.title">
+      <div>
+        <GroupHead field="color" subField="dynamic" />
+        <UCheckBox
+          :prop="schema.dynamic"
+          :value="getVal('color', 'dynamic')"
+          @change="handleSubmit(['color', 'dynamic', $event])"
         />
       </div>
-    </div>
+
+      <div>
+        <GroupHead field="color" subField="preset" />
+        <DropDown
+          :prop="selectScheme"
+          :value="getVal('color', 'preset')"
+          @change="handleSubmitChoose(['color', 'preset', $event])"
+        />
+      </div>
+
+      <div v-for="(v, k, i) of schema.customGroup" :key="i">
+        <GroupHead field="color" :subField="k" />
+        <UInputText
+          :prop="v"
+          :value="getVal('color', k)"
+          :hasDisabled="!isCustom"
+          @change="handleSubmitCheck(['color', k, $event])"
+        />
+      </div>
+    </UFormGroup>
   </div>
 </template>
 
@@ -55,10 +52,12 @@ import { IPC_THEME } from "@/common/channel/ipc";
 import { checkFilesExist, joinPath } from "@/common/fileSystem";
 import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
 import { schemaTheme } from "@/main/schema/sTheme";
-import Group from "@/renderer/components/Form/Group.vue";
-import TextBox from "@/renderer/components/Form/TextBox.vue";
-import CheckBox from "@/renderer/components/Form/CheckBox.vue";
-import DropDown from "@/renderer/components/Form/DropDown.vue";
+import Group from "../widgets/Group.vue";
+import GroupHead from "../widgets/GroupHead.vue";
+import DropDown from "../widgets/DropDown.vue";
+import UCheckBox from "@/renderer/components/Form/UCheckBox.vue";
+import UInputText from "@/renderer/components/Form/UInputText.vue";
+import UFormGroup from "@/renderer/components/Form/UFormGroup.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");
@@ -72,9 +71,11 @@ const themeFileName = [
   name: "Theme",
   components: {
     Group,
-    TextBox,
-    CheckBox,
+    GroupHead,
     DropDown,
+    UCheckBox,
+    UInputText,
+    UFormGroup,
   },
 })
 export default class Theme extends Vue {
@@ -182,4 +183,6 @@ export default class Theme extends Vue {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+@import "../widgets/style.less";
+</style>
