@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 
 import { isDev } from "@/common/env";
 import { formatDate } from "@/common/utils";
-import { UNITEXT_SYSTEM } from "@/main/config";
+import { UNITEXT_SYSTEM } from "@/main/utils/config";
 
 class Logger {
   private _logger!: Console;

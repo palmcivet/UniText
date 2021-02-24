@@ -10,8 +10,8 @@ import { dock } from "@/main/templates/menuDock";
 import { top } from "@/main/templates/menuTop";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { Keybinding } from "./Keybinding";
-import { EI18n } from "@/typings/service/preference";
-import { EMenuContextKey, IMenuSet } from "@/typings/service/menu";
+import { EI18n } from "@/typings/schema/preference";
+import { EMenuContextKey, IMenuSet } from "@/typings/main";
 
 export class MenuManager {
   private _menuSet!: IMenuSet;

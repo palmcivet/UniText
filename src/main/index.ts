@@ -1,7 +1,7 @@
 import * as fse from "fs-extra";
 
-import { IBootArgs } from "@/typings/bootstrap";
-import { UNITEXT_SYSTEM } from "@/main/config";
+import { IBootArgs } from "@/typings/main";
+import { UNITEXT_SYSTEM } from "@/main/utils/config";
 import { UniText } from "./UniText";
 
 let UniTextApp: UniText;

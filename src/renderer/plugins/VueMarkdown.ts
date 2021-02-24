@@ -1,3 +1,13 @@
+import { VueConstructor } from "vue/types/umd";
+
+/* -------------------------- types ------------------------------- */
+
+export interface IVueMarkdown {
+  readonly $markdown: MarkdownEngine;
+}
+
+/* -------------------------- class ------------------------------- */
+
 import MarkdownIt from "markdown-it";
 import MarkdownItSup from "markdown-it-sup";
 import MarkdownItSub from "markdown-it-sub";
@@ -15,7 +25,7 @@ import MarkdownItHighlightLines from "@/library/markdown-it-hightlight-lines";
 
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { Bus } from "@/renderer/plugins/VueBus";
-import { ITocList } from "@/renderer/utils";
+import { ITocList } from "@/typings/renderer";
 
 const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
 const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
@@ -63,3 +73,18 @@ markdownEngine.use(MarkdownItImplicitFigures, {
 markdownEngine.use(MarkdownItImageLazyLoading);
 
 export { markdownEngine };
+
+class MarkdownEngine {
+  constructor() {}
+}
+
+/* -------------------------- plugin ------------------------------- */
+
+const install = (Vue: VueConstructor<Vue>) => {
+  const proto = Vue.prototype;
+  proto.$markdown = proto.$markdown || new MarkdownEngine();
+};
+
+export default {
+  install,
+};

@@ -7,9 +7,8 @@ import { isDev, isOsx, isWin } from "@/common/env";
 import { MenuManager } from "@/main/services/MenuManager";
 import { Keybinding } from "@/main/services/Keybinding";
 import { Preference } from "@/main/services/Preference";
-import { Theme } from "@/main/services/Theme";
-import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
-import { IBootArgs } from "@/typings/bootstrap";
+import { IBootArgs } from "@/typings/main";
+import { EI18n, IPreferenceSystem } from "@/typings/schema/preference";
 
 export class UniText {
   private _args: IBootArgs;
@@ -24,10 +23,6 @@ export class UniText {
 
   private _preference!: Preference;
 
-  private _snippet!: any;
-
-  private _theme!: Theme;
-
   /**
    * @param args 启动参数
    */
@@ -37,31 +32,30 @@ export class UniText {
     this._menuManager = new MenuManager();
     this._keybinding = new Keybinding();
     this._preference = new Preference(args.notesPath);
-    this._theme = new Theme(args.notesPath);
   }
 
   private _listenForIpcMain() {
-    // ipcMain.on("min-window", () => {
-    //   if (win) {
-    //     win.minimize();
-    //   }
-    // });
+    ipcMain.on("min-window", () => {
+      if (this._window) {
+        this._window.minimize();
+      }
+    });
 
-    // ipcMain.on("max-window", () => {
-    //   if (win) {
-    //     if (win.isMaximized()) {
-    //       win.unmaximize();
-    //     } else {
-    //       win.maximize();
-    //     }
-    //   }
-    // });
+    ipcMain.on("max-window", () => {
+      if (this._window) {
+        if (this._window.isMaximized()) {
+          this._window.unmaximize();
+        } else {
+          this._window.maximize();
+        }
+      }
+    });
 
-    // ipcMain.on("close-window", () => {
-    //   if (win) {
-    //     win.close();
-    //   }
-    // });
+    ipcMain.on("close-window", () => {
+      if (this._window) {
+        this._window.close();
+      }
+    });
 
     ipcMain.once(IPC_BOOTSTRAP.FETCH, (event) => {
       event.reply(IPC_BOOTSTRAP.REPLY, {
@@ -86,7 +80,7 @@ export class UniText {
       vibrancy: "titlebar",
       backgroundColor: "#00000000",
       transparent: true,
-      ...this._theme.getWindowStyle(),
+      ...this._preference.getWindowStyle(),
     };
 
     let win: BrowserWindow | null = new BrowserWindow(winOption);

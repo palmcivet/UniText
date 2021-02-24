@@ -7,13 +7,9 @@ import sideBar from "./sideBar";
 import workBench from "./workBench";
 import statusPanel from "./statusPanel";
 import information from "./information";
-import { $id } from "@/common/utils";
-import { THEME_PRESET, THEME_CSS, PUBLIC } from "@/common/env";
-import { joinPath, checkStringExist } from "@/common/fileSystem";
-import { IPC_PREFERENCE, IPC_THEME } from "@/common/channel/ipc";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
-import { IPreference, ITheme } from "@/typings/bootstrap";
-import { IThemeColorCustom } from "@/typings/service/theme";
+import { IPreference } from "@/typings/schema/preference";
 
 Vue.use(Vuex);
 
@@ -30,31 +26,6 @@ const mutations: MutationTree<IRootState> = {
 const actions: ActionTree<IRootState, IRootState> = {
   LOAD_STATE: (_: ActionContext<IRootState, IRootState>) => {
     _.commit("SET_STATE", ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC));
-  },
-
-  LOAD_THEME: async (_: ActionContext<IRootState, IRootState>) => {
-    const { color } = ipcRenderer.sendSync(IPC_THEME.GET_ALL_SYNC) as ITheme;
-    const { dynamic, preset, ...data } = color;
-    const base = _.rootState.general.fileManager.folderDir;
-
-    // TODO 更新 monacoEditor.js
-
-    if (preset === "Custom") {
-      THEME_CSS.forEach((key) => {
-        $id(key).setAttribute(
-          "href",
-          joinPath(base, data[key as keyof IThemeColorCustom])
-        );
-      });
-    } else if (checkStringExist(preset, THEME_PRESET)) {
-      THEME_CSS.forEach((key) => {
-        $id(key).setAttribute("href", joinPath(PUBLIC.themes, preset, `${key}.css`));
-      });
-    } else {
-      THEME_CSS.forEach((key) => {
-        $id(key).setAttribute("href", joinPath(base, preset, `${key}.css`));
-      });
-    }
   },
 };
 

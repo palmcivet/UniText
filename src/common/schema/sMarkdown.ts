@@ -1,12 +1,12 @@
-import { IGroup, reduceSchema, reduceType, TSchema } from "@/main/utils/schema";
-import { IMarkdown } from "@/typings/bootstrap";
+import { IGroup, reduceSchema, reduceType, TSchema } from "@/common/schema";
 import {
   EPreset,
   IMarkdownHabit,
   IMarkdownExport,
   IMarkdownExtend,
   IMarkdownFeature,
-} from "@/typings/service/markdown";
+  IMarkdown,
+} from "@/typings/schema/markdown";
 
 const mHabit: IGroup<IMarkdownHabit> = {
   type: "Group",

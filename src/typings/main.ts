@@ -1,6 +1,20 @@
 import { Menu } from "electron";
 
 /**
+ * @interface 启动软件需要携带的参数
+ */
+export interface IBootArgs {
+  /**
+   * @field 笔记文件夹的位置
+   */
+  notesPath: string;
+  /**
+   * @field 错误信息堆栈
+   */
+  error: Array<any>;
+}
+
+/**
  * @enum { EMenuContextKey } context menu 的访问键
  */
 export enum EMenuContextKey {

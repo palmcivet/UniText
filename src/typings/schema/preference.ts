@@ -1,12 +1,13 @@
 import { IDocumentConfig, IDocumentFormat } from "../document";
 
 /**
- * @enum { EWindow } 窗口的打开方式
+ * @enum { EWindowTitleBar } 标题栏样式
  */
-export enum EWindow {
-  NEW,
-  VIEW,
-  NORMAL,
+export enum EWindowTitleBar {
+  DEFAULT = "default",
+  HIDDEN = "hidden",
+  INSET = "hiddenInset",
+  CUSTOM = "customButtonsOnHover",
 }
 
 /**
@@ -59,6 +60,24 @@ export enum ETypeMode {
   FOCUS = "FOCUS",
   TYPER = "TYPER",
   NORMAL = "NORMAL",
+}
+
+/**
+ * @interface 窗口样式
+ */
+export interface IPreferenceWindow {
+  /**
+   * @field 宽度
+   */
+  width: number;
+  /**
+   * @field 高度
+   */
+  height: number;
+  /**
+   * @field 标题栏样式
+   */
+  titleBarStyle: EWindowTitleBar;
 }
 
 /**
@@ -200,4 +219,16 @@ export interface IPreferenceDocument extends IDocumentFormat, IDocumentConfig {
    * @field 默认分类
    */
   category: string;
+}
+
+/**
+ * @interface preference.json 的类型
+ */
+export interface IPreference {
+  window: IPreferenceWindow;
+  system: IPreferenceSystem;
+  interface: IPreferenceInterface;
+  fileManager: IPreferenceFileManager;
+  editor: IPreferenceEditor;
+  document: IPreferenceDocument;
 }

@@ -15,12 +15,6 @@ export enum IPC_MENUMANAGER {
   CLOSE_CONTEXT = "IPC::CLOSE_CONTEXT",
 }
 
-export enum IPC_THEME {
-  SET_ITEM = "IPC::THEME_SET_ITEM",
-  GET_ITEM = "IPC::THEME_GET_ITEM",
-  GET_ALL_SYNC = "IPC::THEME_GET_ALL_SYNC",
-}
-
 export enum IPC_FILE {
   OPEN = "IPC::OPEN",
   SAVE = "IPC::SAVE",

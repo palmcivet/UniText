@@ -1,28 +1,3 @@
-export enum EWindowTitleBar {
-  DEFAULT = "default",
-  HIDDEN = "hidden",
-  INSET = "hiddenInset",
-  CUSTOM = "customButtonsOnHover",
-}
-
-/**
- * @interface 窗口样式
- */
-export interface IThemeWindow {
-  /**
-   * @field 宽度
-   */
-  width: number;
-  /**
-   * @field 高度
-   */
-  height: number;
-  /**
-   * @field 标题栏样式
-   */
-  titleBarStyle: EWindowTitleBar;
-}
-
 /**
  * @interface 文件路径
  */
@@ -57,4 +32,11 @@ export interface IThemeColor extends IThemeColorCustom {
    * @field 预设
    */
   preset: string;
+}
+
+/**
+ * @interface theme.json 的类型
+ */
+export interface ITheme {
+  color: IThemeColor;
 }

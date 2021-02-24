@@ -7,7 +7,7 @@
       :userData="userData"
       :properties="v"
       :field="k"
-      @item-submit="handleSubmit($event)"
+      @submit="handleSubmit($event)"
     />
   </div>
 </template>
@@ -17,7 +17,7 @@ import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 
 import { debounce } from "@/common/utils";
-import { schemaMarkdown } from "@/main/schema/sMarkdown";
+import { schemaMarkdown } from "@/common/schema/sMarkdown";
 import Group from "../widgets/Group.vue";
 
 @Component({

@@ -1,9 +1,7 @@
 import { readJsonSync } from "fs-extra";
 
-import { TKeybindingSet } from "@/typings/bootstrap";
-
 export class Keybinding {
-  private readonly defaultSet!: TKeybindingSet;
+  private readonly defaultSet!: Map<string, string>;
 
   constructor() {
     this.defaultSet = new Map<string, string>([

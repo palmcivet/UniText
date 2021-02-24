@@ -23,8 +23,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
-import { ITocList } from "@/renderer/utils";
-import { EMenuContextKey } from "@/typings/service/menu";
+import { ITocList } from "@/typings/renderer";
+import { EMenuContextKey } from "@/typings/main";
 
 const statusPanel = namespace("statusPanel");
 

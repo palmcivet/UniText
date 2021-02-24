@@ -36,7 +36,7 @@
       />
     </div>
 
-    <div class="show" ref="wrapper">
+    <div class="show">
       <li><i class="floating ri-add-line" @click="handleEdit()" /></li>
       <li v-for="(v, i) in data" :key="i" @click="handleEdit(i)">
         <div class="floating">

@@ -1,7 +1,7 @@
-import { TSchema, IGroup, reduceType, reduceSchema } from "@/main/utils/schema";
-import { IPreference } from "@/typings/bootstrap";
+import { TSchema, IGroup, reduceType, reduceSchema } from "@/common/schema";
 import { ECoding, EEoL, EIndent, EPicture } from "@/typings/document";
 import {
+  EWindowTitleBar,
   EI18n,
   EStartup,
   EPanelType,
@@ -12,7 +12,39 @@ import {
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
-} from "@/typings/service/preference";
+  IPreferenceWindow,
+  IPreference,
+} from "@/typings/schema/preference";
+
+const pWindow: IGroup<IPreferenceWindow> = {
+  type: "Group",
+  title: ["窗口样式"],
+  description: [""],
+  properties: {
+    width: {
+      type: "Range",
+      title: ["宽度"],
+      description: ["窗口的默认宽度"],
+      minimum: 647,
+      default: 1294,
+    },
+    height: {
+      type: "Range",
+      title: ["高度"],
+      description: ["窗口的默认高度"],
+      minimum: 400,
+      default: 800,
+    },
+    titleBarStyle: {
+      type: "DropDown",
+      title: ["标题栏样式"],
+      description: ["标题栏的默认样式"],
+      enum: reduceType(EWindowTitleBar),
+      default: EWindowTitleBar.HIDDEN,
+    },
+  },
+  default: {},
+};
 
 const pSystem: IGroup<IPreferenceSystem> = {
   type: "Group",
@@ -262,6 +294,7 @@ const pDocument: IGroup<IPreferenceDocument> = {
 };
 
 export const schemaPreference: TSchema<IPreference> = {
+  window: pWindow,
   system: pSystem,
   interface: pInterface,
   fileManager: pFileManager,

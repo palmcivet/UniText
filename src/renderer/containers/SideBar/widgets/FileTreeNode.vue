@@ -81,11 +81,10 @@ import { ipcRenderer } from "electron";
 
 import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { IPC_FILE, IPC_MENUMANAGER } from "@/common/channel/ipc";
-import { EMenuContextKey } from "@/typings/service/menu";
 import { ISideBarState, ITree, TFileRoute } from "@/typings/vuex/sideBar";
+import { EMenuContextKey } from "@/typings/main";
 
 const sideBar = namespace("sideBar");
-const general = namespace("general");
 const workBench = namespace("workBench");
 
 @Component({

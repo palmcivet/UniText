@@ -48,10 +48,8 @@ import { namespace } from "vuex-class";
 import * as fse from "fs-extra";
 
 import { debounce } from "@/common/utils";
-import { IPC_THEME } from "@/common/channel/ipc";
 import { checkFilesExist, joinPath } from "@/common/fileSystem";
 import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
-import { schemaTheme } from "@/main/schema/sTheme";
 import Group from "../widgets/Group.vue";
 import GroupHead from "../widgets/GroupHead.vue";
 import DropDown from "../widgets/DropDown.vue";
@@ -59,6 +57,7 @@ import UCheckBox from "@/renderer/components/Form/UCheckBox.vue";
 import UInputText from "@/renderer/components/Form/UInputText.vue";
 import UFormGroup from "@/renderer/components/Form/UFormGroup.vue";
 import { IGeneralState } from "@/typings/vuex/general";
+import { schemaTheme } from "@/common/schema/sTheme";
 
 const general = namespace("general");
 
@@ -161,11 +160,11 @@ export default class Theme extends Vue {
   handleSubmit = debounce((val: [string, string, string]) => {
     const [g, f, v] = val;
     this.setVal(g, f, v);
-    ipcRenderer.send(IPC_THEME.SET_ITEM, `${g}.${f}`, v);
+    // ipcRenderer.send(IPC_THEME.SET_ITEM, `${g}.${f}`, v);
   }, 200);
 
   created() {
-    this.userData = ipcRenderer.sendSync(IPC_THEME.GET_ALL_SYNC);
+    // this.userData = ipcRenderer.sendSync(IPC_THEME.GET_ALL_SYNC);
   }
 
   mounted() {

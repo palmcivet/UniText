@@ -14,20 +14,15 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { ipcRenderer } from "electron";
 
 import { isOsx } from "@/common/env";
-import { notEmpty } from "@/common/utils";
 import { BUS_UI } from "@/common/channel/bus";
-import { IPC_BOOTSTRAP, IPC_PREFERENCE } from "@/common/channel/ipc";
 import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
-import { IBootArgs } from "@/typings/bootstrap";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EI18n, IPreferenceSystem } from "@/typings/service/preference";
 
 const general = namespace("general");
 
@@ -71,26 +66,14 @@ export default class Main extends Vue {
   }
 
   created() {
-    const { commit, dispatch } = this.$store;
-
-    ipcRenderer.once(
-      IPC_BOOTSTRAP.REPLY,
-      (event, msg: { sys: IPreferenceSystem; args: IBootArgs }) => {
-        const { sys, args } = msg;
-        this.$i18n.setLang(EI18n[sys.language]);
-
-        if (notEmpty(args.error)) {
-          commit("information/SET_ERROR", args.error, { root: true });
-        }
-      }
-    );
-    ipcRenderer.send(IPC_BOOTSTRAP.FETCH);
+    const { dispatch } = this.$store;
 
     dispatch("LOAD_STATE");
-    dispatch("LOAD_THEME");
     dispatch("information/CHECK_UPDATE");
     dispatch("general/LISTEN_FOR_GENERAL");
     dispatch("workBench/LISTEN_FOR_FILE");
+
+    this.$theme.loadTheme();
   }
 
   mounted() {

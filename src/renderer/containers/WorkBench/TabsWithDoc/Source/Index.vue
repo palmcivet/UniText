@@ -25,12 +25,13 @@ import Prism from "prismjs";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
-import { ITocList } from "@/renderer/utils";
-import { markdownEngine } from "@/renderer/utils/markdownEngine";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
+import { markdownEngine } from "@/renderer/plugins/VueMarkdown";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EPanelType } from "@/typings/service/preference";
+import { EPanelType } from "@/typings/schema/preference";
+import { ITocList } from "@/typings/renderer";
+
 import { OneDarkPro } from "./theme";
 import { init } from "./option";
 

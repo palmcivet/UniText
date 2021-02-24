@@ -6,7 +6,7 @@ import { IPC_OTHER } from "@/common/channel/ipc";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EEditMode, EPanelType, ETypeMode } from "@/typings/service/preference";
+import { EEditMode, EPanelType, ETypeMode } from "@/typings/schema/preference";
 
 const state = {};
 

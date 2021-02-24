@@ -28,7 +28,7 @@ import Setting from "@/renderer/containers/WorkBench/Setting/Index.vue";
 import TabsWithDoc from "@/renderer/containers/WorkBench/TabsWithDoc/Index.vue";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EStartup } from "@/typings/service/preference";
+import { EStartup } from "@/typings/schema/preference";
 import { EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
 
 const general = namespace("general");

@@ -18,7 +18,7 @@ import { Vue, Component } from "vue-property-decorator";
 
 import { debounce } from "@/common/utils";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
-import { schemaPreference } from "@/main/schema/sPreference";
+import { schemaPreference } from "@/common/schema/sPreference";
 import Group from "../widgets/Group.vue";
 
 @Component({

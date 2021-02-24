@@ -4,8 +4,8 @@ import { IPC_FILE } from "@/common/channel/ipc";
 import { localesMenu } from "@/main/i18n/iMenu";
 import { Keybinding } from "@/main/services/Keybinding";
 import { Bus } from "@/renderer/plugins/VueBus";
-import { TMenuTemplate } from "@/typings/service/menu";
-import { EI18n } from "@/typings/service/preference";
+import { TMenuTemplate } from "@/typings/main";
+import { EI18n } from "@/typings/schema/preference";
 
 export const file = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {

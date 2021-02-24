@@ -177,3 +177,13 @@ export interface IMarkdownFeature {
    */
   mermaid: boolean;
 }
+
+/**
+ * @interface Markdown.json 的类型
+ */
+export interface IMarkdown {
+  habit: IMarkdownHabit;
+  export: IMarkdownExport;
+  extend: IMarkdownExtend;
+  feature: IMarkdownFeature;
+}

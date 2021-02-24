@@ -5,10 +5,10 @@ import { pathExistsSync } from "fs-extra";
 import { joinPath } from "@/common/fileSystem";
 import { IPC_OTHER, IPC_PREFERENCE } from "@/common/channel/ipc";
 import { CONFIG_FOLDER, CONFIG_FILE } from "@/common/env";
-import { UNITEXT_SYSTEM } from "@/main/config";
-import schema from "@/main/schema/sPreference";
+import schema from "@/common/schema/sPreference";
 import logger from "@/main/services/Logger";
-import { IPreference, TPreferenceSet } from "@/typings/bootstrap";
+import { UNITEXT_SYSTEM } from "@/main/utils/config";
+import { IPreference } from "@/typings/schema/preference";
 
 /**
  * 有以下功能：
@@ -18,14 +18,14 @@ import { IPreference, TPreferenceSet } from "@/typings/bootstrap";
  * @class 管理用户 preference 的数据结构
  */
 export class Preference {
-  private _preferenceSet!: TPreferenceSet;
+  private _preferenceSet!: Store<IPreference>;
 
   constructor(base: string) {
-    this.changeProject(base);
+    this.setProject(base);
     this._listenForIpcMain();
   }
 
-  changeProject(base: string) {
+  setProject(base: string) {
     let cwd = joinPath(base, CONFIG_FOLDER.SETTINGS);
     const filePath = joinPath(base, CONFIG_FILE.PREFERENCE);
 
@@ -44,13 +44,24 @@ export class Preference {
     this._preferenceSet.set("fileManager.folderDir", base);
   }
 
+  getWindowStyle(): any {
+    // FEAT 平台兼容性
+    const titleBar: string = this._preferenceSet.get("window.titleBarStyle");
+
+    return {
+      width: this._preferenceSet.get("window.width"),
+      height: this._preferenceSet.get("window.height"),
+      titleBarStyle: titleBar,
+    };
+  }
+
   getItem(key: string): any {
     return this._preferenceSet.get(key);
   }
 
   private _listenForIpcMain() {
     ipcMain.on(IPC_OTHER.CHANGE_PROJECT, (event, base: string) => {
-      this.changeProject(base);
+      this.setProject(base);
     });
 
     ipcMain.on(IPC_PREFERENCE.SET_ITEM, (event, key: string, val: any) => {
