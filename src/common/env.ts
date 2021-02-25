@@ -15,14 +15,22 @@ export const PUBLIC = {
   themes: "themes",
 };
 
+export const SYSTEM_PATH = {
+  DEFAULT_DIR: (sys: string) => joinPath(sys, "System"),
+  BOOT_FILE: (sys: string) => joinPath(sys, "System", "boot.json"),
+  INFO_LOG: (sys: string) => joinPath(sys, "Log", "info.log"),
+  ERROR_LOG: (sys: string) => joinPath(sys, "Log", "error.log"),
+};
+
 export const CONFIG_FOLDER = {
+  IMAGE: joinPath(".CONFIG", "Image"),
   THEMES: joinPath(".CONFIG", "Themes"),
   SETTINGS: joinPath(".CONFIG", "Settings"),
   PICTURES: joinPath(".CONFIG", "Pictures"),
-  CACHE_IMAGE: joinPath(".CONFIG", "Cache", "Image"),
-  CACHE_UNCATEGORY: joinPath(".CONFIG", "Cache", "Uncategory"),
+  UNCATEGORY: joinPath(".CONFIG", "Uncategory"),
 };
 
+// DEV 未使用
 export const CONFIG_FILE = {
   TAG: joinPath(".CONFIG", "tag.json"),
   ICON: joinPath(".CONFIG", "icon.json"),

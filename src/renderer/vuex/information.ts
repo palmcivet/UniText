@@ -6,11 +6,22 @@ import { IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { IInformationState } from "@/typings/vuex/information";
 
-const state: IInformationState = {};
+const state: IInformationState = {
+  hasFetched: false,
+  hasMounted: false,
+};
 
 const getters: GetterTree<IInformationState, IRootState> = {};
 
 const mutations: MutationTree<IInformationState> = {
+  SET_FETCHED: (_: IInformationState) => {
+    _.hasFetched = true;
+  },
+
+  SET_MOUNTED: (_: IInformationState) => {
+    _.hasMounted = true;
+  },
+
   SET_INFO: (_: IInformationState, msg: string) => {
     console.log(msg);
   },

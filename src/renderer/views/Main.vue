@@ -1,5 +1,5 @@
 <template>
-  <div class="main-window">
+  <div class="main-window" v-if="hasFetched">
     <TitleBar v-show="showTitle" />
     <main>
       <ActivityBar />
@@ -23,8 +23,10 @@ import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
 import { IGeneralState } from "@/typings/vuex/general";
+import { IInformationState } from "@/typings/vuex/information";
 
 const general = namespace("general");
+const information = namespace("information");
 
 @Component({
   name: "Main",
@@ -42,6 +44,9 @@ export default class Main extends Vue {
 
   @general.State((state: IGeneralState) => state.interface.showPanel)
   isShowPanel!: boolean;
+
+  @information.State((state: IInformationState) => state.hasFetched)
+  hasFetched!: boolean;
 
   leftViewWidth = 200;
 
@@ -65,10 +70,13 @@ export default class Main extends Vue {
     this.$bus.emit(BUS_UI.SYNC_RESIZE);
   }
 
+  beforeCreate() {
+    const { dispatch } = this.$store;
+    dispatch("LOAD_STATE");
+  }
+
   created() {
     const { dispatch } = this.$store;
-
-    dispatch("LOAD_STATE");
     dispatch("information/CHECK_UPDATE");
     dispatch("general/LISTEN_FOR_GENERAL");
     dispatch("workBench/LISTEN_FOR_FILE");

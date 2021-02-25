@@ -1,7 +1,7 @@
 import { TSchema, IGroup, reduceType, reduceSchema } from "@/common/schema";
 import { ECoding, EEoL, EIndent, EPicture } from "@/typings/document";
 import {
-  EWindowTitleBar,
+  ETitleBar,
   EI18n,
   EStartup,
   EPanelType,
@@ -39,8 +39,8 @@ const pWindow: IGroup<IPreferenceWindow> = {
       type: "DropDown",
       title: ["标题栏样式"],
       description: ["标题栏的默认样式"],
-      enum: reduceType(EWindowTitleBar),
-      default: EWindowTitleBar.HIDDEN,
+      enum: reduceType(ETitleBar),
+      default: ETitleBar.HIDDEN,
     },
   },
   default: {},

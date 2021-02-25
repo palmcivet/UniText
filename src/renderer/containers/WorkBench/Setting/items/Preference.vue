@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
+  <div :style="{ paddingLeft: '14%', paddingRight: '14%' }" v-if="shouldRender">
     <Group
       v-for="(v, k, i) of schema"
       :id="k"
@@ -30,6 +30,8 @@ export default class Preference extends Vue {
 
   userData: any;
 
+  shouldRender = false;
+
   data() {
     return {
       userData: {},
@@ -46,8 +48,12 @@ export default class Preference extends Vue {
     ipcRenderer.send(IPC_PREFERENCE.SET_ITEM, `${g}.${f}`, v);
   }, 200);
 
-  created() {
-    this.userData = ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC);
+  beforeCreate() {
+    ipcRenderer.once(IPC_PREFERENCE.GET_ALL_REPLY, (e, data: any) => {
+      this.userData = data;
+      this.shouldRender = true;
+    });
+    ipcRenderer.send(IPC_PREFERENCE.GET_ALL);
   }
 }
 </script>

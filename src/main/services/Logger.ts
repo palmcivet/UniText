@@ -1,16 +1,14 @@
 import { Console } from "console";
-import { ensureFileSync } from "fs-extra";
-import { createWriteStream } from "fs";
+import * as fse from "fs-extra";
 
 import { isDev } from "@/common/env";
 import { formatDate } from "@/common/utils";
-import { UNITEXT_SYSTEM } from "@/main/utils/config";
 
-class Logger {
+export default class Logger {
   private _logger!: Console;
 
-  constructor() {
-    const { info, error } = this._register();
+  constructor(errorPath: string, infoPath: string) {
+    const { info, error } = this._register(errorPath, infoPath);
 
     this._logger = new Console({
       stdout: info,
@@ -18,18 +16,15 @@ class Logger {
     });
   }
 
-  private _register() {
-    const infoPath = UNITEXT_SYSTEM.INFO_LOG;
-    const errorPath = UNITEXT_SYSTEM.ERROR_LOG;
-
-    ensureFileSync(infoPath);
-    ensureFileSync(errorPath);
+  private _register(errorPath: string, infoPath: string) {
+    fse.ensureFileSync(infoPath);
+    fse.ensureFileSync(errorPath);
 
     // FEAT 切分
 
     return {
-      info: createWriteStream(infoPath),
-      error: createWriteStream(errorPath),
+      info: fse.createWriteStream(infoPath),
+      error: fse.createWriteStream(errorPath),
     };
   }
 
@@ -45,5 +40,3 @@ class Logger {
     isDev && this._logger.info("[%s]-[DEBUG]-%s", formatDate(new Date()), msg);
   }
 }
-
-export default new Logger();

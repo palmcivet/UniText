@@ -25,7 +25,11 @@ const mutations: MutationTree<IRootState> = {
 
 const actions: ActionTree<IRootState, IRootState> = {
   LOAD_STATE: (_: ActionContext<IRootState, IRootState>) => {
-    _.commit("SET_STATE", ipcRenderer.sendSync(IPC_PREFERENCE.GET_ALL_SYNC));
+    ipcRenderer.once(IPC_PREFERENCE.GET_ALL_REPLY, (e, data: IPreference) => {
+      _.commit("SET_STATE", data);
+      _.commit("information/SET_FETCHED");
+    });
+    ipcRenderer.send(IPC_PREFERENCE.GET_ALL);
   },
 };
 

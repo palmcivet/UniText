@@ -2,36 +2,46 @@ import { app, ipcMain, BrowserWindow, BrowserWindowConstructorOptions } from "el
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
-import { IPC_BOOTSTRAP } from "@/common/channel/ipc";
-import { isDev, isOsx, isWin } from "@/common/env";
-import { MenuManager } from "@/main/services/MenuManager";
+import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
+import { buildUrl } from "@/common/url";
+import Logger from "@/main/services/Logger";
+import EnvPath from "@/main/services/EnvPath";
+import Preference from "@/main/services/Preference";
 import { Keybinding } from "@/main/services/Keybinding";
-import { Preference } from "@/main/services/Preference";
-import { IBootArgs } from "@/typings/main";
+import MenuManager from "@/main/services/MenuManager";
+import { EWindowType } from "@/typings/main";
 import { EI18n, IPreferenceSystem } from "@/typings/schema/preference";
 
-export class UniText {
-  private _args: IBootArgs;
+export default class UniText {
+  private _logger!: Logger;
 
-  private _sysArgs!: IPreferenceSystem;
-
-  private _window!: BrowserWindow | null;
-
-  private _menuManager!: MenuManager;
-
-  private _keybinding!: Keybinding;
+  private _envPath!: EnvPath;
 
   private _preference!: Preference;
 
-  /**
-   * @param args 启动参数
-   */
-  constructor(args: IBootArgs) {
-    this._args = args;
-    this._window = null;
-    this._menuManager = new MenuManager();
+  private _keybinding!: Keybinding;
+
+  private _menuManager!: MenuManager;
+
+  private _window!: BrowserWindow | null;
+
+  private _sysData!: IPreferenceSystem;
+
+  constructor() {
+    const sysPath = app.getPath("userData");
+
+    this._logger = new Logger(
+      SYSTEM_PATH.ERROR_LOG(sysPath),
+      SYSTEM_PATH.INFO_LOG(sysPath)
+    );
+    this._envPath = new EnvPath(sysPath, this._logger);
+
+    const path = this._envPath.getItem("settings");
+
     this._keybinding = new Keybinding();
-    this._preference = new Preference(args.notesPath);
+    this._preference = new Preference(path);
+    this._menuManager = new MenuManager();
+    this._window = null;
   }
 
   private _listenForIpcMain() {
@@ -56,17 +66,10 @@ export class UniText {
         this._window.close();
       }
     });
-
-    ipcMain.once(IPC_BOOTSTRAP.FETCH, (event) => {
-      event.reply(IPC_BOOTSTRAP.REPLY, {
-        sys: this._sysArgs,
-        args: this._args,
-      });
-    });
   }
 
   private async _createWindow() {
-    this._sysArgs = this._preference.getItem("system");
+    this._sysData = this._preference.getItem("system");
 
     const winOption: BrowserWindowConstructorOptions = {
       minWidth: 647,
@@ -87,14 +90,21 @@ export class UniText {
 
     win.setTitle("UniText");
 
-    this._menuManager.updateMenu(EI18n[this._sysArgs.language], this._keybinding);
+    const lang = EI18n[this._sysData.language];
 
-    if (isDev) {
-      await win.loadURL("http://localhost:9091/index.html");
-      win.webContents.openDevTools();
-    } else {
-      await win.loadURL(`file://${__dirname}/index.html`);
-    }
+    this._menuManager.updateMenu(lang, this._keybinding);
+
+    await win.loadURL(
+      buildUrl({
+        wid: win.id.toString(),
+        lang: lang.toString(),
+        type: EWindowType.NORMAL.toString(),
+        conf: this._envPath.getItem("settings"),
+        proj: this._envPath.getItem("project"),
+      })
+    );
+
+    if (isDev) win.webContents.toggleDevTools();
 
     win.on("closed", () => {
       win = null;

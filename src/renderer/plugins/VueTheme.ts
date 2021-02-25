@@ -13,42 +13,30 @@ export interface IVueTheme {
 /* -------------------------- class ------------------------------- */
 
 import Store from "electron-store";
-import * as fse from "fs-extra";
 
-import {
-  CONFIG_FILE,
-  CONFIG_FOLDER,
-  THEME_PRESET,
-  THEME_CSS,
-  PUBLIC,
-} from "@/common/env";
 import { $id } from "@/common/utils";
 import schema from "@/common/schema/sTheme";
+import { THEME_PRESET, THEME_CSS, PUBLIC } from "@/common/env";
 import { joinPath, checkStringExist } from "@/common/fileSystem";
 import { ITheme, IThemeColorCustom } from "@/typings/schema/theme";
 
 export class Theme {
-  private _dataSet!: Store<ITheme>;
+  protected _dataSet!: Store<ITheme>;
 
-  private _base!: string;
+  private _filePath!: string;
 
   constructor(opt: IPluginOptions) {
-    this._base = opt.base;
     this.setBasePath(opt.base);
+    this._filePath = opt.base;
   }
 
-  setBasePath(base: string) {
-    let cwd = joinPath(base, CONFIG_FOLDER.SETTINGS);
-
+  setBasePath(filePath: string) {
+    this._filePath = filePath;
     this._dataSet = new Store({
-      cwd,
+      cwd: filePath,
       name: "theme",
       schema: schema as Store.Schema<ITheme>,
     });
-  }
-
-  getItem(key: string): any {
-    return this._dataSet.get(key);
   }
 
   async loadTheme() {
@@ -61,7 +49,7 @@ export class Theme {
       THEME_CSS.forEach((key) => {
         $id(key).setAttribute(
           "href",
-          joinPath(this._base, data[key as keyof IThemeColorCustom])
+          joinPath(this._filePath, data[key as keyof IThemeColorCustom])
         );
       });
     } else if (checkStringExist(preset, THEME_PRESET)) {
@@ -70,7 +58,7 @@ export class Theme {
       });
     } else {
       THEME_CSS.forEach((key) => {
-        $id(key).setAttribute("href", joinPath(this._base, preset, `${key}.css`));
+        $id(key).setAttribute("href", joinPath(this._filePath, preset, `${key}.css`));
       });
     }
   }

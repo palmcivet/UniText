@@ -1,3 +1,7 @@
+/**
+ * Standalone
+ */
+
 import { VueConstructor } from "vue/types/umd";
 
 /* -------------------------- utils ------------------------------- */

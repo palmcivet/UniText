@@ -42,7 +42,6 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import * as fse from "fs-extra";

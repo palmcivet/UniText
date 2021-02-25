@@ -48,7 +48,6 @@ export default class Setting extends Vue {
   handleLoad() {
     const { commit, dispatch } = this.$store;
     dispatch("LOAD_STATE");
-    dispatch("LOAD_THEME");
     // NOTE 完善通知信息
     commit("information/SET_INFO", "OK");
   }

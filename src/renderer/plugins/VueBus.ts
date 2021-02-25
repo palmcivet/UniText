@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /**
+ * Standalone
  * @Repo: https://github.com/developit/mitt
  */
 

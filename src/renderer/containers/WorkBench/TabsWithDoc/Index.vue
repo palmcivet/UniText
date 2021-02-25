@@ -109,7 +109,7 @@ export default class TabsWithDoc extends Vue {
   }
 
   handleTabContext() {
-    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.WORKBENCH_TAB);
+    ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.TAB_BAR);
   }
 
   created() {

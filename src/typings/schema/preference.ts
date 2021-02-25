@@ -1,9 +1,9 @@
 import { IDocumentConfig, IDocumentFormat } from "../document";
 
 /**
- * @enum { EWindowTitleBar } 标题栏样式
+ * @enum { ETitleBar } 标题栏样式
  */
-export enum EWindowTitleBar {
+export enum ETitleBar {
   DEFAULT = "default",
   HIDDEN = "hidden",
   INSET = "hiddenInset",
@@ -77,7 +77,7 @@ export interface IPreferenceWindow {
   /**
    * @field 标题栏样式
    */
-  titleBarStyle: EWindowTitleBar;
+  titleBarStyle: ETitleBar;
 }
 
 /**
