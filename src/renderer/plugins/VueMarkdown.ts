@@ -60,8 +60,8 @@ class MarkdownEngine {
   private _initEngine() {
     this.engine = new MarkdownIt({
       html: true,
-      breaks: true,
-      linkify: true,
+      breaks: this.getItem("habit.hardBreaks"),
+      linkify: this.getItem("habit.linkify"),
     });
 
     this.engine.validateLink = (url) => {
@@ -105,11 +105,11 @@ class MarkdownEngine {
     return this._dataSet.store;
   }
 
-  setItem(key: string, val: any) {
+  setItem(key: MapGet<IMarkdown>, val: any) {
     this._dataSet.set(key, val);
   }
 
-  getItem(key: string): any {
+  getItem(key: MapGet<IMarkdown>): any {
     this._dataSet.get(key);
   }
 

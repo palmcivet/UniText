@@ -1,10 +1,11 @@
+import { localesMenu } from "@/common/i18n/iMenu";
 import { readJsonSync } from "fs-extra";
 
 export class Keybinding {
-  private readonly defaultSet!: Map<string, string>;
+  private readonly _dataSet!: Map<string, string>;
 
   constructor() {
-    this.defaultSet = new Map<string, string>([
+    this._dataSet = new Map([
       /* system */
       ["system.about", ""],
       ["system.check", ""],
@@ -77,7 +78,7 @@ export class Keybinding {
     const userAccelerators = new Map();
 
     for (const key in json) {
-      if (this.defaultSet.has(key)) {
+      if (this._dataSet.has(key)) {
         const value = json[key];
 
         if (typeof value !== "string") return;
@@ -91,11 +92,11 @@ export class Keybinding {
     }
   }
 
-  getItem(key: string) {
-    return this.defaultSet.get(key);
+  getItem(key: MapGet<typeof localesMenu>) {
+    return this._dataSet.get(key);
   }
 
-  setItem(key: string) {
+  setItem(key: Map<MapGet<typeof localesMenu>, string>) {
     // 更改键绑定时需要更改菜单
   }
 

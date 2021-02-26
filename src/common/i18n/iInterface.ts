@@ -1,4 +1,5 @@
 import { localesCommon } from "./iCommon";
+
 export const localesView = {
   sidebar: {
     files: localesCommon.files,

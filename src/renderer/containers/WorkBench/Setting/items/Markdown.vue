@@ -13,7 +13,6 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 
 import { debounce } from "@/common/utils";

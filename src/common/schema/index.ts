@@ -1,15 +1,3 @@
-export type TSchema<T> = {
-  [key in keyof T]: IGroup<T[key]>;
-};
-
-export const reduceType = (type: any) => {
-  const resArr = [];
-  for (let key in type) {
-    resArr.push(type[key]);
-  }
-  return resArr;
-};
-
 export interface IGroup<T> {
   type: "Group";
   title: Array<string | Function>;
@@ -58,6 +46,18 @@ export interface IDropDown {
   default: any;
   description: Array<string>;
 }
+
+export type TSchema<T> = {
+  [key in keyof T]: IGroup<T[key]>;
+};
+
+export const reduceType = (type: any) => {
+  const resArr = [];
+  for (let key in type) {
+    resArr.push(type[key]);
+  }
+  return resArr;
+};
 
 export function reduceSchema<T>(data: TSchema<T>) {
   enum ETypeMap {
