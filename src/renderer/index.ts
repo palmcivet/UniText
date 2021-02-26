@@ -2,7 +2,7 @@ import Vue from "vue";
 import "remixicon/fonts/remixicon.css";
 
 import { parseUrl } from "@/common/url";
-import { localesView } from "@/main/i18n/iInterface";
+import { localesView } from "@/common/i18n/iInterface";
 import Main from "@/renderer/views/Main.vue";
 import store from "@/renderer/vuex";
 import VueBus from "@/renderer/plugins/VueBus";

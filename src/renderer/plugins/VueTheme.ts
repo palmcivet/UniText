@@ -27,7 +27,6 @@ export class Theme {
 
   constructor(opt: IPluginOptions) {
     this.setBasePath(opt.base);
-    this._filePath = opt.base;
   }
 
   setBasePath(filePath: string) {
@@ -39,7 +38,15 @@ export class Theme {
     });
   }
 
-  async loadTheme() {
+  getAll() {
+    return this._dataSet.store;
+  }
+
+  setItem(key: string, val: any) {
+    this._dataSet.set(key, val);
+  }
+
+  loadTheme() {
     const color = this._dataSet.get("color");
     const { dynamic, preset, ...data } = color;
 

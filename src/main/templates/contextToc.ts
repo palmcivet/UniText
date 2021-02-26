@@ -1,5 +1,5 @@
 import { Keybinding } from "@/main/services/Keybinding";
-import { localesMenu } from "@/main/i18n/iMenu";
+import { localesMenu } from "@/common/i18n/iMenu";
 import { TMenuTemplate } from "@/typings/main";
 import { EI18n } from "@/typings/schema/preference";
 

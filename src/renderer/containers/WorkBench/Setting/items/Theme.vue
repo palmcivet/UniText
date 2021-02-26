@@ -1,14 +1,5 @@
 <template>
   <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
-    <Group
-      v-for="(v, k, i) of schema.otherGroup"
-      :key="i"
-      :field="k"
-      :properties="v"
-      :userData="userData"
-      @submit="handleSubmit($event)"
-    />
-
     <UFormGroup :label="schema.title">
       <div>
         <GroupHead field="color" subField="dynamic" />
@@ -49,7 +40,6 @@ import * as fse from "fs-extra";
 import { debounce } from "@/common/utils";
 import { checkFilesExist, joinPath } from "@/common/fileSystem";
 import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
-import Group from "../widgets/Group.vue";
 import GroupHead from "../widgets/GroupHead.vue";
 import DropDown from "../widgets/DropDown.vue";
 import UCheckBox from "@/renderer/components/Form/UCheckBox.vue";
@@ -68,7 +58,6 @@ const themeFileName = [
 @Component({
   name: "Theme",
   components: {
-    Group,
     GroupHead,
     DropDown,
     UCheckBox,
@@ -77,6 +66,7 @@ const themeFileName = [
   },
 })
 export default class Theme extends Vue {
+  // TODO 撤销
   @general.State((state: IGeneralState) => state.fileManager.folderDir)
   folderDir!: string;
 
@@ -115,12 +105,11 @@ export default class Theme extends Vue {
   }
 
   get schema() {
-    const { color, ...otherGroup } = schemaTheme;
+    const { color } = schemaTheme;
     const { dynamic, preset, ...customGroup } = color.properties;
     return {
       title: color.title,
       dynamic,
-      otherGroup,
       customGroup,
     };
   }
@@ -159,11 +148,11 @@ export default class Theme extends Vue {
   handleSubmit = debounce((val: [string, string, string]) => {
     const [g, f, v] = val;
     this.setVal(g, f, v);
-    // ipcRenderer.send(IPC_THEME.SET_ITEM, `${g}.${f}`, v);
+    this.$theme.setItem(`${g}.${f}`, v);
   }, 200);
 
   created() {
-    // this.userData = ipcRenderer.sendSync(IPC_THEME.GET_ALL_SYNC);
+    this.userData = this.$theme.getAll();
   }
 
   mounted() {
