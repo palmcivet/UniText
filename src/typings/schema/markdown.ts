@@ -26,6 +26,14 @@ export interface IMarkdownHabit {
    * @field 自动探测可点击的地址
    */
   linkify: boolean;
+  /**
+   * @field 启用 HTML 标签
+   */
+  html: boolean;
+  /**
+   * @field 过滤 URL。支持正则
+   */
+  filterLink: Array<string>;
 }
 
 /**

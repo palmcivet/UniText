@@ -15,6 +15,7 @@ declare var __static: string;
 declare module "markdown-it-mark";
 declare module "markdown-it-sub";
 declare module "markdown-it-sup";
+declare module "markdown-it-ins";
 declare module "markdown-it-emoji";
 declare module "markdown-it-imsize";
 declare module "markdown-it-footnote";

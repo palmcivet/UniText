@@ -15,6 +15,7 @@ import Store from "electron-store";
 import MarkdownIt from "markdown-it";
 import MarkdownItSup from "markdown-it-sup";
 import MarkdownItSub from "markdown-it-sub";
+import MarkdownItIns from "markdown-it-ins";
 import MarkdownItMark from "markdown-it-mark";
 import MarkdownItEmoji from "markdown-it-emoji";
 import MarkdownItImsize from "markdown-it-imsize";
@@ -59,9 +60,10 @@ class MarkdownEngine {
 
   private _initEngine() {
     this.engine = new MarkdownIt({
-      html: true,
+      html: this.getItem("habit.html"),
       breaks: this.getItem("habit.hardBreaks"),
       linkify: this.getItem("habit.linkify"),
+      typographer: this.getItem("feature.typographer"),
     });
 
     this.engine.validateLink = (url) => {
@@ -69,9 +71,11 @@ class MarkdownEngine {
       return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
     };
 
+    // FEAT 未成功输出
     this.engine.use(MarkdownItHighlightLines);
+
     this.engine.use(MarkdownItTocAndAnchor, {
-      toc: true,
+      toc: this.getItem("extend.toc"),
       tocClassName: "toc-list",
       tocFirstLevel: 2,
       tocLastLevel: 6,
@@ -81,17 +85,19 @@ class MarkdownEngine {
       },
     });
 
-    this.engine.use(MarkdownItSup);
-    this.engine.use(MarkdownItSub);
-    this.engine.use(MarkdownItMark);
-    this.engine.use(MarkdownItEmoji);
+    this.getItem("extend.sup") && this.engine.use(MarkdownItSup);
+    this.getItem("extend.sub") && this.engine.use(MarkdownItSub);
+    this.getItem("extend.mark") && this.engine.use(MarkdownItMark);
+    this.getItem("extend.insert") && this.engine.use(MarkdownItIns);
+    this.getItem("feature.emoji") && this.engine.use(MarkdownItEmoji);
+    this.getItem("feature.katex") && this.engine.use(MarkdownItKatex);
+    this.getItem("extend.footnote") && this.engine.use(MarkdownItFootnote);
+    this.getItem("extend.todoList") &&
+      this.engine.use(MarkdownItTaskLists, {
+        label: true,
+        labelAfter: true,
+      });
     this.engine.use(MarkdownItImsize);
-    this.engine.use(MarkdownItFootnote);
-    this.engine.use(MarkdownItKatex);
-    this.engine.use(MarkdownItTaskLists, {
-      label: true,
-      labelAfter: true,
-    });
     this.engine.use(MarkdownItImplicitFigures, {
       dataType: true,
       figcaption: false,
@@ -110,7 +116,7 @@ class MarkdownEngine {
   }
 
   getItem(key: MapGet<IMarkdown>): any {
-    this._dataSet.get(key);
+    return this._dataSet.get(key);
   }
 
   render(val: string) {

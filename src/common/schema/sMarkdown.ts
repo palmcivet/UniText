@@ -32,6 +32,18 @@ const mHabit: IGroup<IMarkdownHabit> = {
       default: true,
       description: [""],
     },
+    html: {
+      type: "CheckBox",
+      title: ["启用 HTML 标签"],
+      default: true,
+      description: [""],
+    },
+    filterLink: {
+      type: "TextGroup",
+      title: ["过滤 URL。支持正则"],
+      default: [""],
+      description: [""],
+    },
   },
   default: {},
 };
