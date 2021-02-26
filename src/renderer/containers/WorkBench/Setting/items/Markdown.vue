@@ -42,11 +42,12 @@ export default class Markdown extends Vue {
   handleSubmit = debounce((val: [string, string, any]) => {
     const [g, f, v] = val;
     this.setVal(g, f, v);
-    // TODO 完善 IPC Channel
-    ipcRenderer.send("", `${g}.${f}`, v);
+    this.$markdown.setItem(`${g}.${f}`, v);
   }, 200);
 
-  created() {}
+  created() {
+    this.userData = this.$markdown.getAll();
+  }
 }
 </script>
 

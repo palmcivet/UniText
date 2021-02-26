@@ -21,7 +21,7 @@ import { joinPath, checkStringExist } from "@/common/fileSystem";
 import { ITheme, IThemeColorCustom } from "@/typings/schema/theme";
 
 export class Theme {
-  protected _dataSet!: Store<ITheme>;
+  private _dataSet!: Store<ITheme>;
 
   private _filePath!: string;
 

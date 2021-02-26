@@ -34,5 +34,9 @@ export default class UCheckBox extends Skeleton {
   * {
     cursor: pointer;
   }
+
+  label {
+    margin-left: 3px;
+  }
 }
 </style>

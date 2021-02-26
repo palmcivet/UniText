@@ -13,7 +13,7 @@ import { IPreference } from "@/typings/schema/preference";
  * @class 管理用户 preference 的数据结构
  */
 export default class Preference {
-  protected _dataSet!: Store<IPreference>;
+  private _dataSet!: Store<IPreference>;
 
   constructor(filePath: string) {
     this.setBasePath(filePath);

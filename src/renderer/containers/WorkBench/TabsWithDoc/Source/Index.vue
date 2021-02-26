@@ -26,7 +26,6 @@ import { debounce, $, notEmpty } from "@/common/utils";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
-import { markdownEngine } from "@/renderer/plugins/VueMarkdown";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EPanelType } from "@/typings/schema/preference";
@@ -102,10 +101,10 @@ export default class Source extends Vue {
   syncPreOrToc = debounce((that: this) => {
     /* 二选一即可，后者只更新 TOC */
     if (that.dbColumn || that.isReadMode) {
-      that.refPreview.innerHTML = markdownEngine.render(that.editor.getValue());
+      that.refPreview.innerHTML = this.$markdown.render(that.editor.getValue());
       Prism.highlightAll();
     } else if (this.panelType === EPanelType.TOC) {
-      markdownEngine.render(that.editor.getValue());
+      this.$markdown.render(that.editor.getValue());
     }
   }, this.syncDelay);
 
@@ -119,7 +118,7 @@ export default class Source extends Vue {
   }
 
   handleSyncView() {
-    this.refPreview.innerHTML = markdownEngine.render(this.editor.getValue());
+    this.refPreview.innerHTML = this.$markdown.render(this.editor.getValue());
   }
 
   handleRevealSection(value: Array<number>) {

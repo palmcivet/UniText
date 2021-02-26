@@ -19,10 +19,8 @@ Vue.use(VueI18n, {
   lang: args.lang,
   messages: localesView,
 });
-Vue.use(VueTheme, {
-  base: args.conf,
-});
-Vue.use(VueMarkdown);
+Vue.use(VueTheme, { base: args.conf });
+Vue.use(VueMarkdown, { base: args.conf });
 
 Vue.config.productionTip = false;
 

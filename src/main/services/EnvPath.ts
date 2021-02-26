@@ -20,7 +20,7 @@ export default class EnvPath {
 
   private _error!: Array<any>;
 
-  protected _dataSet: Map<keyof IPath, IPath[keyof IPath]> = new Map([
+  private _dataSet: Map<keyof IPath, IPath[keyof IPath]> = new Map([
     ["unitext", ""],
     ["project", ""],
     ["settings", ""],
