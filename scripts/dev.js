@@ -85,6 +85,8 @@ function startRenderer() {
     const server = new WebpackDevServer(compiler, {
       contentBase: getPath.public(),
       quiet: true,
+      hot: true,
+      clientLogLevel: "warn",
       setup(app, ctx) {
         app.use(hotMiddleware);
         ctx.middleware.waitUntilValid(() => {

@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 import crypto from "crypto";
 
-export function debounce(fn: Function, delay: number = 1000) {
+export function debounce(fn: Function, delay: number = 200) {
   let timeout: NodeJS.Timeout | null;
   return function(this: any, ...args: Array<any>) {
     if (timeout) clearTimeout(timeout);
@@ -12,7 +12,7 @@ export function debounce(fn: Function, delay: number = 1000) {
   };
 }
 
-export function throttle(fn: Function, delay: number = 1000): Function {
+export function throttle(fn: Function, delay: number = 200): Function {
   let canRun = true;
   return function(this: any, ...args: Array<any>) {
     if (!canRun) return;

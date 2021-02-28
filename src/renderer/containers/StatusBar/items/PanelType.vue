@@ -20,7 +20,7 @@ import { namespace } from "vuex-class";
 
 import CheckList from "@/renderer/components/CheckList.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EPanelType } from "@/typings/service/preference";
+import { EPanelType } from "@/typings/schema/preference";
 
 const general = namespace("general");
 

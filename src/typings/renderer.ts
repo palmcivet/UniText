@@ -1,4 +1,4 @@
-export interface ITocList {
+declare interface ITocList {
   content: string;
   anchor: string;
   level: number;

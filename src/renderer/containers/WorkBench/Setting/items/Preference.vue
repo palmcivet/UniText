@@ -46,7 +46,7 @@ export default class Preference extends Vue {
     const [g, f, v] = val;
     this.setVal(g, f, v);
     ipcRenderer.send(IPC_PREFERENCE.SET_ITEM, `${g}.${f}`, v);
-  }, 200);
+  });
 
   beforeCreate() {
     ipcRenderer.once(IPC_PREFERENCE.GET_ALL_REPLY, (e, data: any) => {

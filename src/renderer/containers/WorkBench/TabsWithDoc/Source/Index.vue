@@ -101,10 +101,10 @@ export default class Source extends Vue {
   syncPreOrToc = debounce((that: this) => {
     /* 二选一即可，后者只更新 TOC */
     if (that.dbColumn || that.isReadMode) {
-      that.refPreview.innerHTML = this.$markdown.render(that.editor.getValue());
+      that.refPreview.innerHTML = that.$markdown.render(that.editor.getValue());
       Prism.highlightAll();
-    } else if (this.panelType === EPanelType.TOC) {
-      this.$markdown.render(that.editor.getValue());
+    } else if (that.panelType === EPanelType.TOC) {
+      that.$markdown.render(that.editor.getValue());
     }
   }, this.syncDelay);
 

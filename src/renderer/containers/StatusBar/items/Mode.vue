@@ -20,7 +20,7 @@ import { Vue, Component } from "vue-property-decorator";
 
 import CheckItem from "../widgets/CheckItem.vue";
 import { IPC_OTHER } from "@/common/channel/ipc";
-import { EEditMode } from "@/typings/service/preference";
+import { EEditMode } from "@/typings/schema/preference";
 import { IGeneralState } from "@/typings/vuex/general";
 
 const general = namespace("general");

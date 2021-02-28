@@ -69,7 +69,7 @@ ${summary}
   `;
 
     await fse.writeFile(dst, output);
-    call();
+    call && call();
   };
 
   checker.init(

@@ -111,7 +111,7 @@ class MarkdownEngine {
     return this._dataSet.store;
   }
 
-  setItem(key: MapGet<IMarkdown>, val: any) {
+  setItem(key: MapGet<IMarkdown> | string, val: any) {
     this._dataSet.set(key, val);
   }
 

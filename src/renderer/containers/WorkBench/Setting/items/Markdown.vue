@@ -42,7 +42,7 @@ export default class Markdown extends Vue {
     const [g, f, v] = val;
     this.setVal(g, f, v);
     this.$markdown.setItem(`${g}.${f}`, v);
-  }, 200);
+  });
 
   created() {
     this.userData = this.$markdown.getAll();

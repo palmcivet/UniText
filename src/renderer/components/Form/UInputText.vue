@@ -1,7 +1,13 @@
 <template>
   <div class="option" :title="$g(prop.description)">
     <label>{{ $g(prop.title) }}</label>
-    <input type="text" v-model="res" :disabled="hasDisabled" @change="handleChange()" />
+    <input
+      type="text"
+      v-model="res"
+      :disabled="hasDisabled"
+      spellcheck="false"
+      @change="handleChange()"
+    />
   </div>
 </template>
 

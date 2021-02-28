@@ -1,8 +1,9 @@
-/* eslint-disable no-param-reassign */
 /**
  * Standalone
  * @Repo: https://github.com/developit/mitt
  */
+
+/* eslint-disable no-param-reassign */
 
 import { VueConstructor } from "vue/types/umd";
 

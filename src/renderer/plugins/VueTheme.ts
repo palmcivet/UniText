@@ -42,7 +42,7 @@ export class Theme {
     return this._dataSet.store;
   }
 
-  setItem(key: MapGet<ITheme>, val: any) {
+  setItem(key: MapGet<ITheme> | string, val: any) {
     this._dataSet.set(key, val);
   }
 
