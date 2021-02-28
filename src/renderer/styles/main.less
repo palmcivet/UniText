@@ -21,9 +21,14 @@ ul {
 
 input,
 select,
+summary,
 textarea {
   border: 0px;
   outline-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
 }
 
 /* Styles for components */

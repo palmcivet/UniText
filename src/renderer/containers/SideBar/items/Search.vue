@@ -16,7 +16,21 @@
         <input type="text" class="include" />
         <input type="text" class="exclude" />
       </div>
-      <ul class="search-result"></ul>
+      <ul class="search-result">
+        <ListNode
+          v-for="(item, idx) in searchResult"
+          :key="idx"
+          :nodeName="trailPath(item.filePath)"
+        >
+          <li
+            v-for="(v, i) in item.matches"
+            :key="i"
+            @click="handleReveal(item.filePath, v.range)"
+          >
+            {{ v.lineText }}
+          </li>
+        </ListNode>
+      </ul>
     </template>
   </BaseView>
 </template>
@@ -27,19 +41,23 @@ import { Vue, Component } from "vue-property-decorator";
 
 import { joinPath } from "@/common/fileSystem";
 import RipgrepDirectorySearcher from "@/library/ripgrepSearcher";
+import { IRipgrepSearchResult } from "@/library/ripgrepSearcher.d";
 import CheckList from "@/renderer/components/CheckList.vue";
+import ListNode from "@/renderer/containers/SideBar/widgets/ListNode.vue";
 import BaseView from "@/renderer/containers/SideBar/widgets/BaseView.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { IRipgrepSearchResult } from "@/typings/ripgrepSearcher";
+import { ipcRenderer } from "electron";
+import { IPC_FILE } from "@/common/channel/ipc";
+import { BUS_EDITOR } from "@/common/channel/bus";
 
 const sideBar = namespace("sideBar");
 const general = namespace("general");
-
 @Component({
   name: "Search",
   components: {
     BaseView,
     CheckList,
+    ListNode,
   },
 })
 export default class Search extends Vue {
@@ -72,6 +90,11 @@ export default class Search extends Vue {
   searchErrorString = "";
 
   searcherCancelCallback!: any;
+
+  trailPath(path: string) {
+    const dirs = path.split("/");
+    return dirs[dirs.length - 1];
+  }
 
   handleSearch() {
     if (this.isEmptyFolder) {
@@ -143,10 +166,19 @@ export default class Search extends Vue {
 
     this.searcherCancelCallback = () => {
       canceled = true;
+      this.searchResult = [];
       if (promises.cancel) {
         promises.cancel();
       }
     };
+  }
+
+  handleReveal(path: string, range: [[number, number], [number, number]]) {
+    const route = path.slice(this.folderDir.length).split("/");
+    ipcRenderer.emit(IPC_FILE.OPEN, null, route);
+    console.log(range);
+    // DEV 调整位置
+    this.$bus.emit(BUS_EDITOR.REVEAL_SECTION, [range[0][0], range[0][0] + 1]);
   }
 }
 </script>
@@ -169,7 +201,7 @@ export default class Search extends Vue {
     height: 1.6em;
     font-size: 1.05em;
     color: var(--inputBox-Fg);
-    background: #7d89a3;
+    background: #404552;
     font-family: @normal-font-family;
   }
 }

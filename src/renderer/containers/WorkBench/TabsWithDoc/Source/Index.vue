@@ -29,7 +29,6 @@ import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EPanelType } from "@/typings/schema/preference";
-import { ITocList } from "@/typings/renderer";
 
 import { OneDarkPro } from "./theme";
 import { init } from "./option";

@@ -223,7 +223,6 @@ export default class FileTreeNode extends Vue {
 .file,
 .folder {
   display: flex;
-  outline: none;
   cursor: pointer;
   width: 100%;
   height: @sideBar-item-height;
@@ -266,7 +265,6 @@ export default class FileTreeNode extends Vue {
 
     input {
       width: 100%;
-      outline: none;
       padding: 1px 0;
       border-width: 0.5px 0;
       border-style: solid;
@@ -279,10 +277,6 @@ export default class FileTreeNode extends Vue {
 .file:hover,
 .folder:hover {
   background: var(--sideBarItem-selectFg);
-}
-
-details > summary::-webkit-details-marker {
-  display: none;
 }
 
 .active {

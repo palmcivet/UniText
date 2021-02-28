@@ -25,7 +25,7 @@ export declare interface IRipgrepSearchResult {
     trailingContextLines: number;
     lineText: string;
     matchText: string;
-    range: Array<[number, number]>;
+    range: [[number, number], [number, number]];
   }>;
 }
 
