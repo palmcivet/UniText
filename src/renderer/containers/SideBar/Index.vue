@@ -11,7 +11,7 @@ import { Vue, Component } from "vue-property-decorator";
 import Tags from "@/renderer/containers/SideBar/items/Tags.vue";
 import Files from "@/renderer/containers/SideBar/items/Files.vue";
 import Search from "@/renderer/containers/SideBar/items/Search.vue";
-import Bookmarks from "@/renderer/containers/SideBar/items/Bookmarks.vue";
+import Marks from "@/renderer/containers/SideBar/items/Marks.vue";
 import Settings from "@/renderer/containers/SideBar/items/Settings.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EActivityType, ISideBarState } from "@/typings/vuex/sideBar";
@@ -24,9 +24,9 @@ const general = namespace("general");
   components: {
     Tags,
     Files,
+    Marks,
     Search,
     Settings,
-    Bookmarks,
   },
 })
 export default class SideBar extends Vue {

@@ -25,7 +25,7 @@ export const file = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   { type: "separator" },
   {
     label: localesMenu.edit.copy[locale],
-    accelerator: keybinding.getItem("file.copy"),
+    accelerator: keybinding.getItem("edit.copy"),
     click: () => {},
   },
   {

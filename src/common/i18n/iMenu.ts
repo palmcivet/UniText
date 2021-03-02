@@ -25,14 +25,16 @@ export const localesMenu = {
 
   file: {
     label: localesCommon.files,
+    mark_add: ["添加书签"],
+    mark_del: ["取消书签"],
     read: ["阅读"],
     edit: ["编辑"],
     save: ["保存"],
     open: ["打开"],
     new_file: ["新建文件"],
     new_folder: ["新建文件夹"],
-    open_project: localesCommon.open_project,
-    close_project: ["关闭笔记文件夹"],
+    project_open: localesCommon.open_project,
+    project_close: ["关闭笔记库"],
     reveal: ["显示在文件管理器"],
   },
 
@@ -51,7 +53,14 @@ export const localesMenu = {
 
   view: {
     label: ["查看"],
-    status: ["状态栏"],
+    sidebar: ["侧边栏"],
+    sidepanel: ["侧边面板"],
+    statusbar: ["状态栏"],
+    preview: ["预览模式"],
+    source: ["编辑模式"],
+    autowrap: ["折行"],
+    minimap: ["地图"],
+    space: ["显示空格"],
   },
 
   window: {

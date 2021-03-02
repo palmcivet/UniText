@@ -8,7 +8,7 @@ export const localesView = {
     files_button: localesCommon.open_project,
     files_toggle: ["收起"],
     search: ["搜索"],
-    bookmarks: ["书签"],
+    marks: ["书签"],
     tags: ["标签"],
     notes: ["便签"],
     schedule: ["日程"],

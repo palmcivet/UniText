@@ -19,6 +19,8 @@ export enum IPC_FILE {
   REVEAL = "IPC::REVEAL",
   RENAME = "IPC::RENAME",
   DELETE = "IPC::DELETE",
+  MARK_ADD = "IPC::MARK_ADD",
+  MARK_DEL = "IPC::MARK_DEL",
 }
 
 export enum IPC_OTHER {

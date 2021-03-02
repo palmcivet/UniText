@@ -45,8 +45,14 @@ export class Keybinding {
       ["edit.selectall", "CmdOrCtrl+A"],
 
       /* view */
+      ["view.sidebar", ""],
+      ["view.sidepanel", ""],
       ["view.statusbar", ""],
-      ["view.file", ""],
+      ["view.preview", ""],
+      ["view.source", ""],
+      ["view.autowrap", "Option+Z"],
+      ["view.minimap", ""],
+      ["view.space", ""],
 
       /* help */
       ["help.learnmore", ""],

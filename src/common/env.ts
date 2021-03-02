@@ -34,6 +34,7 @@ export const CONFIG_FOLDER = {
 export const CONFIG_FILE = {
   TAG: joinPath(".CONFIG", "tag.json"),
   ICON: joinPath(".CONFIG", "icon.json"),
+  MARK: joinPath(".CONFIG", "mark.json"), // Marks.vue 使用
   THEME: joinPath(".CONFIG", "Settings", "theme.json"),
   SNIPPET: joinPath(".CONFIG", "Settings", "snippet.json"),
   MARKDOWN: joinPath(".CONFIG", "Settings", "markdown.json"),

@@ -9,5 +9,5 @@ export const localesCommon = {
   icon: ["图标"],
   keybinding: ["按键绑定"],
   snippet: ["代码片段"],
-  open_project: ["打开笔记文件夹"],
+  open_project: ["打开笔记库"],
 };

@@ -48,9 +48,9 @@ export default class ActivityBar extends Vue {
         icon: "ri-xl ri-search-line",
         title: this.$t("sidebar.search"),
       },
-      Bookmarks: {
+      Marks: {
         icon: "ri-xl ri-bookmark-3-line",
-        title: this.$t("sidebar.bookmarks"),
+        title: this.$t("sidebar.marks"),
       },
       Tags: {
         icon: "ri-xl ri-price-tag-3-line",

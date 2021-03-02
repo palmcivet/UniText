@@ -32,14 +32,29 @@ export interface ITree {
   [index: string]: ITreeNode;
 }
 
+export interface IMark {
+  /**
+   * @field 路径
+   */
+  path: TFileRoute;
+  /**
+   * @field 添加时间
+   */
+  time: string;
+  /**
+   * @field 行号
+   */
+  line: number;
+}
+
 /**
  * @enum { EActivityType } 侧边栏类型
  */
 export enum EActivityType {
-  FILES = "Files",
-  SEARCH = "Search",
-  BOOKMARKS = "Bookmarks",
   TAGS = "Tags",
+  FILES = "Files",
+  MARKS = "Marks",
+  SEARCH = "Search",
   SETTINGS = "Settings",
   SCHEDULE = "Schedule",
 }
@@ -50,11 +65,15 @@ export interface ISideBarState {
    */
   activity: EActivityType;
   /**
+   * @field 描述运行时文件路径的字符串。平台无关
+   */
+  activeItem: string;
+  /**
    * @field 顶层文件树
    */
   fileTree: ITree;
   /**
-   * @field 描述运行时文件路径的字符串。平台无关
+   * @field 书签列表
    */
-  activeItem: string;
+  markList: Array<IMark>;
 }

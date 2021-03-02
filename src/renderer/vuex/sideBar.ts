@@ -1,8 +1,12 @@
-import { remote } from "electron";
+import * as fse from "fs-extra";
+import { ipcRenderer, remote } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
+import { CONFIG_FILE } from "@/common/env";
 import { hasKeys, notEmpty } from "@/common/utils";
-import { buildTree } from "@/common/fileSystem";
+import { joinPath } from "@/common/fileSystem";
+import { buildTree } from "@/common/fileSystem/fileState";
+import { IPC_FILE } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import {
   ITree,
@@ -10,21 +14,36 @@ import {
   TFileRoute,
   ISideBarState,
   EActivityType,
+  IMark,
 } from "@/typings/vuex/sideBar";
 
 const state: ISideBarState = {
   activity: EActivityType.FILES,
   activeItem: "",
   fileTree: {},
+  markList: [],
 };
 
 const getters: GetterTree<ISideBarState, IRootState> = {
   isEmptyFolder: (_: ISideBarState) => {
     return !hasKeys(_.fileTree);
   },
+
+  isEmptyMarks: (_: ISideBarState) => {
+    return !notEmpty(_.markList);
+  },
 };
 
 const mutations: MutationTree<ISideBarState> = {
+  LOAD_MARKLIST: (_: ISideBarState, base: string) => {
+    const absPath = joinPath(base, CONFIG_FILE.MARK);
+
+    if (!fse.existsSync(absPath)) {
+      return;
+    }
+    _.markList = fse.readJSONSync(absPath);
+  },
+
   CHOOSE_ACTIVITY: (_: ISideBarState, type: EActivityType) => {
     _.activity = type;
   },
@@ -68,7 +87,6 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       _.state.fileTree = targetTree;
     }, 400);
   },
-
   /**
    * 点击按钮，选择笔记文件夹打开
    */
@@ -94,6 +112,14 @@ const actions: ActionTree<ISideBarState, IRootState> = {
   },
 
   CLOSE_PROJECT: async (_: ActionContext<ISideBarState, IRootState>) => {},
+
+  LISTEN_FOR_SIDEBAR: async (_: ActionContext<ISideBarState, IRootState>) => {
+    ipcRenderer.on(IPC_FILE.MARK_ADD, (e, path: TFileRoute) => {
+      _.state.markList.push({ path, time: new Date().toDateString(), line: 0 });
+    });
+
+    ipcRenderer.on(IPC_FILE.MARK_DEL, (e, mode: boolean) => {});
+  },
 };
 
 export default {

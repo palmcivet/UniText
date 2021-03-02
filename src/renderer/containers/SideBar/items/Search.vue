@@ -85,6 +85,7 @@ import { BUS_EDITOR } from "@/common/channel/bus";
 
 const sideBar = namespace("sideBar");
 const general = namespace("general");
+
 @Component({
   name: "Search",
   components: {

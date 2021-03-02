@@ -77,9 +77,10 @@ export default class Main extends Vue {
 
   created() {
     const { dispatch } = this.$store;
-    dispatch("information/CHECK_UPDATE");
     dispatch("general/LISTEN_FOR_GENERAL");
+    dispatch("sideBar/LISTEN_FOR_SIDEBAR");
     dispatch("workBench/LISTEN_FOR_FILE");
+    dispatch("information/CHECK_UPDATE");
 
     this.$theme.loadTheme();
   }

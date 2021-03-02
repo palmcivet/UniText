@@ -4,7 +4,8 @@ import * as fse from "fs-extra";
 
 import { IPC_FILE } from "@/common/channel/ipc";
 import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
-import { fetchFileInfo, joinPath } from "@/common/fileSystem";
+import { joinPath } from "@/common/fileSystem";
+import { fetchFileInfo } from "@/common/fileSystem/fileState";
 import { formatDate, hashCode, notEmpty } from "@/common/utils";
 import { importFrontMatter, exportFrontMatter } from "@/renderer/utils/front-matter";
 import { charCount, wordCount, timeCalc } from "@/renderer/utils/statistics";

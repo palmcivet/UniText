@@ -1,6 +1,5 @@
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 
-import { ITocList } from "@/renderer/utils";
 import { IRootState } from "@/typings/vuex";
 import { IStatusPanelState } from "@/typings/vuex/statusPanel";
 

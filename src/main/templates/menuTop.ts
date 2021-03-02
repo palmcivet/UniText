@@ -36,22 +36,22 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
           submenu: [
             {
               label: localesMenu.system.themeappearence[locale],
-              accelerator: keybinding.getItem("system.theme.appearance"),
+              accelerator: keybinding.getItem("system.themeappearence"),
               click: () => {},
             },
             {
               label: localesMenu.system.themeeditor[locale],
-              accelerator: keybinding.getItem("system.theme.editor"),
+              accelerator: keybinding.getItem("system.themeeditor"),
               click: () => {},
             },
             {
               label: localesMenu.system.themeview[locale],
-              accelerator: keybinding.getItem("system.theme.view"),
+              accelerator: keybinding.getItem("system.themeview"),
               click: () => {},
             },
             {
               label: localesMenu.system.themeicon[locale],
-              accelerator: keybinding.getItem("system.theme.icon"),
+              accelerator: keybinding.getItem("system.themeicon"),
               click: () => {},
             },
           ],
@@ -62,12 +62,12 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
           submenu: [
             {
               label: localesMenu.system.keybindingdefault[locale],
-              accelerator: keybinding.getItem("system.keybinding.default"),
+              accelerator: keybinding.getItem("system.keybindingdefault"),
               click: (menu, win) => {},
             },
             {
               label: localesMenu.system.keybindinguser[locale],
-              accelerator: keybinding.getItem("system.keybinding.user"),
+              accelerator: keybinding.getItem("system.keybindinguser"),
               click: (menu, win) => {},
             },
           ],
@@ -78,12 +78,12 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
           submenu: [
             {
               label: localesMenu.system.snippetview[locale],
-              accelerator: keybinding.getItem("system.snippet.view"),
+              accelerator: keybinding.getItem("system.snippetview"),
               click: (menu, win) => {},
             },
             {
               label: localesMenu.system.snippetcreate[locale],
-              accelerator: keybinding.getItem("system.snippet.create"),
+              accelerator: keybinding.getItem("system.snippetcreate"),
               click: (menu, win) => {},
             },
           ],
@@ -119,14 +119,29 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
       label: localesMenu.file.label[locale],
       submenu: [
         {
-          label: localesMenu.file.open_project[locale],
-          accelerator: keybinding.getItem("file.open_project"),
+          label: localesMenu.file.project_open[locale],
+          accelerator: keybinding.getItem("file.project_open"),
           click: () => {},
         },
         {
-          label: localesMenu.file.close_project[locale],
-          accelerator: keybinding.getItem("file.close_project"),
+          label: localesMenu.file.project_close[locale],
+          accelerator: keybinding.getItem("file.project_open"),
           click: () => {},
+        },
+        { type: "separator" },
+        {
+          label: localesMenu.file.mark_add[locale],
+          accelerator: keybinding.getItem("file.mark_add"),
+          click: (menu, win) => {
+            (win as BrowserWindow).webContents.send(IPC_FILE.MARK_ADD);
+          },
+        },
+        {
+          label: localesMenu.file.mark_del[locale],
+          accelerator: keybinding.getItem("file.mark_del"),
+          click: (menu, win) => {
+            (win as BrowserWindow).webContents.send(IPC_FILE.MARK_DEL);
+          },
         },
         { type: "separator" },
         {
@@ -153,7 +168,7 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         { type: "separator" },
         {
           label: localesMenu.edit.copy[locale],
-          accelerator: keybinding.getItem("file.copy"),
+          accelerator: keybinding.getItem("edit.copy"),
           click: () => {},
         },
         {
@@ -229,11 +244,47 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
       label: localesMenu.view.label[locale],
       submenu: [
         {
-          label: localesMenu.view.status[locale],
-          accelerator: keybinding.getItem("view.status"),
+          label: localesMenu.view.statusbar[locale],
+          accelerator: keybinding.getItem("view.statusbar"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.view.sidebar[locale],
+          accelerator: keybinding.getItem("view.sidebar"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.view.sidepanel[locale],
+          accelerator: keybinding.getItem("view.sidepanel"),
           click: () => {},
         },
         { type: "separator" },
+        {
+          label: localesMenu.view.preview[locale],
+          accelerator: keybinding.getItem("view.preview"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.view.source[locale],
+          accelerator: keybinding.getItem("view.source"),
+          click: () => {},
+        },
+        { type: "separator" },
+        {
+          label: localesMenu.view.autowrap[locale],
+          accelerator: keybinding.getItem("view.autowrap"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.view.minimap[locale],
+          accelerator: keybinding.getItem("view.minimap"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.view.space[locale],
+          accelerator: keybinding.getItem("view.space"),
+          click: () => {},
+        },
       ],
     },
     {
@@ -255,7 +306,7 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         {
           label: localesMenu.help.toggledevtools[locale],
           role: "toggleDevTools",
-          accelerator: keybinding.getItem("system.toggledevtools"),
+          accelerator: keybinding.getItem("help.toggledevtools"),
         },
       ],
     },
