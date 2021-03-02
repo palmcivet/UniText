@@ -6,15 +6,48 @@
 
     <template slot="view">
       <div class="tool-bar">
-        <!-- DEV 复用组件 -->
-        <input type="text" class="search-box" v-model="keyword" @input="handleSearch()" />
+        <!-- TODO 复用组件 -->
+        <input
+          type="text"
+          class="search-box"
+          v-model="keyword"
+          @input="handleSearch()"
+          placeholder="搜索"
+        />
         <div class="controls">
-          <i class="ri-a-b" title="大小写" />
-          <i class="ri-bar-chart-horizontal-line" title="全字匹配" />
-          <i class="ri-registered-line" title="正则" />
+          <div
+            :class="isCaseSensitive ? 'active' : ''"
+            @click="isCaseSensitive = !isCaseSensitive"
+          >
+            <i class="ri-a-b" title="大小写" />
+          </div>
+          <div :class="isWholeWord ? 'active' : ''" @click="isWholeWord = !isWholeWord">
+            <i class="ri-bar-chart-horizontal-line" title="全字匹配" />
+          </div>
+          <div :class="isRegexp ? 'active' : ''" @click="isRegexp = !isRegexp">
+            <i class="ri-registered-line" title="正则" />
+          </div>
+          <div :class="isInclude ? 'active' : ''" @click="isInclude = !isInclude">
+            <i class="ri-add-circle-line" title="包含" />
+          </div>
+          <div :class="isExclude ? 'active' : ''" @click="isExclude = !isExclude">
+            <i class="ri-subtract-line" title="排除" />
+          </div>
         </div>
-        <input type="text" class="include" />
-        <input type="text" class="exclude" />
+        <input
+          type="text"
+          class="include"
+          placeholder="包含文件"
+          v-if="isInclude"
+          v-model="searchInclusions"
+        />
+        <input
+          type="text"
+          class="exclude"
+          placeholder="排除文件"
+          v-if="isExclude"
+          v-model="searchExclusions"
+        />
       </div>
       <ul class="search-result">
         <ListNode
@@ -67,7 +100,10 @@ export default class Search extends Vue {
   @sideBar.Getter("isEmptyFolder")
   isEmptyFolder!: boolean;
 
-  // DEV 配置
+  isInclude = false;
+
+  isExclude = false;
+
   isCaseSensitive = false;
 
   isWholeWord = false;
@@ -86,7 +122,7 @@ export default class Search extends Vue {
 
   searcherRunning = false;
 
-  // DEV
+  // TODO 提示
   searchErrorString = "";
 
   searcherCancelCallback!: any;
@@ -135,14 +171,13 @@ export default class Search extends Vue {
             this.searchErrorString = "Search was limited to 100 files.";
           }
         },
-
         isCaseSensitive: this.isCaseSensitive,
         isWholeWord: this.isWholeWord,
         isRegexp: this.isRegexp,
-        exclusions: this.searchExclusions,
         inclusions: this.searchInclusions,
+        exclusions: this.searchExclusions,
 
-        // DEV 参数选项
+        // TODO 参数选项
         /**
          * noIgnore: this.searchNoIgnore,
          * includeHidden: this.searchIncludeHidden,
@@ -177,7 +212,7 @@ export default class Search extends Vue {
     const route = path.slice(this.folderDir.length).split("/");
     ipcRenderer.emit(IPC_FILE.OPEN, null, route);
     console.log(range);
-    // DEV 调整位置
+    // TODO 调整位置
     this.$bus.emit(BUS_EDITOR.REVEAL_SECTION, [range[0][0], range[0][0] + 1]);
   }
 }
@@ -195,13 +230,40 @@ export default class Search extends Vue {
   display: flex;
   align-items: center;
   flex-direction: column;
+  padding: 2px;
+
+  .controls {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+
+    > div {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      text-align: center;
+
+      i {
+        line-height: 20px;
+      }
+
+      &:hover {
+        color: #efefef; // DEV
+      }
+
+      &.active {
+        color: var(--sideBarItem-hoverFg);
+        background: #414958; // DEV
+      }
+    }
+  }
 
   input[type="text"] {
-    margin: 3px;
-    height: 1.6em;
+    margin: 2px 0;
+    height: 1.5em;
     font-size: 1.05em;
     color: var(--inputBox-Fg);
-    background: #404552;
+    background: #404552; // DEV
     font-family: @normal-font-family;
   }
 }

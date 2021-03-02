@@ -30,7 +30,7 @@ export const CONFIG_FOLDER = {
   UNCATEGORY: joinPath(".CONFIG", "Uncategory"),
 };
 
-// DEV 未使用
+// TODO 未使用
 export const CONFIG_FILE = {
   TAG: joinPath(".CONFIG", "tag.json"),
   ICON: joinPath(".CONFIG", "icon.json"),
