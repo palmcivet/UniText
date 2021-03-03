@@ -101,7 +101,7 @@ class MarkdownEngine {
       dataType: true,
       figcaption: true,
       tabindex: true,
-      link: true,
+      link: false,
     });
     this.engine.use(MarkdownItImageLazyLoading);
   }

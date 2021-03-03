@@ -17,9 +17,9 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { ipcRenderer } from "electron";
+import { clipboard, ipcRenderer } from "electron";
+import * as MonacoEditor from "monaco-editor";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
-import { editor as MonacoEditor, IScrollEvent } from "monaco-editor";
 import Prism from "prismjs";
 
 import { debounce, $, notEmpty } from "@/common/utils";
@@ -32,6 +32,7 @@ import { EPanelType } from "@/typings/schema/preference";
 
 import { OneDarkPro } from "./theme";
 import { init } from "./option";
+import { IMG_PATTERN } from "@/renderer/utils";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -69,9 +70,9 @@ export default class Source extends Vue {
   @workBench.Action("SAVE_FILE")
   SAVE_FILE!: (content: string) => void;
 
-  editor!: MonacoEditor.IStandaloneCodeEditor;
+  editor!: MonacoEditor.editor.IStandaloneCodeEditor;
 
-  modelStack: { [key: string]: MonacoEditor.IModel } = {};
+  modelStack: { [key: string]: MonacoEditor.editor.IModel } = {};
 
   refPreview!: HTMLElement;
 
@@ -88,7 +89,7 @@ export default class Source extends Vue {
     let mod = this.modelStack[newValue.order];
 
     if (!mod) {
-      mod = MonacoEditor.createModel(newValue.value.content, "markdown-math");
+      mod = MonacoEditor.editor.createModel(newValue.value.content, "markdown-math");
       this.modelStack[newValue.order] = mod;
     }
 
@@ -121,7 +122,7 @@ export default class Source extends Vue {
   }
 
   handleRevealSection(value: Array<number>) {
-    this.editor.revealLineInCenter(value[1], MonacoEditor.ScrollType.Smooth);
+    this.editor.revealLineInCenter(value[1], MonacoEditor.editor.ScrollType.Smooth);
     this.editor.setPosition({ column: 1, lineNumber: value[1] });
   }
 
@@ -140,11 +141,11 @@ export default class Source extends Vue {
     this.refEditor = $("#markdown-editor");
     this.refPreview = $("#markdown-preview");
 
-    MonacoEditor.defineTheme("OneDarkPro", OneDarkPro);
+    MonacoEditor.editor.defineTheme("OneDarkPro", OneDarkPro);
     init.theme = "OneDarkPro";
-    this.editor = MonacoEditor.create(this.refEditor, init);
+    this.editor = MonacoEditor.editor.create(this.refEditor, init);
 
-    this.modelStack[this.currentIndex] = MonacoEditor.createModel(
+    this.modelStack[this.currentIndex] = MonacoEditor.editor.createModel(
       this.currentFile.value.content,
       "markdown-math"
     );
@@ -179,7 +180,7 @@ export default class Source extends Vue {
       let currentHeadElement: HTMLElement | null = null; // 当前预览区最高的完整标题元素
 
       /* 编辑区滚动条变化触发函数 */
-      this.editor.onDidScrollChange((e: IScrollEvent) => {
+      this.editor.onDidScrollChange((e: MonacoEditor.IScrollEvent) => {
         if (!this.dbColumn) return;
 
         topPosition = this.editor.getScrollTop();
@@ -289,8 +290,47 @@ export default class Source extends Vue {
         }
       });
 
-      // FEAT 监听快捷键
-      this.editor.onKeyDown(() => {});
+      this.editor.addCommand(
+        MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V,
+        () => {
+          if (!this.editor.hasTextFocus()) return;
+
+          const selection = this.editor.getSelection() as MonacoEditor.Range;
+          const alt = this.editor.getModel()?.getValueInRange(selection);
+          let text = clipboard.readText("clipboard");
+
+          if (
+            selection.startColumn !== selection.endColumn ||
+            selection.startLineNumber !== selection.endLineNumber
+          ) {
+            if (IMG_PATTERN.test(text)) {
+              text = `![${alt}](${text} '${alt}')`;
+            } else {
+              text = `[${alt}](${text})`;
+            }
+          }
+
+          this.editor.executeEdits("", [
+            {
+              range: new MonacoEditor.Range(
+                selection.startLineNumber,
+                selection.startColumn,
+                selection.endLineNumber,
+                selection.endColumn
+              ),
+              text,
+            },
+          ]);
+
+          // FEAT 改成 snippet
+          const {
+            endLineNumber,
+            endColumn,
+          } = this.editor.getSelection() as MonacoEditor.Selection;
+
+          this.editor.setPosition({ lineNumber: endLineNumber, column: endColumn });
+        }
+      );
 
       this.containerWidth = (this.$el as HTMLElement).offsetWidth;
 

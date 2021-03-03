@@ -127,6 +127,8 @@ export default class UniText {
     });
 
     app.on("web-contents-created", (e, webContents) => {
+      if (isDev) return;
+
       const handleUrl = (e: Electron.NewWindowWebContentsEvent, url: string) => {
         e.preventDefault();
         shell.openExternal(url);
