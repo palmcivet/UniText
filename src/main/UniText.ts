@@ -1,4 +1,10 @@
-import { app, ipcMain, BrowserWindow, BrowserWindowConstructorOptions } from "electron";
+import {
+  app,
+  shell,
+  ipcMain,
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+} from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
@@ -118,6 +124,16 @@ export default class UniText {
 
     app.on("window-all-closed", () => {
       if (isOsx) app.quit();
+    });
+
+    app.on("web-contents-created", (e, webContents) => {
+      const handleUrl = (e: Electron.NewWindowWebContentsEvent, url: string) => {
+        e.preventDefault();
+        shell.openExternal(url);
+      };
+
+      webContents.on("new-window", handleUrl);
+      webContents.on("will-navigate", handleUrl);
     });
 
     /**

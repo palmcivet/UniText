@@ -31,7 +31,6 @@ import MarkdownItHighlightLines from "@/library/markdown-it-hightlight-lines";
 import schema from "@/common/schema/sMarkdown";
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { Bus } from "@/renderer/plugins/VueBus";
-import { ITocList } from "@/typings/renderer";
 import { IMarkdown } from "@/typings/schema/markdown";
 
 const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
@@ -100,9 +99,9 @@ class MarkdownEngine {
     this.engine.use(MarkdownItImsize);
     this.engine.use(MarkdownItImplicitFigures, {
       dataType: true,
-      figcaption: false,
+      figcaption: true,
       tabindex: true,
-      link: false,
+      link: true,
     });
     this.engine.use(MarkdownItImageLazyLoading);
   }
