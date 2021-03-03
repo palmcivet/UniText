@@ -2,6 +2,7 @@ import {
   app,
   shell,
   ipcMain,
+  protocol,
   BrowserWindow,
   BrowserWindowConstructorOptions,
 } from "electron";
@@ -156,6 +157,11 @@ export default class UniText {
         });
         autoUpdater.checkForUpdatesAndNotify();
       }
+
+      protocol.registerFileProtocol("unitext", (request, callback) => {
+        const url = request.url.substr(11);
+        callback({ path: url });
+      });
     });
 
     if (isWin) {

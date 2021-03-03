@@ -17,14 +17,15 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { clipboard, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 import * as MonacoEditor from "monaco-editor";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import Prism from "prismjs";
 
-import { debounce, $, notEmpty } from "@/common/utils";
 import { IPC_FILE } from "@/common/channel/ipc";
+import { debounce, $, notEmpty } from "@/common/utils";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
+import { getClipboard } from "@/renderer/utils/links";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
@@ -32,7 +33,6 @@ import { EPanelType } from "@/typings/schema/preference";
 
 import { OneDarkPro } from "./theme";
 import { init } from "./option";
-import { IMG_PATTERN } from "@/renderer/utils";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -128,6 +128,39 @@ export default class Source extends Vue {
 
   handleSyncResize() {
     this.containerWidth = (this.$el as HTMLElement).offsetWidth;
+  }
+
+  handlePaste() {
+    const selection = this.editor.getSelection() as MonacoEditor.Range;
+    let text = getClipboard((data) => {});
+
+    if (
+      selection.startColumn !== selection.endColumn ||
+      selection.startLineNumber !== selection.endLineNumber
+    ) {
+      const alt = this.editor.getModel()?.getValueInRange(selection);
+      text = `![${alt}](${text} '${alt}')`;
+    }
+
+    this.editor.executeEdits("", [
+      {
+        range: new MonacoEditor.Range(
+          selection.startLineNumber,
+          selection.startColumn,
+          selection.endLineNumber,
+          selection.endColumn
+        ),
+        text,
+      },
+    ]);
+
+    // FEAT 改成 snippet
+    const {
+      endLineNumber,
+      endColumn,
+    } = this.editor.getSelection() as MonacoEditor.Selection;
+
+    this.editor.setPosition({ lineNumber: endLineNumber, column: endColumn });
   }
 
   created() {
@@ -292,44 +325,7 @@ export default class Source extends Vue {
 
       this.editor.addCommand(
         MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V,
-        () => {
-          if (!this.editor.hasTextFocus()) return;
-
-          const selection = this.editor.getSelection() as MonacoEditor.Range;
-          const alt = this.editor.getModel()?.getValueInRange(selection);
-          let text = clipboard.readText("clipboard");
-
-          if (
-            selection.startColumn !== selection.endColumn ||
-            selection.startLineNumber !== selection.endLineNumber
-          ) {
-            if (IMG_PATTERN.test(text)) {
-              text = `![${alt}](${text} '${alt}')`;
-            } else {
-              text = `[${alt}](${text})`;
-            }
-          }
-
-          this.editor.executeEdits("", [
-            {
-              range: new MonacoEditor.Range(
-                selection.startLineNumber,
-                selection.startColumn,
-                selection.endLineNumber,
-                selection.endColumn
-              ),
-              text,
-            },
-          ]);
-
-          // FEAT 改成 snippet
-          const {
-            endLineNumber,
-            endColumn,
-          } = this.editor.getSelection() as MonacoEditor.Selection;
-
-          this.editor.setPosition({ lineNumber: endLineNumber, column: endColumn });
-        }
+        this.handlePaste
       );
 
       this.containerWidth = (this.$el as HTMLElement).offsetWidth;

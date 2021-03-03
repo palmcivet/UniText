@@ -9,6 +9,7 @@ const _IGNORE = [".DS_Store"];
  * @param samp 字符串列表
  * @return `true`: 存在; `false`: 不存在
  */
+// TODO samp.includes(item)
 export const checkStringExist = (item: string, samp: Array<string>) =>
   samp.indexOf(item) !== -1;
 

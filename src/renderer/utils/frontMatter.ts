@@ -8,10 +8,8 @@
 const yaml = require("js-yaml");
 
 import { formatDate } from "@/common/utils";
-import { BLANK_PATTERN } from "@/renderer/utils";
+import { BLANK_PATTERN, FRONT_MATTER } from "@/renderer/utils";
 import { IDocumentFrontMatter } from "@/typings/document";
-
-const FRONT_MATTER = /^(-{3,}|;{3,})\n([\s\S]+?)\n\1(?:$|\n([\s\S]*)$)/;
 
 /**
  * @type YAML 方案
