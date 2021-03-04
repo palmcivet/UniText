@@ -10,7 +10,7 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
-import { buildUrl } from "@/common/url";
+import { buildUrl, prefix } from "@/common/url";
 import Logger from "@/main/services/Logger";
 import EnvPath from "@/main/services/EnvPath";
 import Preference from "@/main/services/Preference";
@@ -158,7 +158,7 @@ export default class UniText {
         autoUpdater.checkForUpdatesAndNotify();
       }
 
-      protocol.registerFileProtocol("unitext", (request, callback) => {
+      protocol.registerFileProtocol(prefix.substring(0, 7), (request, callback) => {
         const url = request.url.substr(11);
         callback({ path: url });
       });

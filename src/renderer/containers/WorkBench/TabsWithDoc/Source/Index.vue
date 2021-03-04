@@ -25,7 +25,7 @@ import Prism from "prismjs";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
-import { getClipboard } from "@/renderer/utils/links";
+import { cleanUrl, getClipboard } from "@/renderer/utils/links";
 import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
@@ -131,15 +131,21 @@ export default class Source extends Vue {
   }
 
   handlePaste() {
+    // FEAT 清洗 URL
+    const isFilter = true;
+
     const selection = this.editor.getSelection() as MonacoEditor.Range;
-    let text = getClipboard((data) => {});
+    let [isImg, isUrl, text] = getClipboard((data) => {});
 
     if (
-      selection.startColumn !== selection.endColumn ||
-      selection.startLineNumber !== selection.endLineNumber
+      isUrl &&
+      (selection.startColumn !== selection.endColumn ||
+        selection.startLineNumber !== selection.endLineNumber)
     ) {
       const alt = this.editor.getModel()?.getValueInRange(selection);
-      text = `![${alt}](${text} '${alt}')`;
+      text = isImg
+        ? `![${alt}](${isFilter && cleanUrl(text)} '${alt}')`
+        : `[${alt}](${text} '${alt}')`;
     }
 
     this.editor.executeEdits("", [

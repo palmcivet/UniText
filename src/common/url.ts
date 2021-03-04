@@ -1,6 +1,8 @@
 import { isDev } from "@/common/env";
 import { IWindowArgs } from "@/typings/main";
 
+export const prefix = "unitext://";
+
 export const buildUrl = (args: Record<keyof IWindowArgs, string>, env?: any): string => {
   const baseUrl = isDev
     ? "http://localhost:9091/index.html"
