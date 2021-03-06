@@ -15,7 +15,7 @@ import Token from "markdown-it/lib/token";
 import StateCore from "markdown-it/lib/rules_core/state_core";
 import MarkdownIt from "markdown-it";
 
-interface ITocList {
+interface ITocItem {
   content: string;
   anchor: string;
   level: number;
@@ -23,7 +23,7 @@ interface ITocList {
 }
 
 interface IToc {
-  heading: ITocList;
+  heading: ITocItem;
   nodes: IToc[];
 }
 
@@ -51,7 +51,7 @@ interface IOptionToc {
   toc: boolean;
   tocFirstLevel: number;
   tocLastLevel: number;
-  tocCallback: (tocMarkdown: string, tocArray: ITocList, tocHtml: string) => {};
+  tocCallback: (tocMarkdown: string, tocArray: ITocItem, tocHtml: string) => {};
   tocClassName: string;
   anchorClassName: string;
   anchorLink: boolean;
@@ -181,7 +181,7 @@ const treeToMarkdownBulletList = (tree: Array<IToc>, indent = 0) =>
     })
     .join("");
 
-const generateTocMarkdownFromArray = (headings: Array<ITocList>, options: IOption) => {
+const generateTocMarkdownFromArray = (headings: Array<ITocItem>, options: IOption) => {
   const tree: any = { nodes: [] };
 
   headings.forEach((heading) => {

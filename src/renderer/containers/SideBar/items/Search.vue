@@ -212,7 +212,6 @@ export default class Search extends Vue {
   handleReveal(path: string, range: [[number, number], [number, number]]) {
     const route = path.slice(this.folderDir.length).split("/");
     ipcRenderer.emit(IPC_FILE.OPEN, null, route);
-    console.log(range);
     // TODO 调整位置
     this.$bus.emit(BUS_EDITOR.REVEAL_SECTION, [range[0][0], range[0][0] + 1]);
   }

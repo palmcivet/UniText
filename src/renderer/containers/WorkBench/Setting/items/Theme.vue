@@ -38,7 +38,7 @@ import { namespace } from "vuex-class";
 import * as fse from "fs-extra";
 
 import { debounce } from "@/common/utils";
-import { checkFilesExist, joinPath } from "@/common/fileSystem";
+import { hasFileList, joinPath } from "@/common/fileSystem";
 import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
 import GroupHead from "../widgets/GroupHead.vue";
 import DropDown from "../widgets/DropDown.vue";
@@ -101,7 +101,7 @@ export default class Theme extends Vue {
   }
 
   get themeDir() {
-    return joinPath(this.folderDir, CONFIG_FOLDER.THEMES);
+    return joinPath(this.folderDir, ...CONFIG_FOLDER.THEMES);
   }
 
   get schema() {
@@ -120,7 +120,7 @@ export default class Theme extends Vue {
 
     for await (const sub of themeSet) {
       const dir = joinPath(this.themeDir, sub);
-      const res = await checkFilesExist(dir, themeFileName);
+      const res = await hasFileList(dir, themeFileName);
       if (res) selfValue.push(sub);
     }
 
@@ -136,7 +136,6 @@ export default class Theme extends Vue {
       this.handleSubmit(val);
     } else {
       // NOTE 路径错误
-      console.log("路径错误");
     }
   }
 

@@ -129,13 +129,17 @@ export interface IDocumentFrontMatter {
    */
   config: IDocumentConfig;
   /**
+   * @field 编辑器相关属性
+   */
+  format: IDocumentFormat;
+  /**
    * @field 文章的元信息，自动生成
    */
   metaInfo: IDocumentMetaInfo;
   /**
-   * @field 编辑器相关属性
+   * @field 图片映射
    */
-  format: IDocumentFormat;
+  imageMap?: Map<string, string>;
 }
 
 /**

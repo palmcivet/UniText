@@ -25,6 +25,7 @@ import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 
+import MarkdownItImageList from "@/library/markdown-it-image-list";
 import MarkdownItTocAndAnchor from "@/library/markdown-it-toc-and-anchor";
 import MarkdownItHighlightLines from "@/library/markdown-it-hightlight-lines";
 
@@ -70,8 +71,12 @@ class MarkdownEngine {
       return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
     };
 
-    // FEAT 未成功输出
-    this.engine.use(MarkdownItHighlightLines);
+    this.engine.use(MarkdownItImageList, {
+      replaceLink: (link: string, env: any) => "" + link,
+      imgListCallback: (list: Array<string>) => {
+        Bus.emit(BUS_EDITOR.SYNC_IMGLIST, list);
+      },
+    });
 
     this.engine.use(MarkdownItTocAndAnchor, {
       toc: this.getItem("extend.toc"),
@@ -79,10 +84,13 @@ class MarkdownEngine {
       tocFirstLevel: 2,
       tocLastLevel: 6,
       anchorLink: false,
-      tocCallback: (tocMarkdown: string, tocArray: Array<ITocList>, tocHtml: string) => {
+      tocCallback: (tocMarkdown: string, tocArray: Array<ITocItem>, tocHtml: string) => {
         Bus.emit(BUS_EDITOR.SYNC_TOC, tocArray);
       },
     });
+
+    // FEAT 未成功输出
+    this.engine.use(MarkdownItHighlightLines);
 
     this.getItem("extend.sup") && this.engine.use(MarkdownItSup);
     this.getItem("extend.sub") && this.engine.use(MarkdownItSub);

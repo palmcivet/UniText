@@ -1,4 +1,4 @@
-declare interface ITocList {
+declare interface ITocItem {
   content: string;
   anchor: string;
   level: number;

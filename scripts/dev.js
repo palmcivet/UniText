@@ -86,7 +86,7 @@ function startRenderer() {
       contentBase: getPath.public(),
       quiet: true,
       hot: true,
-      clientLogLevel: "warn",
+      clientLogLevel: "debug",
       setup(app, ctx) {
         app.use(hotMiddleware);
         ctx.middleware.waitUntilValid(() => {

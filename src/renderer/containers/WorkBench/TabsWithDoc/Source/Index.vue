@@ -21,8 +21,11 @@ import { ipcRenderer } from "electron";
 import * as MonacoEditor from "monaco-editor";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import Prism from "prismjs";
+import { writeFile } from "fs-extra";
+import { join } from "path";
 
-import { IPC_FILE } from "@/common/channel/ipc";
+import { CONFIG_FOLDER } from "@/common/env";
+import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import { cleanUrl, getClipboard } from "@/renderer/utils/links";
@@ -47,7 +50,10 @@ const DEFINE_BORDER = 16; // 边框大小
 })
 export default class Source extends Vue {
   @statusPanel.State("toc")
-  tocTree!: Array<ITocList>;
+  tocTree!: Array<ITocItem>;
+
+  @general.State((state: IGeneralState) => state.fileManager.folderDir)
+  folderDir!: string;
 
   @general.State((state: IGeneralState) => state.interface.dbColumn)
   dbColumn!: boolean;
@@ -135,7 +141,10 @@ export default class Source extends Vue {
     const isFilter = true;
 
     const selection = this.editor.getSelection() as MonacoEditor.Range;
-    let [isImg, isUrl, text] = getClipboard((data) => {});
+
+    let [isImg, isUrl, text] = getClipboard((url, data) => {
+      ipcRenderer.send(IPC_IMAGE.SET_IMAGE, url, data);
+    });
 
     if (
       isUrl &&

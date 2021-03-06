@@ -1,5 +1,6 @@
 <template>
   <section>
+    <!-- DEV -->
     <div v-if="tocTree.length === 0">目录为空</div>
     <ul v-else>
       <li
@@ -35,29 +36,14 @@ export default class Toc extends Vue {
   firstLevel!: number;
 
   @statusPanel.State("toc")
-  tocTree!: Array<ITocList>;
-
-  @statusPanel.Mutation("SYNC_TOC")
-  SYNC_TOC!: (value: Array<ITocList>) => void;
+  tocTree!: Array<ITocItem>;
 
   handleRevealLine(value: Array<number>) {
     this.$bus.emit(BUS_EDITOR.REVEAL_SECTION, value);
   }
 
-  handleContextToc(value: ITocList) {
+  handleContextToc(value: ITocItem) {
     ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.PANEL_TOC);
-  }
-
-  handleSyncToc(value: Array<ITocList>) {
-    this.SYNC_TOC(value);
-  }
-
-  mounted() {
-    this.$bus.on(BUS_EDITOR.SYNC_TOC, this.handleSyncToc);
-  }
-
-  beforeDestroy() {
-    this.$bus.off(BUS_EDITOR.SYNC_TOC, this.handleSyncToc);
   }
 }
 </script>

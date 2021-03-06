@@ -2,13 +2,13 @@ import { ipcMain } from "electron";
 import * as fse from "fs-extra";
 
 import { CONFIG_FOLDER, SYSTEM_PATH } from "@/common/env";
-import { checkStringExist, joinPath } from "@/common/fileSystem";
+import { joinPath } from "@/common/fileSystem";
 import { IPC_OTHER } from "@/common/channel/ipc";
 import Logger from "@/main/services/Logger";
 import { IBootArgs } from "@/typings/main";
 
 interface IPath {
-  unitext: string;
+  system: string;
   project: string;
   settings: string;
 }
@@ -21,7 +21,7 @@ export default class EnvPath {
   private _error!: Array<any>;
 
   private _dataSet: Map<keyof IPath, IPath[keyof IPath]> = new Map([
-    ["unitext", ""],
+    ["system", ""],
     ["project", ""],
     ["settings", ""],
   ]);
@@ -40,7 +40,7 @@ export default class EnvPath {
 
     const sysFolder = SYSTEM_PATH.DEFAULT_DIR(sysPath);
 
-    this._dataSet.set("unitext", sysPath);
+    this._dataSet.set("system", sysPath);
     this._dataSet.set("settings", sysFolder);
 
     fse.ensureDirSync(sysFolder);
@@ -49,10 +49,7 @@ export default class EnvPath {
     if (fse.pathExistsSync(bootFile)) {
       try {
         let res = fse.readJSONSync(bootFile);
-        if (
-          checkStringExist("notesPath", Object.keys(res)) &&
-          fse.existsSync(res.notesPath)
-        ) {
+        if (Object.keys(res).includes("notesPath") && fse.existsSync(res.notesPath)) {
           this._cache = res;
           this._setBasePath(res.notesPath);
         }
@@ -70,7 +67,7 @@ export default class EnvPath {
   private _setBasePath(sysPath: string) {
     this._cache.notesPath = sysPath;
     this._dataSet.set("project", sysPath);
-    this._dataSet.set("settings", joinPath(sysPath, CONFIG_FOLDER.SETTINGS));
+    this._dataSet.set("settings", joinPath(sysPath, ...CONFIG_FOLDER.SETTINGS));
   }
 
   private _listenForIpcMain() {

@@ -30,7 +30,7 @@ export interface IFile extends IDocument {
   /**
    * @field 是否临时文件
    */
-  tempFile: boolean;
+  isTemp: boolean;
   /**
    * @field 打开文档的模式
    */

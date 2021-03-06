@@ -10,12 +10,13 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
-import { buildUrl, prefix } from "@/common/url";
+import { buildUrl, URL_PATH, URL_PROTOCOL } from "@/common/url";
 import Logger from "@/main/services/Logger";
 import EnvPath from "@/main/services/EnvPath";
 import Preference from "@/main/services/Preference";
 import { Keybinding } from "@/main/services/Keybinding";
 import MenuManager from "@/main/services/MenuManager";
+import { ImageManager } from "@/main/services/ImageManager";
 import { EWindowType } from "@/typings/main";
 import { EI18n, IPreferenceSystem } from "@/typings/schema/preference";
 
@@ -29,6 +30,8 @@ export default class UniText {
   private _keybinding!: Keybinding;
 
   private _menuManager!: MenuManager;
+
+  private _imageManager!: ImageManager;
 
   private _window!: BrowserWindow | null;
 
@@ -44,10 +47,15 @@ export default class UniText {
     this._envPath = new EnvPath(sysPath, this._logger);
 
     const path = this._envPath.getItem("settings");
+    /**
+     * @deprecated
+     */
+    const proj = this._envPath.getItem("project");
 
     this._keybinding = new Keybinding();
     this._preference = new Preference(path);
     this._menuManager = new MenuManager();
+    this._imageManager = new ImageManager(proj);
     this._window = null;
   }
 
@@ -158,10 +166,31 @@ export default class UniText {
         autoUpdater.checkForUpdatesAndNotify();
       }
 
-      protocol.registerFileProtocol(prefix.substring(0, 7), (request, callback) => {
-        const url = request.url.substr(11);
-        callback({ path: url });
-      });
+      protocol.registerFileProtocol(
+        URL_PROTOCOL.replace("://", ""),
+        (request, callback) => {
+          let path = request.url;
+          if (path.startsWith(URL_PATH.IMG)) {
+            path = this._imageManager.getImage(path);
+          } else {
+            path = path.replace(URL_PROTOCOL, "");
+          }
+          // FEAT 相对路径
+
+          callback({ path });
+        }
+      );
+
+      const handleHttp = async (
+        request: Electron.ProtocolRequest,
+        callback: (response: Electron.ProtocolResponse) => void
+      ) => {
+        const path = await this._imageManager.getCache(request.url);
+        callback({ path });
+      };
+
+      !isDev && protocol.interceptHttpProtocol("http", handleHttp);
+      protocol.interceptFileProtocol("https", handleHttp);
     });
 
     if (isWin) {

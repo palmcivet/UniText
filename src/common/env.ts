@@ -23,18 +23,21 @@ export const SYSTEM_PATH = {
 };
 
 export const CONFIG_FOLDER = {
-  IMAGE: joinPath(".CONFIG", "Image"),
-  THEMES: joinPath(".CONFIG", "Themes"),
-  SETTINGS: joinPath(".CONFIG", "Settings"),
-  PICTURES: joinPath(".CONFIG", "Pictures"),
-  UNCATEGORY: joinPath(".CONFIG", "Uncategory"),
+  CACHE: [".CONFIG", "Cache"],
+  IMAGES: [".CONFIG", "Images"],
+  THEMES: [".CONFIG", "Themes"],
+  SETTINGS: [".CONFIG", "Settings"],
+  UNCATEGORY: [".CONFIG", "Uncategory"],
 };
 
-// TODO 未使用
+/**
+ * @deprecated
+ */
 export const CONFIG_FILE = {
   TAG: joinPath(".CONFIG", "tag.json"),
   ICON: joinPath(".CONFIG", "icon.json"),
   MARK: joinPath(".CONFIG", "mark.json"), // Marks.vue 使用
+  IMAGE: joinPath(".CONFIG", "image.json"), // ImageManager 使用
   THEME: joinPath(".CONFIG", "Settings", "theme.json"),
   SNIPPET: joinPath(".CONFIG", "Settings", "snippet.json"),
   MARKDOWN: joinPath(".CONFIG", "Settings", "markdown.json"),

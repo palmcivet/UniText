@@ -80,6 +80,7 @@ export default class Main extends Vue {
     dispatch("general/LISTEN_FOR_GENERAL");
     dispatch("sideBar/LISTEN_FOR_SIDEBAR");
     dispatch("workBench/LISTEN_FOR_FILE");
+    dispatch("statusPanel/LISTEN_FOR_STATUS");
     dispatch("information/CHECK_UPDATE");
 
     this.$theme.loadTheme();

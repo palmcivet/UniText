@@ -187,7 +187,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       content: "",
       fileName,
       needSave: isTemp,
-      tempFile: isTemp,
+      isTemp: isTemp,
       readMode: false,
     };
 
@@ -252,7 +252,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       file: {
         fileName: route,
         needSave: false,
-        tempFile: false,
+        isTemp: false,
         readMode: isRead || doc.complete,
         content,
         ...doc,
@@ -318,7 +318,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const root = rootState.general.fileManager.folderDir;
     const {
       fileName,
-      tempFile,
+      isTemp,
       content: noUse_1,
       needSave: noUse_2,
       readMode: noUse_3,
@@ -333,7 +333,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     let path = joinPath(root, ...fileName);
 
-    if (tempFile) {
+    if (isTemp) {
       // TODO 弃用 remote
       const res = await remote.dialog.showSaveDialog({
         // FEAT i18n

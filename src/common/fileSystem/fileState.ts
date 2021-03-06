@@ -1,7 +1,31 @@
 import { join } from "path";
 import * as fse from "fs-extra";
+import * as https from "https";
 
 import { ITree, ITreeNode } from "@/typings/vuex/sideBar";
+
+export const fetchHttpFile = (url: string, dest: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (res) => {
+        const file = fse.createWriteStream(dest);
+
+        res.on("end", () => {
+          resolve();
+        });
+
+        res.on("error", (err) => {
+          fse.unlink(dest);
+          reject(err);
+        });
+
+        res.pipe(file);
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
+};
 
 export const fetchFileInfo = async (path: string) => {
   const res = await fse.stat(path);

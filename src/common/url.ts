@@ -1,12 +1,17 @@
 import { isDev } from "@/common/env";
 import { IWindowArgs } from "@/typings/main";
 
-export const prefix = "unitext://";
+export const URL_PROTOCOL = "unitext://";
+
+export const URL_PATH = {
+  IMG: `${URL_PROTOCOL}img/`,
+  DOC: `${URL_PROTOCOL}doc/`,
+};
 
 export const buildUrl = (args: Record<keyof IWindowArgs, string>, env?: any): string => {
   const baseUrl = isDev
     ? "http://localhost:9091/index.html"
-    : `file://${__dirname}/index.html`;
+    : `unitext://${__dirname}/index.html`;
 
   const params = new URLSearchParams(args);
 

@@ -2,7 +2,7 @@ import { clipboard } from "electron";
 import crypto from "crypto";
 
 import { isWin } from "@/common/env";
-import { prefix } from "@/common/url";
+import { URL_PATH } from "@/common/url";
 import { IMG_PATTERN } from ".";
 
 export const testStrIsUrl = (raw: string) => {
@@ -22,8 +22,8 @@ export const cleanUrl = (raw: string) => {
   let res;
 
   try {
-    const { protocol, host, pathname } = new URL(raw);
-    res = `${protocol}//${host}${pathname}`;
+    const { origin, protocol, host, pathname } = new URL(raw);
+    res = origin === "null" ? `${protocol}${host}${pathname}` : `${origin}${pathname}`;
   } catch (err) {
     res = raw;
   }
@@ -32,13 +32,13 @@ export const cleanUrl = (raw: string) => {
 };
 
 export const getClipboard = (
-  dataSaver: (data: Buffer) => void
+  dataSaver: (url: string, data: Buffer) => void
 ): [boolean, boolean, string] => {
-  const available = clipboard.availableFormats();
-
   let text = "";
   let isImg = false;
   let isUrl = false;
+
+  const available = clipboard.availableFormats();
 
   if (available.includes("image/png")) {
     // binary file or local file
@@ -48,16 +48,18 @@ export const getClipboard = (
 
     if (!text) {
       // binary image
-      isImg = isUrl = true;
       const data = clipboard.readImage().toPNG();
+
+      isImg = isUrl = true;
       text =
-        prefix +
+        URL_PATH.IMG +
         crypto
           .createHash("md5")
           .update(data)
           .digest("hex")
           .concat(".png");
-      dataSaver(data);
+
+      dataSaver(text, data);
     }
   } else {
     // text

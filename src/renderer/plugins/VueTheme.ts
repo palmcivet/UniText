@@ -16,8 +16,8 @@ import Store from "electron-store";
 
 import { $id } from "@/common/utils";
 import schema from "@/common/schema/sTheme";
+import { joinPath } from "@/common/fileSystem";
 import { THEME_PRESET, THEME_CSS, PUBLIC } from "@/common/env";
-import { joinPath, checkStringExist } from "@/common/fileSystem";
 import { ITheme, IThemeColorCustom } from "@/typings/schema/theme";
 
 export class Theme {
@@ -59,7 +59,7 @@ export class Theme {
           joinPath(this._filePath, data[key as keyof IThemeColorCustom])
         );
       });
-    } else if (checkStringExist(preset, THEME_PRESET)) {
+    } else if (THEME_PRESET.includes(preset)) {
       THEME_CSS.forEach((key) => {
         $id(key).setAttribute("href", joinPath(PUBLIC.themes, preset, `${key}.css`));
       });

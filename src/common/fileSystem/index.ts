@@ -4,15 +4,8 @@ import * as fse from "fs-extra";
 const _IGNORE = [".DS_Store"];
 
 /**
- * 检测 `item` 字符串是否在 `samp` 列表中
- * @param item 目标字符串
- * @param samp 字符串列表
- * @return `true`: 存在; `false`: 不存在
+ * @deprecated
  */
-// TODO samp.includes(item)
-export const checkStringExist = (item: string, samp: Array<string>) =>
-  samp.indexOf(item) !== -1;
-
 export const joinPath = (...args: Array<string>) => path.join(...args);
 
 /**
@@ -20,23 +13,14 @@ export const joinPath = (...args: Array<string>) => path.join(...args);
  * @param base 路径
  * @param samp 文件列表
  */
-export const checkFilesExist = async (base: string, samp: Array<string>) => {
+export const hasFileList = async (base: string, samp: Array<string>) => {
   let flag = true;
   for await (const item of samp) {
-    if (checkStringExist(item, _IGNORE)) return;
+    if (_IGNORE.includes(item)) return;
     flag = await fse.pathExists(joinPath(base, item));
     if (!flag) break;
   }
   return flag;
-};
-
-export const exists = async (p: string) => {
-  try {
-    await fse.access(p);
-    return true;
-  } catch (_) {
-    return false;
-  }
 };
 
 export const create = (pathname: string, type: "directory" | "file") => {
