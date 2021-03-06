@@ -139,7 +139,7 @@ export interface IDocumentFrontMatter {
   /**
    * @field 图片映射
    */
-  imageMap?: Map<string, string>;
+  imageList: Array<string>;
 }
 
 /**

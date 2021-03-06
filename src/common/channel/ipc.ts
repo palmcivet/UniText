@@ -25,6 +25,7 @@ export enum IPC_FILE {
 
 export enum IPC_IMAGE {
   SET_IMAGE = "IPC::SET_IMAGE",
+  REG_IMAGE = "IPC::REG_IMAGE",
   CLEAN_CACHE = "IPC::CLEAN_CACHE",
 }
 

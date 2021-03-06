@@ -77,3 +77,15 @@ export const formatDate = (raw: Date) => {
     raw.getDate()
   )} ${doubleDigit(raw.getHours())}:${doubleDigit(raw.getMinutes())}`;
 };
+
+export function union<T>(a: Set<T>, b: Set<T>) {
+  return new Set([...a, ...b]);
+}
+
+export function intersect<T>(a: Set<T>, b: Set<T>) {
+  return new Set([...a].filter((x) => b.has(x)));
+}
+
+export function difference<T>(a: Set<T>, b: Set<T>) {
+  return new Set([...a].filter((x) => !b.has(x)));
+}

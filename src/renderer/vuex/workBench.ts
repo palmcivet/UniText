@@ -2,11 +2,18 @@ import { ipcRenderer, remote } from "electron";
 import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
 
-import { IPC_FILE } from "@/common/channel/ipc";
+import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
 import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
 import { joinPath } from "@/common/fileSystem";
 import { fetchFileInfo } from "@/common/fileSystem/fileState";
-import { formatDate, hashCode, notEmpty } from "@/common/utils";
+import {
+  difference,
+  formatDate,
+  hashCode,
+  intersect,
+  notEmpty,
+  union,
+} from "@/common/utils";
 import { charCount, wordCount, timeCalc } from "@/renderer/utils/statistics";
 import { importFrontMatter, exportFrontMatter } from "@/renderer/utils/frontMatter";
 import { Bus } from "@/renderer/plugins/VueBus";
@@ -180,6 +187,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         encoding: doc.encoding,
         endOfLine: doc.endOfLine,
       },
+      imageList: [],
       config: {
         tag: doc.tag,
         picture: doc.picture,
@@ -234,6 +242,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
           readTime: timeCalc(content),
           editTime: 0,
         },
+        imageList: [],
         format: {
           indent: document.indent,
           encoding: document.encoding,
@@ -314,7 +323,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 目标文件将切换到当前活跃
    */
   SAVE_FILE: async (_: ActionContext<IWorkBenchState, IRootState>, content: string) => {
-    const { state, rootState, commit } = _;
+    const { state, rootState, commit, dispatch } = _;
     const root = rootState.general.fileManager.folderDir;
     const {
       fileName,
@@ -330,6 +339,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       prefix: true,
       content,
     });
+
+    payload.imageList = await dispatch("DIFF_IMGLIST", payload.imageList);
 
     let path = joinPath(root, ...fileName);
 
@@ -356,7 +367,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       path = res.filePath;
     }
 
-    fse.writeFile(path, markdown);
+    await fse.writeFile(path, markdown);
   },
 
   RENAME: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {
@@ -400,6 +411,20 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
   },
 
   MOVE: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {},
+
+  DIFF_IMGLIST: (
+    _: ActionContext<IWorkBenchState, IRootState>,
+    old: Array<string>
+  ): Array<string> => {
+    const oldList = new Set(old);
+    const newList = _.rootState.statusPanel.imgList;
+    const inte = intersect(oldList, newList);
+    const delList = difference(oldList, inte);
+    const addList = difference(newList, inte);
+
+    ipcRenderer.send(IPC_IMAGE.REG_IMAGE, [...delList], [...addList]);
+    return [...newList];
+  },
 
   LISTEN_FOR_FILE: (_: ActionContext<IWorkBenchState, IRootState>) => {
     const { dispatch, commit, rootState } = _;

@@ -72,6 +72,7 @@ class MarkdownEngine {
     };
 
     this.engine.use(MarkdownItImageList, {
+      // FEAT 图床
       replaceLink: (link: string, env: any) => "" + link,
       imgListCallback: (list: Array<string>) => {
         Bus.emit(BUS_EDITOR.SYNC_IMGLIST, list);
