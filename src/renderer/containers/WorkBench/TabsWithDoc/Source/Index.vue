@@ -21,10 +21,7 @@ import { ipcRenderer } from "electron";
 import * as MonacoEditor from "monaco-editor";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import Prism from "prismjs";
-import { writeFile } from "fs-extra";
-import { join } from "path";
 
-import { CONFIG_FOLDER } from "@/common/env";
 import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";

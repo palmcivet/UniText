@@ -8,7 +8,7 @@
 const yaml = require("js-yaml");
 
 import { formatDate } from "@/common/utils";
-import { BLANK_PATTERN, FRONT_MATTER } from "@/renderer/utils";
+import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/renderer/utils";
 import { IDocumentFrontMatter } from "@/typings/document";
 
 /**
@@ -163,9 +163,9 @@ const stringifyJSON = (obj: Object): string => {
  * @param options js-yaml 的参数
  */
 export function importFrontMatter(str: string, options?: ILoadOption): ISpiltStructure {
-  if (!FRONT_MATTER.test(str)) return { content: str };
+  if (!FRONT_MATTER_PATTERN.test(str)) return { content: str };
 
-  const match = str.match(FRONT_MATTER) as RegExpMatchArray;
+  const match = str.match(FRONT_MATTER_PATTERN) as RegExpMatchArray;
 
   const sep = match[1];
   const data = match[2];

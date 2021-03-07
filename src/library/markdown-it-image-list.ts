@@ -10,7 +10,7 @@ type TCallback = (list: Array<string>) => void;
 
 declare interface IOption {
   replaceLink: TReplace;
-  imgListCallback: TCallback;
+  callback: TCallback;
 }
 
 function replaceAttr(
@@ -48,12 +48,12 @@ export default (md: MarkdownIt, opts: IOption) => {
     }
 
     if (
-      (md.options as any).imgListCallback &&
-      typeof (md.options as any).imgListCallback === "function"
+      (md.options as any).callback &&
+      typeof (md.options as any).callback === "function"
     ) {
-      callback = (md.options as any).imgListCallback;
-    } else if (opts.imgListCallback && typeof opts.imgListCallback === "function") {
-      callback = opts.imgListCallback;
+      callback = (md.options as any).callback;
+    } else if (opts.callback && typeof opts.callback === "function") {
+      callback = opts.callback;
     }
 
     const list: Array<string> = [];

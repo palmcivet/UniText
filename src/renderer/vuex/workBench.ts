@@ -9,11 +9,12 @@ import { fetchFileInfo } from "@/common/fileSystem/fileState";
 import {
   difference,
   formatDate,
+  getHash,
   hashCode,
   intersect,
   notEmpty,
-  union,
 } from "@/common/utils";
+import { URL_PATH } from "@/common/url";
 import { charCount, wordCount, timeCalc } from "@/renderer/utils/statistics";
 import { importFrontMatter, exportFrontMatter } from "@/renderer/utils/frontMatter";
 import { Bus } from "@/renderer/plugins/VueBus";
@@ -324,7 +325,6 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    */
   SAVE_FILE: async (_: ActionContext<IWorkBenchState, IRootState>, content: string) => {
     const { state, rootState, commit, dispatch } = _;
-    const root = rootState.general.fileManager.folderDir;
     const {
       fileName,
       isTemp,
@@ -333,14 +333,19 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       readMode: noUse_3,
       ...payload
     } = fileSelect(state);
+
+    const root = rootState.general.fileManager.folderDir;
+
     const markdown = exportFrontMatter({
       sep: "---",
-      data: payload as IDocumentFrontMatter,
+      data: {
+        ...(payload as IDocumentFrontMatter),
+        imageList: await dispatch("DIFF_IMGLIST", payload.imageList),
+        // FEAT 更新数据
+      },
       prefix: true,
       content,
     });
-
-    payload.imageList = await dispatch("DIFF_IMGLIST", payload.imageList);
 
     let path = joinPath(root, ...fileName);
 
@@ -417,10 +422,18 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     old: Array<string>
   ): Array<string> => {
     const oldList = new Set(old);
-    const newList = _.rootState.statusPanel.imgList;
-    const inte = intersect(oldList, newList);
-    const delList = difference(oldList, inte);
-    const addList = difference(newList, inte);
+    const newList = new Set<string>();
+
+    [..._.rootState.statusPanel.imgList].forEach((item) => {
+      if (item.startsWith(URL_PATH.IMG)) {
+        newList.add(item.replace(URL_PATH.IMG, "").replace(".png", ""));
+      } else if (/http(s)?:\/\//.test(item)) {
+        newList.add(getHash(item));
+      }
+    });
+    const intList = intersect(oldList, newList);
+    const delList = difference(oldList, intList);
+    const addList = difference(newList, intList);
 
     ipcRenderer.send(IPC_IMAGE.REG_IMAGE, [...delList], [...addList]);
     return [...newList];

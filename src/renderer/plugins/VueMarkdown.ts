@@ -34,8 +34,8 @@ import { BUS_EDITOR } from "@/common/channel/bus";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IMarkdown } from "@/typings/schema/markdown";
 
-const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
-const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
+const _BAD_PROTO_RE = /^(vbscript|javascript|data):/;
+const _GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
 class MarkdownEngine {
   private _dataSet!: Store<IMarkdown>;
@@ -68,13 +68,13 @@ class MarkdownEngine {
 
     this.engine.validateLink = (url) => {
       let str = url.trim().toLowerCase();
-      return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
+      return _BAD_PROTO_RE.test(str) ? !!_GOOD_DATA_RE.test(str) : true;
     };
 
     this.engine.use(MarkdownItImageList, {
       // FEAT 图床
       replaceLink: (link: string, env: any) => "" + link,
-      imgListCallback: (list: Array<string>) => {
+      callback: (list: Array<string>) => {
         Bus.emit(BUS_EDITOR.SYNC_IMGLIST, list);
       },
     });

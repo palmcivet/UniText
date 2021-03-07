@@ -3,9 +3,14 @@ import crypto from "crypto";
 
 import { isWin } from "@/common/env";
 import { URL_PATH } from "@/common/url";
-import { IMG_PATTERN } from ".";
+import { IMG_IN_URL_PATTERN } from ".";
 
-export const testStrIsUrl = (raw: string) => {
+/**
+ * 验证标准 URL
+ * @param raw 字符串
+ * @returns boolean
+ */
+export const validateUrl = (raw: string) => {
   try {
     new URL(raw);
     return true;
@@ -14,10 +19,11 @@ export const testStrIsUrl = (raw: string) => {
   }
 };
 
-export const testStrIsImg = (raw: string) => {
-  return raw.search(`.${IMG_PATTERN}([?|#]?)`) !== -1;
-};
-
+/**
+ * 清洗 URL
+ * @param raw 字符串
+ * @returns boolean
+ */
 export const cleanUrl = (raw: string) => {
   let res;
 
@@ -65,9 +71,9 @@ export const getClipboard = (
     // text
     text = clipboard.readText();
     // link
-    isUrl = testStrIsUrl(text);
+    isUrl = validateUrl(text);
     // image link
-    isImg = testStrIsImg(text);
+    isImg = IMG_IN_URL_PATTERN.test(text);
   }
 
   return [isImg, isUrl, text];

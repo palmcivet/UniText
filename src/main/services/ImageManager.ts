@@ -11,7 +11,7 @@ import { fetchHttpFile } from "@/common/fileSystem/fileState";
 export class ImageManager {
   private _dataSet!: Map<string, number>;
 
-  private _fileePath!: string;
+  private _filePath!: string;
 
   private _cachePath!: string;
 
@@ -24,13 +24,13 @@ export class ImageManager {
 
   async setBasePath(filePath: string) {
     // FEAT 优化路径
-    this._fileePath = join(filePath, CONFIG_FILE.IMAGE);
+    this._filePath = join(filePath, CONFIG_FILE.IMAGE);
     this._cachePath = join(filePath, ...CONFIG_FOLDER.CACHE);
     this._imagePath = join(filePath, ...CONFIG_FOLDER.IMAGES);
 
     await fse.ensureFile(join(filePath, CONFIG_FILE.IMAGE));
     try {
-      const res = await fse.readJSON(this._fileePath);
+      const res = await fse.readJSON(this._filePath);
       this._dataSet = new Map<string, number>(res);
     } catch (err) {
       this._dataSet = new Map<string, number>([]);
@@ -54,7 +54,7 @@ export class ImageManager {
   }
 
   async setImage(url: string, data: Buffer) {
-    const name = url.slice(URL_PATH.IMG.length);
+    const name = url.replace(URL_PATH.IMG, "");
 
     try {
       await fse.writeFile(join(this._imagePath, name), data);
@@ -67,14 +67,14 @@ export class ImageManager {
 
   async store() {
     try {
-      await fse.writeJSON(this._fileePath, [...this._dataSet]);
+      await fse.writeJSON(this._filePath, [...this._dataSet]);
     } catch (err) {
       // NOTE
     }
   }
 
   getImage(url: string) {
-    const key = url.slice(URL_PATH.IMG.length);
+    const key = url.replace(URL_PATH.IMG, "");
 
     return join(this._imagePath, key);
   }

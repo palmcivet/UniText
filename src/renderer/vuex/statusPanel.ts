@@ -1,10 +1,9 @@
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
+import { BUS_EDITOR } from "@/common/channel/bus";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { IStatusPanelState } from "@/typings/vuex/statusPanel";
-import { BUS_EDITOR } from "@/common/channel/bus";
-import { testStrIsUrl } from "../utils/links";
 
 const state: IStatusPanelState = {
   toc: [],
@@ -23,9 +22,7 @@ const mutations: MutationTree<IStatusPanelState> = {
     _.toc = value;
   },
   SYNC_IMGLIST: (_: IStatusPanelState, value: Array<string>) => {
-    value.forEach((item) => {
-      if (testStrIsUrl(item)) _.imgList.add(item);
-    });
+    value.forEach((item) => _.imgList.add(item));
   },
 };
 
