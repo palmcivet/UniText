@@ -40,8 +40,6 @@ const _GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 class MarkdownEngine {
   private _dataSet!: Store<IMarkdown>;
 
-  private _filePath!: string;
-
   private engine!: MarkdownIt;
 
   constructor(opt: IPluginOptions) {
@@ -49,7 +47,6 @@ class MarkdownEngine {
   }
 
   setBasePath(filePath: string) {
-    this._filePath = filePath;
     this._dataSet = new Store({
       cwd: filePath,
       name: "markdown",

@@ -37,6 +37,26 @@ export class ImageManager {
     }
   }
 
+  private async _store() {
+    try {
+      await fse.writeJSON(this._filePath, [...this._dataSet]);
+    } catch (err) {
+      // NOTE
+    }
+  }
+
+  private _cleanCache() {
+    this._dataSet.forEach(async (v, k) => {
+      if (v === 0) {
+        if (/\.png/.test(k)) {
+          await fse.unlink(join(this._imagePath, k));
+        } else {
+          await fse.unlink(join(this._cachePath, k));
+        }
+      }
+    });
+  }
+
   async getCache(url: string) {
     const key = getHash(url);
     const redirPath = join(this._cachePath, key); /* 缓存没有后缀 */
@@ -53,6 +73,12 @@ export class ImageManager {
     return redirPath;
   }
 
+  getImage(url: string) {
+    const key = url.replace(URL_PATH.IMG, "");
+
+    return join(this._imagePath, key);
+  }
+
   async setImage(url: string, data: Buffer) {
     const name = url.replace(URL_PATH.IMG, "");
 
@@ -62,29 +88,15 @@ export class ImageManager {
       // NOTE
     }
 
-    this._dataSet.set(name.replace(".png", ""), 0);
+    this._dataSet.set(name, 0);
   }
 
-  async store() {
-    try {
-      await fse.writeJSON(this._filePath, [...this._dataSet]);
-    } catch (err) {
-      // NOTE
-    }
-  }
-
-  getImage(url: string) {
-    const key = url.replace(URL_PATH.IMG, "");
-
-    return join(this._imagePath, key);
-  }
-
-  delImage(key: string) {
+  private _delImage(key: string) {
     const cnt = this._dataSet.get(key) as number;
     if (cnt !== 0) this._dataSet.set(key, cnt - 1);
   }
 
-  addImage(key: string) {
+  private _addImage(key: string) {
     this._dataSet.set(key, (this._dataSet.get(key) as number) + 1);
   }
 
@@ -98,11 +110,14 @@ export class ImageManager {
     });
 
     ipcMain.on(IPC_IMAGE.REG_IMAGE, (event, del: Array<string>, add: Array<string>) => {
-      del.forEach((item) => this.delImage(item));
-      add.forEach((item) => this.addImage(item));
-      this.store();
+      del.forEach((item) => this._delImage(item));
+      add.forEach((item) => this._addImage(item));
+      this._store();
+      this._cleanCache();
     });
 
-    ipcMain.on(IPC_IMAGE.CLEAN_CACHE, (event) => {});
+    ipcMain.on(IPC_IMAGE.CLEAN_CACHE, (event) => {
+      this._cleanCache();
+    });
   }
 }

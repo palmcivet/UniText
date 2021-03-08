@@ -8,6 +8,7 @@ import store from "@/renderer/vuex";
 import VueBus from "@/renderer/plugins/VueBus";
 import VueI18n from "@/renderer/plugins/VueI18n";
 import VueTheme from "@/renderer/plugins/VueTheme";
+import VueSnippet from "@/renderer/plugins/VueSnippet";
 import VueMarkdown from "@/renderer/plugins/VueMarkdown";
 
 import "@/renderer/styles/main.less";
@@ -20,6 +21,7 @@ Vue.use(VueI18n, {
   messages: localesView,
 });
 Vue.use(VueTheme, { base: args.conf });
+Vue.use(VueSnippet, { base: args.conf });
 Vue.use(VueMarkdown, { base: args.conf });
 
 Vue.config.productionTip = false;

@@ -38,7 +38,7 @@
 
     <div class="show">
       <li><i class="floating ri-add-line" @click="handleEdit()" /></li>
-      <li v-for="(v, i) in data" :key="i" @click="handleEdit(i)">
+      <li v-for="(v, i) in userData" :key="i" @click="handleEdit(i)">
         <div class="floating">
           <div>{{ v.label }}</div>
           <div>{{ v.command === "" ? "-" : v.command }}</div>
@@ -69,8 +69,13 @@ export default class Snippet extends Vue {
 
   lock = -1;
 
-  // TODO 读取数据
-  data: any;
+  userData: any;
+
+  data() {
+    return {
+      userData: [],
+    };
+  }
 
   textareaTab(e: KeyboardEvent) {
     if (e.key === "Tab") {
@@ -82,7 +87,7 @@ export default class Snippet extends Vue {
   handleEdit(idx?: number) {
     if (idx !== undefined) {
       this.lock = idx;
-      const targ = this.data[idx];
+      const targ = this.userData[idx];
       this.label = targ.label;
       this.command = targ.command;
       this.documentation = targ.documentation;
@@ -113,25 +118,28 @@ export default class Snippet extends Vue {
     };
 
     if (this.lock === -1) {
-      this.data.reverse();
-      this.data.push(newData);
-      this.data.reverse();
+      this.userData.reverse();
+      this.userData.push(newData);
+      this.userData.reverse();
     } else {
-      this.data[this.lock] = newData;
+      this.userData[this.lock] = newData;
     }
 
     this._handleSubmit();
   }
 
   handleDelete() {
-    this.data.splice(this.lock, 1);
+    this.userData.splice(this.lock, 1);
     this._handleSubmit();
   }
 
   _handleSubmit() {
-    // TODO 提交数据
-    console.log(this.data);
+    this.$snippet.update(this.userData);
     this.handleCancel();
+  }
+
+  created() {
+    this.userData = this.$snippet.getAll();
   }
 }
 </script>
