@@ -102,7 +102,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
 
     if (!notEmpty(res.filePaths)) {
       // NOTE 完善报错信息
-      commit("information/SET_ERROR", "", { root: true });
+      commit("notification/NOTIFY", { level: "ERROR", title: "未选择" }, { root: true });
     } else {
       // FEAT 提示是否初始化、作为默认文件夹
       commit("general/SET_FOLDER", res.filePaths[0], { root: true });

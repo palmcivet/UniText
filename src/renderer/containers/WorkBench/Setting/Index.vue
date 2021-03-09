@@ -48,8 +48,7 @@ export default class Setting extends Vue {
   handleLoad() {
     const { commit, dispatch } = this.$store;
     dispatch("LOAD_STATE");
-    // NOTE 完善通知信息
-    commit("information/SET_INFO", "OK");
+    commit("notification/NOTIFY", { level: "INFO", title: "载入成功" });
   }
 
   handleReveal() {}

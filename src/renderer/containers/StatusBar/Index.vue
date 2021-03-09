@@ -21,7 +21,7 @@ import SyncStatus from "./items/SyncStatus.vue";
 import SyncScheme from "./items/SyncScheme.vue";
 
 const Space = {
-  template: `<span style="width: ${1}em;"></span>`,
+  template: `<span style="width: ${0.5}em;"></span>`,
 };
 
 @Component({

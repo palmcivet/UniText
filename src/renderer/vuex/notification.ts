@@ -2,44 +2,56 @@ import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
 import { isDev } from "@/common/env";
+import { notEmpty } from "@/common/utils";
 import { IPC_OTHER } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
-import { IInformationState } from "@/typings/vuex/information";
+import { INotificationMessage, INotificationState } from "@/typings/vuex/notification";
 
-const state: IInformationState = {
+const state: INotificationState = {
   hasFetched: false,
   hasMounted: false,
+  showMessage: false,
+  messageQueue: [],
 };
 
-const getters: GetterTree<IInformationState, IRootState> = {};
+const getters: GetterTree<INotificationState, IRootState> = {
+  hasMessage: (_: INotificationState) => {
+    return notEmpty(_.messageQueue);
+  },
+};
 
-const mutations: MutationTree<IInformationState> = {
-  SET_FETCHED: (_: IInformationState) => {
+const mutations: MutationTree<INotificationState> = {
+  SET_FETCHED: (_: INotificationState) => {
     _.hasFetched = true;
   },
 
-  SET_MOUNTED: (_: IInformationState) => {
+  SET_MOUNTED: (_: INotificationState) => {
     _.hasMounted = true;
   },
 
-  SET_INFO: (_: IInformationState, msg: string) => {
-    console.log(msg);
+  NOTIFY: (_: INotificationState, msg: INotificationMessage) => {
+    _.messageQueue.push(msg);
+    console.info(msg.title);
   },
 
-  SET_WARN: (_: IInformationState, msg: string) => {
-    console.log(msg);
+  CLEAR_MESSAGE: (_: INotificationState, idx: number) => {
+    _.messageQueue.splice(idx, 1);
   },
 
-  SET_ERROR: (_: IInformationState, msg: string) => {
-    console.error(msg);
+  CLEAR_ALL: (_: INotificationState) => {
+    _.messageQueue = [];
+  },
+
+  CLOSE_PANEL: (_: INotificationState) => {
+    _.showMessage = !_.showMessage;
   },
 };
 
-const actions: ActionTree<IInformationState, IRootState> = {
+const actions: ActionTree<INotificationState, IRootState> = {
   /**
    * 获取发行说明，`""` 则表明未更新
    */
-  CHECK_UPDATE: (_: ActionContext<IInformationState, IRootState>) => {
+  CHECK_UPDATE: (_: ActionContext<INotificationState, IRootState>) => {
     if (isDev) return;
 
     const getVersion = (ver: string) =>
@@ -69,7 +81,7 @@ const actions: ActionTree<IInformationState, IRootState> = {
     }
   },
 
-  LISTEN_FOR_NOTIFY: (_: ActionContext<IInformationState, IRootState>) => {
+  LISTEN_FOR_NOTIFY: (_: ActionContext<INotificationState, IRootState>) => {
     const { commit, dispatch } = _;
 
     ipcRenderer.on(IPC_OTHER.CHECK_UPDATE, (e) => {

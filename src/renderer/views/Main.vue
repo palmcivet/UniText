@@ -8,6 +8,7 @@
       <WorkBench :style="{ width: centerWidth }" />
     </main>
     <StatusBar />
+    <MessagePanel v-show="showMessage" class="float" />
   </div>
 </template>
 
@@ -22,11 +23,12 @@ import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
+import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { IInformationState } from "@/typings/vuex/information";
+import { INotificationState } from "@/typings/vuex/notification";
 
 const general = namespace("general");
-const information = namespace("information");
+const notification = namespace("notification");
 
 @Component({
   name: "Main",
@@ -36,6 +38,7 @@ const information = namespace("information");
     StatusBar,
     WorkBench,
     ActivityBar,
+    MessagePanel,
   },
 })
 export default class Main extends Vue {
@@ -45,8 +48,11 @@ export default class Main extends Vue {
   @general.State((state: IGeneralState) => state.interface.showPanel)
   isShowPanel!: boolean;
 
-  @information.State((state: IInformationState) => state.hasFetched)
+  @notification.State((state: INotificationState) => state.hasFetched)
   hasFetched!: boolean;
+
+  @notification.State((state: INotificationState) => state.showMessage)
+  showMessage!: boolean;
 
   leftViewWidth = 200;
 
@@ -81,7 +87,7 @@ export default class Main extends Vue {
     dispatch("sideBar/LISTEN_FOR_SIDEBAR");
     dispatch("workBench/LISTEN_FOR_FILE");
     dispatch("statusPanel/LISTEN_FOR_STATUS");
-    dispatch("information/CHECK_UPDATE");
+    dispatch("notification/CHECK_UPDATE");
 
     this.$theme.loadTheme();
   }
@@ -125,7 +131,16 @@ export default class Main extends Vue {
         document.addEventListener("mouseup", mouseUpHandler, false);
       };
 
-      (leftResize as HTMLElement).addEventListener("mousedown", mouseDownHandler, false);
+      // TODO 修复
+      setTimeout(
+        () =>
+          (leftResize as HTMLElement).addEventListener(
+            "mousedown",
+            mouseDownHandler,
+            false
+          ),
+        300
+      );
 
       /* 调整大小 */
       window.addEventListener("resize", this.handleResize);
@@ -145,6 +160,15 @@ export default class Main extends Vue {
   > main {
     display: flex;
     height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
+  }
+
+  .float {
+    position: absolute;
+    z-index: 999;
+    bottom: calc(@layout-statusBar-height + 8px);
+    right: 10px; // DEV 来自 sidepanel
+    box-shadow: -3px -2px 10px -5px black;
+    min-width: 16em;
   }
 }
 </style>

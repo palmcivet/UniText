@@ -360,13 +360,13 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
       if (res.filePath === undefined || res.filePath === "") {
         // NOTE 完善报错信息
-        commit("information/SET_ERROR", "", { root: true });
+        commit("notification/NOTIFY", { level: "ERROR", title: "" }, { root: true });
         return;
       }
 
       if (res.filePath.indexOf(root) === -1) {
         // NOTE 完善报错信息
-        commit("information/SET_ERROR", "", { root: true });
+        commit("notification/NOTIFY", { level: "ERROR", title: "" }, { root: true });
       }
 
       path = res.filePath;

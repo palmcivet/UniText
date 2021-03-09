@@ -130,9 +130,9 @@ section {
   text-align: center;
   display: flex;
   flex-direction: column;
+  user-select: none;
 
   span {
-    user-select: none;
     font-size: @span-common;
   }
 
