@@ -164,7 +164,11 @@ export default class FileTreeNode extends Vue {
       case "Enter":
         this.isEdit = false;
         if (this.newTitle.search(/[/|\\]/) !== -1) {
-          // NOTE 完善报错信息
+          this.$store.commit(
+            "notification/NOTIFY",
+            { level: "WARN", title: "不符合文件命名规范" },
+            { root: true }
+          );
           return;
         } else {
           this.RENAME(this.newTitle.trim());

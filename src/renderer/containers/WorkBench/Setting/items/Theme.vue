@@ -135,7 +135,11 @@ export default class Theme extends Vue {
     if (await fse.pathExists(dir)) {
       this.handleSubmit(val);
     } else {
-      // NOTE 路径错误
+      this.$store.commit(
+        "notification/NOTIFY",
+        { level: "ERROR", title: "路径错误" },
+        { root: true }
+      );
     }
   }
 

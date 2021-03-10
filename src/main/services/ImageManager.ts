@@ -5,7 +5,7 @@ import { join } from "path";
 import { getHash } from "@/common/utils";
 import { URL_PATH } from "@/common/url";
 import { CONFIG_FILE, CONFIG_FOLDER } from "@/common/env";
-import { IPC_IMAGE, IPC_OTHER } from "@/common/channel/ipc";
+import { IPC_IMAGE, IPC_NOTIFY, IPC_OTHER } from "@/common/channel/ipc";
 import { fetchHttpFile } from "@/common/fileSystem/fileState";
 
 export class ImageManager {
@@ -41,7 +41,11 @@ export class ImageManager {
     try {
       await fse.writeJSON(this._filePath, [...this._dataSet]);
     } catch (err) {
-      // NOTE
+      ipcMain.emit(IPC_NOTIFY.LOG, {
+        level: "ERROR",
+        title: `写入 ${this._filePath} 失败`,
+        body: err,
+      });
     }
   }
 
@@ -66,7 +70,11 @@ export class ImageManager {
         await fetchHttpFile(url, redirPath);
         this._dataSet.set(key, 0);
       } catch (err) {
-        // NOTE 处理
+        ipcMain.emit(IPC_NOTIFY.LOG, {
+          level: "ERROR",
+          title: `${url} 缓存建立失败`,
+          body: err,
+        });
       }
     }
 
@@ -85,7 +93,11 @@ export class ImageManager {
     try {
       await fse.writeFile(join(this._imagePath, name), data);
     } catch (err) {
-      // NOTE
+      ipcMain.emit(IPC_NOTIFY.LOG, {
+        level: "ERROR",
+        title: `${url} 写入失败`,
+        body: err,
+      });
     }
 
     this._dataSet.set(name, 0);

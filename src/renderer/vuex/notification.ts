@@ -3,7 +3,7 @@ import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
 import { isDev } from "@/common/env";
 import { notEmpty } from "@/common/utils";
-import { IPC_OTHER } from "@/common/channel/ipc";
+import { IPC_OTHER, IPC_NOTIFY } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { INotificationMessage, INotificationState } from "@/typings/vuex/notification";
 
@@ -31,7 +31,6 @@ const mutations: MutationTree<INotificationState> = {
 
   NOTIFY: (_: INotificationState, msg: INotificationMessage) => {
     _.messageQueue.push(msg);
-    console.info(msg.title);
   },
 
   CLEAR_MESSAGE: (_: INotificationState, idx: number) => {
@@ -75,17 +74,29 @@ const actions: ActionTree<INotificationState, IRootState> = {
         }
       });
 
-    // NOTE 新版本通知
     if (releaseNotes !== "") {
-      _.dispatch("");
+      _.dispatch("NOTIFY", { level: "INFO", title: "有新版本" });
     }
+  },
+
+  LOG: (_: ActionContext<INotificationState, IRootState>, msg) => {
+    ipcRenderer.send(IPC_NOTIFY.LOG, msg);
   },
 
   LISTEN_FOR_NOTIFY: (_: ActionContext<INotificationState, IRootState>) => {
     const { commit, dispatch } = _;
 
+    ipcRenderer.once(IPC_NOTIFY.BOOTLOG_REPLY, (e, log: Array<any>) => {});
+    ipcRenderer.send(IPC_NOTIFY.BOOTLOG_FETCH);
+
+    dispatch("CHECK_UPDATE");
+
     ipcRenderer.on(IPC_OTHER.CHECK_UPDATE, (e) => {
       dispatch("CHECK_UPDATE");
+    });
+
+    ipcRenderer.on(IPC_NOTIFY.ALARM, (e, msg: INotificationMessage) => {
+      dispatch("NOTIFY", msg);
     });
   },
 };

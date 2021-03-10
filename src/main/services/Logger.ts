@@ -1,8 +1,10 @@
+import { ipcMain } from "electron";
 import { Console } from "console";
 import * as fse from "fs-extra";
 
-import { isDev } from "@/common/env";
 import { formatDate } from "@/common/utils";
+import { IPC_NOTIFY } from "@/common/channel/ipc";
+import { INotificationMessage } from "@/typings/vuex/notification";
 
 export default class Logger {
   private _logger!: Console;
@@ -14,6 +16,8 @@ export default class Logger {
       stdout: info,
       stderr: error,
     });
+
+    this._listenForIpcMain();
   }
 
   private _register(errorPath: string, infoPath: string) {
@@ -36,7 +40,13 @@ export default class Logger {
     this._logger.error("[%s]-[ERROR]-%s", formatDate(new Date()), msg);
   }
 
-  debug(msg: string) {
-    isDev && this._logger.info("[%s]-[DEBUG]-%s", formatDate(new Date()), msg);
+  private _listenForIpcMain() {
+    ipcMain.on(IPC_NOTIFY.LOG, (e, msg: INotificationMessage) => {
+      if (msg.level === "INFO") {
+        this.info(msg.title);
+      } else {
+        this.error(msg.title);
+      }
+    });
   }
 }
