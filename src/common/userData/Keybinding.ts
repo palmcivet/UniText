@@ -1,7 +1,8 @@
-import { localesMenu } from "@/common/i18n/iMenu";
 import { readJsonSync } from "fs-extra";
 
-export class Keybinding {
+import { localesMenu } from "@/common/i18n/iMenu";
+
+export default class Keybinding {
   private readonly _dataSet!: Map<string, string>;
 
   constructor() {

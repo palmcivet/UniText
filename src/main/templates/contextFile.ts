@@ -2,7 +2,7 @@ import { BrowserWindow } from "electron";
 
 import { IPC_FILE } from "@/common/channel/ipc";
 import { localesMenu } from "@/common/i18n/iMenu";
-import { Keybinding } from "@/main/services/Keybinding";
+import Keybinding from "@/common/userData/Keybinding";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { TMenuTemplate } from "@/typings/main";
 import { EI18n } from "@/typings/schema/preference";

@@ -50,6 +50,7 @@ const getters: GetterTree<IWorkBenchState, IRootState> = {
       value: fileSelect(_),
     };
   },
+  // TODO 可不修改
   isBlank: (_: IWorkBenchState) => {
     if (!notEmpty(_.currentTabs)) {
       _.workBenchType = EWorkBenchType.STARTUP;

@@ -35,6 +35,11 @@ export default class Settings extends Vue {
     return [
       {
         icon: "ri-settings-3-line",
+        type: ESettingType.SYSTEM,
+        title: this.$t("sidebar.settings_system"),
+      },
+      {
+        icon: "ri-settings-3-line",
         type: ESettingType.PREFERENCE,
         title: this.$t("sidebar.settings_preference"),
       },

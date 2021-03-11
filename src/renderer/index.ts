@@ -3,13 +3,14 @@ import "remixicon/fonts/remixicon.css";
 
 import { parseUrl } from "@/common/url";
 import { localesView } from "@/common/i18n/iInterface";
-import Main from "@/renderer/views/Main.vue";
+import Theme from "@/common/userData/Theme";
+import Snippet from "@/common/userData/Snippet";
+import Markdown from "@/common/userData/Markdown";
+import Preference from "@/common/userData/Preference";
+import Main from "@/renderer/pages/Main.vue";
 import store from "@/renderer/vuex";
 import VueBus from "@/renderer/plugins/VueBus";
 import VueI18n from "@/renderer/plugins/VueI18n";
-import VueTheme from "@/renderer/plugins/VueTheme";
-import VueSnippet from "@/renderer/plugins/VueSnippet";
-import VueMarkdown from "@/renderer/plugins/VueMarkdown";
 
 import "@/renderer/styles/main.less";
 
@@ -20,9 +21,11 @@ Vue.use(VueI18n, {
   lang: args.lang,
   messages: localesView,
 });
-Vue.use(VueTheme, { base: args.conf });
-Vue.use(VueSnippet, { base: args.conf });
-Vue.use(VueMarkdown, { base: args.conf });
+
+Vue.prototype.$theme = new Theme(args.proj);
+Vue.prototype.$snippet = new Snippet(args.proj);
+Vue.prototype.$markdown = new Markdown(args.proj);
+Vue.prototype.$preference = new Preference(args.proj);
 
 Vue.config.productionTip = false;
 

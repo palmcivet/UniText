@@ -1,4 +1,4 @@
-import { Keybinding } from "@/main/services/Keybinding";
+import Keybinding from "@/common/userData/Keybinding";
 import { localesMenu } from "@/common/i18n/iMenu";
 import { TMenuTemplate } from "@/typings/main";
 import { EI18n } from "@/typings/schema/preference";

@@ -1,6 +1,8 @@
-import { VueConstructor } from "vue/types/umd";
+import { join } from "path";
+import * as fse from "fs-extra";
+import { languages } from "monaco-editor";
 
-/* -------------------------- types ------------------------------- */
+import { CONFIG_FILE } from "@/common/env";
 
 interface ISnippetItem {
   label: string;
@@ -9,31 +11,17 @@ interface ISnippetItem {
   insertText: string;
 }
 
-interface IPluginOptions {
-  base: string;
-}
-
-export interface IVueSnippet {
-  readonly $snippet: Snippet;
-}
-
-/* -------------------------- class ------------------------------- */
-
-import { join } from "path";
-import * as fse from "fs-extra";
-import { languages } from "monaco-editor";
-
-export class Snippet {
+export default class Snippet {
   private _dataSet!: Array<ISnippetItem>;
 
   private _filePath!: string;
 
-  constructor(opt: IPluginOptions) {
-    this.setBasePath(opt.base);
+  constructor(base: string) {
+    this.setBasePath(base);
   }
 
   async setBasePath(filePath: string) {
-    this._filePath = join(filePath, "snippet.json");
+    this._filePath = join(filePath, ...CONFIG_FILE.SNIPPET);
     this._dataSet = await fse.readJSON(this._filePath);
     this._register();
   }
@@ -85,14 +73,3 @@ export class Snippet {
     this.store();
   }
 }
-
-/* -------------------------- plugin ------------------------------- */
-
-const install = (Vue: VueConstructor<Vue>, options: IPluginOptions) => {
-  const proto = Vue.prototype;
-  proto.$snippet = proto.$snippet || new Snippet(options);
-};
-
-export default {
-  install,
-};

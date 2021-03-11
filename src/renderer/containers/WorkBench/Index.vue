@@ -51,7 +51,7 @@ export default class WorkBench extends Vue {
   @general.State((state: IGeneralState) => state.interface.panelFloat)
   isPanelFloat!: boolean;
 
-  @general.State((state: IGeneralState) => state.system.startup)
+  @general.State((state: IGeneralState) => state.workBench.startup)
   startup!: EStartup;
 
   @workBench.State((state: IWorkBenchState) => state.workBenchType)

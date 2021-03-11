@@ -1,5 +1,5 @@
 <template>
-  <div class="main-window" v-if="hasFetched">
+  <div class="main-window">
     <TitleBar v-show="showTitle" />
     <main>
       <ActivityBar />
@@ -48,9 +48,6 @@ export default class Main extends Vue {
   @general.State((state: IGeneralState) => state.interface.showPanel)
   isShowPanel!: boolean;
 
-  @notification.State((state: INotificationState) => state.hasFetched)
-  hasFetched!: boolean;
-
   @notification.State((state: INotificationState) => state.showMessage)
   showMessage!: boolean;
 
@@ -77,8 +74,10 @@ export default class Main extends Vue {
   }
 
   beforeCreate() {
-    const { dispatch } = this.$store;
-    dispatch("LOAD_STATE");
+    const { commit } = this.$store;
+
+    commit("SET_STATE", this.$preference.getAll());
+    this.$theme.loadTheme();
   }
 
   created() {
@@ -88,8 +87,6 @@ export default class Main extends Vue {
     dispatch("workBench/LISTEN_FOR_FILE");
     dispatch("statusPanel/LISTEN_FOR_STATUS");
     dispatch("notification/LISTEN_FOR_NOTIFY");
-
-    this.$theme.loadTheme();
   }
 
   mounted() {
@@ -139,7 +136,7 @@ export default class Main extends Vue {
             mouseDownHandler,
             false
           ),
-        300
+        500
       );
 
       /* 调整大小 */

@@ -1,31 +1,21 @@
-import {
-  app,
-  shell,
-  ipcMain,
-  protocol,
-  BrowserWindow,
-  BrowserWindowConstructorOptions,
-} from "electron";
+import { app, shell, ipcMain, protocol, BrowserWindow } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
 import { buildUrl, URL_PATH, URL_PROTOCOL } from "@/common/url";
 import Logger from "@/main/services/Logger";
-import EnvPath from "@/main/services/EnvPath";
-import Preference from "@/main/services/Preference";
-import { Keybinding } from "@/main/services/Keybinding";
+import System from "@/common/userData/System";
+import Keybinding from "@/common/userData/Keybinding";
 import MenuManager from "@/main/services/MenuManager";
-import { ImageManager } from "@/main/services/ImageManager";
+import ImageManager from "@/main/services/ImageManager";
 import { EWindowType } from "@/typings/main";
-import { EI18n, IPreferenceSystem } from "@/typings/schema/preference";
+import { EI18n } from "@/typings/schema/preference";
 
 export default class UniText {
   private _logger!: Logger;
 
-  private _envPath!: EnvPath;
-
-  private _preference!: Preference;
+  private _system!: System;
 
   private _keybinding!: Keybinding;
 
@@ -35,8 +25,6 @@ export default class UniText {
 
   private _window!: BrowserWindow | null;
 
-  private _sysData!: IPreferenceSystem;
-
   constructor() {
     const sysPath = app.getPath("userData");
 
@@ -44,19 +32,89 @@ export default class UniText {
       SYSTEM_PATH.ERROR_LOG(sysPath),
       SYSTEM_PATH.INFO_LOG(sysPath)
     );
-    this._envPath = new EnvPath(sysPath, this._logger);
-
-    const path = this._envPath.getItem("settings");
-    /**
-     * @deprecated
-     */
-    const proj = this._envPath.getItem("project");
-
+    this._system = new System(sysPath, this._logger);
     this._keybinding = new Keybinding();
-    this._preference = new Preference(path);
     this._menuManager = new MenuManager();
-    this._imageManager = new ImageManager(proj);
+    this._imageManager = new ImageManager();
     this._window = null;
+
+    this._listenForIpcMain();
+  }
+
+  private async _openMain() {
+    let win: BrowserWindow | null = new BrowserWindow({
+      minWidth: 647,
+      minHeight: 400,
+      webPreferences: {
+        nodeIntegration: true,
+        enableRemoteModule: true,
+        contextIsolation: false,
+        worldSafeExecuteJavaScript: true,
+      },
+      vibrancy: "titlebar",
+      backgroundColor: "#00000000",
+      transparent: true,
+      width: this._system.getItem("window.width"),
+      height: this._system.getItem("window.height"),
+      titleBarStyle: this._system.getItem("window.titleBarStyle"),
+    });
+
+    win.setTitle("UniText");
+
+    const lang = (EI18n[this._system.getItem("launch.language")] as unknown) as number;
+
+    this._menuManager.updateMenu(lang, this._keybinding);
+
+    await win.loadURL(
+      buildUrl({
+        wid: win.id.toString(),
+        lang: lang.toString(),
+        type: EWindowType.NORMAL.toString(),
+        proj: this._system.getDefaultPath(),
+      })
+    );
+
+    if (isDev) win.webContents.toggleDevTools();
+
+    win.on("closed", () => {
+      win = null;
+    });
+
+    this._window = win;
+  }
+
+  private async _openView() {}
+
+  private async _openSetting() {}
+
+  private _registerProtocol() {
+    protocol.registerFileProtocol(
+      URL_PROTOCOL.replace("://", ""),
+      (request, callback) => {
+        let path = request.url;
+        if (path.startsWith(URL_PATH.IMG)) {
+          path = this._imageManager.getImage(path);
+        } else {
+          path = path.replace(URL_PROTOCOL, "");
+        }
+
+        // FEAT 相对路径
+
+        callback({ path });
+      }
+    );
+
+    const handleHttp = async (
+      request: Electron.ProtocolRequest,
+      callback: (response: Electron.ProtocolResponse) => void
+    ) => {
+      const path = await this._imageManager.getCache(request.url);
+      callback({ path });
+    };
+
+    // TODO dev-tool & loadURL
+    !isDev && protocol.interceptHttpProtocol("http", handleHttp);
+    protocol.interceptFileProtocol("https", handleHttp);
   }
 
   private _listenForIpcMain() {
@@ -83,53 +141,36 @@ export default class UniText {
     });
   }
 
-  private async _createWindow() {
-    this._sysData = this._preference.getItem("system");
+  public init() {
+    if (!app.requestSingleInstanceLock()) app.quit();
 
-    const winOption: BrowserWindowConstructorOptions = {
-      minWidth: 647,
-      minHeight: 400,
-      webPreferences: {
-        nodeIntegration: true,
-        enableRemoteModule: true,
-        contextIsolation: false,
-        worldSafeExecuteJavaScript: true,
-      },
-      vibrancy: "titlebar",
-      backgroundColor: "#00000000",
-      transparent: true,
-      ...this._preference.getWindowStyle(),
-    };
-
-    let win: BrowserWindow | null = new BrowserWindow(winOption);
-
-    win.setTitle("UniText");
-
-    const lang = EI18n[this._sysData.language];
-
-    this._menuManager.updateMenu(lang, this._keybinding);
-
-    await win.loadURL(
-      buildUrl({
-        wid: win.id.toString(),
-        lang: lang.toString(),
-        type: EWindowType.NORMAL.toString(),
-        conf: this._envPath.getItem("settings"),
-        proj: this._envPath.getItem("project"),
-      })
-    );
-
-    if (isDev) win.webContents.toggleDevTools();
-
-    win.on("closed", () => {
-      win = null;
+    process.on("uncaughtException", (e) => {
+      this._logger.error(`${e.name}: ${e.message}`);
+      app.quit();
     });
 
-    this._window = win;
-  }
+    if (isWin) {
+      process.on("message", (data) => {
+        if (data === "graceful-exit") app.quit();
+      });
+    } else {
+      process.on("SIGTERM", () => app.quit());
+    }
 
-  public init() {
-    this._listenForIpcMain();
+    app.whenReady().then(() => {
+      // TODO 读取设置
+      if (isDev) {
+        installExtension(VUEJS_DEVTOOLS);
+      } else {
+        autoUpdater.on("update-downloaded", () => {
+          autoUpdater.quitAndInstall();
+        });
+        autoUpdater.checkForUpdatesAndNotify();
+      }
+
+      this._openMain();
+      this._registerProtocol();
+    });
 
     app.on("window-all-closed", () => {
       if (isOsx) app.quit();
@@ -151,54 +192,7 @@ export default class UniText {
      * macOS only
      */
     app.on("activate", () => {
-      if (!this._window) this._createWindow();
+      if (!this._window) this._openMain();
     });
-
-    app.whenReady().then(() => {
-      this._createWindow();
-
-      if (isDev) {
-        installExtension(VUEJS_DEVTOOLS);
-      } else {
-        autoUpdater.on("update-downloaded", () => {
-          autoUpdater.quitAndInstall();
-        });
-        autoUpdater.checkForUpdatesAndNotify();
-      }
-
-      protocol.registerFileProtocol(
-        URL_PROTOCOL.replace("://", ""),
-        (request, callback) => {
-          let path = request.url;
-          if (path.startsWith(URL_PATH.IMG)) {
-            path = this._imageManager.getImage(path);
-          } else {
-            path = path.replace(URL_PROTOCOL, "");
-          }
-          // FEAT 相对路径
-
-          callback({ path });
-        }
-      );
-
-      const handleHttp = async (
-        request: Electron.ProtocolRequest,
-        callback: (response: Electron.ProtocolResponse) => void
-      ) => {
-        const path = await this._imageManager.getCache(request.url);
-        callback({ path });
-      };
-
-      !isDev && protocol.interceptHttpProtocol("http", handleHttp);
-      protocol.interceptFileProtocol("https", handleHttp);
-    });
-
-    if (isWin) {
-      process.on("message", (data) => {
-        if (data === "graceful-exit") app.quit();
-      });
-    } else {
-      process.on("SIGTERM", () => app.quit());
-    }
   }
 }

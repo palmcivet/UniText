@@ -6,10 +6,11 @@
       <button class="unitext-button" @click="handleClose()">关闭</button>
     </div>
 
-    <Preference v-if="settingType === 0" class="data-form" />
-    <Markdown v-if="settingType === 1" class="data-form" />
-    <Theme v-if="settingType === 2" class="data-form" />
-    <Snippet v-if="settingType === 4" class="data-form" />
+    <System v-if="settingType === 0" class="data-form" />
+    <Preference v-if="settingType === 1" class="data-form" />
+    <Markdown v-if="settingType === 2" class="data-form" />
+    <Theme v-if="settingType === 3" class="data-form" />
+    <Snippet v-if="settingType === 5" class="data-form" />
   </div>
 </template>
 
@@ -18,12 +19,12 @@ import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
 import Theme from "./items/Theme.vue";
+import System from "./items/System.vue";
 import Snippet from "./items/Snippet.vue";
 import Markdown from "./items/Markdown.vue";
 import Preference from "./items/Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { ESettingType, EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
-
 const workBench = namespace("workBench");
 
 @Component({
@@ -32,6 +33,7 @@ const workBench = namespace("workBench");
     Preference,
     Markdown,
     Snippet,
+    System,
     Theme,
   },
 })

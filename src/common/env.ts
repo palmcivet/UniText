@@ -1,4 +1,4 @@
-import { joinPath } from "./fileSystem";
+import { join } from "path";
 
 export const isOsx = process.platform === "darwin";
 export const isWin = process.platform === "win32";
@@ -16,31 +16,31 @@ export const PUBLIC = {
 };
 
 export const SYSTEM_PATH = {
-  DEFAULT_DIR: (sys: string) => joinPath(sys, "System"),
-  BOOT_FILE: (sys: string) => joinPath(sys, "System", "boot.json"),
-  INFO_LOG: (sys: string) => joinPath(sys, "Log", "info.log"),
-  ERROR_LOG: (sys: string) => joinPath(sys, "Log", "error.log"),
+  DEFAULT_DIR: (sys: string) => join(sys, "System"),
+  BOOT_FILE: (sys: string) => join(sys, "System", "boot.json"),
+  INFO_LOG: (sys: string) => join(sys, "Log", "info.log"),
+  ERROR_LOG: (sys: string) => join(sys, "Log", "error.log"),
 };
 
 export const CONFIG_FOLDER = {
   CACHE: [".CONFIG", "Cache"],
+  TRASH: [".CONFIG", "Trash"],
   IMAGES: [".CONFIG", "Images"],
   THEMES: [".CONFIG", "Themes"],
-  SETTINGS: [".CONFIG", "Settings"],
   UNCATEGORY: [".CONFIG", "Uncategory"],
 };
 
-/**
- * @deprecated
- */
 export const CONFIG_FILE = {
-  TAG: joinPath(".CONFIG", "tag.json"),
-  ICON: joinPath(".CONFIG", "icon.json"),
-  MARK: joinPath(".CONFIG", "mark.json"), // Marks.vue 使用
-  IMAGE: joinPath(".CONFIG", "image.json"), // ImageManager 使用
-  THEME: joinPath(".CONFIG", "Settings", "theme.json"),
-  SNIPPET: joinPath(".CONFIG", "Settings", "snippet.json"),
-  MARKDOWN: joinPath(".CONFIG", "Settings", "markdown.json"),
-  PREFERENCE: joinPath(".CONFIG", "Settings", "preference.json"),
-  KEYBINDING: joinPath(".CONFIG", "Settings", "keybinding.json"),
+  /**
+   * @deprecated
+   */
+  MARK: [".CONFIG", "mark.json"], // Marks.vue 使用
+  ICON: [".CONFIG", "icon.json"],
+  IMAGE: [".CONFIG", "image.json"],
+  THEME: [".CONFIG", "Settings", "theme.json"],
+  SYSTEM: [".CONFIG", "Settings"], // [".CONFIG", "Settings", "system.json"],
+  SNIPPET: [".CONFIG", "Settings", "snippet.json"],
+  MARKDOWN: [".CONFIG", "Settings", "markdown.json"],
+  PREFERENCE: [".CONFIG", "Settings", "preference.json"],
+  KEYBINDING: [".CONFIG", "Settings", "keybinding.json"],
 };

@@ -1,29 +1,12 @@
 import { IDocumentConfig, IDocumentFormat } from "../document";
 
 /**
- * @enum { ETitleBar } 标题栏样式
- */
-export enum ETitleBar {
-  DEFAULT = "default",
-  HIDDEN = "hidden",
-  INSET = "hiddenInset",
-  CUSTOM = "customButtonsOnHover",
-}
-
-/**
- * TI18n 为其字符形式，方便修改
- *
- * @enum { EI18n } i18n 类型
+ * @deprecated
  */
 export enum EI18n {
   ZH_CN,
   EN_US,
 }
-
-/**
- * @type i18n 字符串，出现于文件中，以易于读写
- */
-export type TI18n = "ZH_CN" | "EN_US";
 
 /**
  * @enum { EStartup } 启动后呈现的内容
@@ -60,70 +43,6 @@ export enum ETypeMode {
   FOCUS = "FOCUS",
   TYPER = "TYPER",
   NORMAL = "NORMAL",
-}
-
-/**
- * @interface 窗口样式
- */
-export interface IPreferenceWindow {
-  /**
-   * @field 宽度
-   */
-  width: number;
-  /**
-   * @field 高度
-   */
-  height: number;
-  /**
-   * @field 标题栏样式
-   */
-  titleBarStyle: ETitleBar;
-}
-
-/**
- * @interface 软件的默认设置，启动时载入
- */
-export interface IPreferenceSystem {
-  /**
-   * @field 显示系统托盘
-   */
-  showTray: boolean;
-  /**
-   * @field 最后一个窗口关闭时退出
-   */
-  exitWhenClosed: boolean;
-  /**
-   * @field 登录时自动启动软件
-   */
-  openWhenLogged: boolean;
-  /**
-   * @field 记录最近打开的文件
-   */
-  saveRecent: boolean;
-  /**
-   * @field 自动打开上一次的文件
-   */
-  autoOpen: boolean;
-  /**
-   * @field 自动更新
-   */
-  autoUpdate: boolean;
-  /**
-   * @field 自动保存
-   */
-  autoSave: boolean;
-  /**
-   * @field 自动保存时间间隔
-   */
-  saveDelay: number;
-  /**
-   * @field 界面语言
-   */
-  language: TI18n;
-  /**
-   * @file 启动后呈现的内容
-   */
-  startup: EStartup;
 }
 
 /**
@@ -169,6 +88,32 @@ export interface IPreferenceInterface {
    * @field 输入模式
    */
   typeMode: ETypeMode;
+}
+
+/**
+ * @interface 软件的默认设置，启动时载入
+ */
+export interface IPreferenceWorkBench {
+  /**
+   * @file 启动后呈现的内容
+   */
+  startup: EStartup;
+  /**
+   * @field 记录最近打开的文件
+   */
+  saveRecent: boolean;
+  /**
+   * @field 自动打开上一次的文件
+   */
+  autoOpen: boolean;
+  /**
+   * @field 自动保存
+   */
+  autoSave: boolean;
+  /**
+   * @field 自动保存时间间隔
+   */
+  saveDelay: number;
 }
 
 /**
@@ -225,9 +170,8 @@ export interface IPreferenceDocument extends IDocumentFormat, IDocumentConfig {
  * @interface preference.json 的类型
  */
 export interface IPreference {
-  window: IPreferenceWindow;
-  system: IPreferenceSystem;
   interface: IPreferenceInterface;
+  workBench: IPreferenceWorkBench;
   fileManager: IPreferenceFileManager;
   editor: IPreferenceEditor;
   document: IPreferenceDocument;

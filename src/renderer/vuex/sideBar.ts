@@ -1,10 +1,10 @@
 import * as fse from "fs-extra";
 import { ipcRenderer, remote } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
+import { join } from "path";
 
 import { CONFIG_FILE } from "@/common/env";
 import { hasKeys, notEmpty } from "@/common/utils";
-import { joinPath } from "@/common/fileSystem";
 import { buildTree } from "@/common/fileSystem/fileState";
 import { IPC_FILE } from "@/common/channel/ipc";
 import { IRootState } from "@/typings/vuex";
@@ -14,7 +14,6 @@ import {
   TFileRoute,
   ISideBarState,
   EActivityType,
-  IMark,
 } from "@/typings/vuex/sideBar";
 
 const state: ISideBarState = {
@@ -36,7 +35,7 @@ const getters: GetterTree<ISideBarState, IRootState> = {
 
 const mutations: MutationTree<ISideBarState> = {
   LOAD_MARKLIST: (_: ISideBarState, base: string) => {
-    const absPath = joinPath(base, CONFIG_FILE.MARK);
+    const absPath = join(base, ...CONFIG_FILE.MARK);
 
     if (!fse.existsSync(absPath)) {
       return;

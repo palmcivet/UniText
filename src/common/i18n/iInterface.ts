@@ -13,6 +13,7 @@ export const localesView = {
     notes: ["便签"],
     schedule: ["日程"],
     settings: ["设置"],
+    settings_system: localesCommon.system,
     settings_preference: localesCommon.preference,
     settings_markdown: localesCommon.markdown,
     settings_keybinding: localesCommon.keybinding,

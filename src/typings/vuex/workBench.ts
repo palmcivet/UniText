@@ -50,6 +50,7 @@ export enum EWorkBenchType {
  * @enum { ESettingType } 设置的类型
  */
 export enum ESettingType {
+  SYSTEM,
   PREFERENCE,
   MARKDOWN,
   THEME,

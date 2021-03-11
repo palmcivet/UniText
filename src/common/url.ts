@@ -11,7 +11,7 @@ export const URL_PATH = {
 export const buildUrl = (args: Record<keyof IWindowArgs, string>, env?: any): string => {
   const baseUrl = isDev
     ? "http://localhost:9091/index.html"
-    : `unitext://${__dirname}/index.html`;
+    : `${URL_PROTOCOL}${__dirname}/index.html`;
 
   const params = new URLSearchParams(args);
 
@@ -25,7 +25,6 @@ export const parseUrl = (): IWindowArgs => {
     wid: Number(params.get("wid")),
     lang: Number(params.get("lang")),
     type: Number(params.get("type")),
-    conf: params.get("conf") as string,
     proj: params.get("proj") as string,
   };
 };

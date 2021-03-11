@@ -71,8 +71,8 @@
 <script lang="ts">
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
+import { join } from "path";
 
-import { joinPath } from "@/common/fileSystem";
 import RipgrepDirectorySearcher from "@/library/ripgrepSearcher";
 import { IRipgrepSearchResult } from "@/library/ripgrepSearcher.d";
 import CheckList from "@/renderer/components/CheckList.vue";
@@ -115,7 +115,7 @@ export default class Search extends Vue {
 
   searchInclusions: Array<string> = [];
 
-  ripgrepDirectorySearcher = new RipgrepDirectorySearcher(joinPath(__static, "bin/rg"));
+  ripgrepDirectorySearcher = new RipgrepDirectorySearcher(join(__static, "bin/rg"));
 
   keyword = "";
 

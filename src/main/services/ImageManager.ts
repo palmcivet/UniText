@@ -8,29 +8,29 @@ import { CONFIG_FILE, CONFIG_FOLDER } from "@/common/env";
 import { IPC_IMAGE, IPC_NOTIFY, IPC_OTHER } from "@/common/channel/ipc";
 import { fetchHttpFile } from "@/common/fileSystem/fileState";
 
-export class ImageManager {
+export default class ImageManager {
   private _dataSet!: Map<string, number>;
 
-  private _filePath!: string;
+  private _dataPath!: string;
 
   private _cachePath!: string;
 
   private _imagePath!: string;
 
-  constructor(filePath: string) {
-    this.setBasePath(filePath);
+  constructor() {
     this._listenForIpcMain();
   }
 
-  async setBasePath(filePath: string) {
+  private async _setBasePath(filePath: string) {
     // FEAT 优化路径
-    this._filePath = join(filePath, CONFIG_FILE.IMAGE);
+    this._dataPath = join(filePath, ...CONFIG_FILE.IMAGE);
     this._cachePath = join(filePath, ...CONFIG_FOLDER.CACHE);
     this._imagePath = join(filePath, ...CONFIG_FOLDER.IMAGES);
 
-    await fse.ensureFile(join(filePath, CONFIG_FILE.IMAGE));
+    await fse.ensureFile(join(filePath, ...CONFIG_FILE.IMAGE));
+
     try {
-      const res = await fse.readJSON(this._filePath);
+      const res = await fse.readJSON(this._dataPath);
       this._dataSet = new Map<string, number>(res);
     } catch (err) {
       this._dataSet = new Map<string, number>([]);
@@ -39,11 +39,11 @@ export class ImageManager {
 
   private async _store() {
     try {
-      await fse.writeJSON(this._filePath, [...this._dataSet]);
+      await fse.writeJSON(this._dataPath, [...this._dataSet]);
     } catch (err) {
       ipcMain.emit(IPC_NOTIFY.LOG, {
         level: "ERROR",
-        title: `写入 ${this._filePath} 失败`,
+        title: `写入 ${this._dataPath} 失败`,
         body: err,
       });
     }
@@ -114,7 +114,7 @@ export class ImageManager {
 
   private _listenForIpcMain() {
     ipcMain.on(IPC_OTHER.SET_PATH_AGENT, (event, base: string) => {
-      this.setBasePath(base);
+      this._setBasePath(base);
     });
 
     ipcMain.on(IPC_IMAGE.SET_IMAGE, (event, url: string, data: Buffer) => {

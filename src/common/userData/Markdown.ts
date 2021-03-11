@@ -1,17 +1,5 @@
-import { VueConstructor } from "vue/types/umd";
-
-/* -------------------------- types ------------------------------- */
-
-interface IPluginOptions {
-  base: string;
-}
-
-export interface IVueMarkdown {
-  readonly $markdown: MarkdownEngine;
-}
-
-/* -------------------------- class ------------------------------- */
 import Store from "electron-store";
+import { join } from "path";
 import MarkdownIt from "markdown-it";
 import MarkdownItSup from "markdown-it-sup";
 import MarkdownItSub from "markdown-it-sub";
@@ -31,24 +19,25 @@ import MarkdownItHighlightLines from "@/library/markdown-it-hightlight-lines";
 
 import schema from "@/common/schema/sMarkdown";
 import { BUS_EDITOR } from "@/common/channel/bus";
+import { CONFIG_FILE } from "@/common/env";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IMarkdown } from "@/typings/schema/markdown";
 
 const _BAD_PROTO_RE = /^(vbscript|javascript|data):/;
 const _GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
-class MarkdownEngine {
+export default class MarkdownEngine {
   private _dataSet!: Store<IMarkdown>;
 
   private engine!: MarkdownIt;
 
-  constructor(opt: IPluginOptions) {
-    this.setBasePath(opt.base);
+  constructor(base: string) {
+    this.setBasePath(base);
   }
 
   setBasePath(filePath: string) {
     this._dataSet = new Store({
-      cwd: filePath,
+      cwd: join(filePath, ...CONFIG_FILE.SYSTEM),
       name: "markdown",
       schema: schema as Store.Schema<IMarkdown>,
     });
@@ -128,14 +117,3 @@ class MarkdownEngine {
     return this.engine.render(val);
   }
 }
-
-/* -------------------------- plugin ------------------------------- */
-
-const install = (Vue: VueConstructor<Vue>, options: IPluginOptions) => {
-  const proto = Vue.prototype;
-  proto.$markdown = proto.$markdown || new MarkdownEngine(options);
-};
-
-export default {
-  install,
-};

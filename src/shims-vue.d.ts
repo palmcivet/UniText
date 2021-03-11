@@ -1,9 +1,15 @@
+import Theme from "@/common/userData/Theme";
+import Snippet from "@/common/userData/Snippet";
+import Markdown from "@/common/userData/Markdown";
+import Preference from "@/common/userData/Preference";
 import { IVueBus } from "@/renderer/plugins/VueBus";
 import { IVueI18n } from "@/renderer/plugins/VueI18n";
-import { IVueTheme } from "@/renderer/plugins/VueTheme";
-import { IVueSnippet } from "@/renderer/plugins/VueSnippet";
-import { IVueMarkdown } from "@/renderer/plugins/VueMarkdown";
 
 declare module "vue/types/vue" {
-  interface Vue extends IVueI18n, IVueBus, IVueTheme, IVueSnippet, IVueMarkdown {}
+  interface Vue extends IVueI18n, IVueBus {
+    $theme: Theme;
+    $snippet: Snippet;
+    $markdown: Markdown;
+    $preference: Preference;
+  }
 }

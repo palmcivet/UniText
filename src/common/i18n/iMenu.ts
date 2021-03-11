@@ -19,8 +19,8 @@ export const localesMenu = {
     services: ["服务"],
     hide: ["隐藏"],
     hideothers: ["隐藏其他"],
-    close: ["关闭"],
-    quit: ["退出"],
+    close: ["关闭窗口"],
+    quit: ["退出 UniText"],
   },
 
   file: {

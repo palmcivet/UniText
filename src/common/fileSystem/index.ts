@@ -1,4 +1,4 @@
-import path from "path";
+import { join } from "path";
 import * as fse from "fs-extra";
 
 const _IGNORE = [".DS_Store"];
@@ -6,7 +6,7 @@ const _IGNORE = [".DS_Store"];
 /**
  * @deprecated
  */
-export const joinPath = (...args: Array<string>) => path.join(...args);
+export const joinPath = (...args: Array<string>) => join(...args);
 
 /**
  * 检测 `base` 路径下，是否具有 `samp` 中的文件
@@ -17,7 +17,7 @@ export const hasFileList = async (base: string, samp: Array<string>) => {
   let flag = true;
   for await (const item of samp) {
     if (_IGNORE.includes(item)) return;
-    flag = await fse.pathExists(joinPath(base, item));
+    flag = await fse.pathExists(join(base, item));
     if (!flag) break;
   }
   return flag;

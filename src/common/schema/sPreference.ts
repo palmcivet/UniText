@@ -1,122 +1,17 @@
 import { TSchema, IGroup, reduceType, reduceSchema } from "@/common/schema";
 import { ECoding, EEoL, EIndent, EPicture } from "@/typings/document";
 import {
-  ETitleBar,
-  EI18n,
   EStartup,
   EPanelType,
   EEditMode,
   ETypeMode,
-  IPreferenceSystem,
   IPreferenceInterface,
+  IPreferenceWorkBench,
   IPreferenceFileManager,
   IPreferenceEditor,
   IPreferenceDocument,
-  IPreferenceWindow,
   IPreference,
 } from "@/typings/schema/preference";
-
-const pWindow: IGroup<IPreferenceWindow> = {
-  type: "Group",
-  title: ["窗口样式"],
-  description: [""],
-  properties: {
-    width: {
-      type: "Range",
-      title: ["宽度"],
-      description: ["窗口的默认宽度"],
-      minimum: 647,
-      default: 1294,
-    },
-    height: {
-      type: "Range",
-      title: ["高度"],
-      description: ["窗口的默认高度"],
-      minimum: 400,
-      default: 800,
-    },
-    titleBarStyle: {
-      type: "DropDown",
-      title: ["标题栏样式"],
-      description: ["标题栏的默认样式"],
-      enum: reduceType(ETitleBar),
-      default: ETitleBar.HIDDEN,
-    },
-  },
-  default: {},
-};
-
-const pSystem: IGroup<IPreferenceSystem> = {
-  type: "Group",
-  title: ["系统", "System"],
-  description: ["软件的默认设置，启动时载入"],
-  properties: {
-    showTray: {
-      type: "CheckBox",
-      title: ["显示系统托盘"],
-      default: true,
-      description: ["是否显示系统托盘图标"],
-    },
-    exitWhenClosed: {
-      type: "CheckBox",
-      title: ["最后一个窗口关闭时退出"],
-      default: false,
-      description: ["最后一个窗口关闭时退出应用。`false` 则最小化到系统托盘"],
-    },
-    openWhenLogged: {
-      type: "CheckBox",
-      title: ["登录时自动启动软件"],
-      default: true,
-      description: ["登录时自动启动软件"],
-    },
-    saveRecent: {
-      type: "CheckBox",
-      title: ["记录最近打开的文件"],
-      default: true,
-      description: ["记录最近打开的文件，以快速恢复工作"],
-    },
-    autoOpen: {
-      type: "CheckBox",
-      title: ["自动打开上一次的文件"],
-      default: true,
-      description: [""],
-    },
-    autoUpdate: {
-      type: "CheckBox",
-      default: true,
-      title: ["自动更新"],
-      description: ["启用后软件将检测并自动更新"],
-    },
-    autoSave: {
-      type: "CheckBox",
-      title: ["自动保存"],
-      default: false,
-      description: [""],
-    },
-    saveDelay: {
-      type: "Range",
-      title: ["自动保存时间间隔"],
-      minimum: 1000,
-      default: 5000,
-      description: [""],
-    },
-    language: {
-      type: "DropDown",
-      enum: reduceType(EI18n).filter((v) => isNaN(Number.parseInt(v))),
-      default: "ZH_CN",
-      title: ["界面语言"],
-      description: ["软件界面所呈现的语言"],
-    },
-    startup: {
-      type: "DropDown",
-      enum: reduceType(EStartup),
-      default: EStartup.CREATE,
-      title: ["启动后呈现的内容"],
-      description: ["打开软件后所呈现的内容"],
-    },
-  },
-  default: {},
-};
 
 const pInterface: IGroup<IPreferenceInterface> = {
   type: "Group",
@@ -179,6 +74,47 @@ const pInterface: IGroup<IPreferenceInterface> = {
       enum: reduceType(ETypeMode),
       default: ETypeMode.NORMAL,
       description: ["默认的输入模式"],
+    },
+  },
+  default: {},
+};
+
+const pWorkBench: IGroup<IPreferenceWorkBench> = {
+  type: "Group",
+  title: ["系统", "System"],
+  description: ["软件的默认设置，启动时载入"],
+  properties: {
+    startup: {
+      type: "DropDown",
+      enum: reduceType(EStartup),
+      default: EStartup.CREATE,
+      title: ["启动后呈现的内容"],
+      description: ["打开软件后所呈现的内容"],
+    },
+    saveRecent: {
+      type: "CheckBox",
+      title: ["记录最近打开的文件"],
+      default: true,
+      description: ["记录最近打开的文件，以快速恢复工作"],
+    },
+    autoOpen: {
+      type: "CheckBox",
+      title: ["自动打开上一次的文件"],
+      default: true,
+      description: [""],
+    },
+    autoSave: {
+      type: "CheckBox",
+      title: ["自动保存"],
+      default: false,
+      description: [""],
+    },
+    saveDelay: {
+      type: "Range",
+      title: ["自动保存时间间隔"],
+      minimum: 1000,
+      default: 5000,
+      description: [""],
     },
   },
   default: {},
@@ -294,9 +230,8 @@ const pDocument: IGroup<IPreferenceDocument> = {
 };
 
 export const schemaPreference: TSchema<IPreference> = {
-  window: pWindow,
-  system: pSystem,
   interface: pInterface,
+  workBench: pWorkBench,
   fileManager: pFileManager,
   editor: pEditor,
   document: pDocument,

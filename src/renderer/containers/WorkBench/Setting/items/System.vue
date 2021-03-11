@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
+  <div :style="{ paddingLeft: '14%', paddingRight: '14%' }" v-if="shouldRender">
     <Group
       v-for="(v, k, i) of schema"
       :id="k"
@@ -13,24 +13,28 @@
 </template>
 
 <script lang="ts">
+import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 
 import { debounce } from "@/common/utils";
-import { schemaPreference } from "@/common/schema/sPreference";
+import { IPC_PREFERENCE } from "@/common/channel/ipc";
+import { schemaSystem } from "@/common/schema/sSystem";
 import Group from "../widgets/Group.vue";
 
 @Component({
-  name: "Preference",
+  name: "System",
   components: { Group },
 })
-export default class Preference extends Vue {
-  schema = schemaPreference;
+export default class System extends Vue {
+  schema = schemaSystem;
 
   userData: any;
 
+  shouldRender = false;
+
   data() {
     return {
-      userData: this.$preference.getAll(),
+      userData: {},
     };
   }
 
@@ -41,8 +45,17 @@ export default class Preference extends Vue {
   handleSubmit = debounce((val: [string, string, any]) => {
     const [g, f, v] = val;
     this.setVal(g, f, v);
-    this.$preference.setItem(`${g}.${f}`, v);
+    ipcRenderer.send(IPC_PREFERENCE.SET_ITEM, `${g}.${f}`, v);
   });
+
+  beforeCreate() {
+    ipcRenderer.once(IPC_PREFERENCE.GET_ALL_REPLY, (e, data: any) => {
+      this.userData = data;
+      this.shouldRender = true;
+    });
+
+    ipcRenderer.send(IPC_PREFERENCE.GET_ALL);
+  }
 }
 </script>
 

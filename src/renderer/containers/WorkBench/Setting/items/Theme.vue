@@ -36,9 +36,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 import * as fse from "fs-extra";
+import { join } from "path";
 
 import { debounce } from "@/common/utils";
-import { hasFileList, joinPath } from "@/common/fileSystem";
+import { hasFileList } from "@/common/fileSystem";
 import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
 import GroupHead from "../widgets/GroupHead.vue";
 import DropDown from "../widgets/DropDown.vue";
@@ -101,7 +102,7 @@ export default class Theme extends Vue {
   }
 
   get themeDir() {
-    return joinPath(this.folderDir, ...CONFIG_FOLDER.THEMES);
+    return join(this.folderDir, ...CONFIG_FOLDER.THEMES);
   }
 
   get schema() {
@@ -119,7 +120,7 @@ export default class Theme extends Vue {
     const themeSet = await fse.readdir(this.themeDir);
 
     for await (const sub of themeSet) {
-      const dir = joinPath(this.themeDir, sub);
+      const dir = join(this.themeDir, sub);
       const res = await hasFileList(dir, themeFileName);
       if (res) selfValue.push(sub);
     }
@@ -131,7 +132,7 @@ export default class Theme extends Vue {
   }
 
   async handleSubmitCheck(val: [string, string, string]) {
-    const dir = joinPath(this.folderDir, val[2]);
+    const dir = join(this.folderDir, val[2]);
     if (await fse.pathExists(dir)) {
       this.handleSubmit(val);
     } else {

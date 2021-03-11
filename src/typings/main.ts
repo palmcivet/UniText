@@ -1,15 +1,27 @@
 import { Menu } from "electron";
 
-import { EI18n } from "@/typings/schema/preference";
+/**
+ * TI18n 为其字符形式，方便修改
+ *
+ * @enum { EI18n } i18n 类型
+ */
+declare enum EI18n {
+  ZH_CN,
+  EN_US,
+}
 
 /**
  * @interface 启动软件需要携带的参数
  */
 export interface IBootArgs {
   /**
-   * @field 笔记文件夹的位置
+   * @field 笔记库的位置
    */
-  notesPath: string;
+  defaultPath: string;
+  /**
+   * @field 笔记库历史记录
+   */
+  historyPaths: Array<string>;
   /**
    * @field 是否默认启动
    */
@@ -36,10 +48,6 @@ export interface IWindowArgs {
    * @field 项目文件夹路径
    */
   proj: string;
-  /**
-   * @field 设置文件夹路径
-   */
-  conf: string;
 }
 
 /**

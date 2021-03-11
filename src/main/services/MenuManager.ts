@@ -2,7 +2,7 @@ import { app, ipcMain, Menu } from "electron";
 
 import { isOsx } from "@/common/env";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
-import { Keybinding } from "@/main/services/Keybinding";
+import Keybinding from "@/common/userData/Keybinding";
 import { folder } from "@/main/templates/contextFolder";
 import { file } from "@/main/templates/contextFile";
 import { toc } from "@/main/templates/contextToc";
