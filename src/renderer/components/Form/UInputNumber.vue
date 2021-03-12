@@ -6,7 +6,7 @@
       v-model.number="res"
       :max="prop.maximum"
       :min="prop.minimum"
-      :disabled="hasDisabled"
+      :disabled="disabled"
       @change="handleChange()"
     />
   </div>

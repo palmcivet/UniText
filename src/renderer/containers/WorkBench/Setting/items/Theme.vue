@@ -2,7 +2,7 @@
   <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
     <UFormGroup :label="schema.title">
       <div>
-        <GroupHead field="color" subField="dynamic" />
+        <ItemTitle field="color" subField="dynamic" />
         <UCheckBox
           :prop="schema.dynamic"
           :value="getVal('color', 'dynamic')"
@@ -11,7 +11,7 @@
       </div>
 
       <div>
-        <GroupHead field="color" subField="preset" />
+        <ItemTitle field="color" subField="preset" />
         <DropDown
           :prop="selectScheme"
           :value="getVal('color', 'preset')"
@@ -20,11 +20,11 @@
       </div>
 
       <div v-for="(v, k, i) of schema.customGroup" :key="i">
-        <GroupHead field="color" :subField="k" />
+        <ItemTitle field="color" :subField="k" />
         <UInputText
           :prop="v"
           :value="getVal('color', k)"
-          :hasDisabled="!isCustom"
+          :disabled="!isCustom"
           @change="handleSubmitCheck(['color', k, $event])"
         />
       </div>
@@ -40,14 +40,14 @@ import { join } from "path";
 
 import { debounce } from "@/common/utils";
 import { hasFileList } from "@/common/fileSystem";
+import { schemaTheme } from "@/common/schema/sTheme";
 import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
-import GroupHead from "../widgets/GroupHead.vue";
+import ItemTitle from "../widgets/ItemTitle.vue";
 import DropDown from "../widgets/DropDown.vue";
 import UCheckBox from "@/renderer/components/Form/UCheckBox.vue";
 import UInputText from "@/renderer/components/Form/UInputText.vue";
-import UFormGroup from "@/renderer/components/Form/UFormGroup.vue";
+import UFormGroup from "@/renderer/containers/WorkBench/Setting/widgets/GroupBase.vue";
 import { IGeneralState } from "@/typings/vuex/general";
-import { schemaTheme } from "@/common/schema/sTheme";
 
 const general = namespace("general");
 
@@ -59,7 +59,7 @@ const themeFileName = [
 @Component({
   name: "Theme",
   components: {
-    GroupHead,
+    ItemTitle,
     DropDown,
     UCheckBox,
     UInputText,

@@ -25,7 +25,7 @@ export default class skeleton extends Vue {
    * @member 是否禁用
    */
   @Prop({ type: Boolean, default: false })
-  hasDisabled!: boolean;
+  disabled!: boolean;
 
   /**
    * @member 字段终值

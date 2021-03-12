@@ -4,6 +4,9 @@
       <input type="checkbox" :checked="v.check" />
       {{ v.label }}
     </label>
+
+    <UCheckBox v-for="(v, k) in main" :key="k" :value="v.check" :prop="v" />
+
     <label>
       <input
         type="checkbox"
@@ -20,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import UCheckBox from "@/renderer/components/Form/UCheckBox.vue";
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 
 interface ICheckGroup {
@@ -38,8 +42,13 @@ interface ICheckGroup {
   };
 }
 
-@Component({ name: "CheckGroup" })
-export default class CheckGroup extends Vue {
+@Component({
+  name: "AdditionCheckGroup",
+  components: {
+    UCheckBox,
+  },
+})
+export default class AdditionCheckGroup extends Vue {
   @Prop({ type: Object, required: true })
   data!: ICheckGroup;
 
@@ -51,7 +60,9 @@ export default class CheckGroup extends Vue {
     return this.data.addi;
   }
 
-  chosen = this.addi.label;
+  get chosen() {
+    return this.addi.label;
+  }
 
   @Emit("change")
   handleCheck(idx: number) {

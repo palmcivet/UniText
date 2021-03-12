@@ -1,7 +1,7 @@
 <template>
-  <UFormGroup :label="properties.title">
+  <GroupBase :label="properties.title">
     <div v-for="(v, k, i) of properties.properties" :key="i">
-      <GroupHead :field="field" :subField="k" />
+      <ItemTitle :field="field" :subField="k" />
       <component
         :is="v.type"
         :prop="v"
@@ -9,7 +9,7 @@
         @change="$emit('submit', [field, k, $event])"
       />
     </div>
-  </UFormGroup>
+  </GroupBase>
 </template>
 
 <script lang="ts">
@@ -18,24 +18,24 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import Range from "@/renderer/components/Form/UInputNumber.vue";
 import TextBox from "@/renderer/components/Form/UInputText.vue";
 import CheckBox from "@/renderer/components/Form/UCheckBox.vue";
-import UFormGroup from "@/renderer/components/Form/UFormGroup.vue";
+import GroupBase from "@/renderer/containers/WorkBench/Setting/widgets/GroupBase.vue";
 import DropDown from "./DropDown.vue";
 import TextGroup from "./TextGroup.vue";
-import GroupHead from "./GroupHead.vue";
+import ItemTitle from "./ItemTitle.vue";
 
 @Component({
-  name: "Group",
+  name: "GroupCreator",
   components: {
     Range,
     TextBox,
     CheckBox,
     DropDown,
     TextGroup,
-    GroupHead,
-    UFormGroup,
+    ItemTitle,
+    GroupBase,
   },
 })
-export default class Group extends Vue {
+export default class GroupCreator extends Vue {
   @Prop({ type: String, required: true })
   field!: string;
 

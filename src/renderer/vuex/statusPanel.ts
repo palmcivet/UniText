@@ -27,6 +27,10 @@ const mutations: MutationTree<IStatusPanelState> = {
 };
 
 const actions: ActionTree<IStatusPanelState, IRootState> = {
+  EXPORT: (_: ActionContext<IStatusPanelState, IRootState>, args) => {
+    console.log(...args);
+  },
+
   LISTEN_FOR_STATUS: (_: ActionContext<IStatusPanelState, IRootState>) => {
     const { commit } = _;
 

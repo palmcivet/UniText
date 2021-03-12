@@ -50,12 +50,12 @@ export enum EWorkBenchType {
  * @enum { ESettingType } 设置的类型
  */
 export enum ESettingType {
-  SYSTEM,
-  PREFERENCE,
-  MARKDOWN,
-  THEME,
-  KEYBINDING,
-  SNIPPET,
+  THEME = "Theme",
+  SYSTEM = "System",
+  SNIPPET = "Snippet",
+  MARKDOWN = "Markdown",
+  PREFERENCE = "Preference",
+  KEYBINDING = "Keybinding",
 }
 
 export interface IWorkBenchState {

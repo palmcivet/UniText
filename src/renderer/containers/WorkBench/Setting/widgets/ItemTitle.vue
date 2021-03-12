@@ -9,8 +9,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component({ name: "GroupHead" })
-export default class GroupHead extends Vue {
+@Component({ name: "ItemTitle" })
+export default class ItemTitle extends Vue {
   @Prop({ type: String, required: true })
   field!: string;
 

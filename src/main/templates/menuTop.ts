@@ -27,6 +27,11 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         },
         { type: "separator" },
         {
+          label: localesMenu.system.system[locale],
+          accelerator: keybinding.getItem("system.system"),
+          click: (menu, win) => {},
+        },
+        {
           label: localesMenu.system.preference[locale],
           accelerator: keybinding.getItem("system.preference"),
           click: (menu, win) => {},
@@ -283,6 +288,26 @@ export const top = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => {
         {
           label: localesMenu.view.space[locale],
           accelerator: keybinding.getItem("view.space"),
+          click: () => {},
+        },
+      ],
+    },
+    {
+      label: localesMenu.export.label[locale],
+      submenu: [
+        {
+          label: localesMenu.export.pdf[locale],
+          accelerator: keybinding.getItem("export.pdf"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.export.html[locale],
+          accelerator: keybinding.getItem("export.html"),
+          click: () => {},
+        },
+        {
+          label: localesMenu.export.markdown[locale],
+          accelerator: keybinding.getItem("export.markdown"),
           click: () => {},
         },
       ],

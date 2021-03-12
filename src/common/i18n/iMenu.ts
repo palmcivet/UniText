@@ -4,6 +4,7 @@ export const localesMenu = {
   system: {
     about: ["关于 UniText"],
     check: ["检查更新"],
+    system: localesCommon.system,
     preference: localesCommon.preference,
     theme: localesCommon.theme,
     themeappearence: localesCommon.appearence,
@@ -61,6 +62,13 @@ export const localesMenu = {
     autowrap: ["折行"],
     minimap: ["地图"],
     space: ["显示空格"],
+  },
+
+  export: {
+    label: ["导出"],
+    pdf: ["PDF"],
+    html: ["HTML"],
+    markdown: ["Markdown"],
   },
 
   window: {

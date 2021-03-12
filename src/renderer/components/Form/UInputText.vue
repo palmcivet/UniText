@@ -4,7 +4,7 @@
     <input
       type="text"
       v-model="res"
-      :disabled="hasDisabled"
+      :disabled="disabled"
       spellcheck="false"
       @change="handleChange()"
     />

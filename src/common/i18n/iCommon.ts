@@ -1,7 +1,7 @@
 export const localesCommon = {
   files: ["文件"],
-  preference: ["首选项"],
-  system: ["系统"],
+  system: ["系统设置"],
+  preference: ["偏好设置"],
   markdown: ["语法规则"],
   theme: ["主题样式"],
   appearence: ["外观"],

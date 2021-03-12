@@ -10,8 +10,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component({ name: "UFormGroup" })
-export default class UFormGroup extends Vue {
+@Component({ name: "GroupBase" })
+export default class GroupBase extends Vue {
   @Prop({ type: Array, required: true })
   label!: Array<string>;
 }

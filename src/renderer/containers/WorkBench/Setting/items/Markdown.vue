@@ -1,6 +1,6 @@
 <template>
   <div :style="{ paddingLeft: '14%', paddingRight: '14%' }">
-    <Group
+    <GroupCreator
       v-for="(v, k, i) of schema"
       :id="k"
       :key="i"
@@ -17,11 +17,11 @@ import { Vue, Component } from "vue-property-decorator";
 
 import { debounce } from "@/common/utils";
 import { schemaMarkdown } from "@/common/schema/sMarkdown";
-import Group from "../widgets/Group.vue";
+import GroupCreator from "../widgets/GroupCreator.vue";
 
 @Component({
   name: "Markdown",
-  components: { Group },
+  components: { GroupCreator },
 })
 export default class Markdown extends Vue {
   schema = schemaMarkdown;

@@ -20,11 +20,11 @@
     </div>
 
     <div class="binaries" v-else>
-      <CheckGroup :data="binaries" @change="binary = $event" />
+      <AdditionCheckGroup :data="binaries" @change="binary = $event" />
     </div>
 
     <div class="commons">
-      <CheckGroup :data="commons" @change="common = $event" />
+      <AdditionCheckGroup :data="commons" @change="common = $event" />
     </div>
 
     <div class="unitext-button" @click="handleExport()">导 出</div>
@@ -33,16 +33,22 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 
-import CheckGroup from "../widgets/CheckGroup.vue";
+import AdditionCheckGroup from "../widgets/AdditionCheckGroup.vue";
+
+const statusPanel = namespace("statusPanel");
 
 @Component({
   name: "Export",
   components: {
-    CheckGroup,
+    AdditionCheckGroup,
   },
 })
 export default class Export extends Vue {
+  @statusPanel.Action("EXPORT")
+  EXPORT!: (...args: any[]) => void;
+
   channel = "PDF";
 
   spec = "GFM";
@@ -110,7 +116,7 @@ export default class Export extends Vue {
   handleExport() {
     // TODO 提交数据
     // spec 与 binary 互斥
-    console.log(this.channel, this.spec, this.binary, this.common);
+    this.EXPORT([this.channel, this.spec, this.binary, this.common]);
   }
 }
 </script>

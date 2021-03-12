@@ -6,11 +6,9 @@
       <button class="unitext-button" @click="handleClose()">关闭</button>
     </div>
 
-    <System v-if="settingType === 0" class="data-form" />
-    <Preference v-if="settingType === 1" class="data-form" />
-    <Markdown v-if="settingType === 2" class="data-form" />
-    <Theme v-if="settingType === 3" class="data-form" />
-    <Snippet v-if="settingType === 5" class="data-form" />
+    <keep-alive>
+      <component :is="settingType" class="data-form" />
+    </keep-alive>
   </div>
 </template>
 
@@ -25,6 +23,7 @@ import Markdown from "./items/Markdown.vue";
 import Preference from "./items/Preference.vue";
 import { BUS_SIDEBAR } from "@/common/channel/bus";
 import { ESettingType, EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
+
 const workBench = namespace("workBench");
 
 @Component({

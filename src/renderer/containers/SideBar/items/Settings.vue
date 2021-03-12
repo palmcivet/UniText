@@ -34,7 +34,7 @@ export default class Settings extends Vue {
   get settingGroup() {
     return [
       {
-        icon: "ri-settings-3-line",
+        icon: "ri-rocket-2-line",
         type: ESettingType.SYSTEM,
         title: this.$t("sidebar.settings_system"),
       },

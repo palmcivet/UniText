@@ -3,7 +3,7 @@
     <input
       type="checkbox"
       :checked="value"
-      :disabled="hasDisabled"
+      :disabled="disabled"
       @change="handleChange()"
     />
     <label>{{ $g(prop.title) }}</label>
