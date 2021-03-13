@@ -55,6 +55,12 @@ export default class Keybinding {
       ["view.minimap", ""],
       ["view.space", ""],
 
+      /* format */
+      ["format.headUp", "Shift+Ctrl+]"],
+      ["format.headDown", "Ctrl+Shift+["],
+      ["format.bold", "CmdOrCtrl+B"],
+      ["format.italic", "CmdOrCtrl+I"],
+
       /* help */
       ["help.learnmore", ""],
       ["help.toggledevtools", "Option+Cmd+I"],

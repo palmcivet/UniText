@@ -4,18 +4,21 @@ import { autoUpdater } from "electron-updater";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
 import { buildUrl, URL_PATH, URL_PROTOCOL } from "@/common/url";
-import Logger from "@/main/services/Logger";
 import System from "@/common/userData/System";
 import Keybinding from "@/common/userData/Keybinding";
+import Logger from "@/main/services/Logger";
+import Printer from "@/main/services/Printer";
 import MenuManager from "@/main/services/MenuManager";
 import ImageManager from "@/main/services/ImageManager";
 import { EWindowType } from "@/typings/main";
 import { EI18n } from "@/typings/schema/preference";
 
 export default class UniText {
+  private _system!: System;
+
   private _logger!: Logger;
 
-  private _system!: System;
+  private _printer!: Printer;
 
   private _keybinding!: Keybinding;
 
@@ -32,13 +35,12 @@ export default class UniText {
       SYSTEM_PATH.ERROR_LOG(sysPath),
       SYSTEM_PATH.INFO_LOG(sysPath)
     );
+    this._printer = new Printer();
     this._system = new System(sysPath, this._logger);
     this._keybinding = new Keybinding();
     this._menuManager = new MenuManager();
     this._imageManager = new ImageManager();
     this._window = null;
-
-    this._listenForIpcMain();
   }
 
   private async _openMain() {
@@ -146,7 +148,7 @@ export default class UniText {
 
     process.on("uncaughtException", (e) => {
       this._logger.error(`${e.name}: ${e.message}`);
-      app.quit();
+      // TODO 细化崩溃处理
     });
 
     if (isWin) {
@@ -168,8 +170,10 @@ export default class UniText {
         autoUpdater.checkForUpdatesAndNotify();
       }
 
+      this._printer.getReady();
       this._openMain();
       this._registerProtocol();
+      this._listenForIpcMain();
     });
 
     app.on("window-all-closed", () => {

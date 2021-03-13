@@ -17,7 +17,6 @@ import Message from "./items/Message.vue";
 import TagList from "./items/TagList.vue";
 import PanelType from "./items/PanelType.vue";
 import PanelStyle from "./items/PanelStyle.vue";
-import SyncStatus from "./items/SyncStatus.vue";
 import SyncScheme from "./items/SyncScheme.vue";
 
 const Space = {
@@ -33,12 +32,13 @@ const Space = {
     Space,
     Mode,
     TagList,
-    SyncStatus,
     SyncScheme,
   },
 })
 export default class StatusBar extends Vue {
-  leftGroup = ["SyncScheme", "Space", "SyncStatus", "TagList"];
+  // <i class="ri-history-line"></i>
+
+  leftGroup = ["SyncScheme", "Space", "TagList"];
   rightGroup = ["Message", "Space", "PanelType", "Space", "PanelStyle", "Mode"];
 }
 </script>

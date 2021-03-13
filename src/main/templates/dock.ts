@@ -1,9 +1,9 @@
 import Keybinding from "@/common/userData/Keybinding";
 import { localesMenu } from "@/common/i18n/iMenu";
-import { EI18n } from "@/typings/schema/preference";
 import { TMenuTemplate } from "@/typings/main";
+import { EI18n } from "@/typings/schema/preference";
 
-export const dock = (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
+export default (locale: EI18n, keybinding: Keybinding): TMenuTemplate => [
   {
     label: localesMenu.dock.newwindow[locale],
     accelerator: keybinding.getItem("dock.newwindow"),

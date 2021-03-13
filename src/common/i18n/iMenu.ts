@@ -26,17 +26,20 @@ export const localesMenu = {
 
   file: {
     label: localesCommon.files,
-    mark_add: ["添加书签"],
-    mark_del: ["取消书签"],
-    read: ["阅读"],
-    edit: ["编辑"],
-    save: ["保存"],
-    open: ["打开"],
-    new_file: ["新建文件"],
-    new_folder: ["新建文件夹"],
     project_open: localesCommon.open_project,
     project_close: ["关闭笔记库"],
+    mark_add: ["添加书签"],
+    mark_del: ["取消书签"],
+    new_file: ["新建文件"],
+    new_folder: ["新建文件夹"],
+    read: ["阅读文档"],
+    edit: ["编辑文档"],
+    rename: ["重命名"],
+    save: ["保存"],
+    saveas: ["另存为"],
     reveal: ["显示在文件管理器"],
+    export: ["导出文档"],
+    transmit: ["迁移笔记库"],
   },
 
   edit: {
@@ -48,27 +51,42 @@ export const localesMenu = {
     paste: ["粘贴"],
     delete: ["删除"],
     selectall: ["全选"],
+    find: ["查找"],
+    findNext: ["向下查找"],
+    findPrevious: ["向上查找"],
+    replace: ["替换"],
+
+    // TODO 上下文菜单
     rename: ["重命名"],
     reicon: ["更改图标"],
   },
 
   view: {
-    label: ["查看"],
+    label: ["视图"],
+    statusbar: ["状态栏"],
     sidebar: ["侧边栏"],
     sidepanel: ["侧边面板"],
-    statusbar: ["状态栏"],
     preview: ["预览模式"],
     source: ["编辑模式"],
     autowrap: ["折行"],
     minimap: ["地图"],
     space: ["显示空格"],
+    command: ["命令面板"],
   },
 
-  export: {
-    label: ["导出"],
-    pdf: ["PDF"],
-    html: ["HTML"],
-    markdown: ["Markdown"],
+  format: {
+    label: ["格式"],
+    headUp: ["提高标题"],
+    headDown: ["降低标题"],
+    orderList: ["有序列表"],
+    unOrderList: ["无序列表"],
+    bold: ["加粗"],
+    italic: ["斜体"],
+    sup: ["上标"],
+    sub: ["下标"],
+    mark: ["高亮"],
+    delete: ["删除线"],
+    img: ["图片"],
   },
 
   window: {

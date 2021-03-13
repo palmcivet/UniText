@@ -23,8 +23,8 @@ import { CONFIG_FILE } from "@/common/env";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IMarkdown } from "@/typings/schema/markdown";
 
-const _BAD_PROTO_RE = /^(vbscript|javascript|data):/;
-const _GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
+const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
+const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
 export default class MarkdownEngine {
   private _dataSet!: Store<IMarkdown>;
@@ -54,7 +54,7 @@ export default class MarkdownEngine {
 
     this.engine.validateLink = (url) => {
       let str = url.trim().toLowerCase();
-      return _BAD_PROTO_RE.test(str) ? !!_GOOD_DATA_RE.test(str) : true;
+      return BAD_PROTO_RE.test(str) ? !!GOOD_DATA_RE.test(str) : true;
     };
 
     this.engine.use(MarkdownItImageList, {

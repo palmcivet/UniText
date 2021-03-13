@@ -1,9 +1,12 @@
+import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
+import { IPC_EXPORT } from "@/common/channel/ipc";
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { IStatusPanelState } from "@/typings/vuex/statusPanel";
+import { $id } from "@/common/utils";
 
 const state: IStatusPanelState = {
   toc: [],
@@ -29,6 +32,7 @@ const mutations: MutationTree<IStatusPanelState> = {
 const actions: ActionTree<IStatusPanelState, IRootState> = {
   EXPORT: (_: ActionContext<IStatusPanelState, IRootState>, args) => {
     console.log(...args);
+    ipcRenderer.send(IPC_EXPORT.AS_PDF, $id("markdown-preview").innerHTML);
   },
 
   LISTEN_FOR_STATUS: (_: ActionContext<IStatusPanelState, IRootState>) => {

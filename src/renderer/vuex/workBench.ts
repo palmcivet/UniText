@@ -225,14 +225,17 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const { dispatch } = _;
     const { document, fileManager } = _.rootState.general;
     const { route, isRead } = payload;
-    const path = joinPath(fileManager.folderDir, ...route);
-    const { data, content } = importFrontMatter((await fse.readFile(path)).toString());
+
+    const filePath = joinPath(fileManager.folderDir, ...route);
+    const { data, content } = importFrontMatter(
+      (await fse.readFile(filePath)).toString()
+    );
 
     let doc: IDocumentFrontMatter;
 
     // FEAT 校验字段
     if (data === undefined) {
-      const { createDate, modifyDate } = await fetchFileInfo(path);
+      const { createDate, modifyDate } = await fetchFileInfo(filePath);
       doc = {
         remark: "",
         complete: false,
@@ -268,7 +271,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
         content,
         ...doc,
       } as IFile,
-      index: hashCode(path),
+      index: hashCode(filePath),
     });
   },
 

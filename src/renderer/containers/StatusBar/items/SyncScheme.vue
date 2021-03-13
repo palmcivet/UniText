@@ -1,9 +1,5 @@
 <template>
-  <ol>
-    <li>iCloud</li>
-    <li><i class="ri-cloud-off-line" /></li>
-    <!-- <li><i class="ri-cloud-line"></i></li> -->
-  </ol>
+  <li>iCloud</li>
 </template>
 
 <script lang="ts">

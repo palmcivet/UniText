@@ -5,8 +5,6 @@
       {{ v.label }}
     </label>
 
-    <UCheckBox v-for="(v, k) in main" :key="k" :value="v.check" :prop="v" />
-
     <label>
       <input
         type="checkbox"

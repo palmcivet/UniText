@@ -10,7 +10,9 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
   name: "TitleBar",
 })
-export default class TitleBar extends Vue {}
+export default class TitleBar extends Vue {
+  // win.maximize();
+}
 </script>
 
 <style lang="less" scoped>

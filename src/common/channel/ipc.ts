@@ -21,6 +21,10 @@ export enum IPC_FILE {
   MARK_DEL = "IPC::MARK_DEL",
 }
 
+export enum IPC_EXPORT {
+  AS_PDF = "IPC::EXPORT_AS_PDF",
+}
+
 export enum IPC_IMAGE {
   SET_IMAGE = "IPC::SET_IMAGE",
   REG_IMAGE = "IPC::REG_IMAGE",
