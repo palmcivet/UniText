@@ -1,6 +1,7 @@
 import { app, shell, ipcMain, protocol, BrowserWindow } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
+import { join } from "path";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
 import { buildUrl, URL_PATH, URL_PROTOCOL } from "@/common/url";
@@ -81,6 +82,8 @@ export default class UniText {
     win.on("closed", () => {
       win = null;
     });
+
+    this._printer.getReady();
 
     this._window = win;
   }
@@ -170,7 +173,6 @@ export default class UniText {
         autoUpdater.checkForUpdatesAndNotify();
       }
 
-      this._printer.getReady();
       this._openMain();
       this._registerProtocol();
       this._listenForIpcMain();

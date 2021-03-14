@@ -1,13 +1,22 @@
-import { ipcMain, BrowserView, BrowserWindow, dialog, shell } from "electron";
-
-import { IPC_EXPORT } from "@/common/channel/ipc";
+import { ipcMain, BrowserWindow, dialog, shell, BrowserView } from "electron";
 import * as fse from "fs-extra";
 
+import { IPC_EXPORT } from "@/common/channel/ipc";
+import { URL_HOST } from "@/common/url";
+
 export default class {
-  view!: BrowserView;
+  view!: BrowserWindow;
 
   getReady() {
-    this.view = new BrowserView();
+    this.view = new BrowserWindow({
+      webPreferences: {
+        plugins: true,
+        nodeIntegration: true,
+      },
+      show: false,
+    });
+
+    this.view.webContents.loadURL(`${URL_HOST}/printer.html`);
     this._listenForIpcMain();
   }
 
@@ -17,29 +26,15 @@ export default class {
 
       const { filePath, canceled } = await dialog.showSaveDialog(win, {});
 
+      this.view.webContents.send("IPC::PRINT", html);
+
       try {
-        this.view.webContents
-          .executeJavaScript("document.body.innerHTML =`" + html + "`;")
-          .then((res) => {
-            console.log(res);
-            console.log("AFT");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-
-        this.view.webContents.on("dom-ready", async () => {
-          const options: Electron.PrintToPDFOptions = { printBackground: true };
-
-          const data = await this.view.webContents.printToPDF(options);
-
-          if (filePath && !canceled) {
-            await fse.writeFile(filePath, data, {});
-            shell.showItemInFolder(filePath);
-          }
-        });
-        console.log("GO");
-
+        const options: Electron.PrintToPDFOptions = { printBackground: true };
+        const data = await this.view.webContents.printToPDF(options);
+        if (filePath && !canceled) {
+          await fse.writeFile(filePath, data, {});
+          shell.showItemInFolder(filePath);
+        }
         // TODO success
       } catch (err) {
         // TODO fail
