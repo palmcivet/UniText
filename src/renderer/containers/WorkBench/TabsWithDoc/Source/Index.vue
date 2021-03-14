@@ -1,9 +1,9 @@
 <template>
-  <LayoutBox
+  <SplitView
     :totalWidth="containerWidth"
     :showMain="!isReadMode"
     :showMinor="dbColumn || isReadMode"
-    :threWidth="1 / 2"
+    :isScale="true"
   >
     <template v-slot:left>
       <section id="markdown-editor" v-show="!isReadMode" />
@@ -11,7 +11,7 @@
     <template v-slot:right>
       <section id="markdown-preview" class="line-numbers match-braces rainbow-braces" />
     </template>
-  </LayoutBox>
+  </SplitView>
 </template>
 
 <script lang="ts">
@@ -26,7 +26,7 @@ import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
 import { debounce, $, notEmpty } from "@/common/utils";
 import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import { cleanUrl, getClipboard } from "@/renderer/utils/links";
-import LayoutBox from "@/renderer/components/LayoutBox.vue";
+import SplitView from "@/renderer/components/SplitView.vue";
 import { IFile } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EPanelType } from "@/typings/schema/preference";
@@ -42,7 +42,7 @@ const DEFINE_BORDER = 16; // 边框大小
 @Component({
   name: "Source",
   components: {
-    LayoutBox,
+    SplitView,
   },
 })
 export default class Source extends Vue {
@@ -83,6 +83,7 @@ export default class Source extends Vue {
 
   syncDelay = 400;
 
+  // TODO
   containerWidth = 0;
 
   @Watch("currentFile", { deep: true })

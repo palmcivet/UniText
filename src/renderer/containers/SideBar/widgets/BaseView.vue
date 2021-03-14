@@ -28,6 +28,7 @@ export default class BaseView extends Vue {
 .side-bar {
   background: var(--sideBar-Bg);
   color: var(--sideBar-Fg);
+  height: 100%;
 
   .header {
     display: flex;

@@ -137,13 +137,15 @@ section {
   }
 
   .channels {
+    padding-top: 6px;
+
     label {
       cursor: pointer;
       color: var(--button-Fg);
       background: var(--button-Bg);
       display: flex;
       width: 100%;
-      margin-top: 6px;
+      margin-bottom: 6px;
       justify-content: center;
 
       i {

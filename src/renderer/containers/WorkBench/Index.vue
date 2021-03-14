@@ -1,32 +1,18 @@
 <template>
-  <LayoutBox
-    :totalWidth="containerWidth"
-    :showMinor="isShowPanel && !isPanelFloat"
-    :threWidth="[150, 250]"
-  >
-    <template v-slot:left>
-      <TabsWithDoc v-show="workBenchType === 0" />
-      <Startup v-show="workBenchType === 1" />
-      <Setting v-show="workBenchType === 2" />
-      <!-- TODO 将 panel 放入 TabsWithDoc -->
-      <SidePanel :fixed="false" />
-    </template>
-    <template v-slot:right>
-      <SidePanel :fixed="true" />
-    </template>
-  </LayoutBox>
+  <div>
+    <TabsWithDoc v-show="workBenchType === 0" />
+    <Startup v-show="workBenchType === 1" />
+    <Setting v-show="workBenchType === 2" />
+  </div>
 </template>
 
 <script lang="ts">
 import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 
-import { BUS_UI } from "@/common/channel/bus";
-import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import Startup from "@/renderer/containers/WorkBench/Startup/Index.vue";
 import Setting from "@/renderer/containers/WorkBench/Setting/Index.vue";
 import TabsWithDoc from "@/renderer/containers/WorkBench/TabsWithDoc/Index.vue";
-import LayoutBox from "@/renderer/components/LayoutBox.vue";
 import { EStartup } from "@/typings/schema/preference";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EWorkBenchType, IWorkBenchState } from "@/typings/vuex/workBench";
@@ -37,20 +23,12 @@ const workBench = namespace("workBench");
 @Component({
   name: "WorkBench",
   components: {
-    LayoutBox,
     Startup,
     Setting,
-    SidePanel,
     TabsWithDoc,
   },
 })
 export default class WorkBench extends Vue {
-  @general.State((state: IGeneralState) => state.interface.showPanel)
-  isShowPanel!: boolean;
-
-  @general.State((state: IGeneralState) => state.interface.panelFloat)
-  isPanelFloat!: boolean;
-
   @general.State((state: IGeneralState) => state.workBench.startup)
   startup!: EStartup;
 
@@ -60,29 +38,19 @@ export default class WorkBench extends Vue {
   @workBench.Action("NEW_FILE")
   NEW_FILE!: (title?: string) => void;
 
-  containerWidth = 0;
-
-  handleResize() {
-    this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-  }
-
   created() {
     if (this.startup === EStartup.CREATE) {
       this.NEW_FILE();
     }
   }
-
-  mounted() {
-    this.$nextTick(() => {
-      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-      this.$bus.on(BUS_UI.SYNC_RESIZE, this.handleResize);
-    });
-  }
-
-  beforeDestroy() {
-    this.$bus.off(BUS_UI.SYNC_RESIZE, this.handleResize);
-  }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+div {
+  height: 100%;
+  // TODO 统一工作台背景
+  color: var(--workBench-Fg);
+  background: var(--workBench-Bg);
+}
+</style>

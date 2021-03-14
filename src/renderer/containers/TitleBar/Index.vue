@@ -1,17 +1,27 @@
 <template>
-  <header>
-    <span>UniText</span>
+  <header @dblclick="toogleZoom()">
+    <span class="text">UniText</span>
+    <div class="tool" v-if="isWin32">
+      <i class="ri-indeterminate-circle-line" />
+      <i class="ri-fullscreen-line" />
+      <i class="ri-close-line" />
+    </div>
   </header>
 </template>
 
 <script lang="ts">
+import { isWin } from "@/common/env";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   name: "TitleBar",
 })
 export default class TitleBar extends Vue {
-  // win.maximize();
+  isWin32 = isWin;
+
+  toogleZoom() {
+    // win.maximize();
+  }
 }
 </script>
 
@@ -24,7 +34,7 @@ header {
   -webkit-app-region: drag;
   background: var(--titleBar-activeBg);
 
-  span {
+  .text {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);

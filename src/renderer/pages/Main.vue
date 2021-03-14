@@ -1,11 +1,17 @@
 <template>
   <div class="main-window">
-    <TitleBar v-show="showTitle" />
+    <TitleBar />
     <main>
       <ActivityBar />
-      <SideBar :style="{ width: `${finalLeftWidth - 2}px` }" />
-      <span class="unitext-resize" v-show="isShowSide" ref="leftResize" />
-      <WorkBench :style="{ width: centerWidth }" />
+      <LayoutView
+        :isLeft="true"
+        :isHidden="!isShowSide"
+        :threshold="[150, 250]"
+        :wrapperWidth="$parent.$el.clientWidth - 45"
+      >
+        <template v-slot:left><SideBar /></template>
+        <template v-slot:right><WorkBench /></template>
+      </LayoutView>
     </main>
     <StatusBar />
     <MessagePanel v-show="showMessage" class="float" />
@@ -16,8 +22,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { isOsx } from "@/common/env";
 import { BUS_UI } from "@/common/channel/bus";
+import LayoutView from "@/renderer/components/LayoutView.vue";
 import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
@@ -39,35 +45,15 @@ const notification = namespace("notification");
     WorkBench,
     ActivityBar,
     MessagePanel,
+    LayoutView,
   },
 })
 export default class Main extends Vue {
   @general.State((state: IGeneralState) => state.interface.showSideBar)
   isShowSide!: boolean;
 
-  @general.State((state: IGeneralState) => state.interface.showPanel)
-  isShowPanel!: boolean;
-
   @notification.State((state: INotificationState) => state.showMessage)
   showMessage!: boolean;
-
-  leftViewWidth = 200;
-
-  showTitle = isOsx;
-
-  get finalLeftWidth() {
-    return this.leftViewWidth;
-  }
-
-  set finalLeftWidth(value: number) {
-    this.leftViewWidth = value;
-  }
-
-  get centerWidth() {
-    return this.isShowSide
-      ? `calc(100vw - 45px - ${this.finalLeftWidth}px`
-      : "calc(100vw - 45px)";
-  }
 
   handleResize() {
     this.$bus.emit(BUS_UI.SYNC_RESIZE);
@@ -90,58 +76,7 @@ export default class Main extends Vue {
   }
 
   mounted() {
-    this.$nextTick(() => {
-      const { leftResize } = this.$refs;
-
-      let leftSideBarWidth = +this.leftViewWidth;
-
-      this.leftViewWidth = leftSideBarWidth;
-
-      let startX = 0;
-      let startWidth = leftSideBarWidth;
-
-      const mouseMoveHandler = (e: MouseEvent) => {
-        const offset = e.clientX - startX;
-        leftSideBarWidth = startWidth + offset;
-        if (leftSideBarWidth < 150) {
-          this.leftViewWidth = 150;
-        } else if (leftSideBarWidth > 250) {
-          this.leftViewWidth = 250;
-        } else {
-          this.leftViewWidth = leftSideBarWidth;
-        }
-      };
-
-      const mouseUpHandler = (e: MouseEvent) => {
-        document.removeEventListener("mousemove", mouseMoveHandler, false);
-        document.removeEventListener("mouseup", mouseUpHandler, false);
-        // DEV @layout-leftSide-left-width;
-        if (leftSideBarWidth >= 150 && leftSideBarWidth <= 250) {
-          this.leftViewWidth = leftSideBarWidth;
-        }
-      };
-
-      const mouseDownHandler = (e: MouseEvent) => {
-        startX = e.clientX;
-        startWidth = +this.leftViewWidth;
-        document.addEventListener("mousemove", mouseMoveHandler, false);
-        document.addEventListener("mouseup", mouseUpHandler, false);
-      };
-
-      // TODO 修复
-      setTimeout(
-        () =>
-          (leftResize as HTMLElement).addEventListener(
-            "mousedown",
-            mouseDownHandler,
-            false
-          ),
-        500
-      );
-
-      /* 调整大小 */
-      window.addEventListener("resize", this.handleResize);
-    });
+    window.addEventListener("resize", this.handleResize);
   }
 
   beforeDestroy() {
