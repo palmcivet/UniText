@@ -11,6 +11,7 @@ import Main from "@/renderer/pages/Main.vue";
 import store from "@/renderer/vuex";
 import VueBus from "@/renderer/plugins/VueBus";
 import VueI18n from "@/renderer/plugins/VueI18n";
+import VueLayout from "@/renderer/plugins/VueLayout";
 
 import "@/renderer/styles/main.less";
 
@@ -20,6 +21,13 @@ Vue.use(VueBus);
 Vue.use(VueI18n, {
   lang: args.lang,
   messages: localesView,
+});
+Vue.use(VueLayout, {
+  setup: { sash: 2, width: 970, height: 590 },
+  layout: {
+    side: { width: 160, range: [150, 250], close: false },
+    panel: { width: 155, range: [150, 250], close: true },
+  },
 });
 
 Vue.prototype.$theme = new Theme(args.proj);

@@ -1,49 +1,43 @@
 <template>
-  <LayoutView
-    :isLeft="false"
-    :isHidden="!isShowPanel || isPanelFloat"
-    :threshold="[150, 250]"
-    :wrapperWidth="wrapperWidth"
-  >
-    <template v-slot:left>
-      <div class="tabs-with-doc">
-        <Draggable
-          tag="ul"
-          ref="tabContainer"
-          v-model="openedTabs"
-          v-bind="dragOptions"
-          :component-data="componentData()"
-          @start="drag = true"
-          @end="drag = false"
-        >
-          <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <li
-              v-for="v in openedTabs"
-              :key="v.order"
-              :class="v.order === currentIndex ? 'active' : 'inactive'"
-              @click.stop="SELECT_TAB({ cur: v.order })"
-              @contextmenu="handleTabContext()"
-            >
-              <span>{{ v.title }}</span>
-              <i class="ri-close-line" @click.stop="CLOSE_FILE(v.order)" />
-            </li>
-          </transition-group>
-        </Draggable>
+  <div class="tabs-with-panel">
+    <div class="tabs-with-doc">
+      <Draggable
+        tag="ul"
+        ref="tabContainer"
+        v-model="openedTabs"
+        v-bind="dragOptions"
+        :component-data="componentData()"
+        @start="drag = true"
+        @end="drag = false"
+      >
+        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+          <li
+            v-for="v in openedTabs"
+            :key="v.order"
+            :class="v.order === currentIndex ? 'active' : 'inactive'"
+            @click.stop="SELECT_TAB({ cur: v.order })"
+            @contextmenu="handleTabContext()"
+          >
+            <span>{{ v.title }}</span>
+            <i class="ri-close-line" @click.stop="CLOSE_FILE(v.order)" />
+          </li>
+        </transition-group>
+      </Draggable>
 
-        <Source class="markdown-editor" />
-      </div>
-      <SidePanel :fixed="false" />
-    </template>
-    <template v-slot:right>
+      <Source class="markdown-editor" />
+    </div>
+    <span class="unitext-resize" v-sash="'panel'"></span>
+    <div>
       <SidePanel :fixed="true" />
-    </template>
-  </LayoutView>
+    </div>
+    <SidePanel :fixed="false" />
+  </div>
 </template>
 
 <script lang="ts">
 import { ipcRenderer } from "electron";
 import { namespace } from "vuex-class";
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import Draggable from "vuedraggable";
 
 import Source from "./Source/Index.vue";
@@ -53,7 +47,6 @@ import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import { ITab } from "@/typings/vuex/workBench";
 import { IGeneralState } from "@/typings/vuex/general";
 import { EMenuContextKey } from "@/typings/main";
-import { BUS_UI } from "@/common/channel/bus";
 
 const general = namespace("general");
 const workBench = namespace("workBench");
@@ -91,9 +84,6 @@ export default class TabsWithDoc extends Vue {
 
   @general.State((state: IGeneralState) => state.interface.panelFloat)
   isPanelFloat!: boolean;
-
-  // TODO
-  wrapperWidth = 772;
 
   drag = false;
 
@@ -141,10 +131,6 @@ export default class TabsWithDoc extends Vue {
     ipcRenderer.send(IPC_MENUMANAGER.POPUP_CONTEXT, EMenuContextKey.TAB_BAR);
   }
 
-  handleResize() {
-    this.wrapperWidth = (this.$el as HTMLElement).offsetWidth;
-  }
-
   created() {
     this.$nextTick(() => {
       this.tabRef = (this.$refs.tabContainer as Vue).$children[0].$el as HTMLElement;
@@ -152,13 +138,7 @@ export default class TabsWithDoc extends Vue {
     });
   }
 
-  mounted() {
-    this.wrapperWidth = (this.$el as HTMLElement).offsetWidth;
-    this.$bus.on(BUS_UI.SYNC_RESIZE, this.handleResize);
-  }
-
   beforeDestroy() {
-    this.$bus.off(BUS_UI.SYNC_RESIZE, this.handleResize);
     this.tabRef.removeEventListener("wheel", this.handleTabScroll);
   }
 }
@@ -166,6 +146,10 @@ export default class TabsWithDoc extends Vue {
 
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
+
+.tabs-with-panel {
+  display: flex;
+}
 
 .tabs-with-doc {
   height: 100%;

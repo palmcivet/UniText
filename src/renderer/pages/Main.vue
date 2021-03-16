@@ -3,15 +3,11 @@
     <TitleBar />
     <main>
       <ActivityBar />
-      <LayoutView
-        :isLeft="true"
-        :isHidden="!isShowSide"
-        :threshold="[150, 250]"
-        :wrapperWidth="$parent.$el.clientWidth - 45"
-      >
-        <template v-slot:left><SideBar /></template>
-        <template v-slot:right><WorkBench /></template>
-      </LayoutView>
+      <div>
+        <div><SideBar /></div>
+        <span class="unitext-resize" v-sash="'side'" />
+        <div><WorkBench /></div>
+      </div>
     </main>
     <StatusBar />
     <MessagePanel v-show="showMessage" class="float" />
@@ -22,7 +18,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { BUS_UI } from "@/common/channel/bus";
 import LayoutView from "@/renderer/components/LayoutView.vue";
 import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
@@ -55,10 +50,6 @@ export default class Main extends Vue {
   @notification.State((state: INotificationState) => state.showMessage)
   showMessage!: boolean;
 
-  handleResize() {
-    this.$bus.emit(BUS_UI.SYNC_RESIZE);
-  }
-
   beforeCreate() {
     const { commit } = this.$store;
 
@@ -74,14 +65,6 @@ export default class Main extends Vue {
     dispatch("statusPanel/LISTEN_FOR_STATUS");
     dispatch("notification/LISTEN_FOR_NOTIFY");
   }
-
-  mounted() {
-    window.addEventListener("resize", this.handleResize);
-  }
-
-  beforeDestroy() {
-    window.removeEventListener("resize", this.handleResize);
-  }
 }
 </script>
 
@@ -92,6 +75,12 @@ export default class Main extends Vue {
   > main {
     display: flex;
     height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
+
+    > div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
   }
 
   .float {
