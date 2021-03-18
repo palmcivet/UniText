@@ -13,14 +13,13 @@ const setHide = (el: HTMLElement, flag: boolean) => {
 /* -------------------------- types ------------------------------- */
 
 interface IPartParams {
-  width: number;
   range: [number, number];
-  close: boolean;
+  isClose: boolean;
+  mainPart: number;
 }
 
 interface IPluginOptions {
   setup: {
-    sash: number;
     width: number;
     height: number;
   };
@@ -29,142 +28,168 @@ interface IPluginOptions {
     panel: IPartParams;
   };
   cross: {
+    range: number;
     width: number;
     close: "left" | "right";
-    range: number;
   };
 }
 
-type TPartKey = UnionKey<IPluginOptions>;
+interface IPluginRunningItem {
+  range: [number, number];
+  isLeft: boolean;
+  isClose: boolean;
+  mainPart: number;
+}
+
+interface IPluginRunning<T> {
+  [K: string]: T;
+}
 
 export interface IVueLayout {
   readonly $layout: {
-    registerPart: () => void;
+    togglePart: (key: string) => void;
   };
+}
+
+/* -------------------------- class ------------------------------- */
+
+const SASH = 2;
+
+class Container {
+  private _sashEle!: HTMLElement;
+
+  private _prevEle!: HTMLElement;
+
+  private _nextEle!: HTMLElement;
+
+  private _range!: [number, number];
+
+  private _isLeft!: boolean;
+
+  private _isClose!: boolean;
+
+  private _mainPart!: number;
+
+  private _container!: number;
+
+  private _ob!: ResizeObserver;
+
+  constructor(el: HTMLElement, opt: IPluginRunningItem) {
+    this._sashEle = el;
+    this._prevEle = (opt.isLeft
+      ? el.previousElementSibling
+      : el.nextElementSibling) as HTMLElement;
+    this._nextEle = (opt.isLeft
+      ? el.nextElementSibling
+      : el.previousElementSibling) as HTMLElement;
+
+    this._range = opt.range;
+    this._isLeft = opt.isLeft;
+    this._isClose = opt.isClose;
+    this._mainPart = opt.mainPart;
+
+    this._registerResize(el);
+    this._registerSash(el);
+    this.render();
+  }
+
+  private _registerResize(el: HTMLElement) {
+    el.parentElement?.addEventListener("resize", () => this.render());
+  }
+
+  private _registerSash(el: HTMLElement) {
+    /**
+     * Start point for caculate the distance
+     */
+    let startX = 0;
+    /**
+     * Start position
+     */
+    let startWidth = this._prevEle.clientWidth;
+    /**
+     * Immediate position when dragging the sash
+     */
+    let immedWidth = startWidth;
+
+    const mouseMoveHandler = (e: MouseEvent) => {
+      const offset = e.clientX - startX;
+      immedWidth = startWidth + (this._isLeft ? offset : -offset);
+      if (immedWidth < this._range[0]) {
+        this._mainPart = this._range[0];
+      } else if (immedWidth > this._range[1]) {
+        this._mainPart = this._range[1];
+      } else {
+        this._mainPart = immedWidth;
+      }
+      this._renderWidth();
+    };
+
+    const mouseUpHandler = (e: MouseEvent) => {
+      document.removeEventListener("mousemove", mouseMoveHandler, false);
+      document.removeEventListener("mouseup", mouseUpHandler, false);
+      if (immedWidth >= this._range[0] && immedWidth <= this._range[1]) {
+        this._mainPart = immedWidth;
+        this._renderWidth();
+      }
+    };
+
+    const mouseDownHandler = (e: MouseEvent) => {
+      startX = e.clientX;
+      startWidth = this._prevEle.clientWidth;
+      document.addEventListener("mousemove", mouseMoveHandler, false);
+      document.addEventListener("mouseup", mouseUpHandler, false);
+    };
+
+    el.addEventListener("mousedown", mouseDownHandler, false);
+  }
+
+  private _renderWidth() {
+    const prev = this._isClose ? 0 : this._mainPart;
+    const next = this._isClose ? this._container : this._container - prev - SASH;
+    setWidth(this._prevEle, prev);
+    setWidth(this._nextEle, next);
+  }
+
+  render() {
+    this._container = (this._sashEle.parentElement as HTMLElement).clientWidth;
+    this._renderWidth();
+  }
+
+  toggle() {
+    this._isClose = !this._isClose;
+    setHide(this._sashEle, this._isClose);
+    this._renderWidth();
+  }
 }
 
 /* -------------------------- plugin ------------------------------- */
 
 const install = (Vue: VueConstructor<Vue>, opts: IPluginOptions) => {
-  const p = Vue.prototype;
+  const _p = Vue.prototype;
 
-  const _setup = opts.setup;
-  const _reserved = _setup.sash + 44;
-
-  const _vm: {
-    [K: string]: {
-      width: number;
-      range: [number, number];
-      close: boolean;
-      isLeft: boolean;
-      parent: number;
-      another: number;
-    };
-  } = {
-    side: {
-      isLeft: true,
-      ...opts.layout.side,
-      get parent() {
-        return _setup.width;
-      },
-      get another() {
-        return _setup.width - _vm.side.width - _reserved;
-      },
-    },
-    panel: {
-      isLeft: false,
-      ...opts.layout.panel,
-      get parent() {
-        return _vm.side.width;
-      },
-      get another() {
-        return _vm.side.another - _vm.panel.width - _setup.sash;
-      },
-    },
+  const _setup: IPluginRunning<IPluginRunningItem> = {
+    side: { isLeft: true, ...opts.layout.side },
+    panel: { isLeft: false, ...opts.layout.panel },
   };
 
-  const renderWidth = () => {
-    // setWidth(prevEle, finalWidth);
-    // setWidth(nextEle, parent.width - finalWidth - reserved);
+  const _state: IPluginRunning<Container> = {};
+
+  const _resizeAll = () => {
+    _state.side.render();
+    _state.panel.render();
   };
 
-  const togglePart = () => {};
+  _p.$layout = _p.$layout || {};
 
-  const handleResize = () => {
-    _setup.width = document.body.clientWidth;
-    _setup.height = document.body.clientHeight;
-    renderWidth();
+  _p.$layout.togglePart = (key: string) => {
+    if (!_state[key]) throw new Error(`${key} not in 'side' or 'panel'`);
+    _state[key].toggle();
+    _resizeAll();
   };
-
-  window.addEventListener("resize", handleResize);
-
-  p.$layout = p.$layout || {};
-
-  p.$layout.registerPart = () => {};
 
   Vue.directive("sash", {
     inserted: (el, binding) => {
-      const v = _vm[binding.value as TPartKey];
-
-      const prevEle = (v.isLeft
-        ? el.previousElementSibling
-        : el.nextElementSibling) as HTMLElement;
-      const nextEle = (v.isLeft
-        ? el.nextElementSibling
-        : el.previousElementSibling) as HTMLElement;
-
-      /**
-       * Start point for caculate the distance
-       */
-      let startX = 0;
-      /**
-       * Start position
-       */
-      let startWidth = prevEle.clientWidth;
-      /**
-       * Immediate position when dragging the sash
-       */
-      let immedWidth = startWidth;
-      /**
-       * Final width for the 'left' part
-       */
-      let finalWidth = 0;
-
-      const mouseMoveHandler = (e: MouseEvent) => {
-        const offset = e.clientX - startX;
-        immedWidth = startWidth + (v.isLeft ? offset : -offset);
-        if (immedWidth < v.range[0]) {
-          finalWidth = v.range[0];
-        } else if (immedWidth > v.range[1]) {
-          finalWidth = v.range[1];
-        } else {
-          finalWidth = immedWidth;
-        }
-        v.width = finalWidth;
-        console.log(_vm);
-        setWidth(prevEle, finalWidth);
-        setWidth(nextEle, v.another);
-      };
-
-      const mouseUpHandler = (e: MouseEvent) => {
-        document.removeEventListener("mousemove", mouseMoveHandler, false);
-        document.removeEventListener("mouseup", mouseUpHandler, false);
-        if (immedWidth >= v.range[0] && immedWidth <= v.range[1]) {
-          finalWidth = immedWidth;
-          v.width = finalWidth;
-          setWidth(prevEle, finalWidth);
-          setWidth(nextEle, v.another);
-        }
-      };
-
-      const mouseDownHandler = (e: MouseEvent) => {
-        startX = e.clientX;
-        startWidth = prevEle.clientWidth;
-        document.addEventListener("mousemove", mouseMoveHandler, false);
-        document.addEventListener("mouseup", mouseUpHandler, false);
-      };
-
-      el.addEventListener("mousedown", mouseDownHandler, false);
+      _state[binding.value] = new Container(el, _setup[binding.value]);
     },
     unbind: () => {},
   });

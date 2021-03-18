@@ -16,6 +16,14 @@ import VueLayout from "@/renderer/plugins/VueLayout";
 import "@/renderer/styles/main.less";
 
 const args = parseUrl();
+const pref = new Preference(args.proj);
+
+Vue.config.productionTip = false;
+
+Vue.prototype.$preference = pref;
+Vue.prototype.$markdown = new Markdown(args.proj);
+Vue.prototype.$snippet = new Snippet(args.proj);
+Vue.prototype.$theme = new Theme(args.proj);
 
 Vue.use(VueBus);
 Vue.use(VueI18n, {
@@ -23,19 +31,20 @@ Vue.use(VueI18n, {
   messages: localesView,
 });
 Vue.use(VueLayout, {
-  setup: { sash: 2, width: 970, height: 590 },
+  setup: { width: 970, height: 590 },
   layout: {
-    side: { width: 160, range: [150, 250], close: false },
-    panel: { width: 155, range: [150, 250], close: true },
+    side: {
+      range: [150, 250],
+      isClose: !pref.getItem("interface.showSideBar"),
+      mainPart: 160,
+    },
+    panel: {
+      range: [150, 250],
+      isClose: !pref.getItem("interface.showPanel"),
+      mainPart: 155,
+    },
   },
 });
-
-Vue.prototype.$theme = new Theme(args.proj);
-Vue.prototype.$snippet = new Snippet(args.proj);
-Vue.prototype.$markdown = new Markdown(args.proj);
-Vue.prototype.$preference = new Preference(args.proj);
-
-Vue.config.productionTip = false;
 
 new Vue({
   store,

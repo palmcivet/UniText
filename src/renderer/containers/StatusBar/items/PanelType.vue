@@ -62,12 +62,14 @@ export default class PanelType extends Vue {
 
   handleClick(e: EPanelType) {
     if (!this.showPanel) {
+      this.$layout.togglePart("panel");
       this.TOGGLE_PANEL();
       this.SET_PANEL_TYPE(e);
       return;
     }
 
     if (this.panelType === e) {
+      this.$layout.togglePart("panel");
       this.TOGGLE_PANEL();
     } else {
       this.SET_PANEL_TYPE(e);

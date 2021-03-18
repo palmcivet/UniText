@@ -20,11 +20,11 @@ export default class Preference {
     });
   }
 
-  getItem(key: string): any {
+  getItem(key: MapGet<IPreference>): any {
     return this._dataSet.get(key);
   }
 
-  setItem(key: string, val: any) {
+  setItem(key: MapGet<IPreference>, val: any) {
     this._dataSet.set(key, val);
   }
 

@@ -45,10 +45,8 @@ import { IPC_MENUMANAGER } from "@/common/channel/ipc";
 import LayoutView from "@/renderer/components/LayoutView.vue";
 import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import { ITab } from "@/typings/vuex/workBench";
-import { IGeneralState } from "@/typings/vuex/general";
 import { EMenuContextKey } from "@/typings/main";
 
-const general = namespace("general");
 const workBench = namespace("workBench");
 
 @Component({
@@ -78,12 +76,6 @@ export default class TabsWithDoc extends Vue {
 
   @workBench.Action("NEW_FILE")
   NEW_FILE!: (title?: string) => void;
-
-  @general.State((state: IGeneralState) => state.interface.showPanel)
-  isShowPanel!: boolean;
-
-  @general.State((state: IGeneralState) => state.interface.panelFloat)
-  isPanelFloat!: boolean;
 
   drag = false;
 

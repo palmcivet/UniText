@@ -25,10 +25,8 @@ import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
 import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.vue";
-import { IGeneralState } from "@/typings/vuex/general";
 import { INotificationState } from "@/typings/vuex/notification";
 
-const general = namespace("general");
 const notification = namespace("notification");
 
 @Component({
@@ -44,9 +42,6 @@ const notification = namespace("notification");
   },
 })
 export default class Main extends Vue {
-  @general.State((state: IGeneralState) => state.interface.showSideBar)
-  isShowSide!: boolean;
-
   @notification.State((state: INotificationState) => state.showMessage)
   showMessage!: boolean;
 
@@ -77,7 +72,7 @@ export default class Main extends Vue {
     height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
 
     > div {
-      width: 100%;
+      width: calc(100% - @layout-leftSide-left-width);
       height: 100%;
       display: flex;
     }
