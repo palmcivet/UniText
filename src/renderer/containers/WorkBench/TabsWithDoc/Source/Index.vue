@@ -1,12 +1,12 @@
 <template>
   <SplitView
-    :totalWidth="containerWidth"
-    :showMain="!isReadMode"
-    :showMinor="dbColumn || isReadMode"
-    :isScale="true"
+    :showLeft="!isReadMode"
+    :showRight="dbColumn || isReadMode"
+    :threshold="1 / 4"
+    :isVertical="true"
   >
     <template v-slot:left>
-      <section id="markdown-editor" v-show="!isReadMode" />
+      <section id="markdown-editor" />
     </template>
     <template v-slot:right>
       <section id="markdown-preview" class="line-numbers match-braces rainbow-braces" />
@@ -22,9 +22,9 @@ import * as MonacoEditor from "monaco-editor";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import Prism from "prismjs";
 
+import { BUS_EDITOR } from "@/common/channel/bus";
 import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
 import { debounce, $, notEmpty } from "@/common/utils";
-import { BUS_UI, BUS_EDITOR } from "@/common/channel/bus";
 import { cleanUrl, getClipboard } from "@/renderer/utils/links";
 import SplitView from "@/renderer/components/SplitView.vue";
 import { IFile } from "@/typings/vuex/workBench";
@@ -83,9 +83,6 @@ export default class Source extends Vue {
 
   syncDelay = 400;
 
-  // TODO
-  containerWidth = 0;
-
   @Watch("currentFile", { deep: true })
   syncModel(newValue: { order: string; value: IFile }) {
     this.SET_READ_MODE(newValue.value.readMode);
@@ -128,10 +125,6 @@ export default class Source extends Vue {
   handleRevealSection(value: Array<number>) {
     this.editor.revealLineInCenter(value[1], MonacoEditor.editor.ScrollType.Smooth);
     this.editor.setPosition({ column: 1, lineNumber: value[1] });
-  }
-
-  handleSyncResize() {
-    this.containerWidth = (this.$el as HTMLElement).offsetWidth;
   }
 
   handlePaste() {
@@ -340,17 +333,12 @@ export default class Source extends Vue {
         MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V,
         this.handlePaste
       );
-
-      this.containerWidth = (this.$el as HTMLElement).offsetWidth;
-
-      this.$bus.on(BUS_UI.SYNC_RESIZE, this.handleSyncResize);
     });
   }
 
   beforeDestroy() {
     this.modelStack = {};
     this.editor.dispose();
-    this.$bus.off(BUS_UI.SYNC_RESIZE, this.handleSyncResize);
     this.$bus.off(BUS_EDITOR.SYNC_VIEW, this.handleSyncView);
     this.$bus.off(BUS_EDITOR.CLOSE_FILE, this.handleCloseFile);
     this.$bus.off(BUS_EDITOR.REVEAL_SECTION, this.handleRevealSection);

@@ -45,7 +45,7 @@ interface IPluginRunning<T> {
   [K: string]: T;
 }
 
-type TLayoutKey = "SIDE" | "PANEL";
+type TLayoutKey = "WIN" | "SIDE" | "PANEL";
 
 export interface IVueLayout {
   readonly $layout: {
@@ -174,25 +174,27 @@ const install = (Vue: VueConstructor<Vue>, opts: IPluginOptions) => {
 
   const _fire = (() => {
     const chain = {
+      WIN: ["SIDE", "PANEL"],
       SIDE: ["PANEL"],
       PANEL: [],
     };
-    return (key: "SIDE" | "PANEL") => {
+    return (key: TLayoutKey) => {
       chain[key].forEach((item) => _state[item] && _state[item].render());
     };
   })();
 
-  window.addEventListener("resize", () => _fire("SIDE"));
+  window.addEventListener("resize", () => _fire("WIN"));
 
   _p.$layout = _p.$layout || {};
 
-  _p.$layout.togglePart = (key: "SIDE" | "PANEL") => {
+  _p.$layout.togglePart = (key: TLayoutKey) => {
     if (!_state[key]) throw new Error(`${key} not in 'SIDE' or 'PANEL'`);
     _state[key].toggle();
   };
 
   Vue.directive("sash", {
     inserted: (el, { value }) => {
+      el.setAttribute("class", "unitext-resize");
       _state[value] = new Container(el, _setup[value], () => _fire(value));
     },
   });

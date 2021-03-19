@@ -24,9 +24,9 @@
         </transition-group>
       </Draggable>
 
-      <Source class="markdown-editor" />
+      <Source />
     </div>
-    <span class="unitext-resize" v-sash="'PANEL'"></span>
+    <span v-sash="'PANEL'"></span>
     <div>
       <SidePanel :fixed="true" />
     </div>
@@ -42,7 +42,6 @@ import Draggable from "vuedraggable";
 
 import Source from "./Source/Index.vue";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
-import LayoutView from "@/renderer/components/LayoutView.vue";
 import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import { ITab } from "@/typings/vuex/workBench";
 import { EMenuContextKey } from "@/typings/main";
@@ -52,7 +51,6 @@ const workBench = namespace("workBench");
 @Component({
   name: "TabsWithDoc",
   components: {
-    LayoutView,
     SidePanel,
     Draggable,
     Source,
@@ -215,11 +213,6 @@ export default class TabsWithDoc extends Vue {
         }
       }
     }
-  }
-
-  .markdown-editor {
-    height: calc(100% - @tabBar-height);
-    width: 100%;
   }
 }
 </style>
