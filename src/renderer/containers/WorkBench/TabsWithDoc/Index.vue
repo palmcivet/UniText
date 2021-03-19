@@ -26,7 +26,7 @@
 
       <Source class="markdown-editor" />
     </div>
-    <span class="unitext-resize" v-sash="'panel'"></span>
+    <span class="unitext-resize" v-sash="'PANEL'"></span>
     <div>
       <SidePanel :fixed="true" />
     </div>
@@ -141,6 +141,7 @@ export default class TabsWithDoc extends Vue {
 
 .tabs-with-panel {
   display: flex;
+  width: 100%;
 }
 
 .tabs-with-doc {

@@ -65,14 +65,14 @@ export default class ActivityBar extends Vue {
 
   handleClick(e: EActivityType) {
     if (!this.isShowSide) {
-      this.$layout.togglePart("side");
+      this.$layout.togglePart("SIDE");
       this.TOGGLE_SIDE_BAR();
       this.CHOOSE_ACTIVITY(e);
       return;
     }
 
     if (this.activity === e) {
-      this.$layout.togglePart("side");
+      this.$layout.togglePart("SIDE");
       this.TOGGLE_SIDE_BAR();
     } else {
       this.CHOOSE_ACTIVITY(e);

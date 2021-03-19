@@ -45,9 +45,11 @@ interface IPluginRunning<T> {
   [K: string]: T;
 }
 
+type TLayoutKey = "SIDE" | "PANEL";
+
 export interface IVueLayout {
   readonly $layout: {
-    togglePart: (key: string) => void;
+    togglePart: (key: TLayoutKey) => void;
   };
 }
 
@@ -72,9 +74,9 @@ class Container {
 
   private _container!: number;
 
-  private _ob!: ResizeObserver;
+  private _callback!: TCallback;
 
-  constructor(el: HTMLElement, opt: IPluginRunningItem) {
+  constructor(el: HTMLElement, opt: IPluginRunningItem, cb: TCallback) {
     this._sashEle = el;
     this._prevEle = (opt.isLeft
       ? el.previousElementSibling
@@ -87,14 +89,9 @@ class Container {
     this._isLeft = opt.isLeft;
     this._isClose = opt.isClose;
     this._mainPart = opt.mainPart;
-
-    this._registerResize(el);
+    this._callback = cb;
     this._registerSash(el);
     this.render();
-  }
-
-  private _registerResize(el: HTMLElement) {
-    el.parentElement?.addEventListener("resize", () => this.render());
   }
 
   private _registerSash(el: HTMLElement) {
@@ -148,6 +145,7 @@ class Container {
     const next = this._isClose ? this._container : this._container - prev - SASH;
     setWidth(this._prevEle, prev);
     setWidth(this._nextEle, next);
+    this._callback();
   }
 
   render() {
@@ -168,30 +166,35 @@ const install = (Vue: VueConstructor<Vue>, opts: IPluginOptions) => {
   const _p = Vue.prototype;
 
   const _setup: IPluginRunning<IPluginRunningItem> = {
-    side: { isLeft: true, ...opts.layout.side },
-    panel: { isLeft: false, ...opts.layout.panel },
+    SIDE: { isLeft: true, ...opts.layout.side },
+    PANEL: { isLeft: false, ...opts.layout.panel },
   };
 
   const _state: IPluginRunning<Container> = {};
 
-  const _resizeAll = () => {
-    _state.side.render();
-    _state.panel.render();
-  };
+  const _fire = (() => {
+    const chain = {
+      SIDE: ["PANEL"],
+      PANEL: [],
+    };
+    return (key: "SIDE" | "PANEL") => {
+      chain[key].forEach((item) => _state[item] && _state[item].render());
+    };
+  })();
+
+  window.addEventListener("resize", () => _fire("SIDE"));
 
   _p.$layout = _p.$layout || {};
 
-  _p.$layout.togglePart = (key: string) => {
-    if (!_state[key]) throw new Error(`${key} not in 'side' or 'panel'`);
+  _p.$layout.togglePart = (key: "SIDE" | "PANEL") => {
+    if (!_state[key]) throw new Error(`${key} not in 'SIDE' or 'PANEL'`);
     _state[key].toggle();
-    _resizeAll();
   };
 
   Vue.directive("sash", {
-    inserted: (el, binding) => {
-      _state[binding.value] = new Container(el, _setup[binding.value]);
+    inserted: (el, { value }) => {
+      _state[value] = new Container(el, _setup[value], () => _fire(value));
     },
-    unbind: () => {},
   });
 };
 

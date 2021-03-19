@@ -5,7 +5,7 @@
       <ActivityBar />
       <div>
         <div><SideBar /></div>
-        <span class="unitext-resize" v-sash="'side'" />
+        <span class="unitext-resize" v-sash="'SIDE'" />
         <div><WorkBench /></div>
       </div>
     </main>

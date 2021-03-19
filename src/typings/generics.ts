@@ -5,3 +5,5 @@ declare type MapGet<T> = {
 }[keyof T];
 
 declare type UnionKey<T> = { [K in keyof T]: K }[keyof T];
+
+declare type TCallback = () => void;
