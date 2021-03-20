@@ -62,8 +62,10 @@ export default class SplitView extends Vue {
   observer = new ResizeObserver(() => this.handleResize());
 
   handleResize() {
+    const parent = (this.$refs.wrapper as HTMLElement).clientWidth;
+    if (parent === 0) return;
     const ratio = this.finalWidth / this.wraperWidth;
-    this.wraperWidth = (this.$refs.wrapper as HTMLElement).clientWidth;
+    this.wraperWidth = parent;
     this.finalWidth = ratio * this.wraperWidth;
   }
 

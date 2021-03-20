@@ -149,7 +149,9 @@ class Container {
   }
 
   render() {
-    this._container = (this._sashEle.parentElement as HTMLElement).clientWidth;
+    const parent = (this._sashEle.parentElement as HTMLElement).clientWidth;
+    if (parent === 0) return;
+    this._container = parent;
     this._renderWidth();
   }
 
