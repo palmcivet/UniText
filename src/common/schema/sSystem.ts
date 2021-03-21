@@ -57,14 +57,14 @@ const sWindow: IGroup<ISystemWindow> = {
       title: ["宽度"],
       description: ["窗口的默认宽度"],
       minimum: 647,
-      default: 1294,
+      default: 1132,
     },
     height: {
       type: "Range",
       title: ["高度"],
       description: ["窗口的默认高度"],
       minimum: 400,
-      default: 800,
+      default: 700,
     },
     titleBarStyle: {
       type: "DropDown",

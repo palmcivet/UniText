@@ -2,7 +2,7 @@
   <CheckItem
     :itemGroup="styleList"
     :condition="panelFloat ? 'true' : 'false'"
-    @click="TOGGLE_PANEL_STYLE()"
+    @click="handleClick()"
   />
 </template>
 
@@ -39,6 +39,11 @@ export default class PanelStyle extends Vue {
         icon: "ri-discuss-line",
       },
     };
+  }
+
+  handleClick() {
+    this.TOGGLE_PANEL_STYLE();
+    this.$layout.togglePart("PANEL");
   }
 }
 </script>

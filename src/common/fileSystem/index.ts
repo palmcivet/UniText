@@ -16,7 +16,7 @@ export const joinPath = (...args: Array<string>) => join(...args);
 export const hasFileList = async (base: string, samp: Array<string>) => {
   let flag = true;
   for await (const item of samp) {
-    if (IGNORE.includes(item)) return;
+    if (IGNORE.includes(item)) continue;
     flag = await fse.pathExists(join(base, item));
     if (!flag) break;
   }

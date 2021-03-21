@@ -105,7 +105,7 @@ const actions: ActionTree<ISideBarState, IRootState> = {
       // FEAT 提示是否初始化、作为默认文件夹
       commit("general/SET_FOLDER", res.filePaths[0], { root: true });
       dispatch("sideBar/BUILD_TREE");
-      dispatch("LOAD_STATE");
+      // FEAT 加载设置文件
     }
   },
 

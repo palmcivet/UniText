@@ -156,10 +156,11 @@ export default class TabsWithDoc extends Vue {
       display: flex;
       overflow: auto;
       line-height: @tabBar-height;
+      background: var(--tabBar-Bg);
 
       > li {
-        color: var(--tabBar-Fg);
-        background: var(--tabBar-Bg);
+        color: var(--tabBarTab-Fg);
+        background: var(--tabBarTab-Bg);
         height: calc(@tabBar-height - @tabBar-underline-width);
         border-right: 1px solid var(--tabBarRightBorder-Color);
         padding: 0 1.8em 0 0.8em;
@@ -184,13 +185,13 @@ export default class TabsWithDoc extends Vue {
 
         &:hover {
           opacity: 0.9;
-          color: var(--tabBar-hoverFg);
-          background: var(--tabBar-hoverBg);
+          color: var(--tabBarTab-hoverFg);
+          background: var(--tabBarTab-hoverBg);
         }
 
         &.ghost {
           opacity: 0.5;
-          color: var(--tabBar-Fg);
+          color: var(--tabBarTab-Fg);
           background: var(--tabBar-inactiveBg);
         }
       }

@@ -1,7 +1,6 @@
 import { app, shell, ipcMain, protocol, BrowserWindow } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
-import { join } from "path";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
 import { buildUrl, URL_PATH, URL_PROTOCOL } from "@/common/url";
@@ -40,7 +39,7 @@ export default class UniText {
     this._system = new System(sysPath, this._logger);
     this._keybinding = new Keybinding();
     this._menuManager = new MenuManager();
-    this._imageManager = new ImageManager();
+    this._imageManager = new ImageManager(this._system.getDefaultPath());
     this._window = null;
   }
 

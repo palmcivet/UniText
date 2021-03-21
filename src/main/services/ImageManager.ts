@@ -17,8 +17,9 @@ export default class ImageManager {
 
   private _imagePath!: string;
 
-  constructor() {
+  constructor(filePath: string) {
     this._listenForIpcMain();
+    this._setBasePath(filePath);
   }
 
   private async _setBasePath(filePath: string) {

@@ -3,7 +3,14 @@ import { join } from "path";
 
 import { $id } from "@/common/utils";
 import schema from "@/common/schema/sTheme";
-import { THEME_PRESET, THEME_CSS, PUBLIC, CONFIG_FILE } from "@/common/env";
+import { URL_PROTOCOL } from "@/common/url";
+import {
+  THEME_PRESET,
+  THEME_CSS,
+  PUBLIC,
+  CONFIG_FILE,
+  CONFIG_FOLDER,
+} from "@/common/env";
 import { ITheme, IThemeColorCustom } from "@/typings/schema/theme";
 
 export default class Theme {
@@ -42,7 +49,11 @@ export default class Theme {
       THEME_CSS.forEach((key) => {
         $id(key).setAttribute(
           "href",
-          join(this._filePath, data[key as keyof IThemeColorCustom])
+          `${URL_PROTOCOL}${join(
+            this._filePath,
+            preset,
+            data[key as keyof IThemeColorCustom]
+          )}`
         );
       });
     } else if (THEME_PRESET.includes(preset)) {
@@ -51,7 +62,15 @@ export default class Theme {
       });
     } else {
       THEME_CSS.forEach((key) => {
-        $id(key).setAttribute("href", join(this._filePath, preset, `${key}.css`));
+        $id(key).setAttribute(
+          "href",
+          `${URL_PROTOCOL}${join(
+            this._filePath,
+            ...CONFIG_FOLDER.THEMES,
+            preset,
+            key
+          )}.css`
+        );
       });
     }
   }

@@ -47,8 +47,19 @@ export default class Setting extends Vue {
   SWITCH_SETTING!: (type: ESettingType) => void;
 
   handleLoad() {
-    const { commit, dispatch } = this.$store;
-    dispatch("LOAD_STATE");
+    const { commit } = this.$store;
+
+    switch (this.settingType) {
+      case ESettingType.PREFERENCE:
+        commit("SET_STATE", this.$preference.getAll());
+        break;
+      case ESettingType.THEME:
+        this.$theme.loadTheme();
+        break;
+      default:
+        break;
+    }
+
     commit("notification/NOTIFY", { level: "INFO", title: "载入成功" });
   }
 

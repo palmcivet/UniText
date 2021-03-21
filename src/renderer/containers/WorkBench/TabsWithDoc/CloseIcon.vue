@@ -37,7 +37,7 @@ i {
 
   &:hover {
     opacity: 1;
-    background: var(--tabBar-hoverBg);
+    background: var(--tabBarTab-hoverBg);
   }
 }
 </style>
