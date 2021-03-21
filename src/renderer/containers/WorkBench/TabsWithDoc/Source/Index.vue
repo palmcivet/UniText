@@ -70,6 +70,9 @@ export default class Source extends Vue {
   @workBench.Getter("currentFile")
   currentFile!: { order: string; value: IFile };
 
+  @workBench.Mutation("TOGGLE_MODIFY")
+  TOGGLE_MODIFY!: (flag: boolean) => void;
+
   @workBench.Action("SAVE_FILE")
   SAVE_FILE!: (content: string) => void;
 
@@ -194,7 +197,10 @@ export default class Source extends Vue {
 
     this.$nextTick(() => {
       /* 切换标签触发函数 */
-      this.editor.onDidChangeModelContent(() => this.syncPreOrToc(this));
+      this.editor.onDidChangeModelContent(() => {
+        !this.currentFile.value.needSave && this.TOGGLE_MODIFY(true);
+        this.syncPreOrToc(this);
+      });
 
       /* 以下为实时渲染 */
 

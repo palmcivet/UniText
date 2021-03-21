@@ -8,6 +8,8 @@ export const localesView = {
     files_button: localesCommon.open_project,
     files_toggle: ["收起"],
     search: ["搜索"],
+    search_clear: ["清除筛选"],
+    search_refresh: ["刷新筛选"],
     marks: ["书签"],
     tags: ["标签"],
     notes: ["便签"],

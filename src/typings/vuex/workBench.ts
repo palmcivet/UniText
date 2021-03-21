@@ -13,6 +13,10 @@ export interface ITab {
    * @field 标题
    */
   title: string;
+  /**
+   * @field 已更改
+   */
+  needSave: boolean;
 }
 
 /**

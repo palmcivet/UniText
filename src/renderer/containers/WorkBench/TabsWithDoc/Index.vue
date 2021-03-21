@@ -19,7 +19,7 @@
             @contextmenu="handleTabContext()"
           >
             <span>{{ v.title }}</span>
-            <i class="ri-close-line" @click.stop="CLOSE_FILE(v.order)" />
+            <CloseIcon :needSave="v.needSave" @close="CLOSE_FILE(v.order)" />
           </li>
         </transition-group>
       </Draggable>
@@ -41,6 +41,7 @@ import { Vue, Component } from "vue-property-decorator";
 import Draggable from "vuedraggable";
 
 import Source from "./Source/Index.vue";
+import CloseIcon from "./CloseIcon.vue";
 import { IPC_MENUMANAGER } from "@/common/channel/ipc";
 import SidePanel from "@/renderer/containers/SidePanel/Index.vue";
 import { ITab } from "@/typings/vuex/workBench";
@@ -51,6 +52,7 @@ const workBench = namespace("workBench");
 @Component({
   name: "TabsWithDoc",
   components: {
+    CloseIcon,
     SidePanel,
     Draggable,
     Source,
@@ -154,10 +156,10 @@ export default class TabsWithDoc extends Vue {
       display: flex;
       overflow: auto;
       line-height: @tabBar-height;
-      color: var(--tabBar-Fg);
-      background: var(--tabBar-Bg);
 
       > li {
+        color: var(--tabBar-Fg);
+        background: var(--tabBar-Bg);
         height: calc(@tabBar-height - @tabBar-underline-width);
         border-right: 1px solid var(--tabBarRightBorder-Color);
         padding: 0 1.8em 0 0.8em;
@@ -172,43 +174,23 @@ export default class TabsWithDoc extends Vue {
           user-select: none;
         }
 
-        > i {
-          line-height: 13px;
-          font-size: 13px;
-          border-radius: 50%;
-          position: absolute;
-          right: 0.5em;
-          top: 50%;
-          transform: translateY(-50%);
-
-          &:hover {
-            color: var(--tabBarClose-hoverFg);
-            background: var(--tabBarClose-hoverBg);
-          }
-        }
-
         &.active {
-          color: var(--tabBar-activeFg);
-          background: var(--tabBar-activeBg);
           border-bottom: @tabBar-underline-width solid var(--tabBarUnderline-Color);
-
-          > i {
-            color: var(--tabBarClose-activeFg);
-          }
         }
 
         &.inactive {
-          color: var(--tabBar-inactiveFg);
-          background: var(--tabBar-inactiveBg);
+          opacity: 0.5;
+        }
 
-          > i {
-            color: var(--tabBarClose-inactiveFg);
-          }
+        &:hover {
+          opacity: 0.9;
+          color: var(--tabBar-hoverFg);
+          background: var(--tabBar-hoverBg);
         }
 
         &.ghost {
           opacity: 0.5;
-          color: var(--tabBar-inactiveFg);
+          color: var(--tabBar-Fg);
           background: var(--tabBar-inactiveBg);
         }
       }

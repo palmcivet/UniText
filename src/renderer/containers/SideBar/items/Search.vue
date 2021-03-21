@@ -2,6 +2,18 @@
   <BaseView :isBlank="false">
     <template slot="view-title">
       <span>{{ $t("sidebar.search") }}</span>
+      <div>
+        <i
+          class="ri-refresh-line"
+          :title="$t('sidebar.search_refresh')"
+          @click="handleSearch()"
+        />
+        <i
+          class="ri-filter-off-line"
+          :title="$t('sidebar.search_clear')"
+          @click="keyword = ''"
+        />
+      </div>
     </template>
 
     <template slot="view">
@@ -230,7 +242,7 @@ export default class Search extends Vue {
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 2px;
+  padding: 0 3px;
 
   .controls {
     display: flex;
@@ -259,7 +271,8 @@ export default class Search extends Vue {
   }
 
   input[type="text"] {
-    margin: 2px 0;
+    width: -webkit-fill-available;
+    margin: 3px 0;
     height: 1.5em;
     font-size: 1.05em;
     color: var(--inputBox-Fg);

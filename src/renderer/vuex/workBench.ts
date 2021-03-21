@@ -79,8 +79,6 @@ const mutations: MutationTree<IWorkBenchState> = {
     curFile.config.tag = tag;
   },
 
-  SET_PICTURE: (_: IWorkBenchState) => {},
-
   SET_INDENT: (_: IWorkBenchState, indent: EIndent) => {
     const curFile = fileSelect(_);
     curFile.format.indent = indent;
@@ -112,6 +110,7 @@ const mutations: MutationTree<IWorkBenchState> = {
       newTabs.push({
         order: i,
         title: v.fileName[v.fileName.length - 1],
+        needSave: v.needSave,
       });
     }
     _.currentTabs = newTabs;
@@ -130,9 +129,11 @@ const mutations: MutationTree<IWorkBenchState> = {
   },
 
   /* 标记文件修改状态 */
-  TOGGLE_MODIFY: (_: IWorkBenchState) => {
+  TOGGLE_MODIFY: (_: IWorkBenchState, flag: boolean) => {
     const curFile = fileSelect(_);
-    curFile.needSave = !curFile.needSave;
+    const idx = _.currentTabs.findIndex((tab: ITab) => tab.order === _.currentIndex);
+    _.currentTabs[idx].needSave = flag;
+    curFile.needSave = flag;
   },
 };
 
@@ -196,7 +197,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       },
       content: "",
       fileName,
-      needSave: isTemp,
+      needSave: false,
       isTemp: isTemp,
       readMode: false,
     };
@@ -291,7 +292,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     /* 保存标签页的内容 */
     if (selectState.currentGroup[index].needSave) {
-      ipcRenderer.send(IPC_FILE.SAVE);
+      ipcRenderer.emit(IPC_FILE.SAVE);
     }
 
     /* 删除标签页的内容 */
@@ -375,6 +376,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     }
 
     await fse.writeFile(path, markdown);
+    commit("TOGGLE_MODIFY", false);
   },
 
   RENAME: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {
