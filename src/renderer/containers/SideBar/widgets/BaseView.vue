@@ -57,6 +57,7 @@ export default class BaseView extends Vue {
     position: relative;
 
     ul {
+      width: 100%;
       height: 100%;
       overflow: auto;
     }

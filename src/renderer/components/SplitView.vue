@@ -66,7 +66,7 @@ export default class SplitView extends Vue {
     if (parent === 0) return;
     const ratio = this.finalWidth / this.wraperWidth;
     this.wraperWidth = parent;
-    this.finalWidth = ratio * this.wraperWidth;
+    this.finalWidth = ratio * (this.wraperWidth - 2);
   }
 
   mounted() {

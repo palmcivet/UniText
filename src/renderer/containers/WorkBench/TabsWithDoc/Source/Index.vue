@@ -367,6 +367,10 @@ export default class Source extends Vue {
     .scroll-decoration {
       box-shadow: var(--tabBarShadow-Color) 0 2px 2px -2px inset;
     }
+
+    .rename-box .rename-input {
+      padding: 2px;
+    }
   }
 
   /deep/ .context-view .monaco-scrollable-element {

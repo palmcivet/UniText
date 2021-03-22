@@ -90,8 +90,9 @@ class Container {
     this._isClose = opt.isClose;
     this._mainPart = opt.mainPart;
     this._callback = cb;
+
     this._registerSash(el);
-    this.render();
+    this._initContainer();
   }
 
   private _registerSash(el: HTMLElement) {
@@ -146,6 +147,11 @@ class Container {
     setWidth(this._prevEle, prev);
     setWidth(this._nextEle, next);
     this._callback();
+  }
+
+  private _initContainer() {
+    this._isClose && setHide(this._sashEle, this._isClose);
+    this.render();
   }
 
   render() {

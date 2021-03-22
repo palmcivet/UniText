@@ -37,7 +37,7 @@ details {
   cursor: pointer;
 
   &:hover {
-    background: rgb(58, 58, 58); // DEV
+    background: #3b3f47; // DEV
   }
 
   summary {

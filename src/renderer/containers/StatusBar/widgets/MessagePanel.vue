@@ -63,12 +63,12 @@ i {
 
 .message-panel {
   color: var(--sidePanel-Fg);
-  background: var(--sidePanel-Bg); // DEV
+  background: var(--sidePanel-Bg);
 
   .toolbar {
     display: flex;
     justify-content: space-between;
-    background: rgb(56, 56, 56); // DEV
+    background: #33373f; // DEV
     padding: @gap;
     user-select: none;
 

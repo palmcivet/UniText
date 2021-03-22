@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs-with-panel">
+  <div>
     <div class="tabs-with-doc">
       <Draggable
         tag="ul"
@@ -27,9 +27,7 @@
       <Source />
     </div>
     <span v-sash="'PANEL'"></span>
-    <div>
-      <SidePanel :fixed="true" />
-    </div>
+    <div><SidePanel :fixed="true" /></div>
     <SidePanel :fixed="false" />
   </div>
 </template>
@@ -139,15 +137,14 @@ export default class TabsWithDoc extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-.tabs-with-panel {
-  display: flex;
-  width: 100%;
-}
-
 .tabs-with-doc {
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  /deep/ .wrapper {
+    height: calc(100% - @tabBar-height);
+  }
 
   ul {
     cursor: pointer;
@@ -159,6 +156,7 @@ export default class TabsWithDoc extends Vue {
       background: var(--tabBar-Bg);
 
       > li {
+        box-sizing: border-box;
         color: var(--tabBarTab-Fg);
         background: var(--tabBarTab-Bg);
         height: calc(@tabBar-height - @tabBar-underline-width);

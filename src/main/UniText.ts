@@ -92,22 +92,6 @@ export default class UniText {
   private async _openSetting() {}
 
   private _registerProtocol() {
-    protocol.registerFileProtocol(
-      URL_PROTOCOL.replace("://", ""),
-      (request, callback) => {
-        let path = request.url;
-        if (path.startsWith(URL_PATH.IMG)) {
-          path = this._imageManager.getImage(path);
-        } else {
-          path = path.replace(URL_PROTOCOL, "");
-        }
-
-        // FEAT 相对路径
-
-        callback({ path });
-      }
-    );
-
     const handleHttp = async (
       request: Electron.ProtocolRequest,
       callback: (response: Electron.ProtocolResponse) => void
@@ -117,8 +101,26 @@ export default class UniText {
     };
 
     // TODO dev-tool & loadURL
-    !isDev && protocol.interceptHttpProtocol("http", handleHttp);
+    !isDev && protocol.interceptFileProtocol("http", handleHttp);
     protocol.interceptFileProtocol("https", handleHttp);
+
+    protocol.interceptFileProtocol(
+      URL_PROTOCOL.replace("://", ""),
+      (request, callback) => {
+        let path = decodeURI(request.url.replace(URL_PROTOCOL, ""));
+        callback({ path });
+      }
+    );
+
+    protocol.registerFileProtocol(
+      URL_PROTOCOL.replace("://", ""),
+      (request, callback) => {
+        let path = request.url;
+        if (path.startsWith(URL_PATH.IMG)) path = this._imageManager.getImage(path);
+        // FEAT 相对路径
+        callback({ path });
+      }
+    );
   }
 
   private _listenForIpcMain() {
@@ -178,7 +180,7 @@ export default class UniText {
     });
 
     app.on("window-all-closed", () => {
-      if (isOsx) app.quit();
+      if (isOsx || isDev) app.quit();
     });
 
     app.on("web-contents-created", (e, webContents) => {
