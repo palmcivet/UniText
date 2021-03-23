@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tabs-with-panel">
     <div class="tabs-with-doc">
       <Draggable
         tag="ul"
@@ -137,6 +137,11 @@ export default class TabsWithDoc extends Vue {
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
+.tabs-with-panel {
+  display: flex;
+  width: 100%;
+}
+
 .tabs-with-doc {
   height: 100%;
   display: flex;
@@ -156,7 +161,6 @@ export default class TabsWithDoc extends Vue {
       background: var(--tabBar-Bg);
 
       > li {
-        box-sizing: border-box;
         color: var(--tabBarTab-Fg);
         background: var(--tabBarTab-Bg);
         height: calc(@tabBar-height - @tabBar-underline-width);

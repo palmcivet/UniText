@@ -44,7 +44,11 @@ details > summary::-webkit-details-marker {
   height: 100%;
   cursor: col-resize;
   user-select: none;
-  background: var(--titleBar-activeBg);
+  background: var(--sash-Fg);
+
+  &:hover {
+    background: var(--sash-hoverFg);
+  }
 }
 
 .unitext-button {

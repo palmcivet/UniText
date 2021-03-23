@@ -39,12 +39,10 @@ export default class BaseView extends Vue {
     color: var(--sideBarHeader-Fg);
     background: var(--sideBarHeader-Bg);
 
-    > div {
-      i {
-        line-height: @sideBar-header-height;
-        cursor: pointer;
-        padding: 0 2px;
-      }
+    i {
+      line-height: @sideBar-header-height;
+      cursor: pointer;
+      padding: 0 2px;
     }
 
     * {

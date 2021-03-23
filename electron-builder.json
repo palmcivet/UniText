@@ -12,7 +12,7 @@
   "extraResources": [
     {
       "from": "dist/build/node_modules",
-      "to":"app/node_modules"
+      "to": "app/node_modules"
     }
   ],
   "asar": false,
@@ -28,7 +28,10 @@
     "title": "${productName}"
   },
   "mac": {
-    "target": ["dmg"],
+    "target": {
+      "arch": ["arm64", "x64"],
+      "target": ["dmg"]
+    },
     "darkModeSupport": true
   },
   "win": {
