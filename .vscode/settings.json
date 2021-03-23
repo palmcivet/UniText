@@ -70,7 +70,6 @@
   "prettier.bracketSpacing": true,
   "prettier.vueIndentScriptAndStyle": false,
   "prettier.htmlWhitespaceSensitivity": "ignore",
-  "prettier.packageManager": "yarn",
   "prettier.printWidth": 90,
   "npm.packageManager": "yarn",
   "npm.exclude": "dist"

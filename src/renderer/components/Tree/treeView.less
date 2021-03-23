@@ -1,0 +1,62 @@
+@import "~@/renderer/styles/var.less";
+
+.tree-view {
+  li {
+    display: flex;
+    cursor: pointer;
+    width: 100%;
+
+    * {
+      user-select: none;
+    }
+
+    .indent {
+      width: 0.5em;
+      margin-right: 0.2em;
+      border-right: 0.1px solid transparent;
+    }
+
+    .indent-show {
+      border-right: 0.1px solid var(--sideBarIndent-activeFg);
+    }
+
+    i {
+      font-size: 1rem;
+    }
+
+    pre {
+      display: inline-block;
+      margin: 0;
+
+      &.icon {
+        width: 1em;
+      }
+
+      &.space {
+        width: 0.2em;
+      }
+    }
+
+    .title {
+      width: 100%;
+
+      input {
+        width: 100%;
+        padding: 1px 0;
+        border-width: 0.5px 0;
+        border-style: solid;
+        border-color: white;
+        background-color: #faf9f4;
+      }
+    }
+  }
+
+  li:hover {
+    background: var(--sideBarItem-selectFg);
+  }
+
+  li.active {
+    color: var(--sideBarItem-hoverFg);
+    background: var(--sideBarItem-hoverBg);
+  }
+}
