@@ -2,6 +2,11 @@ import { IList } from "./treeModel";
 import "./treeView.less";
 
 const HEIGHT = 24;
+const TEMPLATE = `
+<div class="indent"></div>
+<i class="twist" style="line-height: ${HEIGHT}px"></i>
+<i class="icon" style="line-height: ${HEIGHT}px"></i>
+<div class="title" style="line-height: ${HEIGHT}px"></div>`;
 
 interface IListeners {
   click: (idx: number) => void;
@@ -50,6 +55,7 @@ export class TreeView {
     this.root = document.createElement("ul");
     this.root.className = "tree-view";
     this.root.style.height = "100%";
+    this.root.style.position = "relative";
     this.root.style.overflowY = "auto";
     el.appendChild(this.root);
 
@@ -58,12 +64,14 @@ export class TreeView {
     this.pool = new Pool(() => {
       const el = document.createElement("li");
       el.style.height = `${HEIGHT}px`;
+      el.innerHTML = TEMPLATE;
       return el;
     }, this.count);
 
     for (const event in evs) {
       this.root.addEventListener(event, (e) => {
-        evs[event as keyof IListeners](Number.parseInt((e.target as any).className));
+        const target = (e.target as any).parentElement;
+        evs[event as keyof IListeners](Number.parseInt(target.className));
       });
     }
 
@@ -82,7 +90,22 @@ export class TreeView {
 
     this.pool.fetch(list.length).forEach((el, i) => {
       el.className = i.toString();
-      el.innerHTML = list[i].name;
+      el.title = list[i].name;
+
+      el.children[0].innerHTML = "<div></div>".repeat(list[i].getIndent(-1));
+
+      if (list[i].collapsible) {
+        const collapsed = (list[i] as any).collapsed;
+        el.children[1].className = collapsed
+          ? "ri-arrow-right-s-line"
+          : "ri-arrow-down-s-line";
+        el.children[2].className = collapsed ? "ri-folder-2-line" : "ri-folder-open-line";
+        // FEAT icon
+      } else {
+        el.children[1].className = "";
+        el.children[2].className = "ri-markdown-line"; // FEAT icon
+      }
+      el.children[3].innerHTML = list[i].name;
       this.root.appendChild(el);
     });
   }
