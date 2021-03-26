@@ -9,19 +9,17 @@
     i {
       font-size: 1rem;
       width: 16px;
+      height: 100%;
       box-sizing: content-box;
     }
 
     .indent {
+      display: flex;
+
       > div {
-        width: 0.5em;
-        margin-right: 0.2em;
+        width: 6px;
         border-right: 0.1px solid transparent;
         pointer-events: none;
-      }
-
-      > div.show {
-        border-right: 0.1px solid var(--sideBarIndent-activeFg);
       }
     }
 
@@ -44,13 +42,17 @@
     color: var(--sideBarItem-hoverFg);
     background: var(--sideBarItem-hoverBg);
   }
+
+  input {
+    width: 100%;
+    padding: 1px 0;
+    border-width: 0.5px 0;
+    border-style: solid;
+    border-color: white;
+    background-color: #faf9f4;
+  }
 }
 
-input {
-  width: 100%;
-  padding: 1px 0;
-  border-width: 0.5px 0;
-  border-style: solid;
-  border-color: white;
-  background-color: #faf9f4;
+.tree-view.hover .indent > div {
+  border-right: 0.1px solid var(--sideBarIndent-activeFg);
 }

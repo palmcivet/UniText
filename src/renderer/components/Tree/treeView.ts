@@ -59,7 +59,7 @@ export class TreeView {
     this.root.style.overflowY = "auto";
     el.appendChild(this.root);
 
-    this.count = Math.ceil(this.root.clientHeight / HEIGHT);
+    this.count = Math.ceil((el.parentElement as any).clientHeight / HEIGHT);
 
     this.pool = new Pool(() => {
       const el = document.createElement("li");
@@ -70,15 +70,26 @@ export class TreeView {
 
     for (const event in evs) {
       this.root.addEventListener(event, (e) => {
-        const target = (e.target as any).parentElement;
-        evs[event as keyof IListeners](Number.parseInt(target.className));
+        const target = e.target as any;
+        if (target.nodeName === "UL") return;
+        evs[event as keyof IListeners](Number.parseInt(target.parentElement.className));
       });
     }
 
-    window.addEventListener("resize", this.onResize);
+    this.root.addEventListener("mouseenter", this.indentShow.bind(this));
+    this.root.addEventListener("mouseleave", this.indentHide.bind(this));
+    window.addEventListener("resize", this.resize.bind(this));
   }
 
-  onResize() {
+  private indentShow() {
+    this.root.classList.add("hover");
+  }
+
+  private indentHide() {
+    this.root.classList.remove("hover");
+  }
+
+  resize() {
     this.count = Math.ceil(this.root.clientHeight / HEIGHT);
     this.pool.resize(this.count);
   }
@@ -111,6 +122,8 @@ export class TreeView {
   }
 
   dispose() {
-    window.removeEventListener("resize", this.onResize);
+    this.root.removeEventListener("mouseenter", this.indentShow.bind(this));
+    this.root.removeEventListener("mouseleave", this.indentHide.bind(this));
+    window.removeEventListener("resize", this.resize.bind(this));
   }
 }

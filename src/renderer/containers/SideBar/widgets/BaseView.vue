@@ -6,8 +6,7 @@
     </div>
 
     <div class="view">
-      <slot v-if="isBlank" name="blank" />
-      <slot v-else name="view" />
+      <slot name="view" />
     </div>
   </div>
 </template>

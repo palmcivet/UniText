@@ -34,6 +34,8 @@ export class TreeViewModel {
         keydown: this.onKeydown,
       }
     );
+
+    this.render();
   }
 
   private onClick = (idx: number) => {
@@ -94,7 +96,11 @@ export class TreeViewModel {
 
   private selectItem(idx: number): void {}
 
-  render() {
+  private render() {
     this.view.render(this.list);
+  }
+
+  resize() {
+    this.view.resize();
   }
 }
