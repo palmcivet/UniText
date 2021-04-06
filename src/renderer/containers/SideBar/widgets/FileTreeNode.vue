@@ -265,7 +265,11 @@ export default class FileTreeNode extends Vue {
   }
 
   .title {
+    flex: 1;
     width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     input {
       width: 100%;

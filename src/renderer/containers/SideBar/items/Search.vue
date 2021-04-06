@@ -138,24 +138,24 @@ export default class Search extends Vue {
   // TODO 提示
   searchErrorString = "";
 
-  searcherCancelCallback!: any;
+  searchPromise!: Promise<void>;
 
   trailPath(path: string) {
     const dirs = path.split("/");
     return dirs[dirs.length - 1];
   }
 
-  handleSearch() {
-    if (this.isEmptyFolder) {
-      return;
-    }
+  searcherCancelCallback() {
+    this.searchResult = [];
+    this.searchPromise.cancel && this.searchPromise.cancel();
+  }
 
-    if (this.searcherRunning && this.searcherCancelCallback) {
-      this.searcherCancelCallback();
-    }
+  handleSearch() {
+    if (this.isEmptyFolder) return;
+
+    if (this.searcherRunning) this.searcherCancelCallback();
 
     this.searchErrorString = "";
-    this.searcherCancelCallback = null;
 
     if (!this.keyword) {
       this.searchResult = [];
@@ -163,24 +163,21 @@ export default class Search extends Vue {
       return;
     }
 
-    let canceled = false;
-    this.searcherRunning = true;
-
     const newSearchResult: any = [];
 
-    const promises = this.ripgrepDirectorySearcher
+    this.searcherRunning = true;
+
+    this.searchPromise = this.ripgrepDirectorySearcher
       .search([this.folderDir], this.keyword, {
         didMatch: (searchResult: IRipgrepSearchResult) => {
-          if (canceled) return;
+          if (!this.searcherRunning) return;
           newSearchResult.push(searchResult);
         },
         didSearchPaths: (numPathsFound: number) => {
           // More than 100 files with (multiple) matches were found.
-          if (!canceled && numPathsFound > 100) {
-            canceled = true;
-            if (promises.cancel) {
-              promises.cancel();
-            }
+          if (this.searcherRunning && numPathsFound > 100) {
+            this.searcherRunning = false;
+            this.searchPromise.cancel && this.searchPromise.cancel();
             this.searchErrorString = "Search was limited to 100 files.";
           }
         },
@@ -200,25 +197,12 @@ export default class Search extends Vue {
       .then(() => {
         this.searchResult = newSearchResult;
         this.searcherRunning = false;
-        this.searcherCancelCallback = null;
       })
       .catch((err) => {
-        canceled = true;
-        if (promises.cancel) {
-          promises.cancel();
-        }
+        this.searchPromise.cancel && this.searchPromise.cancel();
         this.searcherRunning = false;
-        this.searcherCancelCallback = null;
         this.searchErrorString = err.message;
       });
-
-    this.searcherCancelCallback = () => {
-      canceled = true;
-      this.searchResult = [];
-      if (promises.cancel) {
-        promises.cancel();
-      }
-    };
   }
 
   handleReveal(path: string, range: [[number, number], [number, number]]) {

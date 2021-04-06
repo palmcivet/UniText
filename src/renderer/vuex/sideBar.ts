@@ -43,6 +43,10 @@ const mutations: MutationTree<ISideBarState> = {
     _.markList = fse.readJSONSync(absPath);
   },
 
+  OPEN_FILE: (_: ISideBarState, type: EActivityType) => {
+    _.activity = type;
+  },
+
   CHOOSE_ACTIVITY: (_: ISideBarState, type: EActivityType) => {
     _.activity = type;
   },

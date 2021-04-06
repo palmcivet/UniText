@@ -8,9 +8,12 @@ const TEMPLATE = `
 <i class="icon" style="line-height: ${HEIGHT}px"></i>
 <div class="title" style="line-height: ${HEIGHT}px"></div>`;
 
+type HANDLER = (idx: number) => void;
+
 interface IListeners {
-  click: (idx: number) => void;
-  keydown: (idx: number) => void;
+  click: HANDLER;
+  keydown: HANDLER;
+  context: HANDLER;
 }
 
 /**
@@ -76,20 +79,23 @@ export class TreeView {
       });
     }
 
-    this.root.addEventListener("mouseenter", this.indentShow.bind(this));
-    this.root.addEventListener("mouseleave", this.indentHide.bind(this));
-    window.addEventListener("resize", this.resize.bind(this));
+    this.root.addEventListener("mouseenter", this.onIndentShow.bind(this));
+    this.root.addEventListener("mouseleave", this.onIndentHide.bind(this));
+    this.root.addEventListener("scroll", this.onScroll.bind(this));
+    window.addEventListener("resize", this.onResize.bind(this));
   }
 
-  private indentShow() {
+  private onIndentShow() {
     this.root.classList.add("hover");
   }
 
-  private indentHide() {
+  private onIndentHide() {
     this.root.classList.remove("hover");
   }
 
-  resize() {
+  private onScroll() {}
+
+  onResize() {
     this.count = Math.ceil(this.root.clientHeight / HEIGHT);
     this.pool.resize(this.count);
   }
@@ -122,8 +128,9 @@ export class TreeView {
   }
 
   dispose() {
-    this.root.removeEventListener("mouseenter", this.indentShow.bind(this));
-    this.root.removeEventListener("mouseleave", this.indentHide.bind(this));
-    window.removeEventListener("resize", this.resize.bind(this));
+    this.root.removeEventListener("mouseenter", this.onIndentShow.bind(this));
+    this.root.removeEventListener("mouseleave", this.onIndentHide.bind(this));
+    this.root.addEventListener("scroll", this.onScroll.bind(this));
+    window.removeEventListener("resize", this.onResize.bind(this));
   }
 }

@@ -18,10 +18,16 @@
     </template>
 
     <template slot="view">
-      <button v-show="isEmptyFolder" @click="OPEN_PROJECT()" class="unitext-button">
-        {{ $t("sidebar.files_button") }}
-      </button>
-      <div v-show="!isEmptyFolder" ref="root" style="height: 100%" />
+      <ul @mouseenter="handleMouseEnter()" @mouseleave="handleMouseLeave()">
+        <FileTreeNode
+          v-for="(data, name) in fileTree"
+          :key="data.order"
+          :tier="0"
+          :node="data"
+          :route="[name]"
+          :isIndent="isIndent"
+        />
+      </ul>
     </template>
   </BaseView>
 </template>
@@ -31,8 +37,9 @@ import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
 import BaseView from "../widgets/BaseView.vue";
+import FileTreeNode from "../widgets/FileTreeNode.vue";
+import { ISideBarState, ITree } from "@/typings/vuex/sideBar";
 import { IGeneralState } from "@/typings/vuex/general";
-import { TreeViewModel } from "@/renderer/components/Tree/treeViewModel";
 
 const sideBar = namespace("sideBar");
 const general = namespace("general");
@@ -40,17 +47,19 @@ const general = namespace("general");
 @Component({
   name: "Files",
   components: {
+    FileTreeNode,
     BaseView,
   },
 })
 export default class Files extends Vue {
-  tree!: TreeViewModel;
-
   @general.State((state: IGeneralState) => state.fileManager.showIndent)
   showIndent!: boolean;
 
   @general.State((state: IGeneralState) => state.fileManager.folderDir)
   folderDir!: string;
+
+  @sideBar.State((state: ISideBarState) => state.fileTree)
+  fileTree!: ITree;
 
   @sideBar.Getter("isEmptyFolder")
   isEmptyFolder!: boolean;
@@ -74,16 +83,17 @@ export default class Files extends Vue {
     this.isOnce = !this.isOnce;
   }
 
+  handleMouseEnter() {
+    this.showIndent && (this.isIndent = true);
+  }
+  handleMouseLeave() {
+    this.showIndent && (this.isIndent = false);
+  }
+
   mounted() {
     const { dispatch } = this.$store;
     if (this.folderDir === "") return;
-
     dispatch("sideBar/BUILD_TREE");
-
-    this.$nextTick(() => {
-      this.tree = new TreeViewModel(this.$refs.root as HTMLElement);
-      (window as any).tree = this.tree;
-    });
   }
 }
 </script>
@@ -94,7 +104,7 @@ export default class Files extends Vue {
     top: 50%;
     left: 50%;
     position: absolute;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 50%);
     padding: 0.5em;
   }
 }

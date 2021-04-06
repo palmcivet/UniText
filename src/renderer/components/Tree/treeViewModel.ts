@@ -1,7 +1,15 @@
-import { IList, IModel, TreeNodeFolder } from "./treeModel";
+import { IList, IModel, TreeNodeFile, TreeNodeFolder } from "./treeModel";
 import { TreeView } from "./treeView";
 
 import data from "./tree.pre.json";
+
+interface IOptions {
+  indent: boolean;
+  onOpen: Function;
+  onMove: Function;
+  onDelete: Function;
+  onContext: Function;
+}
 
 export class TreeViewModel {
   /**
@@ -19,30 +27,29 @@ export class TreeViewModel {
    */
   view!: TreeView;
 
-  constructor(el: HTMLElement) {
+  /**
+   * @field 当前选中的文件
+   */
+  activeItem!: TreeNodeFile | TreeNodeFolder;
+
+  options!: IOptions;
+
+  constructor(el: HTMLElement, opt: IOptions) {
+    this.options = opt;
     // TODO 数据输入
     this.model = new TreeNodeFolder(data as any, null);
-
     this.list = this.getList(this.model as TreeNodeFolder);
-
-    // 初始化虚拟列表
-    this.view = new TreeView(
-      el,
-      // TODO
-      {
-        click: this.onClick,
-        keydown: this.onKeydown,
-      }
-    );
+    this.view = new TreeView(el, {
+      click: this.onClick,
+      keydown: this.onKeydown,
+      context: this.onContext,
+    });
 
     this.render();
   }
 
   private onClick = (idx: number) => {
-    if (!this.list[idx].collapsible) {
-      // 选中
-      return;
-    }
+    if (!this.list[idx].collapsible) this.options.onOpen();
 
     if ((this.list[idx] as TreeNodeFolder).collapsed) {
       this.setExpend(idx);
@@ -55,6 +62,10 @@ export class TreeViewModel {
 
   private onKeydown = (idx: number) => {
     // rename
+  };
+
+  private onContext = (idx: number) => {
+    this.options.onContext(this.list[idx].getParentName());
   };
 
   private getList(node: TreeNodeFolder): IList {
@@ -74,33 +85,27 @@ export class TreeViewModel {
     return list;
   }
 
-  /**
-   * 展开
-   * @param idx 下标
-   */
   private setExpend(idx: number): void {
     const target = this.list[idx] as TreeNodeFolder;
     target.toggle(false);
     this.list.splice(idx + 1, 0, ...this.getList(target));
   }
 
-  /**
-   * 折叠
-   * @param idx 下标
-   */
   private setCollpase(idx: number): void {
     const target = this.list[idx] as TreeNodeFolder;
     target.toggle(true);
     this.list.splice(idx + 1, this.getList(target).length);
   }
 
-  private selectItem(idx: number): void {}
-
   private render() {
     this.view.render(this.list);
   }
 
-  resize() {
-    this.view.resize();
+  updateOptions() {}
+
+  resizeHeight() {
+    this.view.onResize();
   }
+
+  toggleAll() {}
 }

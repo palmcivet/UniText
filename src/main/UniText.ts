@@ -104,14 +104,6 @@ export default class UniText {
     !isDev && protocol.interceptFileProtocol("http", handleHttp);
     protocol.interceptFileProtocol("https", handleHttp);
 
-    protocol.interceptFileProtocol(
-      URL_PROTOCOL.replace("://", ""),
-      (request, callback) => {
-        let path = decodeURI(request.url.replace(URL_PROTOCOL, ""));
-        callback({ path });
-      }
-    );
-
     protocol.registerFileProtocol(
       URL_PROTOCOL.replace("://", ""),
       (request, callback) => {
