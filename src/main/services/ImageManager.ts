@@ -58,6 +58,7 @@ export default class ImageManager {
         } else {
           await fse.unlink(join(this._cachePath, k));
         }
+        this._dataSet.delete(k);
       }
     });
   }
@@ -110,7 +111,8 @@ export default class ImageManager {
   }
 
   private _addImage(key: string) {
-    this._dataSet.set(key, (this._dataSet.get(key) as number) + 1);
+    const cnt = this._dataSet.get(key) as number;
+    this._dataSet.set(key, cnt + 1);
   }
 
   private _listenForIpcMain() {

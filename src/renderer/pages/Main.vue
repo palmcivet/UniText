@@ -1,7 +1,7 @@
 <template>
   <div class="main-window">
     <TitleBar />
-    <main>
+    <main :style="{ height: isWin32 ? 'calc(100vh - 24px)' : '' }">
       <ActivityBar />
       <div>
         <div><SideBar /></div>
@@ -18,6 +18,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
+import { isWin } from "@/common/env";
 import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
@@ -27,7 +28,6 @@ import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.v
 import { INotificationState } from "@/typings/vuex/notification";
 
 const notification = namespace("notification");
-
 @Component({
   name: "Main",
   components: {
@@ -42,6 +42,8 @@ const notification = namespace("notification");
 export default class Main extends Vue {
   @notification.State((state: INotificationState) => state.showMessage)
   showMessage!: boolean;
+
+  isWin32 = isWin;
 
   beforeCreate() {
     const { commit } = this.$store;

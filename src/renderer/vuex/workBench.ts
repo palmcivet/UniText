@@ -376,6 +376,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     }
 
     await fse.writeFile(path, markdown);
+    ipcRenderer.send(IPC_IMAGE.CLEAN_CACHE);
     commit("TOGGLE_MODIFY", false);
   },
 
@@ -428,9 +429,9 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const oldList = new Set(old);
     const newList = new Set<string>();
 
-    [..._.rootState.statusPanel.imgList].forEach((item) => {
+    [..._.rootState.statusPanel.imageList].forEach((item) => {
       if (item.startsWith(URL_PATH.IMG)) {
-        newList.add(item.replace(URL_PATH.IMG, "").replace(".png", ""));
+        newList.add(item.replace(URL_PATH.IMG, ""));
       } else if (/http(s)?:\/\//.test(item)) {
         newList.add(getHash(item));
       }
@@ -440,6 +441,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const addList = difference(newList, intList);
 
     ipcRenderer.send(IPC_IMAGE.REG_IMAGE, [...delList], [...addList]);
+
     return [...newList];
   },
 

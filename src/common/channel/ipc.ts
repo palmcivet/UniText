@@ -22,7 +22,10 @@ export enum IPC_FILE {
 }
 
 export enum IPC_EXPORT {
+  AS_HTML_PURE = "IPC::EXPORT_AS_HTML_PURE",
+  AS_HTML = "IPC::EXPORT_AS_HTML",
   AS_PDF = "IPC::EXPORT_AS_PDF",
+  AS_PNG = "IPC::EXPORT_AS_PNG",
 }
 
 export enum IPC_IMAGE {

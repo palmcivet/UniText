@@ -3,7 +3,7 @@ import { IWindowArgs } from "@/typings/main";
 
 export const URL_PROTOCOL = "unitext://";
 
-export const URL_HOST = isDev ? "http://localhost:9091" : `${URL_PROTOCOL}${__dirname}`;
+export const URL_HOST = isDev ? "http://localhost:9091" : `file://${__dirname}`;
 
 export const URL_PATH = {
   IMG: `${URL_PROTOCOL}img/`,
