@@ -1,11 +1,5 @@
 <template>
   <BaseView :isBlank="isEmptyMarks">
-    <template slot="blank-title">{{ $t("sidebar.files_empty") }}</template>
-
-    <template slot="blank">
-      {{ $t("sidebar.files_button") }}
-    </template>
-
     <template slot="view-title">
       <span>{{ $t("sidebar.marks") }}</span>
     </template>

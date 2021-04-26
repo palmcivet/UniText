@@ -1,107 +1,95 @@
+import { Pool } from "./utils";
 import { IList } from "./treeModel";
 import "./treeView.less";
 
-const HEIGHT = 24;
-const TEMPLATE = `
+const SCROLLBAR_WIDTH = 8;
+const ITEM_HEIGHT = 24;
+const ITEM_TEMPLATE = `
 <div class="indent"></div>
-<i class="twist" style="line-height: ${HEIGHT}px"></i>
-<i class="icon" style="line-height: ${HEIGHT}px"></i>
-<div class="title" style="line-height: ${HEIGHT}px"></div>`;
+<i class="twist" style="line-height: ${ITEM_HEIGHT}px"></i>
+<i class="icon" style="line-height: ${ITEM_HEIGHT}px"></i>
+<div class="title" style="line-height: ${ITEM_HEIGHT}px"></div>`;
 
-type HANDLER = (idx: number) => void;
+type THanldler = (idx: number) => void;
 
 interface IListeners {
-  click: HANDLER;
-  keydown: HANDLER;
-  context: HANDLER;
-}
-
-/**
- * @description 在本组件中，不会出现超额度使用的情况，文件项数量始终大于可见项数量，因此具有以下限制：
- * - `use()` 方法不判断超额
- * - `resize()` 方法根据传入值分配空间
- */
-class Pool<T> {
-  private pool!: T[];
-
-  private creator!: () => T;
-
-  constructor(creator: () => T, size = 10) {
-    this.pool = [];
-    this.creator = creator;
-
-    for (let i = 0; i < size; i++) this.pool.push(this.creator());
-  }
-
-  fetch(num: number) {
-    return this.pool.slice(0, num);
-  }
-
-  resize(num: number) {
-    if (num > this.pool.length) {
-      const len = num - this.pool.length;
-      for (let i = 0; i < len; i++) this.pool.push(this.creator());
-    } else {
-      this.pool = this.pool.slice(0, num);
-    }
-  }
+  click: THanldler;
+  keydown: THanldler;
+  context: THanldler;
 }
 
 export class TreeView {
-  root!: HTMLElement;
+  container!: HTMLElement;
+
+  scrollbar!: HTMLElement;
 
   pool!: Pool<HTMLLIElement>;
 
-  count!: number;
+  height!: number;
+
+  get count() {
+    return Math.ceil(this.height / ITEM_HEIGHT);
+  }
 
   constructor(el: HTMLElement, evs: IListeners) {
-    this.root = document.createElement("ul");
-    this.root.className = "tree-view";
-    this.root.style.height = "100%";
-    this.root.style.position = "relative";
-    this.root.style.overflowY = "auto";
-    el.appendChild(this.root);
+    this.container = document.createElement("ul");
+    this.container.className = "tree-view";
+    el.appendChild(this.container);
 
-    this.count = Math.ceil((el.parentElement as any).clientHeight / HEIGHT);
+    this.scrollbar = document.createElement("div");
+    this.scrollbar.className = "scroll-bar";
+
+    this.scrollbar.style.backgroundColor = "white"; // DEV
+    this.scrollbar.style.width = `${SCROLLBAR_WIDTH}px`;
+    this.scrollbar.style.height = "100%";
+    this.scrollbar.style.position = "absolute";
+    this.scrollbar.style.zIndex = "999";
+    this.scrollbar.style.right = "0";
+    this.scrollbar.style.top = "0";
+    // el.appendChild(this.scrollbar);
+
+    this.height = (el.parentElement as any).clientHeight;
 
     this.pool = new Pool(() => {
       const el = document.createElement("li");
-      el.style.height = `${HEIGHT}px`;
-      el.innerHTML = TEMPLATE;
+      el.style.height = `${ITEM_HEIGHT}px`;
+      el.innerHTML = ITEM_TEMPLATE;
       return el;
     }, this.count);
 
     for (const event in evs) {
-      this.root.addEventListener(event, (e) => {
+      this.container.addEventListener(event, (e) => {
         const target = e.target as any;
         if (target.nodeName === "UL") return;
         evs[event as keyof IListeners](Number.parseInt(target.parentElement.className));
       });
     }
 
-    this.root.addEventListener("mouseenter", this.onIndentShow.bind(this));
-    this.root.addEventListener("mouseleave", this.onIndentHide.bind(this));
-    this.root.addEventListener("scroll", this.onScroll.bind(this));
+    this.container.addEventListener("mouseenter", this.onIndentShow.bind(this));
+    this.container.addEventListener("mouseleave", this.onIndentHide.bind(this));
+    this.container.addEventListener("scroll", this.onScroll.bind(this));
     window.addEventListener("resize", this.onResize.bind(this));
   }
 
   private onIndentShow() {
-    this.root.classList.add("hover");
+    this.container.classList.add("hover");
   }
 
   private onIndentHide() {
-    this.root.classList.remove("hover");
+    this.container.classList.remove("hover");
   }
 
-  private onScroll() {}
+  private onScroll() {
+    // 虚拟列表滚动
+  }
 
   onResize() {
-    this.count = Math.ceil(this.root.clientHeight / HEIGHT);
+    this.height = this.container.clientHeight;
     this.pool.resize(this.count);
   }
 
   render(list: IList) {
-    const children = this.root.children;
+    const children = this.container.children;
 
     for (let i = children.length - 1; i >= 0; i--) children[i].remove();
 
@@ -123,14 +111,14 @@ export class TreeView {
         el.children[2].className = "ri-markdown-line"; // FEAT icon
       }
       el.children[3].innerHTML = list[i].name;
-      this.root.appendChild(el);
+      this.container.appendChild(el);
     });
   }
 
   dispose() {
-    this.root.removeEventListener("mouseenter", this.onIndentShow.bind(this));
-    this.root.removeEventListener("mouseleave", this.onIndentHide.bind(this));
-    this.root.addEventListener("scroll", this.onScroll.bind(this));
+    this.container.removeEventListener("mouseenter", this.onIndentShow.bind(this));
+    this.container.removeEventListener("mouseleave", this.onIndentHide.bind(this));
+    this.container.addEventListener("scroll", this.onScroll.bind(this));
     window.removeEventListener("resize", this.onResize.bind(this));
   }
 }

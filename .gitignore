@@ -24,4 +24,5 @@ yarn-error.log*
 /build
 
 # Dev config
-*.pre*
+*.pre.*
+.github

@@ -1,12 +1,15 @@
 {
   "root": true,
-  "env": { "node": true },
+  "env": {
+    "node": true
+  },
   "globals": {
     "__static": "readonly"
   },
   "parserOptions": {
     "parser": "@typescript-eslint/parser"
   },
+  "ignorePatterns": ["node_modules/**", "src/library/**", "dist/**"],
   "extends": [
     "eslint:recommended",
     "plugin:vue/essential",

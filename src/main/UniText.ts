@@ -1,6 +1,7 @@
 import { app, shell, ipcMain, protocol, BrowserWindow } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
+import { join } from "path";
 
 import { isDev, isOsx, isWin, SYSTEM_PATH } from "@/common/env";
 import { buildUrl, URL_PATH, URL_PROTOCOL } from "@/common/url";
@@ -50,8 +51,7 @@ export default class UniText {
       webPreferences: {
         nodeIntegration: true,
         enableRemoteModule: true,
-        contextIsolation: false,
-        worldSafeExecuteJavaScript: true,
+        preload: join(__static, "lib/preload.js"),
       },
       vibrancy: "titlebar",
       backgroundColor: "#00000000",

@@ -41,7 +41,7 @@ export default class Preference extends Vue {
   handleSubmit = debounce((val: [string, string, any]) => {
     const [g, f, v] = val;
     this.setVal(g, f, v);
-    this.$preference.setItem(`${g}.${f}`, v);
+    this.$preference.setItem(`${g}.${f}` as any, v);
   });
 }
 </script>
