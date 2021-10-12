@@ -60,7 +60,7 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-prismjs": "^2.0.1",
     "css-loader": "^5.0.2",
-    "electron": "^11.2.2",
+    "electron": "^11.5.0",
     "electron-builder": "^22.9.1",
     "electron-devtools-installer": "^3.1.1",
     "eslint": "^7.19.0",
