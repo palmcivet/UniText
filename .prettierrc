@@ -12,5 +12,5 @@
   "bracketSpacing": true,
   "vueIndentScriptAndStyle": false,
   "htmlWhitespaceSensitivity": "ignore",
-  "printWidth": 90
+  "printWidth": 100
 }

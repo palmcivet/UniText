@@ -1,8 +1,191 @@
-import UniText from "@/main/UniText";
+import { isDev, isOsx, isWin } from "@/shared/env";
+import { app, BrowserWindow, ipcMain, protocol, shell } from "electron";
+import { autoUpdater } from "electron-updater";
+import { join } from "path";
 
-let UniTextApp: UniText;
+import Logger from "./backend/Logger";
+import Printer from "./backend/Printer";
+import Container from "./service";
+import ImageService from "./service/ImageService";
+import MenuService from "./service/MenuService";
+import SettingService from "./service/SettingService";
+import WindowService from "./service/WindowService";
+import KeybindingService from "./service/KeybindingService";
+import { buildURL, URL_PATH, URL_PROTOCOL } from "@/shared/url";
+import { EI18n } from "@/typings/setting/preference";
+import { EWindowType } from "@/typings/main";
+import EnvService from "./service/EnvService";
 
-(async () => {
-  UniTextApp = new UniText();
-  UniTextApp.init();
-})();
+const _container = new Container();
+
+/* TODO 窗口管理器 */
+async function createMainWindow(): Promise<BrowserWindow> {
+  const { get: systemGet } = _container.getService("SettingService").useSetting("system");
+  const menuService = _container.getService("MenuService");
+
+  const mainWindow = new BrowserWindow({
+    minWidth: 647,
+    minHeight: 400,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
+      enableRemoteModule: true,
+      preload: join(__static, "lib/preload.js"),
+    },
+    // icon: logoUrl,
+    vibrancy: "titlebar",
+    backgroundColor: "#00000000",
+    transparent: true,
+    width: systemGet("window.width"),
+    height: systemGet("window.height"),
+    titleBarStyle: systemGet("window.titleBarStyle"),
+  });
+
+  mainWindow.setTitle("UniText");
+
+  const lang = (EI18n[systemGet("launch.language")] as unknown) as number;
+
+  menuService.bootstrap(lang);
+
+  await mainWindow.loadURL(
+    buildURL({
+      wid: mainWindow.id.toString(),
+      lang: lang.toString(),
+      type: EWindowType.NORMAL.toString(),
+      proj: _container.getService("EnvService").getCabinPath(),
+    })
+  );
+
+  return mainWindow;
+}
+
+function registerProtocol(): void {
+  const imageService = _container.getService("ImageService");
+
+  const handleHttp = async (
+    request: Electron.ProtocolRequest,
+    callback: (response: Electron.ProtocolResponse) => void
+  ) => {
+    const path = await imageService.getCache(request.url);
+    callback({ path });
+  };
+
+  // TODO dev-tool & loadURL
+  !isDev && protocol.interceptFileProtocol("http", handleHttp);
+  protocol.interceptFileProtocol("https", handleHttp);
+
+  protocol.registerFileProtocol(URL_PROTOCOL.replace("://", ""), (request, callback) => {
+    let path = request.url;
+    if (path.startsWith(URL_PATH.IMG)) {
+      path = imageService.getImage(path);
+    }
+    // FEAT 相对路径
+    callback({ path });
+  });
+}
+
+function handleClosed(window: BrowserWindow | null): void {
+  ipcMain.on("min-window", () => {
+    if (window) {
+      window.minimize();
+    }
+  });
+
+  ipcMain.on("max-window", () => {
+    if (window) {
+      if (window.isMaximized()) {
+        window.unmaximize();
+      } else {
+        window.maximize();
+      }
+    }
+  });
+
+  ipcMain.on("close-window", () => {
+    if (window) {
+      window.close();
+    }
+  });
+}
+
+function main(): void {
+  const envService = new EnvService();
+  const { logPath } = envService.initBoot();
+
+  const logger = new Logger();
+  logger.initialize(logPath);
+
+  _container.setService("EnvService", envService);
+  _container.setService("SettingService", new SettingService(logger, envService.resolveCabinFile("SETTING")));
+  _container.setService("KeybindingService", new KeybindingService(logger));
+  _container.setService("MenuService", new MenuService(logger));
+  _container.setService("ImageService", new ImageService(logger, envService.resolveCabinFile("IMAGE")));
+  _container.setService("WindowService", new WindowService(logger));
+
+  _container.initService();
+
+  app.whenReady().then(async () => {
+    let mainWindow: BrowserWindow | null = null;
+
+    mainWindow = await createMainWindow();
+
+    mainWindow.on("closed", () => {
+      mainWindow = null;
+    });
+
+    handleClosed(mainWindow);
+    registerProtocol();
+
+    /**
+     * macOS only
+     */
+    app.on("activate", async () => {
+      if (!mainWindow) {
+        mainWindow = await createMainWindow();
+      }
+    });
+
+    if (!isDev) {
+      autoUpdater.on("update-downloaded", () => {
+        autoUpdater.quitAndInstall();
+      });
+      autoUpdater.checkForUpdatesAndNotify();
+    }
+  });
+}
+
+if (isWin) {
+  process.on("message", (data) => {
+    if (data === "graceful-exit") {
+      app.quit();
+    }
+  });
+} else {
+  process.on("SIGTERM", () => app.quit());
+}
+
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+}
+
+app.on("web-contents-created", (e, webContents) => {
+  if (isDev) {
+    return;
+  }
+
+  const handleURL = (e: Electron.NewWindowWebContentsEvent, url: string) => {
+    e.preventDefault();
+    shell.openExternal(url);
+  };
+
+  webContents.on("new-window", handleURL);
+  webContents.on("will-navigate", handleURL);
+});
+
+app.on("window-all-closed", () => {
+  if (isOsx || isDev) {
+    app.quit();
+  }
+});
+
+process.nextTick(main);

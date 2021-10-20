@@ -1,5 +1,3 @@
-import { Menu } from "electron";
-
 /**
  * TI18n 为其字符形式，方便修改
  *
@@ -21,7 +19,7 @@ export interface IBootArgs {
   /**
    * @field 笔记库历史记录
    */
-  historyPaths: Array<string>;
+  historyPath: Array<string>;
   /**
    * @field 是否默认启动
    */
@@ -60,6 +58,7 @@ export enum EWindowType {
 }
 
 /**
+ * @deprecated
  * @enum { EMenuContextKey } context menu 的访问键
  */
 export enum EMenuContextKey {
@@ -68,22 +67,3 @@ export enum EMenuContextKey {
   PANEL_TOC = "PANEL_TOC",
   TAB_BAR = "TAB_BAR",
 }
-
-/**
- * @interface menu 的存储结构
- */
-export interface IMenuSet {
-  SIDEBAR_FOLDER: Menu;
-  SIDEBAR_FILE: Menu;
-  PANEL_TOC: Menu;
-  TAB_BAR: Menu;
-  DOCK: Menu;
-  MENU: Menu;
-}
-
-/**
- * @type 菜单模板
- */
-export type TMenuTemplate = Array<
-  Electron.MenuItemConstructorOptions | Electron.MenuItem
->;

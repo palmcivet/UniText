@@ -3,10 +3,10 @@ import { ipcRenderer, remote } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 import { join } from "path";
 
-import { CONFIG_FILE } from "@/common/env";
-import { hasKeys, notEmpty } from "@/common/utils";
+import { CABIN_FILE } from "@/shared/env";
+import { hasKeys, notEmpty } from "@/shared/utils";
 import { buildTree } from "@/common/fileSystem/fileState";
-import { IPC_FILE } from "@/common/channel/ipc";
+import { IPC_FILE } from "@/shared/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import {
   ITree,
@@ -35,7 +35,7 @@ const getters: GetterTree<ISideBarState, IRootState> = {
 
 const mutations: MutationTree<ISideBarState> = {
   LOAD_MARKLIST: (_: ISideBarState, base: string) => {
-    const absPath = join(base, ...CONFIG_FILE.MARK);
+    const absPath = join(base, ...CABIN_FILE.MARK);
 
     if (!fse.existsSync(absPath)) {
       return;

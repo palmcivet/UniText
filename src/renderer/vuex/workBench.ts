@@ -1,36 +1,23 @@
 import { ipcRenderer, remote } from "electron";
 import { MutationTree, ActionContext, GetterTree, ActionTree } from "vuex";
 import * as fse from "fs-extra";
+import { join } from "path";
 
-import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
-import { BUS_EDITOR, BUS_SIDEBAR } from "@/common/channel/bus";
-import { joinPath } from "@/common/fileSystem";
-import { fetchFileInfo } from "@/common/fileSystem/fileState";
-import {
-  difference,
-  formatDate,
-  getHash,
-  hashCode,
-  intersect,
-  notEmpty,
-} from "@/common/utils";
-import { URL_PATH } from "@/common/url";
+import { IPC_FILE, IPC_IMAGE } from "@/shared/channel/ipc";
+import { BUS_EDITOR, BUS_SIDEBAR } from "@/shared/channel/bus";
+import { fetchFileInfo } from "@/main/file/fileState";
+import { difference, formatDate, getHash, hashCode, intersect, notEmpty } from "@/shared/utils";
+import { URL_PATH } from "@/shared/url";
+
 import { charCount, wordCount, timeCalc } from "@/renderer/utils/statistics";
 import { importFrontMatter, exportFrontMatter } from "@/renderer/utils/frontMatter";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { ITree, TFileRoute } from "@/typings/vuex/sideBar";
-import {
-  ITab,
-  IFile,
-  IWorkBenchState,
-  EWorkBenchType,
-  ESettingType,
-} from "@/typings/vuex/workBench";
+import { ITab, IFile, IWorkBenchState, EWorkBenchType, ESettingType } from "@/typings/vuex/workBench";
 import { ECoding, EEoL, EIndent, IDocumentFrontMatter } from "@/typings/document";
 
-const fileSelect = (stateTree: IWorkBenchState) =>
-  stateTree.currentGroup[stateTree.currentIndex];
+const fileSelect = (stateTree: IWorkBenchState) => stateTree.currentGroup[stateTree.currentIndex];
 
 let titleId = 0;
 
@@ -143,10 +130,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    * 用于 NEW_FILE 或 OPEN_FILE 后，同步状态
    * 流程：SYNC_TABS => SELECT_TAB => sideBar/CHOOSE_ITEM
    */
-  SYNC_LOAD: (
-    _: ActionContext<IWorkBenchState, IRootState>,
-    payload: { file: IFile; index: string }
-  ) => {
+  SYNC_LOAD: (_: ActionContext<IWorkBenchState, IRootState>, payload: { file: IFile; index: string }) => {
     const { index, file } = payload;
     const { commit, state } = _;
     state.currentGroup[index] = file;
@@ -204,7 +188,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
 
     dispatch("SYNC_LOAD", {
       file: untitled,
-      index: hashCode(joinPath(...fileName)),
+      index: hashCode(join(...fileName)),
     });
 
     /**
@@ -227,10 +211,8 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     const { document, fileManager } = _.rootState.general;
     const { route, isRead } = payload;
 
-    const filePath = joinPath(fileManager.folderDir, ...route);
-    const { data, content } = importFrontMatter(
-      (await fse.readFile(filePath)).toString()
-    );
+    const filePath = join(fileManager.folderDir, ...route);
+    const { data, content } = importFrontMatter((await fse.readFile(filePath)).toString());
 
     let doc: IDocumentFrontMatter;
 
@@ -330,14 +312,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
    */
   SAVE_FILE: async (_: ActionContext<IWorkBenchState, IRootState>, content: string) => {
     const { state, rootState, commit, dispatch } = _;
-    const {
-      fileName,
-      isTemp,
-      content: noUse_1,
-      needSave: noUse_2,
-      readMode: noUse_3,
-      ...payload
-    } = fileSelect(state);
+    const { fileName, isTemp, content: noUse_1, needSave: noUse_2, readMode: noUse_3, ...payload } = fileSelect(state);
 
     const root = rootState.general.fileManager.folderDir;
 
@@ -352,7 +327,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
       content,
     });
 
-    let path = joinPath(root, ...fileName);
+    let path = join(root, ...fileName);
 
     if (isTemp) {
       // TODO 弃用 remote
@@ -395,9 +370,9 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     srcObj[title] = srcObj[target];
     delete srcObj[target];
 
-    const src = joinPath(folderDir, ...file);
+    const src = join(folderDir, ...file);
     file[file.length - 1] = title;
-    const dst = joinPath(folderDir, ...file);
+    const dst = join(folderDir, ...file);
     fse.rename(src, dst);
   },
 
@@ -416,16 +391,13 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     delete srcObj[target];
 
     // FEAT 移至回收站
-    const DIR = joinPath(folderDir, ...file);
+    const DIR = join(folderDir, ...file);
     fse.remove(DIR);
   },
 
   MOVE: (_: ActionContext<IWorkBenchState, IRootState>, title: string) => {},
 
-  DIFF_IMGLIST: (
-    _: ActionContext<IWorkBenchState, IRootState>,
-    old: Array<string>
-  ): Array<string> => {
+  DIFF_IMGLIST: (_: ActionContext<IWorkBenchState, IRootState>, old: Array<string>): Array<string> => {
     const oldList = new Set(old);
     const newList = new Set<string>();
 
@@ -469,9 +441,7 @@ const actions: ActionTree<IWorkBenchState, IRootState> = {
     });
 
     ipcRenderer.on(IPC_FILE.REVEAL, (e, route: TFileRoute) => {
-      remote.shell.showItemInFolder(
-        joinPath(rootState.general.fileManager.folderDir, ...route)
-      );
+      remote.shell.showItemInFolder(join(rootState.general.fileManager.folderDir, ...route));
     });
   },
 };

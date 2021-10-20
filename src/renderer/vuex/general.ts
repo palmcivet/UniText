@@ -1,12 +1,12 @@
 import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
-import { BUS_EDITOR } from "@/common/channel/bus";
-import { IPC_OTHER } from "@/common/channel/ipc";
+import { BUS_EDITOR } from "@/shared/channel/bus";
+import { IPC_OTHER } from "@/shared/channel/ipc";
 import { Bus } from "@/renderer/plugins/VueBus";
 import { IRootState } from "@/typings/vuex";
 import { IGeneralState } from "@/typings/vuex/general";
-import { EEditMode, EPanelType, ETypeMode } from "@/typings/schema/preference";
+import { EEditMode, EPanelType, ETypeMode } from "@/typings/setting/preference";
 
 const state = {};
 

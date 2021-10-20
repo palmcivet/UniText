@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Vuex, { ActionTree, MutationTree } from "vuex";
+import Vuex, { Store, ActionTree, MutationTree } from "vuex";
 
 import general from "./general";
 import sideBar from "./sideBar";
@@ -7,7 +7,7 @@ import workBench from "./workBench";
 import statusPanel from "./statusPanel";
 import notification from "./notification";
 import { IRootState } from "@/typings/vuex";
-import { IPreference } from "@/typings/schema/preference";
+import { IPreference } from "@/typings/setting/preference";
 
 Vue.use(Vuex);
 
@@ -23,7 +23,7 @@ const mutations: MutationTree<IRootState> = {
 
 const actions: ActionTree<IRootState, IRootState> = {};
 
-export default new Vuex.Store({
+export default new Store({
   strict: true,
   actions,
   mutations,

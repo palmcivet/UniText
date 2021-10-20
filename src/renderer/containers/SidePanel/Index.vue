@@ -26,7 +26,7 @@ import { namespace } from "vuex-class";
 import TOC from "./items/Toc.vue";
 import INFO from "./items/Info.vue";
 import EXPORT from "./items/Export.vue";
-import { $ } from "@/common/utils";
+import { $ } from "@/shared/utils";
 import { EPanelType } from "@/typings/schema/preference";
 import { IGeneralState } from "@/typings/vuex/general";
 

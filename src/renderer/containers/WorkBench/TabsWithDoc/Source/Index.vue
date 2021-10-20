@@ -24,7 +24,7 @@ import Prism from "prismjs";
 
 import { BUS_EDITOR } from "@/common/channel/bus";
 import { IPC_FILE, IPC_IMAGE } from "@/common/channel/ipc";
-import { debounce, $, notEmpty } from "@/common/utils";
+import { debounce, $, notEmpty } from "@/shared/utils";
 import { cleanUrl, getClipboard } from "@/renderer/utils/links";
 import SplitView from "@/renderer/components/SplitView.vue";
 import { IFile } from "@/typings/vuex/workBench";

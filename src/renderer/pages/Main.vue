@@ -18,7 +18,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { namespace } from "vuex-class";
 
-import { isWin } from "@/common/env";
+import { isWin } from "@/shared/env";
 import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";

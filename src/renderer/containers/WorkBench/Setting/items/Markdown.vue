@@ -15,8 +15,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 
-import { debounce } from "@/common/utils";
-import { schemaMarkdown } from "@/common/schema/sMarkdown";
+import { debounce } from "@/shared/utils";
+import { schemaMarkdown } from "@/shared/setting/markdown";
 import GroupCreator from "../widgets/GroupCreator.vue";
 
 @Component({

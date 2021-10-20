@@ -1,9 +1,9 @@
 import { ipcRenderer } from "electron";
 import { ActionContext, ActionTree, GetterTree, MutationTree } from "vuex";
 
-import { isDev } from "@/common/env";
-import { notEmpty } from "@/common/utils";
-import { IPC_OTHER, IPC_NOTIFY } from "@/common/channel/ipc";
+import { isDev } from "@/shared/env";
+import { notEmpty } from "@/shared/utils";
+import { IPC_OTHER, IPC_NOTIFY } from "@/shared/channel/ipc";
 import { IRootState } from "@/typings/vuex";
 import { INotificationMessage, INotificationState } from "@/typings/vuex/notification";
 

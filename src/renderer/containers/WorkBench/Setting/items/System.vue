@@ -16,7 +16,7 @@
 import { ipcRenderer } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 
-import { debounce } from "@/common/utils";
+import { debounce } from "@/shared/utils";
 import { IPC_PREFERENCE } from "@/common/channel/ipc";
 import { schemaSystem } from "@/common/schema/sSystem";
 import GroupCreator from "../widgets/GroupCreator.vue";

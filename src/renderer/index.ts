@@ -1,12 +1,12 @@
 import Vue from "vue";
 import "remixicon/fonts/remixicon.css";
 
-import { parseUrl } from "@/common/url";
-import { localesView } from "@/common/i18n/iInterface";
-import Theme from "@/common/userData/Theme";
-import Snippet from "@/common/userData/Snippet";
-import Markdown from "@/common/userData/Markdown";
-import Preference from "@/common/userData/Preference";
+import { parseURL } from "@/shared/url";
+import Preference from "@/renderer/services/PreferenceService";
+import Markdown from "@/renderer/services/MarkdownService";
+import Snippet from "@/renderer/services/SnippetService";
+import Theme from "@/renderer/services/ThemeService";
+import { localesView } from "@/shared/i18n/ZH_CN";
 import Main from "@/renderer/pages/Main.vue";
 import store from "@/renderer/vuex";
 import VueBus from "@/renderer/plugins/VueBus";
@@ -15,7 +15,7 @@ import VueLayout from "@/renderer/plugins/VueLayout";
 
 import "@/renderer/styles/main.less";
 
-const args = parseUrl();
+const args = parseURL();
 const pref = new Preference(args.proj);
 
 Vue.config.productionTip = false;

@@ -23,6 +23,12 @@
     "outDir": "dist",
     "lib": ["ESNext", "DOM", "DOM.Iterable", "scripthost"]
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "test/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "test/**/*.ts",
+    "src/shared/*.d.ts",
+    "src/types/*.d.ts"
+  ],
   "exclude": ["node_modules", "library/**/*"]
 }

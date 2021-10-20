@@ -1,3 +1,3 @@
-import { IPreference } from "../schema/preference";
+import { IPreference } from "../setting/preference";
 
 export interface IGeneralState extends IPreference {}

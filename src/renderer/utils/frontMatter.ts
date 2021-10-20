@@ -7,7 +7,7 @@
 
 const yaml = require("js-yaml");
 
-import { formatDate } from "@/common/utils";
+import { formatDate } from "@/shared/utils";
 import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/renderer/utils";
 import { IDocumentFrontMatter } from "@/typings/document";
 

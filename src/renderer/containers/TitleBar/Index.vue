@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { isWin } from "@/common/env";
+import { isWin } from "@/shared/env";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({

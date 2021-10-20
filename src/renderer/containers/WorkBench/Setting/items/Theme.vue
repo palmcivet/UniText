@@ -38,10 +38,10 @@ import { namespace } from "vuex-class";
 import * as fse from "fs-extra";
 import { join } from "path";
 
-import { debounce } from "@/common/utils";
+import { debounce } from "@/shared/utils";
 import { hasFileList } from "@/common/fileSystem";
 import { schemaTheme } from "@/common/schema/sTheme";
-import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/common/env";
+import { CONFIG_FOLDER, THEME_CSS, THEME_JS, THEME_PRESET } from "@/shared/env";
 import ItemTitle from "../widgets/ItemTitle.vue";
 import DropDown from "../widgets/DropDown.vue";
 import UCheckBox from "@/renderer/components/Form/UCheckBox.vue";

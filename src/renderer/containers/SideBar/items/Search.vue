@@ -85,15 +85,14 @@ import { namespace } from "vuex-class";
 import { Vue, Component } from "vue-property-decorator";
 import { join } from "path";
 
-import RipgrepDirectorySearcher from "@/library/ripgrepSearcher";
-import { IRipgrepSearchResult } from "@/library/ripgrepSearcher.d";
+import { IRipgrepSearchResult } from "@/library/ripgrep-searcher";
 import CheckList from "@/renderer/components/CheckList.vue";
 import ListNode from "@/renderer/containers/SideBar/widgets/ListNode.vue";
 import BaseView from "@/renderer/containers/SideBar/widgets/BaseView.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { ipcRenderer } from "electron";
-import { IPC_FILE } from "@/common/channel/ipc";
-import { BUS_EDITOR } from "@/common/channel/bus";
+import { IPC_FILE } from "@/shared/channel/ipc";
+import { BUS_EDITOR } from "@/shared/channel/bus";
 
 const sideBar = namespace("sideBar");
 const general = namespace("general");

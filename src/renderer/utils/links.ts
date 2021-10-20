@@ -1,8 +1,8 @@
 import { clipboard } from "electron";
 import crypto from "crypto";
 
-import { isWin } from "@/common/env";
-import { URL_PATH } from "@/common/url";
+import { isWin } from "@/shared/env";
+import { URL_PATH } from "@/shared/url";
 import { IMG_IN_URL_PATTERN } from ".";
 
 /**
