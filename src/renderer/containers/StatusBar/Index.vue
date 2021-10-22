@@ -10,37 +10,42 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-import Mode from "./items/Mode.vue";
-import Message from "./items/Message.vue";
-import TagList from "./items/TagList.vue";
-import PanelType from "./items/PanelType.vue";
-import PanelStyle from "./items/PanelStyle.vue";
-import SyncScheme from "./items/SyncScheme.vue";
+// import Mode from "./items/Mode.vue";
+// import Message from "./items/Message.vue";
+// import TagList from "./items/TagList.vue";
+// import PanelType from "./items/PanelType.vue";
+// import PanelStyle from "./items/PanelStyle.vue";
+// import SyncScheme from "./items/SyncScheme.vue";
 
 const Space = {
+  name: "Space",
   template: `<span style="width: ${0.5}em;"></span>`,
 };
 
-@Component({
+export default defineComponent({
   name: "StatusBar",
-  components: {
-    PanelStyle,
-    PanelType,
-    Message,
-    Space,
-    Mode,
-    TagList,
-    SyncScheme,
-  },
-})
-export default class StatusBar extends Vue {
-  // <i class="ri-history-line"></i>
 
-  leftGroup = ["SyncScheme", "Space", "TagList"];
-  rightGroup = ["Message", "Space", "PanelType", "Space", "PanelStyle", "Mode"];
-}
+  components: {
+    // PanelStyle,
+    // PanelType,
+    // Message,
+    // Space,
+    // Mode,
+    // TagList,
+    // SyncScheme,
+  },
+
+  data() {
+    // <i class="ri-history-line"></i>
+
+    return {
+      leftGroup: ["SyncScheme", "Space", "TagList"],
+      rightGroup: ["Message", "Space", "PanelType", "Space", "PanelStyle", "Mode"],
+    };
+  },
+});
 </script>
 
 <style lang="less" scoped>
@@ -50,7 +55,7 @@ footer {
   display: flex;
   justify-content: space-between;
   position: relative;
-  height: @layout-statusBar-height;
+  height: @layout-statusbar-height;
   padding: 0 0.5em;
   color: var(--statusBar-Fg);
   background: var(--statusBar-Bg);
@@ -67,7 +72,7 @@ footer {
       padding: 0 0.25em;
       cursor: pointer;
       user-select: none;
-      line-height: @layout-statusBar-height;
+      line-height: @layout-statusbar-height;
 
       &:hover {
         color: var(--statusBar-hoverFg);

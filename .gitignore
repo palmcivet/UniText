@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 .yarnclean
+yarn.lock
 
 # Local env files
 .env.local
@@ -26,3 +27,4 @@ yarn-error.log*
 # Dev config
 *.pre.*
 .github
+CHANGELOG.md

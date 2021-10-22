@@ -1,53 +1,42 @@
-import Vue from "vue";
+import { createApp } from "vue";
+import { createI18n } from "vue-i18n";
+import { createPinia } from "pinia";
+
+import router from "@/renderer/router";
+import { EWindowType, IWindowArgs } from "@/typings/main";
+import { localesView, localesMenu } from "@/shared/i18n/ZH_CN";
+import VueBus from "./plugins/VueBus";
+import Index from "./index.vue";
+
 import "remixicon/fonts/remixicon.css";
-
-import { parseURL } from "@/shared/url";
-import Preference from "@/renderer/services/PreferenceService";
-import Markdown from "@/renderer/services/MarkdownService";
-import Snippet from "@/renderer/services/SnippetService";
-import Theme from "@/renderer/services/ThemeService";
-import { localesView } from "@/shared/i18n/ZH_CN";
-import Main from "@/renderer/pages/Main.vue";
-import store from "@/renderer/vuex";
-import VueBus from "@/renderer/plugins/VueBus";
-import VueI18n from "@/renderer/plugins/VueI18n";
-import VueLayout from "@/renderer/plugins/VueLayout";
-
 import "@/renderer/styles/main.less";
 
-const args = parseURL();
-const pref = new Preference(args.proj);
+const messages = {
+  "zh-CN": { ...localesView, ...localesMenu },
+};
 
-Vue.config.productionTip = false;
+const args = ((): IWindowArgs => {
+  const params = new URLSearchParams(window.location.search);
 
-Vue.prototype.$preference = pref;
-Vue.prototype.$markdown = new Markdown(args.proj);
-Vue.prototype.$snippet = new Snippet(args.proj);
-Vue.prototype.$theme = new Theme(args.proj);
+  return {
+    wid: Number(params.get("wid")),
+    lang: Number(params.get("lang")),
+    type: Number(params.get("type")),
+    proj: params.get("proj") as string,
+  };
+})();
 
-Vue.use(VueBus);
-Vue.use(VueI18n, {
-  lang: args.lang,
-  messages: localesView,
-});
-Vue.use(VueLayout, {
-  setup: { width: 970, height: 590 },
-  layout: {
-    side: {
-      range: [150, 250],
-      isClose: !pref.getItem("interface.showSideBar"),
-      mainPart: 160,
-    },
-    panel: {
-      range: [150, 250],
-      isClose: !pref.getItem("interface.showPanel"),
-      mainPart: 155,
-    },
-  },
+const i18n = createI18n({
+  legacy: false,
+  locale: "zh-CN",
+  messages,
 });
 
-new Vue({
-  store,
-  components: { Main },
-  template: "<Main />",
-}).$mount("#app");
+const app = createApp(Index);
+app.use(createPinia()).use(router).use(i18n).use(VueBus).mount("#app");
+
+app.config.globalProperties.$t = i18n.global.t;
+
+if (args.type === EWindowType.NORMAL) {
+  // 切换到 `/main`
+}

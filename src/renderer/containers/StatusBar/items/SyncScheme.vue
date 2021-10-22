@@ -3,13 +3,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({
+export default defineComponent({
   name: "SyncScheme",
+
   components: {},
-})
-export default class SyncScheme extends Vue {}
+});
 </script>
 
 <style lang="less" scoped></style>

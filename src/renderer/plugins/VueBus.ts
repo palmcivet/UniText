@@ -3,9 +3,9 @@
  * @Repo: https://github.com/developit/mitt
  */
 
-/* eslint-disable no-param-reassign */
+import { App } from "vue";
 
-import { VueConstructor } from "vue/types/umd";
+/* eslint-disable no-param-reassign */
 
 /* -------------------------- types ------------------------------- */
 
@@ -112,11 +112,9 @@ function mitt(all?: EventHandlerMap): Emitter {
 
 export const Bus = mitt();
 
-const install = (Vue: VueConstructor<Vue>) => {
-  const proto = Vue.prototype;
-  proto.$bus = proto.$bus || Bus;
-};
-
 export default {
-  install,
+  install(app: App) {
+    const proto = app.config.globalProperties;
+    proto.$bus = proto.$bus || Bus;
+  },
 };

@@ -379,7 +379,26 @@ export const FormatGroup: F = (keybinding) => ({
 
 export const WindowGroup: F = (keybinding) => ({
   label: lang("window.label"),
-  role: "windowMenu",
+  submenu: [
+    {
+      role: "zoomIn",
+    },
+    {
+      role: "zoomOut",
+    },
+    {
+      role: "resetZoom",
+    },
+    {
+      role: "minimize",
+    },
+    {
+      role: "zoom",
+    },
+    {
+      role: "front",
+    },
+  ],
 });
 
 export const HelpGroup: F = (keybinding) => ({

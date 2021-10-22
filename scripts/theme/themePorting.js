@@ -1,5 +1,3 @@
-"use strict";
-
 const fs = require("fs");
 const path = require("path");
 
@@ -92,7 +90,7 @@ const parseTheme = (input) => {
   return res;
 };
 
-(async function(argv) {
+(async (argv) => {
   if (argv.length === 2) {
     console.log("Missing input file");
     console.log("Usage: node themePorting.js <one-dark-pro.json>");

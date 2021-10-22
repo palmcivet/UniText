@@ -5,7 +5,7 @@
  * 使用的依赖为 js-yaml
  */
 
-const yaml = require("js-yaml");
+import yaml from "js-yaml";
 
 import { formatDate } from "@/shared/utils";
 import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/renderer/utils";
@@ -14,12 +14,7 @@ import { IDocumentFrontMatter } from "@/typings/document";
 /**
  * @type YAML 方案
  */
-type SCHEMA =
-  | "JSON_SCHEMA"
-  | "CORE_SCHEMA"
-  | "FAILSAFE_SCHEMA"
-  | "DEFAULT_SAFE_SCHEMA"
-  | "DEFAULT_FULL_SCHEMA";
+type SCHEMA = "JSON_SCHEMA" | "CORE_SCHEMA" | "FAILSAFE_SCHEMA" | "DEFAULT_SAFE_SCHEMA" | "DEFAULT_FULL_SCHEMA";
 
 /**
  * https://github.com/nodeca/js-yaml#safeload-string---options-
@@ -87,10 +82,7 @@ const escapeYAML = (str: string) => {
  * @param str 字符串
  * @param options js-yaml 选项
  */
-const parseYAML = (
-  str: string,
-  options?: ILoadOption
-): IDocumentFrontMatter | undefined => {
+const parseYAML = (str: string, options?: ILoadOption): IDocumentFrontMatter | undefined => {
   const result = yaml.load(escapeYAML(str), options);
   if (typeof result !== "object") return undefined;
   return result;

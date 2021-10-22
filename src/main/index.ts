@@ -1,4 +1,3 @@
-import { isDev, isOsx, isWin } from "@/shared/env";
 import { app, BrowserWindow, ipcMain, protocol, shell } from "electron";
 import { autoUpdater } from "electron-updater";
 import { join } from "path";
@@ -6,15 +5,15 @@ import { join } from "path";
 import Logger from "./backend/Logger";
 import Printer from "./backend/Printer";
 import Container from "./service";
-import ImageService from "./service/ImageService";
-import MenuService from "./service/MenuService";
-import SettingService from "./service/SettingService";
-import WindowService from "./service/WindowService";
-import KeybindingService from "./service/KeybindingService";
-import { buildURL, URL_PATH, URL_PROTOCOL } from "@/shared/url";
-import { EI18n } from "@/typings/setting/preference";
-import { EWindowType } from "@/typings/main";
 import EnvService from "./service/EnvService";
+import MenuService from "./service/MenuService";
+import ImageService from "./service/ImageService";
+import WindowService from "./service/WindowService";
+import SettingService from "./service/SettingService";
+import KeybindingService from "./service/KeybindingService";
+import { isDev, isOsx, isWin, URL_PATH, URL_PROTOCOL } from "@/shared/constant";
+import { EI18n } from "@/typings/setting/preference";
+import { EWindowType, IWindowArgs } from "@/typings/main";
 
 const _container = new Container();
 
@@ -27,9 +26,6 @@ async function createMainWindow(): Promise<BrowserWindow> {
     minWidth: 647,
     minHeight: 400,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: true,
-      enableRemoteModule: true,
       preload: join(__static, "lib/preload.js"),
     },
     // icon: logoUrl,
@@ -43,18 +39,20 @@ async function createMainWindow(): Promise<BrowserWindow> {
 
   mainWindow.setTitle("UniText");
 
-  const lang = (EI18n[systemGet("launch.language")] as unknown) as number;
+  const lang = EI18n[systemGet("launch.language")] as unknown as number;
 
   menuService.bootstrap(lang);
 
-  await mainWindow.loadURL(
-    buildURL({
-      wid: mainWindow.id.toString(),
-      lang: lang.toString(),
-      type: EWindowType.NORMAL.toString(),
-      proj: _container.getService("EnvService").getCabinPath(),
-    })
-  );
+  const args: Record<keyof IWindowArgs, string> = {
+    wid: mainWindow.id.toString(),
+    lang: lang.toString(),
+    type: EWindowType.NORMAL.toString(),
+    proj: _container.getService("EnvService").getCabinPath(),
+  };
+  const params = new URLSearchParams(args);
+  const URL_HOST = isDev ? `http://localhost:${process.env.PORT_RENDERER}` : `file://${__dirname}`;
+
+  await mainWindow.loadURL(`${URL_HOST}/?${params.toString()}`);
 
   return mainWindow;
 }
@@ -145,12 +143,10 @@ function main(): void {
       }
     });
 
-    if (!isDev) {
-      autoUpdater.on("update-downloaded", () => {
-        autoUpdater.quitAndInstall();
-      });
-      autoUpdater.checkForUpdatesAndNotify();
-    }
+    autoUpdater.on("update-downloaded", () => {
+      autoUpdater.quitAndInstall();
+    });
+    autoUpdater.checkForUpdatesAndNotify();
   });
 }
 
@@ -186,6 +182,14 @@ app.on("window-all-closed", () => {
   if (isOsx || isDev) {
     app.quit();
   }
+});
+
+process.on("uncaughtException", (error) => {
+  console.error(error);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error(reason);
 });
 
 process.nextTick(main);

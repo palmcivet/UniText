@@ -1,4 +1,4 @@
-import { VueConstructor } from "vue/types/umd";
+import { App } from "vue";
 
 /* -------------------------- utils ------------------------------- */
 
@@ -78,12 +78,8 @@ class Container {
 
   constructor(el: HTMLElement, opt: IPluginRunningItem, cb: TCallback) {
     this._sashEle = el;
-    this._prevEle = (opt.isLeft
-      ? el.previousElementSibling
-      : el.nextElementSibling) as HTMLElement;
-    this._nextEle = (opt.isLeft
-      ? el.nextElementSibling
-      : el.previousElementSibling) as HTMLElement;
+    this._prevEle = (opt.isLeft ? el.previousElementSibling : el.nextElementSibling) as HTMLElement;
+    this._nextEle = (opt.isLeft ? el.nextElementSibling : el.previousElementSibling) as HTMLElement;
 
     this._range = opt.range;
     this._isLeft = opt.isLeft;
@@ -170,8 +166,8 @@ class Container {
 
 /* -------------------------- plugin ------------------------------- */
 
-const install = (Vue: VueConstructor<Vue>, opts: IPluginOptions) => {
-  const _p = Vue.prototype;
+const install = (Vue: App, opts: IPluginOptions) => {
+  const _p = Vue.config.globalProperties;
 
   const _setup: IPluginRunning<IPluginRunningItem> = {
     SIDE: { isLeft: true, ...opts.layout.side },
@@ -201,7 +197,7 @@ const install = (Vue: VueConstructor<Vue>, opts: IPluginOptions) => {
   };
 
   Vue.directive("sash", {
-    inserted: (el, { value }) => {
+    mounted: (el, { value }) => {
       el.setAttribute("class", "unitext-resize");
       _state[value] = new Container(el, _setup[value], () => _fire(value));
     },

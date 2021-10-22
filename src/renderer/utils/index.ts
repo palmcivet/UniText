@@ -1,4 +1,4 @@
-import { URL_PATH } from "@/common/url";
+import { URL_PATH } from "@/shared/constant";
 
 export const IMG_FORMAT = "(png|jpg|jpeg|bmp|ico|gif|svg|tif|tga)";
 

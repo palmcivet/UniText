@@ -4,7 +4,7 @@ const fse = require("fs-extra");
 const chalk = require("chalk");
 const webpack = require("webpack");
 
-const { getPath } = require("./config/environment");
+const { buildPath } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
 const rendererConfig = require("./config/webpack.renderer");
 const { getLicenses } = require("./tools/thirdParty");
@@ -13,7 +13,7 @@ const okayLog = chalk.bgGreen.white(" OKAY ") + " ";
 const doneLog = chalk.bgBlue.white(" DONE ") + " ";
 const errorLog = chalk.bgRed.white(" ERROR ") + " ";
 
-const bundledPkg = ["clipboard"];
+const bundledPkg = [];
 
 const filterPkg = [
   "demo",
@@ -32,21 +32,21 @@ const filterPkg = [
 async function preBuild() {
   console.log(chalk.greenBright.bold("UniText Building"));
 
-  await fse.remove(getPath.build());
+  await fse.remove(buildPath.build());
   console.log(`${doneLog}Clean up dist folder`);
 }
 
 async function copyResources() {
-  const from = getPath.public();
-  const to = getPath.build();
+  const from = buildPath.public();
+  const to = buildPath.build();
   await fse.copy(from, to);
   console.log(`${okayLog}Copy resources`);
 }
 
 function copyPackages() {
   bundledPkg.forEach(async (key) => {
-    const from = getPath.cwd("node_modules", key);
-    const to = getPath.build("node_modules", key);
+    const from = buildPath.cwd("node_modules", key);
+    const to = buildPath.build("node_modules", key);
     await fse.copy(from, to, {
       filter: (src, dst) => !filterPkg.some((item) => src.indexOf(item) !== -1),
     });
@@ -55,7 +55,7 @@ function copyPackages() {
 }
 
 async function getPackageJson() {
-  const pkgPath = getPath.cwd("package.json");
+  const pkgPath = buildPath.cwd("package.json");
   const raw = await fse.readFile(pkgPath, "utf-8");
   const pkgJson = JSON.parse(raw);
 
@@ -65,7 +65,7 @@ async function getPackageJson() {
   delete pkgJson.husky;
   delete pkgJson["lint-staged"];
 
-  await fse.writeFile(getPath.build("package.json"), JSON.stringify(pkgJson));
+  await fse.writeFile(buildPath.build("package.json"), JSON.stringify(pkgJson));
   console.log(`${okayLog}Truncate package.json`);
 }
 
@@ -128,7 +128,7 @@ function build(config) {
 
   await getPackageJson();
 
-  getLicenses(process.cwd(), getPath.build("THIRD-PARTY-LICENSES.txt"), () => {
+  getLicenses(process.cwd(), buildPath.build("THIRD-PARTY-LICENSES.txt"), () => {
     console.log(`${okayLog}Generate License statement`);
   });
 })();

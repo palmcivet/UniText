@@ -45,8 +45,6 @@ export enum IPC_OTHER {
 }
 
 export enum IPC_NOTIFY {
-  BOOTLOG_FETCH = "IPC::BOOTLOG_FETCH",
-  BOOTLOG_REPLY = "IPC::BOOTLOG_REPLY",
   LOG = "IPC::LOG",
   ALARM = "IPC::ALARM",
 }

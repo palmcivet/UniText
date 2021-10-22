@@ -30,6 +30,6 @@ export default class TagList extends Vue {
 @import "~@/renderer/styles/var.less";
 
 ol > li {
-  border-radius: @layout-statusBar-height;
+  border-radius: @layout-statusbar-height;
 }
 </style>

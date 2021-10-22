@@ -1,43 +1,37 @@
 {
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Electron: Main",
       "type": "node",
-      "request": "launch",
-      "name": "Serve UniText",
-      "program": "${workspaceFolder}/scripts/dev.js",
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "outFiles": ["${workspaceFolder}/dist/build/background.js"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Main Process",
-      "port": 5861,
-      "timeout": 60000,
+      "request": "attach",
+      "cwd": "${workspaceFolder}",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "smartStep": true,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/build/background.js"]
+      "protocol": "inspector",
+      "port": 5858,
+      "timeout": 20000
     },
     {
-      "type": "firefox",
-      "request": "launch",
-      "name": "Renderer Process",
-      "reAttach": true,
-      "reloadOnChange": {
-        "watch": "${workspaceFolder}/src/renderer/*.js",
-        "ignore": "**/node_modules/**"
-      },
-      "port": 8315,
-      "url": "http://localhost:9091/index.html",
-      "webRoot": "${workspaceFolder}/src/renderer"
+      "name": "Electron: Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}",
+      "timeout": 15000
     }
   ],
   "compounds": [
     {
-      "name": "Debug UniText",
-      "configurations": ["Serve UniText", "Main Process", "Renderer Process"]
+      "name": "Electron: Main & Renderer (attach)",
+      "configurations": [
+        "Electron: Main",
+        "Electron: Renderer"
+    ]
     }
   ]
 }

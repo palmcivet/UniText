@@ -1,16 +1,16 @@
 import * as fse from "fs-extra";
 import { join } from "path";
-import level, { LevelDB } from "level";
+// import level, { LevelDB } from "level";
 
 import { getHash } from "@/shared/utils";
-import { URL_PATH } from "@/shared/url";
+import { URL_PATH } from "@/shared/constant";
 import { fetchHttpFile } from "@/main/file/fileState";
 import Logger from "@/main/backend/Logger";
 import Service, { Inject } from "./Service";
 import EnvService from "./EnvService";
 
 export default class ImageService extends Service {
-  private readonly _db: LevelDB<string, number>;
+  // private readonly _db: LevelDB<string, number>;
 
   /**
    * @deprecated
@@ -23,7 +23,7 @@ export default class ImageService extends Service {
   constructor(logger: Logger, dbPath: string) {
     super(logger);
 
-    this._db = level(dbPath);
+    // this._db = level(dbPath);
 
     /**
      * @deprecated

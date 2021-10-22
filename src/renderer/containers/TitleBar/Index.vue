@@ -1,7 +1,7 @@
 <template>
-  <header @dblclick="toogleZoom()">
-    <span class="text">UniText</span>
-    <div class="tool" v-if="isWin32">
+  <header @dblclick="toggleZoom()">
+    <span class="window-title">UniText</span>
+    <div class="window-controls" v-if="isWin">
       <i class="ri-indeterminate-circle-line" />
       <i class="ri-fullscreen-line" />
       <i class="ri-close-line" />
@@ -10,36 +10,52 @@
 </template>
 
 <script lang="ts">
-import { isWin } from "@/shared/env";
-import { Vue, Component } from "vue-property-decorator";
+import { defineComponent } from "vue";
 
-@Component({
+import useEnvironment from "@/renderer/store/environment";
+
+export default defineComponent({
   name: "TitleBar",
-})
-export default class TitleBar extends Vue {
-  isWin32 = isWin;
 
-  toogleZoom() {
-    // win.maximize();
-  }
-}
+  setup() {
+    const toggleZoom = () => {
+      // win.maximize();
+    };
+
+    return {
+      toggleZoom,
+      isWin: useEnvironment().isWin,
+    };
+  },
+});
 </script>
 
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
 header {
-  height: @layout-titleBar-height;
   user-select: none;
+  text-align: center;
   -webkit-app-region: drag;
-  background: var(--titleBar-activeBg);
 
-  .text {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: @titleBar-font-size;
+  .window-title {
     color: var(--titleBar-activeFg);
+    font-size: @titleBar-font-size;
+    line-height: @layout-titlebar-height - 1;
+  }
+
+  .window-controls {
+    text-align: right;
+    position: absolute;
+    height: @layout-titlebar-height;
+    width: 100px;
+    right: 0;
+    top: 0;
+
+    i {
+      color: var(--titleBar-activeFg);
+      line-height: @layout-titlebar-height;
+    }
   }
 }
 </style>

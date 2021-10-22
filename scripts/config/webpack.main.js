@@ -1,21 +1,21 @@
 "use strict";
 
 const webpack = require("webpack");
-const ESLintPlugin = require("eslint-webpack-plugin");
 
-const { getPath, getMainEnv } = require("./environment");
+const { isDev, buildPath, mainEnv } = require("./environment");
 
-const isDev = process.env.NODE_ENV !== "production";
-
+/**
+ * @type {import('webpack').Configuration}
+ */
 const mainConfig = {
   mode: "development",
   devtool: "cheap-module-source-map",
   target: "electron-main",
   entry: {
-    index: getPath.src("main/index.ts"),
+    index: buildPath.src(isDev ? "main/index.dev.ts" : "main/index.ts"),
   },
   output: {
-    path: getPath.build(),
+    path: buildPath.build(),
     filename: "background.js",
     libraryTarget: "commonjs2",
   },
@@ -25,16 +25,12 @@ const mainConfig = {
   },
   resolve: {
     alias: {
-      "@": getPath.src(),
-      "&": getPath.build(),
+      "@": buildPath.src(),
+      "&": buildPath.build(),
     },
     extensions: [".ts", ".js", ".json"],
   },
-  plugins: [
-    new ESLintPlugin({ failOnError: true }),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.DefinePlugin(getMainEnv(isDev)),
-  ],
+  plugins: [new webpack.NoEmitOnErrorsPlugin(), new webpack.DefinePlugin(mainEnv(isDev))],
   module: {
     rules: [
       {

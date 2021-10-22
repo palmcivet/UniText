@@ -2,8 +2,6 @@ import { join } from "path";
 import * as fse from "fs-extra";
 import * as https from "https";
 
-import { ITree, ITreeNode } from "@/typings/vuex/sideBar";
-
 export const fetchHttpFile = (url: string, dest: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     https
@@ -36,12 +34,7 @@ export const fetchFileInfo = async (path: string) => {
   };
 };
 
-export const buildTree = (
-  base: string,
-  path: string,
-  ignore: Array<string>,
-  tree: ITree
-) => {
+export const buildTree = (base: string, path: string, ignore: Array<string>, tree: ITree) => {
   fse.readdir(join(base, path)).then((res) =>
     res.forEach((item, idx) => {
       if (ignore.indexOf(item) !== -1) return;

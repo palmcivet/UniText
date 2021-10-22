@@ -1,5 +1,4 @@
 {
-  "todo-tree.tree.showScanModeButton": true,
   "todo-tree.filtering.excludeGlobs": ["**/*.md", "**/node_modules/**"],
   "todo-tree.general.tags": [
     "FIX", // 待修复 Bug
@@ -55,8 +54,6 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabSize": 2,
-  "eslint.packageManager": "yarn",
-  "eslint.format.enable": true,
   "npm.packageManager": "yarn",
-  "npm.exclude": "dist"
+  "npm.exclude": "dist",
 }

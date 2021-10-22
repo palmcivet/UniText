@@ -4,6 +4,8 @@ import { join, resolve } from "path";
 import { PassThrough, pipeline, Transform } from "stream";
 import { format } from "util";
 
+import { isDev } from "@/shared/constant";
+
 function formatMsg(message: any, options: any[]) {
   return options.length !== 0 ? format(message, options) : format(message);
 }
@@ -58,7 +60,7 @@ export default class Logger {
       this.error("Uncaught Rejection");
       this.error(reason);
     });
-    if (process.env.NODE_ENV === "dev") {
+    if (isDev) {
       this.output.on("data", (b) => {
         console.log(b.toString());
       });

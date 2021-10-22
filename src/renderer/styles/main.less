@@ -9,6 +9,10 @@ body {
   font-family: @interface-font-family;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 /* Clear default styles */
 
 ol,
@@ -38,18 +42,6 @@ details > summary::-webkit-details-marker {
 }
 
 /* Styles for components */
-
-.unitext-resize {
-  width: 2px;
-  height: 100%;
-  cursor: col-resize;
-  user-select: none;
-  background: var(--sash-Fg);
-
-  &:hover {
-    background: var(--sash-hoverFg);
-  }
-}
 
 .unitext-button {
   cursor: pointer;

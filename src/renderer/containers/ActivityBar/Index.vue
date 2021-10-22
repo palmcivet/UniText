@@ -1,103 +1,180 @@
 <template>
-  <CheckList
-    class="activity-bar"
-    :listGroup="menuList"
-    :condition="activity"
-    :activeStyle="{ color: this.isShowSide ? 'var(--activityBar-activeFg)' : '' }"
-    @click="handleClick($event)"
-  />
+  <div class="activity-bar">
+    <ul class="browser-list">
+      <li
+        v-for="(item, index) of browserList"
+        :key="index"
+        :class="{ active: browserType === item.type }"
+        @click="onClickBrowser(item.type)"
+      >
+        <i :class="['ri-lg', item.icon]" />
+        <span>{{ item.title }}</span>
+      </li>
+    </ul>
+    <div class="divider"></div>
+    <ul class="workbench-list">
+      <router-link
+        v-for="(item, index) of workbenchList"
+        v-slot="{ navigate }"
+        custom
+        :key="index"
+        :to="`/${item.type}`"
+        @click="workbench.SWITCH_WORKBENCH(item.type)"
+      >
+        <li @click="navigate" role="link">
+          <i :class="['ri-lg', item.icon]" />
+          <span>{{ item.title }}</span>
+        </li>
+      </router-link>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { computed, defineComponent } from "vue";
 
-import CheckList from "@/renderer/components/CheckList.vue";
-import { IGeneralState } from "@/typings/vuex/general";
-import { EActivityType, ISideBarState } from "@/typings/vuex/sideBar";
+import useBrowser from "@/renderer/store/browser";
+import useWorkbench from "@/renderer/store/workbench";
+import { EBrowserType } from "@/typings/store/browser";
+import { useRouter } from "vue-router";
 
-const sideBar = namespace("sideBar");
-const general = namespace("general");
-
-@Component({
+export default defineComponent({
   name: "ActivityBar",
-  components: {
-    CheckList,
-  },
-})
-export default class ActivityBar extends Vue {
-  @general.State((state: IGeneralState) => state.interface.showSideBar)
-  isShowSide!: boolean;
 
-  @general.Mutation("TOGGLE_SIDE_BAR")
-  TOGGLE_SIDE_BAR!: () => void;
+  components: {},
 
-  @sideBar.State((state: ISideBarState) => state.activity)
-  activity!: EActivityType;
-
-  @sideBar.Mutation("CHOOSE_ACTIVITY")
-  CHOOSE_ACTIVITY!: (type: EActivityType) => void;
-
-  get menuList() {
+  data() {
     return {
-      Files: {
-        icon: "ri-xl ri-folders-line",
-        title: this.$t("sidebar.files"),
-      },
-      Search: {
-        icon: "ri-xl ri-search-line",
-        title: this.$t("sidebar.search"),
-      },
-      Marks: {
-        icon: "ri-xl ri-bookmark-3-line",
-        title: this.$t("sidebar.marks"),
-      },
-      Tags: {
-        icon: "ri-xl ri-price-tag-3-line",
-        title: this.$t("sidebar.tags"),
-      },
-      Settings: {
-        icon: "ri-xl ri-settings-line",
-        title: this.$t("sidebar.settings"),
-      },
+      browserList: [
+        {
+          icon: "ri-folders-line",
+          title: this.$t("sidebar.files"),
+          type: EBrowserType.FILE,
+        },
+        {
+          icon: "ri-search-line",
+          title: this.$t("sidebar.search"),
+          type: EBrowserType.SEARCH,
+        },
+        {
+          icon: "ri-bookmark-3-line",
+          title: this.$t("sidebar.marks"),
+          type: EBrowserType.BOOKMARK,
+        },
+        {
+          icon: "ri-price-tag-3-line",
+          title: this.$t("sidebar.tags"),
+          type: EBrowserType.TAG,
+        },
+      ],
+
+      workbenchList: [
+        {
+          icon: "ri-calendar-check-line",
+          title: "日程",
+          type: "setting",
+        },
+        {
+          icon: "ri-dashboard-3-line",
+          title: "数据面板",
+          type: "setting",
+        },
+        {
+          icon: "ri-pie-chart-line",
+          title: "数据面板",
+          type: "setting",
+        },
+        {
+          icon: "ri-settings-line",
+          title: this.$t("sidebar.settings"),
+          type: "setting",
+        },
+      ],
     };
-  }
+  },
 
-  handleClick(e: EActivityType) {
-    if (!this.isShowSide) {
-      this.$layout.togglePart("SIDE");
-      this.TOGGLE_SIDE_BAR();
-      this.CHOOSE_ACTIVITY(e);
-      return;
-    }
+  setup() {
+    const browser = useBrowser();
+    const workbench = useWorkbench();
+    const browserType = computed(() => browser.browserType);
 
-    if (this.activity === e) {
-      this.$layout.togglePart("SIDE");
-      this.TOGGLE_SIDE_BAR();
-    } else {
-      this.CHOOSE_ACTIVITY(e);
-    }
-  }
-}
+    const onClickBrowser = (type: EBrowserType) => {
+      if (browserType.value === type) {
+        browser.TOGGLE_BROWSER();
+        // TODO
+        // useRouter().push("/document");
+      } else {
+        browser.SWITCH_BROWSER(type);
+        browser.isShowBrowser && browser.TOGGLE_BROWSER();
+      }
+    };
+
+    return {
+      browser,
+      workbench,
+      browserType,
+      onClickBrowser,
+    };
+  },
+});
 </script>
 
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
 .activity-bar {
-  position: relative;
-  width: @layout-leftSide-left-width;
+  height: 100%;
+  width: @layout-leftside-left-width;
   background: var(--activityBar-Bg);
+  display: flex;
+  flex-direction: column;
 
-  /deep/ li {
-    padding: 11.5px;
-    margin-top: 8px;
+  @padding-width: 0px;
+  @radius-value: 0px;
+  padding: 0 @padding-width;
+
+  li {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
     cursor: pointer;
+    font-size: 14px;
+    line-height: 20px;
     color: var(--activityBar-inactiveFg);
+    padding: 6px 10px + @padding-width;
+    margin: calc(@padding-width / 2) 0;
+    border-radius: @radius-value;
 
-    &:last-child {
-      position: absolute;
-      bottom: 0px;
+    span {
+      margin-left: 8px;
+      user-select: none;
+    }
+  }
+
+  .divider {
+    margin: 5px 10px;
+    border-top: 1px solid #d7dae033;
+  }
+
+  .browser-list {
+    li {
+      &:hover {
+        color: var(--activityBar-activeFg);
+        background-color: rgb(92, 92, 92);
+      }
+
+      &.active {
+        color: var(--activityBar-activeFg);
+        background-color: rgb(73, 73, 73);
+      }
+    }
+  }
+
+  .workbench-list {
+    li {
+      &:hover {
+        color: var(--activityBar-activeFg);
+      }
     }
   }
 }

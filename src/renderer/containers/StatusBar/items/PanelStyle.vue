@@ -7,45 +7,47 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { computed, defineComponent } from "vue";
 
+import useGeneral from "@/renderer/store/general";
 import CheckItem from "../widgets/CheckItem.vue";
-import { IGeneralState } from "@/typings/vuex/general";
 
-const general = namespace("general");
-
-@Component({
+export default defineComponent({
   name: "PanelStyle",
+
   components: {
     CheckItem,
   },
-})
-export default class PanelStyle extends Vue {
-  @general.State((state: IGeneralState) => state.interface.panelFloat)
-  panelFloat!: boolean;
 
-  @general.Mutation("TOGGLE_PANEL_STYLE")
-  TOGGLE_PANEL_STYLE!: () => void;
+  setup() {
+    const general = useGeneral();
 
-  get styleList() {
-    return {
-      false: {
-        title: "侧边栏",
-        icon: "ri-side-bar-line",
-      },
-      true: {
-        title: "浮动面板",
-        icon: "ri-discuss-line",
-      },
+    const styleList = computed(() => {
+      return {
+        false: {
+          title: "侧边栏",
+          icon: "ri-side-bar-line",
+        },
+        true: {
+          title: "浮动面板",
+          icon: "ri-discuss-line",
+        },
+      };
+    });
+
+    const handleClick = () => {
+      this.TOGGLE_PANEL_STYLE();
+      this.$layout.togglePart("PANEL");
     };
-  }
 
-  handleClick() {
-    this.TOGGLE_PANEL_STYLE();
-    this.$layout.togglePart("PANEL");
-  }
-}
+    return {
+      styleList,
+      panelFloat: general.interface.panelFloat,
+      TOGGLE_PANEL_STYLE: general.TOGGLE_PANEL_STYLE,
+      handleClick,
+    };
+  },
+});
 </script>
 
 <style lang="less" scoped></style>

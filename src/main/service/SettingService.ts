@@ -1,9 +1,10 @@
 import Store from "electron-store";
+import { basename, dirname } from "path";
 
-import Logger from "../backend/Logger";
-import Service from "./Service";
+import Logger from "@/main/backend/Logger";
 import schema from "@/shared/setting";
 import { ISetting } from "@/typings/setting";
+import Service from "./Service";
 
 export default class SettingService extends Service {
   private readonly _dataSet: Store<ISetting>;
@@ -12,8 +13,8 @@ export default class SettingService extends Service {
     super(logger);
 
     this._dataSet = new Store({
-      cwd: path,
-      name: "preference",
+      cwd: dirname(path),
+      name: basename(path),
       schema: schema as Store.Schema<ISetting>,
     });
   }

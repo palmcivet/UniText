@@ -1,27 +1,28 @@
 "use strict";
 
 const webpack = require("webpack");
-const ESLintPlugin = require("eslint-webpack-plugin");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const { VueLoaderPlugin } = require("vue-loader/dist/index");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const env = require("dotenv").config();
 
-const { getPath, getRendererEnv } = require("./environment");
+const { buildPath, rendererEnv } = require("./environment");
 
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = env.NODE_ENV !== "prod";
 
+/**
+ * @type {import('webpack').Configuration}
+ */
 const rendererConfig = {
   mode: "development",
   devtool: "cheap-module-source-map",
-  target: "electron-renderer",
+  target: "web",
   entry: {
-    index: getPath.src("renderer/index.ts"),
+    index: buildPath.src("renderer/index.ts"),
   },
   output: {
-    path: getPath.build(),
+    path: buildPath.build(),
     filename: "js/[name].js",
-    libraryTarget: "commonjs2",
-    publicPath: "./",
   },
   node: {
     __dirname: false,
@@ -29,9 +30,9 @@ const rendererConfig = {
   },
   resolve: {
     alias: {
-      "vue$": "vue/dist/vue.esm.js",
-      "@": getPath.src(),
-      "&": getPath.public(),
+      "vue$": `vue/dist/vue.runtime.esm-browser${isDev ? "" : ".prod"}.js`,
+      "@": buildPath.src(),
+      "&": buildPath.public(),
     },
     extensions: [".ts", ".js", ".vue", ".json", ".css", ".less"],
   },
@@ -39,13 +40,12 @@ const rendererConfig = {
     new HtmlWebpackPlugin({
       title: "UniText",
       filename: "index.html",
-      template: getPath.public("index.html"),
+      template: buildPath.public("index.html"),
       inject: "body",
     }),
     new VueLoaderPlugin(),
-    new ESLintPlugin({ failOnError: true }),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.DefinePlugin(getRendererEnv(isDev)),
+    new webpack.DefinePlugin(rendererEnv(isDev)),
   ],
   module: {
     rules: [
@@ -70,18 +70,12 @@ const rendererConfig = {
       },
       {
         test: /\.less$/i,
-        use: [
-          isDev ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
-          "less-loader",
-        ],
+        use: [isDev ? "style-loader" : MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
       },
       {
         test: /\.css$/i,
         use: [
-          isDev
-            ? "style-loader"
-            : { loader: MiniCssExtractPlugin.loader, options: { publicPath: "../" } },
+          isDev ? "style-loader" : { loader: MiniCssExtractPlugin.loader, options: { publicPath: "../" } },
           "css-loader",
         ],
       },
@@ -96,7 +90,7 @@ const rendererConfig = {
         },
       },
       {
-        test: /\.(woff2?|eot|ttf|otf)$/i,
+        test: /\.(woff(2)?|eot|ttf|otf)(\?(v=[0-9]\.[0-9]\.[0-9])?|t=[0-9].)$/i,
         use: {
           loader: "file-loader",
           options: {

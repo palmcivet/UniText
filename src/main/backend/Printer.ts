@@ -3,8 +3,7 @@ import * as fse from "fs-extra";
 import { join } from "path";
 
 import { IPC_EXPORT } from "@/shared/channel/ipc";
-import { URL_HOST } from "@/shared/url";
-import { PUBLIC } from "@/shared/env";
+import { isDev, PUBLIC } from "@/shared/constant";
 
 const genTemplate = (content: string, style = "", title = "Untitled") => `
 <html lang="en">
@@ -45,6 +44,7 @@ export default class Printer {
       show: false,
     });
 
+    const URL_HOST = isDev ? `http://localhost:${process.env.PORT_RENDERER}` : `file://${__dirname}`;
     this.view.webContents.loadURL(`${URL_HOST}/printer.html`);
     this._listenForIpcMain();
   }
@@ -52,11 +52,9 @@ export default class Printer {
   private _listenForIpcMain() {
     let style = "";
 
-    fse
-      .readFile(join(__static, PUBLIC.THEME, "OneDarkPro", "renderView.css"), "utf-8")
-      .then((res) => {
-        style = res;
-      });
+    fse.readFile(join(__static, PUBLIC.THEME, "OneDarkPro", "renderView.css"), "utf-8").then((res) => {
+      style = res;
+    });
 
     ipcMain.on(IPC_EXPORT.AS_HTML, async (e, html: string) => {
       const win = BrowserWindow.fromWebContents(e.sender) as BrowserWindow;

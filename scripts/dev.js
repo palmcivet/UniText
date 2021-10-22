@@ -6,22 +6,18 @@ const { spawn } = require("child_process");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackDevServer = require("webpack-dev-server");
-const WebpackHotMiddleware = require("webpack-hot-middleware");
 
-const { getPath, getDevEnv } = require("./config/environment");
+const { env, buildPath } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
 const rendererConfig = require("./config/webpack.renderer");
 
 let electronProcess = null;
 let manualRestart = false;
-let hotMiddleware;
 
 function logStats(proc, data) {
   let log = "";
 
-  log += chalk.yellow.bold(
-    `┏ ${proc} Process ${new Array(19 - proc.length + 1).join("-")}`
-  );
+  log += chalk.yellow.bold(`┏ ${proc} Process ${new Array(19 - proc.length + 1).join("-")}`);
   log += "\n";
 
   if (typeof data === "object") {
@@ -63,39 +59,26 @@ function startRenderer() {
   return new Promise((resolve, reject) => {
     const compiler = webpack(rendererConfig);
 
-    hotMiddleware = WebpackHotMiddleware(compiler, {
-      log: false,
-      heartbeat: 2500,
-    });
-
     compiler.hooks.compilation.tap("HtmlWebpackPluginAfterEmit", (compilation) => {
-      HtmlWebpackPlugin.getHooks(compilation).afterEmit.tapAsync(
-        "AfterPlugin",
-        (data, callback) => {
-          hotMiddleware.publish({ action: "reload" });
-          callback(null, data);
-        }
-      );
+      HtmlWebpackPlugin.getHooks(compilation).afterEmit.tapAsync("AfterPlugin", (data, callback) => {
+        callback(null, data);
+      });
     });
 
     compiler.hooks.done.tap("AfterCompiler", (stats) => {
       logStats("Renderer", stats);
     });
 
-    const server = new WebpackDevServer(compiler, {
-      contentBase: getPath.public(),
-      quiet: true,
-      hot: true,
-      clientLogLevel: "debug",
-      setup(app, ctx) {
-        app.use(hotMiddleware);
-        ctx.middleware.waitUntilValid(() => {
-          resolve();
-        });
+    const server = new WebpackDevServer(
+      {
+        port: env.PORT_RENDERER,
+        static: buildPath.public(),
       },
-    });
+      compiler
+    );
 
-    server.listen(getDevEnv.rendererPort);
+    server.start();
+    resolve();
   });
 }
 
@@ -105,7 +88,6 @@ function startMain() {
 
     compiler.hooks.watchRun.tapAsync("Compiling", (_, done) => {
       logStats("Main", chalk.white.bold("compiling..."));
-      hotMiddleware.publish({ action: "compiling" });
       done();
     });
 
@@ -134,11 +116,13 @@ function startMain() {
 }
 
 function startElectron() {
+  const pkg = require("../package.json");
+
   electronProcess = spawn(electron.toString(), [
-    `--inspect=${getDevEnv.inspectPort}`,
-    `--remote-debugging-port=${getDevEnv.debugPort}`,
+    `--inspect=${env.PORT_INSPECT}`,
+    `--remote-debugging-port=${env.PORT_DEBUG}`,
     "--nolazy",
-    getPath.build("background.js"),
+    buildPath.build(pkg.main),
   ]);
 
   electronProcess.stdout.on("data", (data) => {

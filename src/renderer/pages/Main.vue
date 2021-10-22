@@ -1,90 +1,96 @@
 <template>
-  <div class="main-window">
-    <TitleBar />
-    <main :style="{ height: isWin32 ? 'calc(100vh - 24px)' : '' }">
+  <div class="layout-main">
+    <TitleBar class="layout-titlebar" />
+    <main :style="{ height: isWin ? 'calc(100vh - 24px)' : '' }">
       <ActivityBar />
-      <div>
-        <div><SideBar /></div>
-        <span v-sash="'SIDE'" />
-        <div><WorkBench /></div>
-      </div>
+      <SplitView
+        :showLeft="!isShowBrowser"
+        :showRight="true"
+        :isReverse="false"
+        :initWidth="200"
+        :threshold="[150, 300]"
+      >
+        <template #left>
+          <div class="layout-browser">
+            <Browser />
+          </div>
+        </template>
+        <template #right>
+          <div class="layout-workbench"></div>
+        </template>
+      </SplitView>
     </main>
-    <StatusBar />
-    <MessagePanel v-show="showMessage" class="float" />
+    <StatusBar class="layout-statusbar" />
+    <!-- <MessagePanel class="layout-float" v-show="showMessage" /> -->
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { computed, defineComponent } from "vue";
 
-import { isWin } from "@/shared/env";
-import SideBar from "@/renderer/containers/SideBar/Index.vue";
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
+import Browser from "@/renderer/containers/Browser/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
-import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
+// import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
-import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.vue";
-import { INotificationState } from "@/typings/vuex/notification";
+// import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.vue";
+import SplitView from "@/renderer/components/SplitView/Index.vue";
+import useGeneral from "@/renderer/store/general";
+import useBrowser from "@/renderer/store/browser";
+import useEnvironment from "@/renderer/store/environment";
 
-const notification = namespace("notification");
-@Component({
+export default defineComponent({
   name: "Main",
+
   components: {
-    SideBar,
     TitleBar,
+    Browser,
     StatusBar,
-    WorkBench,
     ActivityBar,
-    MessagePanel,
+    SplitView,
   },
-})
-export default class Main extends Vue {
-  @notification.State((state: INotificationState) => state.showMessage)
-  showMessage!: boolean;
 
-  isWin32 = isWin;
+  setup() {
+    const general = useGeneral();
+    const environment = useEnvironment();
+    const browser = useBrowser();
 
-  beforeCreate() {
-    const { commit } = this.$store;
+    return {
+      isWin: environment.isWin,
+      isShowBrowser: computed(() => browser.isShowBrowser),
+    };
+  },
 
-    commit("SET_STATE", this.$preference.getAll());
-    this.$theme.loadTheme();
-  }
+  created() {},
 
-  created() {
-    const { dispatch } = this.$store;
-    dispatch("general/LISTEN_FOR_GENERAL");
-    dispatch("sideBar/LISTEN_FOR_SIDEBAR");
-    dispatch("workBench/LISTEN_FOR_FILE");
-    dispatch("statusPanel/LISTEN_FOR_STATUS");
-    dispatch("notification/LISTEN_FOR_NOTIFY");
-  }
-}
+  mounted() {},
+});
 </script>
 
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-.main-window {
-  > main {
-    display: flex;
-    height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
-
-    > div {
-      width: calc(100% - @layout-leftSide-left-width);
-      height: 100%;
-      display: flex;
-    }
+.layout-main {
+  .layout-titlebar {
+    height: @layout-titlebar-height;
+    background: var(--titleBar-activeBg);
   }
 
-  .float {
-    position: absolute;
-    z-index: 999;
-    bottom: calc(@layout-statusBar-height + 8px);
-    right: 10px; // DEV 来自 sidepanel
-    box-shadow: -3px -2px 10px -5px black;
-    min-width: 16em;
+  main {
+    display: flex;
+    height: calc(100vh - @layout-titlebar-height - @layout-statusbar-height);
+
+    .layout-browser {
+      height: 100%;
+      color: var(--workBench-Fg);
+      background: rgb(46, 46, 46); // DEV
+    }
+
+    .layout-workbench {
+      height: 100%;
+      color: var(--workBench-Fg);
+      background: var(--workBench-Bg);
+    }
   }
 }
 </style>

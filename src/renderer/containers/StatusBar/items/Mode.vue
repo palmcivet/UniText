@@ -1,5 +1,5 @@
 <template>
-  <ol>
+  <ul>
     <CheckItem
       :itemGroup="checkMode"
       :condition="dbColumn ? 'true' : 'false'"
@@ -10,14 +10,10 @@
       :condition="readMode ? 'true' : 'false'"
       @click="setReadMode(!readMode)"
     />
-  </ol>
+  </ul>
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
-import { namespace } from "vuex-class";
-import { Vue, Component } from "vue-property-decorator";
-
 import CheckItem from "../widgets/CheckItem.vue";
 import { IPC_OTHER } from "@/common/channel/ipc";
 import { EEditMode } from "@/typings/schema/preference";

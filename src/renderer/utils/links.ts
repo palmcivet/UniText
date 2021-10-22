@@ -1,8 +1,8 @@
 import { clipboard } from "electron";
 import crypto from "crypto";
 
-import { isWin } from "@/shared/env";
-import { URL_PATH } from "@/shared/url";
+import { isWin } from "@/shared/constant";
+import { URL_PATH } from "@/shared/constant";
 import { IMG_IN_URL_PATTERN } from ".";
 
 /**
@@ -37,9 +37,7 @@ export const cleanUrl = (raw: string) => {
   return res;
 };
 
-export const getClipboard = (
-  dataSaver: (url: string, data: Buffer) => void
-): [boolean, boolean, string] => {
+export const getClipboard = (dataSaver: (url: string, data: Buffer) => void): [boolean, boolean, string] => {
   let text = "";
   let isImg = false;
   let isUrl = false;
@@ -57,13 +55,7 @@ export const getClipboard = (
       const data = clipboard.readImage().toPNG();
 
       isImg = isUrl = true;
-      text =
-        URL_PATH.IMG +
-        crypto
-          .createHash("md5")
-          .update(data)
-          .digest("hex")
-          .concat(".png");
+      text = URL_PATH.IMG + crypto.createHash("md5").update(data).digest("hex").concat(".png");
 
       dataSaver(text, data);
     }

@@ -4,12 +4,14 @@
     "node": true
   },
   "globals": {
-    "__static": "readonly"
+    "NodeJS": true
   },
   "parserOptions": {
-    "parser": "@typescript-eslint/parser"
+    "ecmaVersion": 12,
+    "parser": "@typescript-eslint/parser",
+    "sourceType": "module"
   },
-  "ignorePatterns": ["node_modules/**", "src/library/**", "dist/**"],
+  "ignorePatterns": ["node_modules/**", "src/library/**", "scripts/**", "dist/**"],
   "extends": [
     "eslint:recommended",
     "plugin:vue/essential",
@@ -31,43 +33,26 @@
     "keyword-spacing": ["warn", { "before": true }],
     "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
     "no-mixed-spaces-and-tabs": ["warn"],
-    "no-useless-escape": 0,
     "no-trailing-spaces": ["warn", { "skipBlankLines": true }],
     "no-restricted-syntax": ["warn", "WithStatement", "BinaryExpression[operator='in']"],
-    "no-unused-expressions": [
-      "warn",
-      { "allowShortCircuit": true, "allowTernary": true }
-    ],
-    "operator-linebreak": [
-      "warn",
-      "after",
-      { "overrides": { "?": "before", ":": "before" } }
-    ],
-    "space-before-function-paren": [
-      "warn",
-      { "anonymous": "never", "named": "never", "asyncArrow": "always" }
-    ],
-    "no-console": [0, { "allow": ["info", "warn", "error"] }],
-    "no-unused-vars": 0,
+    "no-unused-expressions": ["warn", { "allowShortCircuit": true, "allowTernary": true }],
+    "operator-linebreak": ["warn", "after", { "overrides": { "?": "before", ":": "before" } }],
+    "space-before-function-paren": ["warn", { "anonymous": "never", "named": "never", "asyncArrow": "always" }],
+    "no-console": ["warn", { "allow": ["info", "warn", "error"] }],
+    "no-unused-vars": "off",
     "no-param-reassign": ["warn", { "props": false }],
     "vue/script-indent": ["warn", 2, { "baseIndent": 0 }],
-    "vue/experimental-script-setup-vars": 0,
-    "import/extensions": [
-      "warn",
-      "always",
-      {
-        "js": "never",
-        "ts": "never"
-      }
-    ],
-    "import/no-extraneous-dependencies": 0,
-    "import/prefer-default-export": 0
+    "vue/experimental-script-setup-vars": "off",
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off"
   },
   "settings": {
     "import/external-module-folders": ["node_modules"],
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".ts"]
+        "extensions": [".js", ".ts"],
+        "moduleDirectory": ["node_modules", "src/"]
       },
       "alias": {
         "map": [
@@ -79,7 +64,8 @@
       }
     },
     "import/parsers": {
-      "@typescript-eslint/parser": [".js", ".ts"]
+      "@typescript-eslint/parser": [".js", ".ts"],
+      "project": "./tsconfig.json"
     }
   },
   "overrides": [

@@ -10,7 +10,7 @@ import { app } from "electron";
 import { join } from "path";
 import * as fse from "fs-extra";
 
-import { CABIN_FILE, CABIN_FOLDER, CABIN_NAME, SYSTEM_PATH } from "@/shared/env";
+import { CABIN_FILE, CABIN_FOLDER, CABIN_NAME, SYSTEM_PATH } from "@/shared/constant";
 import { IBootArgs } from "@/typings/main";
 
 type TKeyConfigFolder = keyof typeof CABIN_FOLDER;
