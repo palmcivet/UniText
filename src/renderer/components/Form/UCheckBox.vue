@@ -1,26 +1,28 @@
 <template>
-  <div class="option" :title="$g(prop.description)" @click.stop="handleChange()">
+  <div class="option" :title="$g(prop.description)" @click.stop="onChange()">
     <input
       type="checkbox"
-      :checked="value"
+      :checked="currentValue"
       :disabled="disabled"
-      @change="handleChange()"
+      @change="onChange()"
     />
     <label>{{ $g(prop.title) }}</label>
   </div>
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
-
+import { defineComponent } from "vue";
 import Skeleton from "./skeleton";
 
-@Component({ name: "UCheckBox" })
-export default class UCheckBox extends Skeleton {
-  handleChange() {
-    this.$emit("change", !this.value);
-  }
-}
+export default defineComponent({
+  name: "UCheckBox",
+  mixins: [Skeleton],
+  methods: {
+    onChange() {
+      this.$emit("change", !this.currentValue);
+    },
+  },
+});
 </script>
 
 <style lang="less" scoped>

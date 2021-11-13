@@ -3,22 +3,28 @@
     <label>{{ $g(prop.title) }}</label>
     <input
       type="number"
-      v-model.number="res"
+      v-model.number="currentValue"
       :max="prop.maximum"
       :min="prop.minimum"
       :disabled="disabled"
-      @change="handleChange()"
+      @change="onChange()"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
-
+import { defineComponent } from "vue";
 import Skeleton from "./skeleton";
 
-@Component({ name: "UInputNumber" })
-export default class UInputNumber extends Skeleton {}
+export default defineComponent({
+  name: "UInputNumber",
+  mixins: [Skeleton],
+  methods: {
+    onChange() {
+      this.$emit("change", this.currentValue);
+    },
+  },
+});
 </script>
 
 <style lang="less" scoped>

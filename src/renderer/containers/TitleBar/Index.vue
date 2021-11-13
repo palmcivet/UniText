@@ -1,30 +1,32 @@
 <template>
-  <header @dblclick="toggleZoom()">
+  <div class="title-bar" @dblclick="onToggleZoom()">
     <span class="window-title">UniText</span>
     <div class="window-controls" v-if="isWin">
       <i class="ri-indeterminate-circle-line" />
       <i class="ri-fullscreen-line" />
       <i class="ri-close-line" />
     </div>
-  </header>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { storeToRefs } from "pinia";
 
-import useEnvironment from "@/renderer/store/environment";
+import useEnvironment from "@/renderer/stores/environment";
 
 export default defineComponent({
   name: "TitleBar",
 
   setup() {
-    const toggleZoom = () => {
+    const { isWin } = storeToRefs(useEnvironment());
+    const onToggleZoom = () => {
       // win.maximize();
     };
 
     return {
-      toggleZoom,
-      isWin: useEnvironment().isWin,
+      isWin,
+      onToggleZoom,
     };
   },
 });
@@ -33,7 +35,7 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-header {
+.title-bar {
   user-select: none;
   text-align: center;
   -webkit-app-region: drag;

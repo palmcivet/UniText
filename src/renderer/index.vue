@@ -1,13 +1,18 @@
 <template>
-  <router-view></router-view>
+  <Main />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Main from "@/renderer/pages/Main.vue";
 
 export default defineComponent({
   name: "Index",
 
-  mounted() {},
+  components: {
+    Main,
+  },
+
+  props: {},
 });
 </script>

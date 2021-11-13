@@ -1,5 +1,5 @@
 <template>
-  <ol>
+  <ul>
     <li
       v-for="(v, k, i) in listGroup"
       :key="i"
@@ -9,11 +9,11 @@
     >
       <i :class="v.icon" />
     </li>
-  </ol>
+  </ul>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { defineComponent, PropType } from "vue";
 
 interface IListGroup {
   [index: string]: {
@@ -22,26 +22,26 @@ interface IListGroup {
   };
 }
 
-@Component({ name: "CheckList" })
-export default class CheckList extends Vue {
-  @Prop({
-    type: Object,
-    required: true,
-  })
-  listGroup!: IListGroup;
+export default defineComponent({
+  name: "CheckList",
 
-  @Prop({
-    type: String,
-    required: true,
-  })
-  condition!: string;
+  props: {
+    listGroup: {
+      type: Object as PropType<IListGroup>,
+      required: true,
+    },
 
-  @Prop({
-    type: Object,
-    required: true,
-  })
-  activeStyle!: object;
-}
+    condition: {
+      type: String,
+      required: true,
+    },
+
+    activeStyle: {
+      type: Object,
+      required: true,
+    },
+  },
+});
 </script>
 
 <style lang="less" scoped></style>

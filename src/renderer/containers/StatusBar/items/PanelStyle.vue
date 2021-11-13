@@ -9,7 +9,7 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 
-import useGeneral from "@/renderer/store/general";
+import useGeneral from "@/renderer/stores/general";
 import CheckItem from "../widgets/CheckItem.vue";
 
 export default defineComponent({

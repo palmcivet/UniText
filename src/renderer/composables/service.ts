@@ -1,6 +1,6 @@
-import { IServiceMap } from "@/main/service/index";
-import { useIpc } from "./electron";
 import { toRaw } from "vue";
+import { useIpc } from "./electron";
+import { IServiceMap } from "@/main/service/index";
 
 const { invoke } = useIpc();
 

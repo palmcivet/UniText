@@ -1,10 +1,12 @@
 <template>
   <div class="layout-main">
     <TitleBar class="layout-titlebar" />
+
     <main :style="{ height: isWin ? 'calc(100vh - 24px)' : '' }">
-      <ActivityBar />
+      <ActivityBar class="layout-activitybar" />
+
       <SplitView
-        :showLeft="!isShowBrowser"
+        :showLeft="isShowBrowser"
         :showRight="true"
         :isReverse="false"
         :initWidth="200"
@@ -16,54 +18,54 @@
           </div>
         </template>
         <template #right>
-          <div class="layout-workbench"></div>
+          <div class="layout-workbench">
+            <Workbench />
+          </div>
         </template>
       </SplitView>
     </main>
+
     <StatusBar class="layout-statusbar" />
+
     <!-- <MessagePanel class="layout-float" v-show="showMessage" /> -->
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
+import { storeToRefs } from "pinia";
 
 import TitleBar from "@/renderer/containers/TitleBar/Index.vue";
 import Browser from "@/renderer/containers/Browser/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
-// import WorkBench from "@/renderer/containers/WorkBench/Index.vue";
+import Workbench from "@/renderer/containers/Workbench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
 // import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.vue";
 import SplitView from "@/renderer/components/SplitView/Index.vue";
-import useGeneral from "@/renderer/store/general";
-import useBrowser from "@/renderer/store/browser";
-import useEnvironment from "@/renderer/store/environment";
+import useBrowser from "@/renderer/stores/browser";
+import useEnvironment from "@/renderer/stores/environment";
 
 export default defineComponent({
   name: "Main",
 
   components: {
     TitleBar,
-    Browser,
     StatusBar,
     ActivityBar,
+    Browser,
+    Workbench,
     SplitView,
   },
 
   setup() {
-    const general = useGeneral();
-    const environment = useEnvironment();
-    const browser = useBrowser();
+    const { isWin } = storeToRefs(useEnvironment());
+    const { isShowBrowser } = storeToRefs(useBrowser());
 
     return {
-      isWin: environment.isWin,
-      isShowBrowser: computed(() => browser.isShowBrowser),
+      isWin,
+      isShowBrowser,
     };
   },
-
-  created() {},
-
-  mounted() {},
 });
 </script>
 
@@ -80,10 +82,20 @@ export default defineComponent({
     display: flex;
     height: calc(100vh - @layout-titlebar-height - @layout-statusbar-height);
 
+    .layout-activitybar {
+      height: 100%;
+      width: @layout-leftside-left-width;
+      background: var(--activityBar-Bg);
+    }
+
+    .splitview {
+      width: calc(100vw - @layout-leftside-left-width);
+    }
+
     .layout-browser {
       height: 100%;
       color: var(--workBench-Fg);
-      background: rgb(46, 46, 46); // DEV
+      background: var(--sideBar-Bg);
     }
 
     .layout-workbench {

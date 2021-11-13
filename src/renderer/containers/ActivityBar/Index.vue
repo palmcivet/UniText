@@ -4,44 +4,44 @@
       <li
         v-for="(item, index) of browserList"
         :key="index"
-        :class="{ active: browserType === item.type }"
-        @click="onClickBrowser(item.type)"
+        :class="['browser-list__item', { active: browserType === item.type }]"
+        @click="onSwitchBrowser(item.type)"
       >
         <i :class="['ri-lg', item.icon]" />
         <span>{{ item.title }}</span>
       </li>
     </ul>
-    <div class="divider"></div>
+
+    <div class="activity-divider"></div>
+
     <ul class="workbench-list">
-      <router-link
+      <li
         v-for="(item, index) of workbenchList"
-        v-slot="{ navigate }"
-        custom
         :key="index"
-        :to="`/${item.type}`"
-        @click="workbench.SWITCH_WORKBENCH(item.type)"
+        class="workbench-list__item"
+        @click="onSwitchWorkbench(item.type)"
       >
-        <li @click="navigate" role="link">
-          <i :class="['ri-lg', item.icon]" />
-          <span>{{ item.title }}</span>
-        </li>
-      </router-link>
+        <i :class="['ri-lg', item.icon]" />
+        <span>{{ item.title }}</span>
+      </li>
     </ul>
+
+    <div v-if="false" class="activity-divider"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 
-import useBrowser from "@/renderer/store/browser";
-import useWorkbench from "@/renderer/store/workbench";
-import { EBrowserType } from "@/typings/store/browser";
-import { useRouter } from "vue-router";
+import useBrowser from "@/renderer/stores/browser";
+import { EBrowserType, EWorkbenchType } from "@/shared/typings/store";
 
 export default defineComponent({
   name: "ActivityBar",
 
   components: {},
+
+  inject: ["$workbench"],
 
   data() {
     return {
@@ -70,24 +70,29 @@ export default defineComponent({
 
       workbenchList: [
         {
-          icon: "ri-calendar-check-line",
-          title: "日程",
-          type: "setting",
-        },
-        {
           icon: "ri-dashboard-3-line",
           title: "数据面板",
-          type: "setting",
+          type: EWorkbenchType.DASHBOARD,
+        },
+        {
+          icon: "ri-mind-map",
+          title: "知识图谱",
+          type: EWorkbenchType.GRAPHVIEW,
+        },
+        {
+          icon: "ri-calendar-check-line",
+          title: "计划安排",
+          type: EWorkbenchType.SCHEDULE,
         },
         {
           icon: "ri-pie-chart-line",
-          title: "数据面板",
-          type: "setting",
+          title: "每日提醒",
+          type: EWorkbenchType.REMINDER,
         },
         {
           icon: "ri-settings-line",
           title: this.$t("sidebar.settings"),
-          type: "setting",
+          type: EWorkbenchType.SETTING,
         },
       ],
     };
@@ -95,26 +100,29 @@ export default defineComponent({
 
   setup() {
     const browser = useBrowser();
-    const workbench = useWorkbench();
     const browserType = computed(() => browser.browserType);
 
-    const onClickBrowser = (type: EBrowserType) => {
+    const onSwitchBrowser = (type: EBrowserType) => {
       if (browserType.value === type) {
         browser.TOGGLE_BROWSER();
-        // TODO
-        // useRouter().push("/document");
       } else {
+        if (!browser.isShowBrowser) {
+          browser.TOGGLE_BROWSER();
+        }
         browser.SWITCH_BROWSER(type);
-        browser.isShowBrowser && browser.TOGGLE_BROWSER();
       }
     };
 
     return {
-      browser,
-      workbench,
       browserType,
-      onClickBrowser,
+      onSwitchBrowser,
     };
+  },
+
+  methods: {
+    onSwitchWorkbench(type: EWorkbenchType) {
+      this.$workbench.doOpenWorkbench(type);
+    },
   },
 });
 </script>
@@ -123,17 +131,20 @@ export default defineComponent({
 @import "~@/renderer/styles/var.less";
 
 .activity-bar {
-  height: 100%;
-  width: @layout-leftside-left-width;
-  background: var(--activityBar-Bg);
   display: flex;
   flex-direction: column;
 
-  @padding-width: 0px;
-  @radius-value: 0px;
+  @padding-width: 4px;
+  @radius-value: 4px;
   padding: 0 @padding-width;
 
-  li {
+  .activity-divider {
+    margin: calc(5px) 10px;
+    border-top: 1px solid var(--activityBar-dividerFg);
+  }
+
+  .browser-list__item,
+  .workbench-list__item {
     width: 100%;
     display: inline-flex;
     align-items: center;
@@ -141,8 +152,8 @@ export default defineComponent({
     font-size: 14px;
     line-height: 20px;
     color: var(--activityBar-inactiveFg);
-    padding: 6px 10px + @padding-width;
-    margin: calc(@padding-width / 2) 0;
+    padding: 4px calc(10px - @padding-width);
+    margin: calc(2px + @padding-width / 2) 0;
     border-radius: @radius-value;
 
     span {
@@ -151,27 +162,24 @@ export default defineComponent({
     }
   }
 
-  .divider {
-    margin: 5px 10px;
-    border-top: 1px solid #d7dae033;
-  }
-
   .browser-list {
-    li {
+    margin-top: 4px;
+
+    &__item {
       &:hover {
-        color: var(--activityBar-activeFg);
-        background-color: rgb(92, 92, 92);
+        color: var(--activityBar-hoverFg);
+        background-color: var(--activityBar-hoverBg);
       }
 
       &.active {
         color: var(--activityBar-activeFg);
-        background-color: rgb(73, 73, 73);
+        background-color: var(--activityBar-activeBg);
       }
     }
   }
 
   .workbench-list {
-    li {
+    &__item {
       &:hover {
         color: var(--activityBar-activeFg);
       }

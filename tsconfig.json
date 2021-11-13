@@ -27,7 +27,6 @@
     "test/**/*.ts",
     "src/main/*.d.ts",
     "src/shared/*.d.ts",
-    "src/typings/*.d.ts",
     "src/renderer/*.d.ts"
   ],
   "exclude": ["node_modules", "library/**/*"]

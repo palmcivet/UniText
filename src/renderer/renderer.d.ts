@@ -1,16 +1,11 @@
-import Theme from "@/renderer/services/Theme";
-import Snippet from "@/renderer/services/Snippet";
-import Markdown from "@/renderer/services/Markdown";
-import Preference from "@/renderer/services/PreferenceService";
-import { IVueBus } from "@/renderer/plugins/VueBus";
-import { IVueLayout } from "@/renderer/plugins/VueLayout";
-import { I18n } from "vue-i18n";
+import { EventBus } from "@palmcivet/unitext-tree-view";
+import Browser from "./models/Browser";
+import Workbench from "./models/Workbench";
 
-declare module "vue/types/vue" {
-  interface Vue extends IVueBus, IVueLayout {
-    $theme: Theme;
-    $snippet: Snippet;
-    $markdown: Markdown;
-    $preference: Preference;
+declare module "@vue/runtime-core" {
+  export interface ComponentCustomProperties {
+    $bus: EventBus;
+    $browser: Browser;
+    $workbench: Workbench;
   }
 }

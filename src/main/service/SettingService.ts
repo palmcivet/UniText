@@ -2,8 +2,8 @@ import Store from "electron-store";
 import { basename, dirname } from "path";
 
 import Logger from "@/main/backend/Logger";
-import schema from "@/shared/setting";
-import { ISetting } from "@/typings/setting";
+import schema from "@/shared/schema";
+import { ISetting } from "@/shared/typings/setting";
 import Service from "./Service";
 
 export default class SettingService extends Service {
@@ -14,21 +14,28 @@ export default class SettingService extends Service {
 
     this._dataSet = new Store({
       cwd: dirname(path),
-      name: basename(path),
+      name: basename(path).replace(".json", ""),
       schema: schema as Store.Schema<ISetting>,
     });
   }
 
   /**
-   * 获取 Setting 各模块，返回一组存取器
+   * 获取值
    * @param module 模块名
-   * @returns
+   * @param key 键名，用 . 分隔
    */
-  useSetting<K extends keyof ISetting, T extends ISetting>(module: K) {
-    return {
-      get: (key: MapGet<T[K]>) => this._dataSet.get(`${module}.${key}` as string) as any,
-      set: (key: MapGet<T[K]>, value: any) => this._dataSet.set(`${module}.${key}`, value),
-    };
+  getSetting<K extends keyof ISetting, T extends ISetting>(module: K, key: MapGet<T[K]>): any {
+    return this._dataSet.get(`${module}.${key}` as string) as any;
+  }
+
+  /**
+   * 修改值
+   * @param module 模块名
+   * @param key 键名，用 . 分隔
+   * @param value 新值
+   */
+  setSetting<K extends keyof ISetting, T extends ISetting>(module: K, key: MapGet<T[K]>, value: any): void {
+    this._dataSet.set(`${module}.${key}`, value);
   }
 
   getAll(): ISetting {

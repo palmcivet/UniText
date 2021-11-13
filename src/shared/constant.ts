@@ -1,19 +1,19 @@
 /**
  * @deprecated
  */
-export const isOsx = process?.platform === "darwin";
+export const isOsx = true;
 /**
  * @deprecated
  */
-export const isWin = process?.platform === "win32";
+export const isWin = false && process.platform === "win32";
 /**
  * @deprecated
  */
-export const isLinux = process?.platform === "linux";
+export const isLinux = false && process.platform === "linux";
 /**
  * @deprecated
  */
-export const isDev = process?.env.NODE_ENV !== "prod";
+export const isDev = true;
 
 export const URL_PROTOCOL = "unitext://";
 

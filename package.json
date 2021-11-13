@@ -1,7 +1,7 @@
 {
   "name": "unitext",
   "productName": "UniText",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A personal knowledge manager.",
   "keywords": [
     "Markdown",
@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^4.0.1",
-    "@palmcivet/tree-view": "^0.2.1",
+    "@palmcivet/unitext-tree-view": "^0.2.3",
     "clone": "^2.1.2",
     "electron-store": "^6.0.0",
     "electron-updater": "^4.6.1",
@@ -48,7 +48,7 @@
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-it-task-lists": "^2.1.1",
-    "monaco-editor": "^0.30.1",
+    "monaco-editor": "^0.21",
     "monaco-markdown-extension": "^1.0.0",
     "pinia": "^2.0.6",
     "prismjs": "^1.25.0",
@@ -56,9 +56,7 @@
     "striptags": "^3.1.1",
     "uslug": "^1.0.4",
     "vue": "^3.2.24",
-    "vue-i18n": "^9.2.0-beta.23",
-    "vue-router": "4",
-    "vuedraggable": "^4.1.0"
+    "vue-i18n": "^9.2.0-beta.23"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -106,7 +104,6 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
-    "eslint-plugin-standard": "^5.0.0",
     "eslint-plugin-vue": "^8.2.0"
   },
   "husky": {

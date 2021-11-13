@@ -81,10 +81,6 @@
 </template>
 
 <script lang="ts">
-import { namespace } from "vuex-class";
-import { Vue, Component } from "vue-property-decorator";
-import { join } from "path";
-
 import { IRipgrepSearchResult } from "@/library/ripgrep-searcher";
 import CheckList from "@/renderer/components/CheckList.vue";
 import ListNode from "@/renderer/containers/SideBar/widgets/ListNode.vue";
@@ -92,7 +88,7 @@ import BaseView from "@/renderer/containers/SideBar/widgets/BaseView.vue";
 import { IGeneralState } from "@/typings/vuex/general";
 import { ipcRenderer } from "electron";
 import { IPC_FILE } from "@/shared/channel/ipc";
-import { BUS_EDITOR } from "@/shared/channel/bus";
+import { BUS_EDITOR } from "@/shared/channel";
 
 const sideBar = namespace("sideBar");
 const general = namespace("general");

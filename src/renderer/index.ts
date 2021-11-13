@@ -1,42 +1,49 @@
 import { createApp } from "vue";
-import { createI18n } from "vue-i18n";
 import { createPinia } from "pinia";
+import { createI18n } from "vue-i18n";
 
-import router from "@/renderer/router";
-import { EWindowType, IWindowArgs } from "@/typings/main";
+import Index from "@/renderer/Index.vue";
 import { localesView, localesMenu } from "@/shared/i18n/ZH_CN";
-import VueBus from "./plugins/VueBus";
-import Index from "./index.vue";
+import { EWindowType } from "@/shared/typings/main";
 
 import "remixicon/fonts/remixicon.css";
+import "@palmcivet/unitext-tree-view/dist/style.css";
 import "@/renderer/styles/main.less";
+import useModel from "./models";
 
-const messages = {
-  "zh-CN": { ...localesView, ...localesMenu },
-};
+async function renderer() {
+  /**
+   * 解析参数，传入 props，动态渲染 Pages
+   * - i18n
+   * - type: Main | Setting | View
+   */
+  if (location.pathname === `/${EWindowType.SETTING}`) {
+    // 切换到 main
+  }
 
-const args = ((): IWindowArgs => {
-  const params = new URLSearchParams(window.location.search);
-
-  return {
-    wid: Number(params.get("wid")),
-    lang: Number(params.get("lang")),
-    type: Number(params.get("type")),
-    proj: params.get("proj") as string,
+  /* ì18n begin */
+  const messages = {
+    "zh-CN": { ...localesView, ...localesMenu },
   };
-})();
 
-const i18n = createI18n({
-  legacy: false,
-  locale: "zh-CN",
-  messages,
-});
+  const i18n = createI18n({
+    legacy: false,
+    locale: "zh-CN",
+    messages,
+  });
 
-const app = createApp(Index);
-app.use(createPinia()).use(router).use(i18n).use(VueBus).mount("#app");
+  /* ì18n end */
 
-app.config.globalProperties.$t = i18n.global.t;
+  const app = createApp(Index, {});
+  app.use(createPinia());
+  app.use(i18n);
 
-if (args.type === EWindowType.NORMAL) {
-  // 切换到 `/main`
+  app.config.globalProperties.$t = i18n.global.t;
+  app.config.globalProperties.$g = (options: Array<string>) => options[0];
+
+  await useModel().invoke(app);
+
+  app.mount("#app");
 }
+
+queueMicrotask(renderer);

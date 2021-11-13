@@ -33,9 +33,6 @@
 </template>
 
 <script lang="ts">
-import * as fse from "fs-extra";
-import { join } from "path";
-
 import { debounce } from "@/shared/utils";
 import { hasFileList } from "@/common/fileSystem";
 import { schemaTheme } from "@/common/schema/sTheme";

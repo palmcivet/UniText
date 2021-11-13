@@ -4,6 +4,7 @@ node_modules
 yarn.lock
 
 # Local env files
+.env
 .env.local
 .env.*.local
 

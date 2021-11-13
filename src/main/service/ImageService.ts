@@ -1,13 +1,40 @@
 import * as fse from "fs-extra";
+import * as https from "https";
 import { join } from "path";
+import crypto from "crypto";
 // import level, { LevelDB } from "level";
 
-import { getHash } from "@/shared/utils";
 import { URL_PATH } from "@/shared/constant";
-import { fetchHttpFile } from "@/main/file/fileState";
 import Logger from "@/main/backend/Logger";
 import Service, { Inject } from "./Service";
 import EnvService from "./EnvService";
+
+const getHash = (content: string) => {
+  return crypto.createHash("md5").update(content, "utf-8").digest("hex");
+};
+
+const httpGet = (url: string, dest: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (res) => {
+        const file = fse.createWriteStream(dest);
+
+        res.on("end", () => {
+          resolve();
+        });
+
+        res.on("error", (err) => {
+          fse.unlink(dest);
+          reject(err);
+        });
+
+        res.pipe(file);
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
+};
 
 export default class ImageService extends Service {
   // private readonly _db: LevelDB<string, number>;
@@ -91,7 +118,7 @@ export default class ImageService extends Service {
 
     if (!this._dataSet.has(key)) {
       try {
-        await fetchHttpFile(url, redirPath);
+        await httpGet(url, redirPath);
         this._dataSet.set(key, 0);
       } catch (error) {
         this.error(`${url} 缓存建立失败`);

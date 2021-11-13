@@ -11,3 +11,5 @@ export const IMG_IN_URL_PATTERN = new RegExp(`.${IMG_FORMAT}([?|#]?)`);
 export const IMG_AS_RESOURCE_PATTERN = new RegExp(
   `((http(s)?:\/\/)|(${URL_PATH.IMG}))` + "(w*)(.w*)+([a-zA-Z0-9@:%_-~#?&=+./])*"
 );
+
+export const PATH_SEPARATE = "/";

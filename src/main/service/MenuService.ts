@@ -5,7 +5,7 @@ import dock from "@/main/menu/templates/dock";
 import top from "@/main/menu/templates/top";
 import { toc, tab, file, folder } from "@/main/menu/templates/context";
 import { Bus } from "@/renderer/plugins/VueBus";
-import { EI18n } from "@/typings/setting/preference";
+import { EI18n } from "@/shared/typings/setting/preference";
 import KeybindingService from "./KeybindingService";
 import Service, { Inject } from "./Service";
 

@@ -6,21 +6,24 @@ import Logger from "./backend/Logger";
 import Printer from "./backend/Printer";
 import Container from "./service";
 import EnvService from "./service/EnvService";
-import MenuService from "./service/MenuService";
+// import MenuService from "./service/MenuService";
 import ImageService from "./service/ImageService";
 import WindowService from "./service/WindowService";
 import SettingService from "./service/SettingService";
 import KeybindingService from "./service/KeybindingService";
 import { isDev, isOsx, isWin, URL_PATH, URL_PROTOCOL } from "@/shared/constant";
-import { EI18n } from "@/typings/setting/preference";
-import { EWindowType, IWindowArgs } from "@/typings/main";
+import { EI18n } from "@/shared/typings/setting/preference";
+import { EWindowType } from "@/shared/typings/main";
+
+import "./backend/Dialog";
+import "./backend/Disk";
 
 const _container = new Container();
 
 /* TODO 窗口管理器 */
 async function createMainWindow(): Promise<BrowserWindow> {
-  const { get: systemGet } = _container.getService("SettingService").useSetting("system");
-  const menuService = _container.getService("MenuService");
+  // const menuService = _container.getService("MenuService");
+  const settingService = _container.getService("SettingService");
 
   const mainWindow = new BrowserWindow({
     minWidth: 647,
@@ -32,27 +35,18 @@ async function createMainWindow(): Promise<BrowserWindow> {
     vibrancy: "titlebar",
     backgroundColor: "#00000000",
     transparent: true,
-    width: systemGet("window.width"),
-    height: systemGet("window.height"),
-    titleBarStyle: systemGet("window.titleBarStyle"),
+    width: settingService.getSetting("system", "window.width"),
+    height: settingService.getSetting("system", "window.height"),
+    titleBarStyle: settingService.getSetting("system", "window.titleBarStyle"),
   });
 
   mainWindow.setTitle("UniText");
 
-  const lang = EI18n[systemGet("launch.language")] as unknown as number;
+  const lang = EI18n[settingService.getSetting("system", "launch.language")] as unknown as number;
+  // menuService.bootstrap(lang);
 
-  menuService.bootstrap(lang);
-
-  const args: Record<keyof IWindowArgs, string> = {
-    wid: mainWindow.id.toString(),
-    lang: lang.toString(),
-    type: EWindowType.NORMAL.toString(),
-    proj: _container.getService("EnvService").getCabinPath(),
-  };
-  const params = new URLSearchParams(args);
   const URL_HOST = isDev ? `http://localhost:${process.env.PORT_RENDERER}` : `file://${__dirname}`;
-
-  await mainWindow.loadURL(`${URL_HOST}/?${params.toString()}`);
+  await mainWindow.loadURL(`${URL_HOST}/?${EWindowType.NORMAL}`);
 
   return mainWindow;
 }
@@ -116,11 +110,14 @@ function main(): void {
   _container.setService("EnvService", envService);
   _container.setService("SettingService", new SettingService(logger, envService.resolveCabinFile("SETTING")));
   _container.setService("KeybindingService", new KeybindingService(logger));
-  _container.setService("MenuService", new MenuService(logger));
+  // _container.setService("MenuService", new MenuService(logger));
   _container.setService("ImageService", new ImageService(logger, envService.resolveCabinFile("IMAGE")));
   _container.setService("WindowService", new WindowService(logger));
 
   _container.initService();
+
+  /* 更新 cabinPath */
+  _container.getService("SettingService").setSetting("system", "launch.cabinPath", envService.getCabinPath());
 
   app.whenReady().then(async () => {
     let mainWindow: BrowserWindow | null = null;

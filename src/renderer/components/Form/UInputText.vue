@@ -3,21 +3,27 @@
     <label>{{ $g(prop.title) }}</label>
     <input
       type="text"
-      v-model="res"
+      v-model="currentValue"
       :disabled="disabled"
       spellcheck="false"
-      @change="handleChange()"
+      @change="onChange()"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
-
+import { defineComponent } from "vue";
 import Skeleton from "./skeleton";
 
-@Component({ name: "UInputText" })
-export default class UInputText extends Skeleton {}
+export default defineComponent({
+  name: "UInputText",
+  mixins: [Skeleton],
+  methods: {
+    onChange() {
+      this.$emit("change", this.currentValue);
+    },
+  },
+});
 </script>
 
 <style lang="less" scoped>

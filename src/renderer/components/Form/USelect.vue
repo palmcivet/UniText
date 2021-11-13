@@ -1,19 +1,37 @@
 <template>
   <div class="option" :title="$g(prop.description)">
     <label>{{ $g(prop.title) }}</label>
-    <select v-model="res" @change="handleChange()">
-      <slot />
+    <select v-model="currentValue" @change="onChange()">
+      <option
+        v-for="(optionValue, index) in optionList"
+        :key="index"
+        :value="optionValue"
+      >
+        {{ optionValue }}
+      </option>
     </select>
   </div>
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator";
-
 import Skeleton from "./skeleton";
+import { defineComponent } from "vue";
 
-@Component({ name: "USelect" })
-export default class USelect extends Skeleton {}
+export default defineComponent({
+  name: "USelect",
+  mixins: [Skeleton],
+  props: {
+    optionList: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  methods: {
+    onChange() {
+      this.$emit("change", this.currentValue);
+    },
+  },
+});
 </script>
 
 <style lang="less" scoped>

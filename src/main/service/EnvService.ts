@@ -11,7 +11,7 @@ import { join } from "path";
 import * as fse from "fs-extra";
 
 import { CABIN_FILE, CABIN_FOLDER, CABIN_NAME, SYSTEM_PATH } from "@/shared/constant";
-import { IBootArgs } from "@/typings/main";
+import { IBootArgs } from "@/shared/typings/main";
 
 type TKeyConfigFolder = keyof typeof CABIN_FOLDER;
 type TKeyConfigFile = keyof typeof CABIN_FILE;
@@ -28,7 +28,7 @@ export default class EnvService {
 
   constructor() {
     this._envData = {
-      defaultPath: "",
+      cabinPath: "",
       historyPath: [],
       isFallBack: true,
     };
@@ -55,8 +55,8 @@ export default class EnvService {
       console.error(`${bootFile} 文件读取失败: ${error}`);
     }
 
-    if (fse.existsSync(this._envData.defaultPath)) {
-      this.setCabinPath(this._envData.defaultPath);
+    if (fse.existsSync(this._envData.cabinPath)) {
+      this.setCabinPath(this._envData.cabinPath);
     } else {
       this.setCabinPath(join(userDataPath, SYSTEM_PATH.DEFAULT_DIR));
     }

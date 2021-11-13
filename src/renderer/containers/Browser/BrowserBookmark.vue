@@ -26,7 +26,3 @@ export default defineComponent({
   setup() {},
 });
 </script>
-
-<style lang="less" scoped>
-@import "./index.less";
-</style>

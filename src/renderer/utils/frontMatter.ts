@@ -9,7 +9,7 @@ import yaml from "js-yaml";
 
 import { formatDate } from "@/shared/utils";
 import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/renderer/utils";
-import { IDocumentFrontMatter } from "@/typings/document";
+import { IDocumentFrontMatter } from "@/shared/typings/document";
 
 /**
  * @type YAML 方案

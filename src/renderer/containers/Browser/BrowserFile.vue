@@ -1,12 +1,12 @@
 <template>
   <div class="browser-files">
-    <template v-if="true">
+    <template v-if="false">
       <div class="title-blank">
         <span>{{ $t("sidebar.files_empty") }}</span>
       </div>
 
       <div class="container-blank">
-        <button class="unitext-button" @click="OPEN_PROJECT()">
+        <button class="unitext-button" @click="onOpenProject()">
           {{ $t("sidebar.files_button") }}
         </button>
       </div>
@@ -18,33 +18,40 @@
         <i
           class="ri-checkbox-indeterminate-line"
           :title="$t('sidebar.files_toggle')"
-          @click="handleToggleAll()"
+          @click="onToggleAll()"
         />
       </div>
 
-      <div class="container-opened" ref="treeview" />
+      <div class="container-opened" ref="treeviewRef" />
     </template>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import useBrowser from "@/renderer/store/browser";
 
 export default defineComponent({
   name: "Files",
 
-  components: {},
+  inject: ["$browser"],
 
-  setup() {
-    const handleToggleAll = () => {};
+  mounted() {
+    const root = this.$refs.treeviewRef as HTMLElement;
+    this.$browser.invoke(root);
+  },
 
-    const browser = useBrowser();
+  beforeUnmount() {
+    this.$browser.dispose();
+  },
 
-    return {
-      handleToggleAll,
-      OPEN_PROJECT: browser.OPEN_PROJECT,
-    };
+  methods: {
+    onOpenProject() {
+      this.$browser.doOpenProject();
+    },
+
+    onToggleAll() {
+      this.$browser.doToggleAll();
+    },
   },
 });
 </script>
@@ -55,17 +62,63 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 
+  .unitext-button {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    padding: 0.4rem;
+    width: fit-content;
+  }
+
+  .title-opened,
+  .title-blank {
+    width: 100%;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 4px;
+    color: var(--primary-fg); // DEV
+    background-color: var(--hover-bg); // DEV
+  }
+
+  .container-opened,
   .container-blank {
     position: relative;
     height: 100%;
   }
 
-  button {
-    top: 50%;
-    left: 50%;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    padding: 0.5em;
+  ::v-deep(.u-treeview) {
+    .u-listview {
+      .u-list__item {
+        padding: 0 4px;
+        color: var(--tertiary-fg);
+
+        &:hover {
+          color: var(--primary-fg);
+          background-color: var(--primary-bg);
+        }
+
+        .u-label {
+          font-size: 15px;
+        }
+      }
+
+      &:hover .u-indent div {
+        border-color: #868e977a; // DEV
+      }
+    }
+
+    &__drag {
+      &-src {
+        opacity: 0.6;
+      }
+
+      &-dst {
+        background-color: #465a6a;
+      }
+    }
   }
 }
 </style>
