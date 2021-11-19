@@ -108,7 +108,7 @@ export default class Browser implements IDisposable {
     if (true) {
       const rawString = await useDisk().readTextFile([cabinPath, ...route]);
       const statInfo = await useDisk().stat([cabinPath, ...route]);
-      this.bus.emit(BUS_CHANNEL.EDIT_MARKDOWN, { rawString, statInfo, route });
+      this.bus.emit(BUS_CHANNEL.BROWSER_OPEN_MD, { rawString, statInfo, route });
     } else {
     }
   }

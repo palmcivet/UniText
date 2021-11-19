@@ -14,7 +14,7 @@ const _bus = new EventBus();
 const _browser = new Browser(_bus);
 const _workbench = new Workbench(_bus);
 // const _themeEngine = new ThemeEngine(_bus);
-// const _markdownEngine = new MarkdownEngine(_bus);
+const _markdownEngine = new MarkdownEngine(_bus);
 
 (window as any).stack = _workbench;
 
@@ -28,6 +28,7 @@ async function register() {
   const { browser } = all.preference;
 
   _browser.update({ ...browser, cabinPath: all.system.launch.cabinPath });
+  _markdownEngine.invoke({ ...all.markdown });
 }
 
 /* 将配置注入 model */
@@ -38,7 +39,7 @@ export default function useModel() {
       app.provide("$browser", _browser);
       app.provide("$workbench", _workbench);
       // app.provide("$theme", _themeEngine);
-      // app.provide("$markdown", _markdownEngine);
+      app.provide("$markdown", _markdownEngine);
       _bus.on(BUS_CHANNEL.UPDATE_SETTING, register);
       return register();
     },

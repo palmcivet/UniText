@@ -140,8 +140,8 @@ export default class Workbench implements IDisposable {
       const extension = new MonacoMarkdownExtension();
       extension.activate(this.editorInstance);
 
-      this.bus.on(BUS_CHANNEL.EDIT_MARKDOWN, this.onOpenMarkdown.bind(this));
-      this.bus.on(BUS_CHANNEL.SAVE_MARKDOWN, this.onSaveMarkdown.bind(this));
+      this.bus.on(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown.bind(this));
+      this.bus.on(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown.bind(this));
 
       // TODO 读取配置：新建文件/打开历史
       // this.onCreateMarkdown();
@@ -150,8 +150,8 @@ export default class Workbench implements IDisposable {
 
   public dispose(): void {
     this.editorInstance.dispose();
-    this.bus.off(BUS_CHANNEL.EDIT_MARKDOWN, this.onOpenMarkdown);
-    this.bus.off(BUS_CHANNEL.SAVE_MARKDOWN, this.onSaveMarkdown);
+    this.bus.off(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown);
+    this.bus.off(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown);
   }
 
   /* Tab operation begin */
@@ -247,6 +247,7 @@ export default class Workbench implements IDisposable {
       activatedIndex = this.cachedStateList.findIndex((_state) => {
         return (
           this.activatedStateUri !== null &&
+          _state.type === EWorkbenchType.EDITOR &&
           this.activatedStateUri.toString() === (_state as IEditorState).uri.toString()
         );
       });
@@ -284,7 +285,6 @@ export default class Workbench implements IDisposable {
   private onOpenMarkdown(payload: { rawString: string; statInfo: StatsBase<number>; route: Array<string> }): void {
     const { rawString, statInfo, route } = payload;
     const { data, content } = importFrontMatter(rawString);
-
     const uri = MonacoEditor.Uri.parse(route.join(PATH_SEPARATE));
 
     if (MonacoEditor.editor.getModel(uri) === null) {
