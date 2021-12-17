@@ -1,8 +1,3 @@
-export enum IPC_MENUMANAGER {
-  POPUP_CONTEXT = "IPC::POP_CONTEXT",
-  CLOSE_CONTEXT = "IPC::CLOSE_CONTEXT",
-}
-
 export enum IPC_FILE {
   OPEN = "IPC::OPEN",
   SAVE = "IPC::SAVE",
@@ -20,15 +15,6 @@ export enum IPC_EXPORT {
   AS_HTML = "IPC::EXPORT_AS_HTML",
   AS_PDF = "IPC::EXPORT_AS_PDF",
   AS_PNG = "IPC::EXPORT_AS_PNG",
-}
-
-/**
- * @deprecated
- */
-export enum IPC_IMAGE {
-  SET_IMAGE = "IPC::SET_IMAGE",
-  REG_IMAGE = "IPC::REG_IMAGE",
-  CLEAN_CACHE = "IPC::CLEAN_CACHE",
 }
 
 export enum IPC_OTHER {

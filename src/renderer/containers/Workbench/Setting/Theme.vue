@@ -163,7 +163,7 @@ export default class Theme extends Vue {
     this.updateSelectScheme();
   }
 
-  beforeDestroy() {
+  beforeUnmount() {
     this.watcher.close();
   }
 }

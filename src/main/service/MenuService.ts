@@ -1,10 +1,9 @@
 import { app, Menu } from "electron";
 
-import { isOsx } from "@/shared/constant";
 import dock from "@/main/menu/templates/dock";
 import top from "@/main/menu/templates/top";
 import { toc, tab, file, folder } from "@/main/menu/templates/context";
-import { Bus } from "@/renderer/plugins/VueBus";
+import { isOsx } from "@/main/utils/env";
 import { EI18n } from "@/shared/typings/setting/preference";
 import KeybindingService from "./KeybindingService";
 import Service, { Inject } from "./Service";

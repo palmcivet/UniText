@@ -34,8 +34,6 @@ export default class EnvService {
     };
   }
 
-  initEnv(): void {}
-
   initCli(): void {}
 
   initBoot(): IBootParam {
@@ -73,6 +71,10 @@ export default class EnvService {
   async initTemplate(): Promise<void> {}
 
   private async _serializeBoot() {}
+
+  normalizePath(route: Array<string>): string {
+    return join(this._cabinPath, ...route);
+  }
 
   getCabinPath(): string {
     return this._cabinPath;

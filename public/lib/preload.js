@@ -81,6 +81,9 @@ const _disk = {
   readBinaryFile(...args) {
     return ipcRenderer.invoke("disk:read-binary-file", ...args);
   },
+  writeFile(...args) {
+    return ipcRenderer.invoke("disk:write-file", ...args);
+  },
   delete(...args) {
     return ipcRenderer.invoke("disk:delete", ...args);
   },

@@ -1,48 +1,37 @@
 <template>
-  <footer>
-    <ul class="left-status-bar">
-      <component v-for="(v, i) in leftGroup" :is="v" :key="i" />
+  <div class="status-bar">
+    <!-- 左边只展示不交互 -->
+    <ul class="status-bar-left">
+      <component v-for="(status, index) in leftGroup" :is="status" :key="index" />
     </ul>
-    <ul class="right-status-bar">
-      <component v-for="(v, i) in rightGroup" :is="v" :key="i" />
+    <!-- 右边可交互 -->
+    <ul class="status-bar-right">
+      <Message />
+      <component v-for="(status, index) in rightGroup" :is="status" :key="index" />
     </ul>
-  </footer>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
-// import Mode from "./items/Mode.vue";
-// import Message from "./items/Message.vue";
-// import TagList from "./items/TagList.vue";
-// import PanelType from "./items/PanelType.vue";
-// import PanelStyle from "./items/PanelStyle.vue";
-// import SyncScheme from "./items/SyncScheme.vue";
-
-const Space = {
-  name: "Space",
-  template: `<span style="width: ${0.5}em;"></span>`,
-};
+import Message from "./Message/Index.vue";
+import ModeGroup from "./ModeGroup.vue";
+import StatusGroup from "./StatusGroup.vue";
 
 export default defineComponent({
   name: "StatusBar",
 
   components: {
-    // PanelStyle,
-    // PanelType,
-    // Message,
-    // Space,
-    // Mode,
-    // TagList,
-    // SyncScheme,
+    StatusGroup,
+    ModeGroup,
+    Message,
   },
 
   data() {
-    // <i class="ri-history-line"></i>
-
     return {
-      leftGroup: ["SyncScheme", "Space", "TagList"],
-      rightGroup: ["Message", "Space", "PanelType", "Space", "PanelStyle", "Mode"],
+      leftGroup: [StatusGroup.name],
+      rightGroup: [ModeGroup.name],
     };
   },
 });
@@ -51,25 +40,26 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-footer {
+.status-bar {
   display: flex;
   justify-content: space-between;
   position: relative;
-  height: @layout-statusbar-height;
   padding: 0 0.5em;
   color: var(--statusBar-Fg);
   background: var(--statusBar-Bg);
 
-  .left-status-bar,
-  .right-status-bar {
+  &-left,
+  &-right {
     display: flex;
+    font-size: @statusBar-font-size;
 
-    /deep/ ol {
+    ::v-deep(ul) {
       display: flex;
+      padding: 0 0.5em;
     }
 
-    /deep/ li {
-      padding: 0 0.25em;
+    ::v-deep(li) {
+      padding: 0 0.3em;
       cursor: pointer;
       user-select: none;
       line-height: @layout-statusbar-height;
@@ -84,10 +74,10 @@ footer {
         font-size: 16px;
       }
     }
+  }
 
-    &:last-child {
-      flex-direction: row-reverse;
-    }
+  &-right {
+    flex-direction: row-reverse;
   }
 }
 </style>

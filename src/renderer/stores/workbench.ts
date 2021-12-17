@@ -4,6 +4,8 @@ import { useIpc } from "@/renderer/composables/electron";
 import { $id } from "@/shared/utils";
 import { ITab } from "@/shared/typings/model";
 import { IPC_EXPORT } from "@/shared/channel/ipc";
+import { ITocItem } from "@/shared/typings/renderer";
+import { ECoding, EEoL, EIndent, EPicture, IDocumentFrontMatter } from "@/shared/typings/document";
 import { EWorkbenchType, IWorkbenchState } from "@/shared/typings/store";
 
 export default defineStore({
@@ -11,7 +13,29 @@ export default defineStore({
 
   state: (): IWorkbenchState => ({
     workbenchType: EWorkbenchType.EDITOR,
+    frontMatter: {
+      config: {
+        remark: "",
+        complete: false,
+        tag: [],
+        picture: EPicture.LOCAL,
+      },
+      format: {
+        indent: EIndent.T4,
+        encoding: ECoding.UTF8,
+        endOfLine: EEoL.LF,
+      },
+      meta: {
+        cTime: "",
+        mTime: "",
+        editTime: 0,
+      },
+      images: [],
+    },
     tabList: [],
+    tocList: [],
+    // tocMdList: [],
+    // tocHTMLList: [],
   }),
 
   getters: {
@@ -27,6 +51,18 @@ export default defineStore({
   actions: {
     SYNC_TAB(tabList: Array<ITab>) {
       this.tabList = tabList;
+    },
+
+    SYNC_TAB_STATE(index: number, { type, title, isModified }: ITab) {
+      this.tabList[index] = { ...this.tabList[index], type, title, isModified };
+    },
+
+    SYNC_TOC({ markdown, array, html }: { markdown: string; array: Array<ITocItem>; html: string }) {
+      this.tocList = array;
+    },
+
+    SYNC_FRONTMATTER(frontMatter: IDocumentFrontMatter) {
+      this.frontMatter = frontMatter;
     },
 
     SWITCH_WORKBENCH(type: EWorkbenchType) {

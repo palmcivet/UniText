@@ -5,52 +5,22 @@ import { EventBus } from "@palmcivet/unitext-tree-view";
 
 import useGeneral from "@/renderer/stores/general";
 import useWorkbench from "@/renderer/stores/workbench";
-import { PATH_SEPARATE } from "@/renderer/utils";
-import { importFrontMatter } from "@/renderer/utils/frontMatter";
-import { formatDate } from "@/shared/utils";
-import { URL_PROTOCOL } from "@/shared/constant";
+import useEnvironment from "@/renderer/stores/environment";
+import { useDisk } from "@/renderer/composables/disk";
+import { useService } from "@/renderer/composables/service";
+import { useClipboard, useDialog } from "@/renderer/composables/electron";
+import { exportFrontMatter, importFrontMatter } from "@/renderer/utils/front-matter";
+import { IMG_IN_URL_PATTERN, PATH_SEPARATE, URL_PATH, URL_PROTOCOL } from "@/shared/pattern";
+import { cleanURL, validateURL } from "@/shared/utils/links";
+import { difference, formatDate, hashString, intersect } from "@/shared/utils";
 import { BUS_CHANNEL } from "@/shared/channel";
-import { ITab } from "@/shared/typings/model";
+import { IEditorState, ITab, IViewState, IWorkbenchState } from "@/shared/typings/model";
 import { EWorkbenchType } from "@/shared/typings/store";
-import { IDisposable, ITocItem } from "@/shared/typings/renderer";
+import { IDisposable } from "@/shared/typings/renderer";
 import { IDocumentFrontMatter } from "@/shared/typings/document";
 
-import { OneDarkPro } from "../containers/Workbench/Editor/theme";
-import { init } from "../containers/Workbench/Editor/option";
-
-/* type definition begins */
-
-/**
- * @interface 打开的 Markdown 文件
- */
-interface IEditorState extends IDocumentFrontMatter, ITab {
-  /**
-   * @field Monaco Editor 编辑模型
-   */
-  uri: MonacoEditor.Uri;
-  /**
-   * @field 路径
-   */
-  route: Array<string>;
-  /**
-   * @field 是否临时文件
-   */
-  isTemp: boolean;
-  /**
-   * @field 是否改动
-   */
-  isModified: boolean;
-  /**
-   * @field 是否是阅读模式
-   */
-  isReadMode: boolean;
-}
-
-interface IViewState extends ITab {}
-
-interface IWorkbenchState extends ITab {}
-
-/* type definition end */
+import { OneDarkPro } from "../containers/Workbench/Document/Editor/Monaco/theme";
+import { init } from "../containers/Workbench/Document/Editor/Monaco/option";
 
 function DocumentFactory(data?: IDocumentFrontMatter, stat?: StatsBase<number>): IDocumentFrontMatter {
   return {
@@ -73,6 +43,108 @@ function DocumentFactory(data?: IDocumentFrontMatter, stat?: StatsBase<number>):
     images: [],
     ...data,
   };
+}
+
+function SnippetRegister(
+  snippets: Array<{
+    label: string;
+    command: string;
+    documentation: string;
+    insertText: string;
+  }>
+): void {
+  MonacoEditor.languages.registerCompletionItemProvider("markdown-math", {
+    provideCompletionItems: (model, position) => {
+      const word = model.getWordUntilPosition(position);
+      const range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: word.startColumn,
+        endColumn: word.endColumn,
+      };
+
+      const suggestions: MonacoEditor.languages.CompletionItem[] = [
+        ...snippets.map(({ command, ...item }) => {
+          return {
+            ...item,
+            range,
+            kind: MonacoEditor.languages.CompletionItemKind.Snippet,
+            insertTextRules: MonacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          };
+        }),
+      ];
+
+      return {
+        suggestions,
+      };
+    },
+  });
+}
+
+async function DiffImageList(newList: Array<string>, oldList: Array<string>): Promise<Array<string>> {
+  const _oldList = new Set(oldList);
+  const _newList = new Set<string>();
+
+  newList.forEach((item) => {
+    if (item.startsWith(URL_PATH.IMG)) {
+      _newList.add(item.replace(URL_PATH.IMG, ""));
+    } else if (/http(s)?:\/\//.test(item)) {
+      _newList.add(hashString(item));
+    }
+  });
+  const intList = intersect(_oldList, _newList);
+  const delList = difference(_oldList, intList);
+  const addList = difference(_newList, intList);
+
+  await useService("ImageService").updateIndice([...delList], [...addList]);
+
+  return [..._newList];
+}
+
+async function getClipboard(): Promise<{
+  text: string;
+  format: string;
+  isImg: boolean;
+  isUrl: boolean;
+}> {
+  const readResult = {
+    text: "",
+    isImg: false,
+    isUrl: false,
+    format: "",
+  };
+
+  const clipboard = useClipboard();
+  const available = clipboard.availableFormats();
+
+  if (available.includes("text/plain")) {
+    /* [ 'text/plain' ] */
+    readResult.text = clipboard.readText();
+    const { text } = readResult;
+    if (readResult.text !== "") {
+      readResult.isUrl = validateURL(text);
+      readResult.isImg = IMG_IN_URL_PATTERN.test(text);
+    }
+
+    /* [ 'text/plain', 'text/html', 'text/rtf' ] */
+    // FEAT
+  } else {
+    /* binary file or local file */
+    readResult.text = useEnvironment().isWin
+      ? clipboard.read("FileNameW").replace(new RegExp(String.fromCharCode(0), "g"), "")
+      : clipboard.read("public.file-url");
+
+    if (readResult.text === "") {
+      /* binary image */
+      readResult.isImg = true;
+      readResult.isUrl = true;
+      readResult.text = await useService("ImageService").getClipedImage();
+    } else {
+      /* local file */
+    }
+  }
+
+  return readResult;
 }
 
 type TState = IEditorState | IViewState | IWorkbenchState;
@@ -98,26 +170,20 @@ export default class Workbench implements IDisposable {
   private readonly cachedStateList: Array<TState>;
 
   /**
-   * @description 活跃 IEditorState 的 uri
+   * @description 活跃 IEditorState 的 uri，用于获取 monaco model
    */
   private activatedStateUri: MonacoEditor.Uri | null;
 
   /**
-   * @description 图片列表
+   * @description 活跃 IEditorState 的下标，用于更改属性
    */
-  private imageList: Array<string>;
-
-  /**
-   * @description 目录列表
-   */
-  private tocList: Array<ITocItem>;
+  private activatedStateIndex: number;
 
   constructor(bus: EventBus) {
     this.bus = bus;
     this.cachedStateList = [];
     this.activatedStateUri = null;
-    this.imageList = [];
-    this.tocList = [];
+    this.activatedStateIndex = 0;
   }
 
   public invoke = (() => {
@@ -140,8 +206,57 @@ export default class Workbench implements IDisposable {
       const extension = new MonacoMarkdownExtension();
       extension.activate(this.editorInstance);
 
+      this.editorInstance.onDidChangeModelContent((event) => {
+        // FEAT 增量更新 `event.changes`
+        this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, this.editorInstance.getValue());
+
+        const state = this.cachedStateList[this.activatedStateIndex] as IEditorState;
+
+        if (!state.isModified) {
+          state.isModified = true;
+          useWorkbench().SYNC_TAB_STATE(this.activatedStateIndex, state);
+        }
+      });
+
+      this.editorInstance.addCommand(MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V, async () => {
+        {
+          // FEAT 清洗 URL
+          const isFilter = true;
+          const selection = this.editorInstance.getSelection() as MonacoEditor.Range;
+
+          let { isImg, isUrl, text } = await getClipboard();
+
+          if (
+            isUrl &&
+            (selection.startColumn !== selection.endColumn || selection.startLineNumber !== selection.endLineNumber)
+          ) {
+            const alt = this.editorInstance.getModel()?.getValueInRange(selection);
+            text = isImg ? `![${alt}](${isFilter && cleanURL(text)} '${alt}')` : `[${alt}](${text} '${alt}')`;
+          }
+
+          this.editorInstance.executeEdits("", [
+            {
+              range: new MonacoEditor.Range(
+                selection.startLineNumber,
+                selection.startColumn,
+                selection.endLineNumber,
+                selection.endColumn
+              ),
+              text,
+            },
+          ]);
+
+          // FEAT 改成 snippet
+          const { endLineNumber, endColumn } = this.editorInstance.getSelection() as MonacoEditor.Selection;
+
+          this.editorInstance.setPosition({ lineNumber: endLineNumber, column: endColumn });
+        }
+      });
+
       this.bus.on(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown.bind(this));
       this.bus.on(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown.bind(this));
+      this.bus.on(BUS_CHANNEL.EDITOR_SYNC_IMG, () => {});
+      this.bus.on(BUS_CHANNEL.EDITOR_REVEAL_SECTION, this.onRevealSection.bind(this));
 
       // TODO 读取配置：新建文件/打开历史
       // this.onCreateMarkdown();
@@ -152,36 +267,82 @@ export default class Workbench implements IDisposable {
     this.editorInstance.dispose();
     this.bus.off(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown);
     this.bus.off(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown);
+    this.bus.off(BUS_CHANNEL.EDITOR_REVEAL_SECTION, this.onRevealSection);
   }
 
   /* Tab operation begin */
 
   public doActivateTab(index: number): void {
+    this.activatedStateIndex = index;
     const targetTab = this.cachedStateList[index];
     const { type } = targetTab;
 
     if (type === EWorkbenchType.EDITOR) {
-      const { uri } = targetTab as IEditorState;
+      const { uri, config, format, meta, images } = targetTab as IEditorState;
       const model = MonacoEditor.editor.getModel(uri);
       this.activatedStateUri = uri;
       this.editorInstance.setModel(model);
+      this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, model!.getValue());
+      useWorkbench().SYNC_FRONTMATTER({
+        config,
+        format,
+        meta,
+        images,
+      });
     }
 
     useWorkbench().SWITCH_WORKBENCH(type);
     useWorkbench().SYNC_TAB(this._getTabList());
   }
 
-  public doCloseTab(index: number): void {
-    const [closedState] = this.cachedStateList.splice(index, 1);
-    const { length } = this.cachedStateList;
+  public async doCloseTab(index: number): Promise<void> {
+    const targetState = this.cachedStateList[this.activatedStateIndex];
 
     /* 处理关闭的 Editor Model */
-    if (closedState.type === EWorkbenchType.EDITOR) {
-      const { uri } = closedState as IEditorState;
-      const model = MonacoEditor.editor.getModel(uri);
-      this.onCloseMarkdown(model!.getValue());
-      model?.dispose();
+    if (targetState.type === EWorkbenchType.EDITOR) {
+      const { uri, isModified } = targetState as IEditorState;
+
+      if (isModified) {
+        const result = await useDialog().showMessageBox({
+          type: "warning",
+          message: "是否保存",
+          detail: "",
+          buttons: ["保存", "取消", "不保存"],
+          defaultId: 0,
+          cancelId: 1,
+        });
+
+        switch (result.response) {
+          case 0:
+            /* 保存 */
+            const hasSaved = await this.onSaveMarkdown();
+
+            if (!hasSaved) {
+              return;
+            }
+
+            // FEAT 保存状态
+            // this.editorInstance.saveViewState();
+
+            break;
+          case 1:
+            /* 取消 */
+            return;
+          case 2:
+            break;
+        }
+      }
+
+      const model = MonacoEditor.editor.getModel(uri)!;
+      model.dispose();
+
+      if (!model.isDisposed()) {
+        return;
+      }
     }
+
+    this.cachedStateList.splice(index, 1);
+    const { length } = this.cachedStateList;
 
     if (length === 0) {
       useWorkbench().SYNC_TAB(this._getTabList());
@@ -210,6 +371,7 @@ export default class Workbench implements IDisposable {
       this._addTab({
         type,
         title: type,
+        isModified: false,
         isActivated: true,
       });
     } else {
@@ -232,6 +394,7 @@ export default class Workbench implements IDisposable {
       return {
         type: _state.type,
         title: _state.title,
+        isModified: _state.isModified,
         isActivated,
       };
     });
@@ -263,25 +426,7 @@ export default class Workbench implements IDisposable {
     this.doActivateTab(nextIndex);
   }
 
-  private onCreateMarkdown(): void {
-    const title = `Untitled-${counter++}`;
-    const uri = MonacoEditor.Uri.parse(`${URL_PROTOCOL}Markdown-${title}`);
-
-    MonacoEditor.editor.createModel("", "markdown-math", uri);
-
-    this._addTab({
-      type: EWorkbenchType.EDITOR,
-      title,
-      uri,
-      route: [],
-      isTemp: false,
-      isModified: false,
-      isReadMode: false,
-      isActivated: true,
-      ...DocumentFactory(),
-    } as IEditorState);
-  }
-
+  // TODO 将类型写入 `typings/model`
   private onOpenMarkdown(payload: { rawString: string; statInfo: StatsBase<number>; route: Array<string> }): void {
     const { rawString, statInfo, route } = payload;
     const { data, content } = importFrontMatter(rawString);
@@ -312,10 +457,74 @@ export default class Workbench implements IDisposable {
     }
   }
 
-  private onSaveMarkdown(): void {}
+  private onCreateMarkdown(): void {
+    const title = `Untitled-${counter++}.md`;
+    const uri = MonacoEditor.Uri.parse(`${URL_PROTOCOL}Markdown-${title}`);
 
-  private onCloseMarkdown(value: string): void {
-    // 保存状态
-    // this.editorInstance.saveViewState();
+    MonacoEditor.editor.createModel("", "markdown-math", uri);
+
+    this._addTab({
+      type: EWorkbenchType.EDITOR,
+      title,
+      uri,
+      route: [],
+      isTemp: true,
+      isModified: false,
+      isReadMode: false,
+      isActivated: true,
+      ...DocumentFactory(),
+    } as IEditorState);
+  }
+
+  private async onSaveMarkdown(): Promise<boolean> {
+    const targetState = this.cachedStateList[this.activatedStateIndex] as IEditorState;
+    const { uri, route, isTemp, isReadMode, type, title, description, isActivated, isModified, ...rest } = targetState;
+
+    /* 未修改，则直接跳过 */
+    if (!isModified) {
+      return true;
+    }
+
+    /* 临时文件，需要获取地址 */
+    let savePath = await useService("EnvService").normalizePath([title]);
+
+    if (isTemp) {
+      const result = await useDialog().showSaveDialog({
+        // FEAT i18n
+        title: "保存到",
+        message: "",
+        properties: ["createDirectory", "showOverwriteConfirmation"],
+        defaultPath: savePath,
+      });
+
+      if (result.canceled) {
+        return false;
+      } else if (result.filePath) {
+        savePath = result.filePath;
+      }
+    }
+
+    // TODO 更新图片;
+    const images = await DiffImageList(rest.images, rest.images);
+
+    const markdown = exportFrontMatter({
+      sep: "---",
+      data: {
+        ...rest,
+        images,
+        // TODO 更新其他属性
+      },
+      prefix: true,
+      content: this.editorInstance.getValue(),
+    });
+
+    await useDisk().writeFile([savePath], markdown);
+    return true;
+  }
+
+  /* Monaco events */
+  private onRevealSection(value: Array<number>): void {
+    this.editorInstance.revealLineInCenter(value[1], MonacoEditor.editor.ScrollType.Smooth);
+    this.editorInstance.setPosition({ column: 1, lineNumber: value[1] });
   }
 }

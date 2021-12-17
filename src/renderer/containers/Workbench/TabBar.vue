@@ -5,7 +5,6 @@
         v-for="(tab, index) in tabList"
         :tab="tab"
         :key="index"
-        :class="tab.isActivated ? 'active' : 'inactive'"
         @close-tab="onClose(index, tab)"
         @select-tab="onSelect(index, tab)"
         @context-tab="onContext(index, tab)"

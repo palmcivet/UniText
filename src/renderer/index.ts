@@ -3,13 +3,13 @@ import { createPinia } from "pinia";
 import { createI18n } from "vue-i18n";
 
 import Index from "@/renderer/Index.vue";
+import createModel from "@/renderer/models";
 import { localesView, localesMenu } from "@/shared/i18n/ZH_CN";
 import { EWindowType } from "@/shared/typings/main";
 
 import "remixicon/fonts/remixicon.css";
 import "@palmcivet/unitext-tree-view/dist/style.css";
 import "@/renderer/styles/main.less";
-import useModel from "./models";
 
 async function renderer() {
   /**
@@ -41,7 +41,7 @@ async function renderer() {
   app.config.globalProperties.$t = i18n.global.t;
   app.config.globalProperties.$g = (options: Array<string>) => options[0];
 
-  await useModel().invoke(app);
+  await createModel().invoke(app);
 
   app.mount("#app");
 }

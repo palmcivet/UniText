@@ -8,7 +8,7 @@
 import yaml from "js-yaml";
 
 import { formatDate } from "@/shared/utils";
-import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/renderer/utils";
+import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/shared/pattern";
 import { IDocumentFrontMatter } from "@/shared/typings/document";
 
 /**
@@ -189,6 +189,7 @@ export function importFrontMatter(str: string, options?: ILoadOption): ISpiltStr
   }
 }
 
+// TODO 引入泛型，剔除多余属性
 /**
  * 将 Front-Matter 对象和文字内容格式化为字符串
  * @param payload 对象

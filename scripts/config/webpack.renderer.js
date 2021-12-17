@@ -35,6 +35,7 @@ const rendererConfig = {
       "&": buildPath.public(),
     },
     extensions: [".ts", ".js", ".vue", ".json", ".css", ".less"],
+    fallback: { crypto: false },
   },
   plugins: [
     new HtmlWebpackPlugin({

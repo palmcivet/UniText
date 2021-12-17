@@ -1,27 +1,3 @@
-/**
- * @deprecated
- */
-export const isOsx = true;
-/**
- * @deprecated
- */
-export const isWin = false && process.platform === "win32";
-/**
- * @deprecated
- */
-export const isLinux = false && process.platform === "linux";
-/**
- * @deprecated
- */
-export const isDev = true;
-
-export const URL_PROTOCOL = "unitext://";
-
-export const URL_PATH = {
-  IMG: `${URL_PROTOCOL}img/`,
-  DOC: `${URL_PROTOCOL}doc/`,
-};
-
 export const THEME_CSS = ["appearance", "renderView", "renderCode"];
 export const THEME_JS = ["monacoEditor"];
 export const THEME_PRESET = ["OneDarkPro", "OneDarkCyber", "Custom"];
@@ -52,12 +28,12 @@ export const CABIN_FOLDER = {
 export const CABIN_FILE = {
   /* 以下为设置文件 */
   SETTING: "setting.json",
-  SNIPPET: "snippet.json",
   KEYBINDING: "keybinding.json",
 
   /* 以下为数据文件 */
   MARK: "mark.json",
   ICON: "icon.json",
-  IMAGE: "image.db",
+  // TODO cache 移动到系统层
+  IMAGE: "image",
   SCHEDULE: "schedule.json",
 };

@@ -28,15 +28,14 @@ export default defineComponent({
      */
     showRight: { type: Boolean, required: true },
     /**
-     * @member 左右反转
-     */
-    isReverse: { type: Boolean, default: false },
-    /**
-     * @member 左区域初始宽度
+     * @member 左区域初始宽度，比值或实际值
+     * @example :initWitdh="1/2"
+     * @example :initWidth="400"
      */
     initWidth: { type: Number },
     /**
      * @member 一个数组，左区域的阈值
+     * @example :threshold="[1/2, 1/3]"
      */
     threshold: { type: Array, required: true },
   },
@@ -82,15 +81,30 @@ export default defineComponent({
     },
   },
 
+  watch: {
+    containerWidth(newValue, oldValue) {
+      if (oldValue === 0) {
+        this.finalWidth =
+          this.initWidth !== undefined
+            ? this.initWidth > 0 && this.initWidth < 1
+              ? this.initWidth * newValue
+              : this.initWidth
+            : this.range[0];
+      } else {
+        const ratio = this.finalWidth / oldValue;
+        this.finalWidth = ratio * newValue;
+      }
+    },
+  },
+
   methods: {
     handleResize() {
-      const parentWidth = (this.$refs.container as HTMLElement).clientWidth;
-      if (parentWidth === 0) {
+      const clientWidth = (this.$refs.container as HTMLElement)?.clientWidth;
+      if (!clientWidth) {
         return;
       }
-      const ratio = this.finalWidth / this.containerWidth;
-      this.containerWidth = parentWidth;
-      this.finalWidth = ratio * (this.containerWidth - 2);
+
+      this.containerWidth = clientWidth;
     },
   },
 
@@ -132,12 +146,11 @@ export default defineComponent({
       (sash as HTMLElement).addEventListener("mousedown", mouseDownHandler);
 
       this.containerWidth = (container as HTMLElement).clientWidth;
-      this.finalWidth = this.initWidth ?? this.range[0];
       this.observer.observe(container as HTMLElement);
     });
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     this.observer.unobserve(this.$refs.container as HTMLElement);
   },
 });

@@ -1,16 +1,29 @@
 import { defineStore } from "pinia";
 
+import { IEnvironmentState } from "@/shared/typings/store";
+
 export default defineStore({
   id: "environment",
 
-  state: () => ({
-    isOsx: true,
-    isWin: false,
-    isLinux: false,
-    isDev: true,
-  }),
+  state: () =>
+    ({
+      platform: "darwin",
+      isDev: true,
+    } as IEnvironmentState),
 
-  getters: {},
+  getters: {
+    isOsx(_) {
+      return _.platform === "darwin";
+    },
+
+    isWin(_) {
+      return _.platform === "win32";
+    },
+
+    isLinux(_) {
+      return _.platform === "linux";
+    },
+  },
 
   actions: {},
 });

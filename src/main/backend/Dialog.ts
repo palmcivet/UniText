@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from "electron";
+import { ipcMain, dialog, BrowserWindow } from "electron";
 
 ipcMain.handle("dialog:show-certificate-trust-dialog", (event, ...args) => {
   return dialog.showCertificateTrustDialog(args[0]);
@@ -9,13 +9,16 @@ ipcMain.handle("dialog:show-error-box", (event, ...args) => {
 });
 
 ipcMain.handle("dialog:show-message-box", (event, ...args) => {
-  return dialog.showMessageBox(args[0]);
+  const win = BrowserWindow.fromId(event.sender.id)!;
+  return dialog.showMessageBox(win, args[0]);
 });
 
 ipcMain.handle("dialog:show-open-dialog", (event, ...args) => {
-  return dialog.showOpenDialog(args[0]);
+  const win = BrowserWindow.fromId(event.sender.id)!;
+  return dialog.showOpenDialog(win, args[0]);
 });
 
 ipcMain.handle("dialog:show-save-dialog", (event, ...args) => {
-  return dialog.showSaveDialog(args[0]);
+  const win = BrowserWindow.fromId(event.sender.id)!;
+  return dialog.showSaveDialog(win, args[0]);
 });

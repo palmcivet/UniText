@@ -4,13 +4,15 @@ import { EventBus } from "@palmcivet/unitext-tree-view";
 import useGeneral from "@/renderer/stores/general";
 import { useService } from "@/renderer/composables/service";
 import { ISetting } from "@/shared/typings/setting";
+import { BUS_CHANNEL } from "@/shared/channel";
+import Viewer from "./Viewer";
 import Browser from "./Browser";
 import Workbench from "./Workbench";
 import ThemeEngine from "./ThemeEngine";
 import MarkdownEngine from "./MarkdownEngine";
-import { BUS_CHANNEL } from "@/shared/channel";
 
 const _bus = new EventBus();
+const _viewer = new Viewer(_bus);
 const _browser = new Browser(_bus);
 const _workbench = new Workbench(_bus);
 // const _themeEngine = new ThemeEngine(_bus);
@@ -32,14 +34,14 @@ async function register() {
 }
 
 /* 将配置注入 model */
-export default function useModel() {
+export default function createModel() {
   return {
     invoke(app: App) {
       app.provide("$bus", _bus);
+      app.provide("$viewer", _viewer);
       app.provide("$browser", _browser);
       app.provide("$workbench", _workbench);
       // app.provide("$theme", _themeEngine);
-      app.provide("$markdown", _markdownEngine);
       _bus.on(BUS_CHANNEL.UPDATE_SETTING, register);
       return register();
     },

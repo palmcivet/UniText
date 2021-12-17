@@ -1,5 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable space-before-function-paren */
+import crypto from "crypto";
 
 export function debounce(fn: Function, delay: number = 200) {
   let timeout: NodeJS.Timeout | null;
@@ -50,18 +51,15 @@ export const deepGet = (object: any, path: string) => {
   return result;
 };
 
-export const hashCode = (plain: string) => {
-  let hash = 0;
-  let chr;
-  for (let i = 0; i < plain.length; i += 1) {
-    chr = plain.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0;
-  }
-  return hash.toString();
-};
+export function hashBinary(content: crypto.BinaryLike): string {
+  return crypto.createHash("md5").update(content).digest("hex");
+}
 
-export const formatDate = (raw: Date) => {
+export function hashString(content: string): string {
+  return crypto.createHash("md5").update(content, "utf8").digest("hex");
+}
+
+export function formatDate(raw: Date) {
   const doubleDigit = (num: number) => {
     return num < 10 ? `0${num}` : num;
   };
@@ -69,7 +67,7 @@ export const formatDate = (raw: Date) => {
   return `${raw.getFullYear()}.${doubleDigit(raw.getMonth() + 1)}.${doubleDigit(raw.getDate())} ${doubleDigit(
     raw.getHours()
   )}:${doubleDigit(raw.getMinutes())}`;
-};
+}
 
 export function union<T>(a: Set<T>, b: Set<T>) {
   return new Set([...a, ...b]);

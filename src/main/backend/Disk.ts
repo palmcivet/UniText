@@ -1,8 +1,8 @@
 import { ipcMain } from "electron";
 import { join, basename } from "path";
 import * as fse from "fs-extra";
+import { ITreeNodeFile, ITreeNodeFolder } from "@palmcivet/unitext-tree-view";
 import { deleteAll } from "@/main/utils/file";
-import { ITreeNodeFile, ITreeNodeFolder } from "@/shared/typings/browser";
 
 type FileRoute = Array<string>;
 
@@ -52,7 +52,7 @@ ipcMain.handle("disk:read-directory", (event, route: FileRoute, ignore: Array<st
 });
 
 /**
- * @description 读取文件
+ * @description 读取文本文件
  */
 ipcMain.handle(
   "disk:read-text-file",
@@ -72,12 +72,28 @@ ipcMain.handle(
 );
 
 /**
- * @description 读取文件
+ * @description 读取二进制文件
  */
 ipcMain.handle("disk:read-binary-file", async (event, route: FileRoute): Promise<Buffer> => {
   const location = join(...route);
   return await fse.readFile(location);
 });
+
+/**
+ * @description 保存文件
+ */
+ipcMain.handle(
+  "disk:write-file",
+  async (
+    event,
+    route: FileRoute,
+    data: any,
+    options?: fse.WriteFileOptions | BufferEncoding | string
+  ): Promise<void> => {
+    const location = join(...route);
+    await fse.writeFile(location, data, options);
+  }
+);
 
 /**
  * @description 删除文件（夹）。递归

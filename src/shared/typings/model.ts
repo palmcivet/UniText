@@ -1,3 +1,6 @@
+import { Uri } from "monaco-editor";
+
+import { IDocumentFrontMatter } from "./document";
 import { EWorkbenchType } from "./store";
 
 export type { ITreeNodeFile, ITreeNodeFolder } from "@palmcivet/unitext-tree-view";
@@ -44,7 +47,41 @@ export interface ITab {
    */
   title: string;
   /**
-   * @field
+   * @field 描述
+   */
+  description?: string;
+  /**
+   * @field 是否活跃
    */
   isActivated: boolean;
+  /**
+   * @field 是否改动
+   */
+  isModified: boolean;
 }
+
+/**
+ * @interface 打开的 Markdown 文件
+ */
+export interface IEditorState extends IDocumentFrontMatter, ITab {
+  /**
+   * @field Monaco Editor 编辑模型
+   */
+  uri: Uri;
+  /**
+   * @field 路径
+   */
+  route: Array<string>;
+  /**
+   * @field 是否临时文件
+   */
+  isTemp: boolean;
+  /**
+   * @field 是否是阅读模式
+   */
+  isReadMode: boolean;
+}
+
+export interface IViewState extends ITab {}
+
+export interface IWorkbenchState extends ITab {}

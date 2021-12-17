@@ -2,7 +2,6 @@ import { TSchema, IGroup, reduceType, reduceSchema } from "./_";
 import { ECoding, EEoL, EIndent, EPicture } from "@/shared/typings/document";
 import {
   EStartup,
-  EPanelType,
   EEditMode,
   ETypeMode,
   IPreferenceInterface,
@@ -35,19 +34,6 @@ const pInterface: IGroup<IPreferenceInterface> = {
       type: "CheckBox",
       title: ["显示右侧面板"],
       default: true,
-      description: [""],
-    },
-    panelFloat: {
-      type: "CheckBox",
-      title: ["右侧面板是否悬浮"],
-      default: true,
-      description: [""],
-    },
-    panelType: {
-      type: "DropDown",
-      title: ["右侧面板展示的信息类型"],
-      enum: reduceType(EPanelType),
-      default: EPanelType.TOC,
       description: [""],
     },
     readMode: {
@@ -219,6 +205,18 @@ const pDocument: IGroup<IPreferenceDocument> = {
       title: ["默认分类"],
       default: "Uncategory",
       description: ["未分类文件归到该类别"],
+    },
+    remark: {
+      type: "TextBox",
+      title: ["默认备注"],
+      default: "",
+      description: ["文档的备注"],
+    },
+    complete: {
+      type: "CheckBox",
+      title: ["默认状态"],
+      default: false,
+      description: ["是否已完成"],
     },
   },
   default: {},

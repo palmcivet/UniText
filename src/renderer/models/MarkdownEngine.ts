@@ -18,9 +18,22 @@ import { EventBus } from "@palmcivet/unitext-tree-view";
 import { BUS_CHANNEL } from "@/shared/channel";
 import { IMarkdown } from "@/shared/typings/setting/markdown";
 import { IDisposable, ITocItem } from "@/shared/typings/renderer";
+import useWorkbench from "@/renderer/stores/workbench";
 
 const BAD_PROTO_RE = /^(vbscript|javascript|data):/;
 const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
+
+/**
+ * 生成以下格式：
+ * - Markdown
+ * - Array
+ * - HTML
+ *
+ * 基于 Source 适用于以下场景：
+ * - Monaco 生成 TOC
+ * - CodeMirror 生成 TOC
+ * - HTML 生成 TOC（链接跳转）
+ */
 
 export default class MarkdownEngine implements IDisposable {
   /**
@@ -62,7 +75,11 @@ export default class MarkdownEngine implements IDisposable {
       tocLastLevel: 6,
       anchorLink: false,
       tocCallback: (tocMarkdown: string, tocArray: Array<ITocItem>, tocHtml: string) => {
-        this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_TOC, tocArray);
+        useWorkbench().SYNC_TOC({
+          markdown: tocMarkdown,
+          array: tocArray,
+          html: tocHtml,
+        });
       },
     });
 
@@ -89,11 +106,17 @@ export default class MarkdownEngine implements IDisposable {
       link: false,
     });
     // this.engine.use(MarkdownItImageLazyLoading);
+
+    this.bus.on(BUS_CHANNEL.EDITOR_SYNC_DOC, this.onGenerate.bind(this));
   }
 
-  public dispose(): void {}
+  public dispose(): void {
+    this.bus.off(BUS_CHANNEL.EDITOR_SYNC_DOC, this.onGenerate);
+  }
 
-  public render(val: string) {
-    return this.engine.render(val);
+  private onGenerate(content: string) {
+    const rawHTML = this.engine.render(content);
+    this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_VIEW, rawHTML);
+    return rawHTML;
   }
 }

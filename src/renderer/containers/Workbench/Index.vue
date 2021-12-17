@@ -12,7 +12,7 @@
       <div class="pane-type">
         <Editor v-show="isEditor" />
 
-        <keep-alive v-show="!isEditor">
+        <keep-alive v-if="!isEditor">
           <component :is="workbenchType" />
         </keep-alive>
       </div>
@@ -27,6 +27,8 @@ import { storeToRefs } from "pinia";
 import useWorkbench from "@/renderer/stores/workbench";
 import TabBar from "./TabBar.vue";
 
+// TODO 需要优化成可卸载的结构
+
 export default defineComponent({
   name: "Workbench",
 
@@ -36,7 +38,7 @@ export default defineComponent({
     Reminder: defineAsyncComponent(() => import("./Reminder/Index.pre.vue")),
     Schedule: defineAsyncComponent(() => import("./Schedule/Index.pre.vue")),
     Setting: defineAsyncComponent(() => import("./Setting/Index.vue")),
-    Editor: defineAsyncComponent(() => import("./Editor/Index.vue")),
+    Editor: defineAsyncComponent(() => import("./Document/Index.vue")),
     Startup: defineAsyncComponent(() => import("./Startup/Index.vue")),
     TabBar,
   },

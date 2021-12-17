@@ -19,15 +19,6 @@ export enum EStartup {
 }
 
 /**
- * @enum { EPanelType } 右侧面板展示的信息类型
- */
-export enum EPanelType {
-  TOC = "TOC",
-  INFO = "INFO",
-  EXPORT = "EXPORT",
-}
-
-/**
  * @enum { EEditMode } 编辑模式
  */
 export enum EEditMode {
@@ -62,16 +53,7 @@ export interface IPreferenceInterface {
    */
   showPanel: boolean;
   /**
-   * @field 右侧面板是否悬浮
-   */
-  panelFloat: boolean;
-  /**
-   * @field 右侧面板展示的信息类型
-   */
-  panelType: EPanelType;
-  /**
    * @field 阅读模式
-   * @deprecated
    */
   readMode: boolean;
   /**

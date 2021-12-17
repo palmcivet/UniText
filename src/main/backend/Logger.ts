@@ -4,7 +4,7 @@ import { join, resolve } from "path";
 import { PassThrough, pipeline, Transform } from "stream";
 import { format } from "util";
 
-import { isDev } from "@/shared/constant";
+import { isDev } from "@/main/utils/env";
 
 function formatMsg(message: any, options: any[]) {
   return options.length !== 0 ? format(message, options) : format(message);

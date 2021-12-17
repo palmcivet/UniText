@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import { isDev } from "@/shared/constant";
+import useEnvironment from "@/renderer/stores/environment";
 import { arrayHasElements } from "@/shared/utils";
 import { INotificationMessage, INotificationState } from "@/shared/typings/store";
 
@@ -8,8 +8,6 @@ export default defineStore({
   id: "notification",
 
   state: (): INotificationState => ({
-    hasFetched: false,
-    hasMounted: false,
     showMessage: false,
     messageQueue: [],
   }),
@@ -21,14 +19,6 @@ export default defineStore({
   },
 
   actions: {
-    SET_FETCHED() {
-      this.hasFetched = true;
-    },
-
-    SET_MOUNTED() {
-      this.hasMounted = true;
-    },
-
     NOTIFY(msg: INotificationMessage) {
       this.messageQueue.push(msg);
     },
@@ -37,7 +27,7 @@ export default defineStore({
       this.messageQueue.splice(idx, 1);
     },
 
-    CLEAR_ALL() {
+    CLEAR_ALL_MESSAGE() {
       this.messageQueue = [];
     },
 
@@ -49,7 +39,7 @@ export default defineStore({
      * 获取发行说明，`""` 则表明未更新
      */
     async CHECK_UPDATE() {
-      if (isDev) return;
+      if (useEnvironment().isDev) return;
 
       const getVersion = (ver: string) =>
         ver

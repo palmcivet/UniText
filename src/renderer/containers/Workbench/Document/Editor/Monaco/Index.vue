@@ -1,17 +1,17 @@
 <template>
-  <div class="editor-source" ref="sourceRef" />
+  <div class="editor-monaco" ref="monacoRef" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "EditorSource",
+  name: "EditorMonaco",
 
   inject: ["$workbench"],
 
   mounted() {
-    const root = this.$refs.sourceRef as HTMLElement;
+    const root = this.$refs.monacoRef as HTMLElement;
     this.$workbench.invoke(root);
   },
 
@@ -24,7 +24,8 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 
-.editor-source {
+.editor-monaco {
+  width: 100%;
   height: 100%;
 
   /deep/ .monaco-editor {

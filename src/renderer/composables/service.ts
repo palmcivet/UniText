@@ -1,15 +1,14 @@
 import { toRaw } from "vue";
 import { useIpc } from "./electron";
 import { IServiceMap } from "@/main/service/index";
-
-const { invoke } = useIpc();
+import { IPC_CHANNEL } from "@/shared/channel";
 
 function createProxy(service: string) {
   return new Proxy({} as any, {
     get(_, functionName) {
       return (...payloads: any[]) => {
         const rawPayloads = payloads.map((e) => toRaw(e));
-        return invoke("service:call", service, functionName as string, ...rawPayloads);
+        return useIpc().invoke(IPC_CHANNEL.SERVICE_CALL, service, functionName as string, ...rawPayloads);
       };
     },
   });

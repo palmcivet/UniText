@@ -11,7 +11,8 @@ import ImageService from "./service/ImageService";
 import WindowService from "./service/WindowService";
 import SettingService from "./service/SettingService";
 import KeybindingService from "./service/KeybindingService";
-import { isDev, isOsx, isWin, URL_PATH, URL_PROTOCOL } from "@/shared/constant";
+import { isOsx, isWin, isDev } from "@/main/utils/env";
+import { URL_PATH, URL_PROTOCOL } from "@/shared/pattern";
 import { EI18n } from "@/shared/typings/setting/preference";
 import { EWindowType } from "@/shared/typings/main";
 
@@ -30,6 +31,8 @@ async function createMainWindow(): Promise<BrowserWindow> {
     minHeight: 400,
     webPreferences: {
       preload: join(__static, "lib/preload.js"),
+      spellcheck: false,
+      nativeWindowOpen: true,
     },
     // icon: logoUrl,
     vibrancy: "titlebar",
@@ -41,6 +44,7 @@ async function createMainWindow(): Promise<BrowserWindow> {
   });
 
   mainWindow.setTitle("UniText");
+  mainWindow.setSheetOffset(24); /* @layout-titlebar-height */
 
   const lang = EI18n[settingService.getSetting("system", "launch.language")] as unknown as number;
   // menuService.bootstrap(lang);
@@ -58,7 +62,7 @@ function registerProtocol(): void {
     request: Electron.ProtocolRequest,
     callback: (response: Electron.ProtocolResponse) => void
   ) => {
-    const path = await imageService.getCache(request.url);
+    const path = await imageService.getRemoteImage(request.url);
     callback({ path });
   };
 
@@ -66,10 +70,10 @@ function registerProtocol(): void {
   !isDev && protocol.interceptFileProtocol("http", handleHttp);
   protocol.interceptFileProtocol("https", handleHttp);
 
-  protocol.registerFileProtocol(URL_PROTOCOL.replace("://", ""), (request, callback) => {
+  protocol.registerFileProtocol(URL_PROTOCOL.replace("://", ""), async (request, callback) => {
     let path = request.url;
     if (path.startsWith(URL_PATH.IMG)) {
-      path = imageService.getImage(path);
+      path = await imageService.getLocalImage(path);
     }
     // FEAT 相对路径
     callback({ path });

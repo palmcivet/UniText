@@ -1,4 +1,6 @@
+import { IDocumentFrontMatter } from "./document";
 import { ITab } from "./model";
+import { ITocItem } from "./renderer";
 import { IPreference } from "./setting/preference";
 
 export type TNotificationLevel = "INFO" | "WARN" | "ERROR";
@@ -23,7 +25,9 @@ export enum EBrowserType {
  * @enum { EWorkbenchType } 工作台类型
  */
 export enum EWorkbenchType {
-  VIEW = "View",
+  /**
+   * @deprecated 更改为 DOCUMENT，并且判断文件类型
+   */
   EDITOR = "Editor",
   SETTING = "Setting",
   SCHEDULE = "Schedule",
@@ -45,18 +49,12 @@ export interface IBrowserState {
 
 export interface IGeneralState extends IPreference {}
 
+export interface IEnvironmentState {
+  platform: NodeJS.Platform;
+  isDev: boolean;
+}
+
 export interface INotificationState {
-  /**
-   * @field 数据获取完毕
-   */
-  hasFetched: boolean;
-  /**
-   * @field 组件挂载完毕
-   */
-  hasMounted: boolean;
-
-  /* 以上作为生命周期 */
-
   /**
    * @fileld 打开消息面板
    */
@@ -73,7 +71,15 @@ export interface IWorkbenchState {
    */
   workbenchType: EWorkbenchType;
   /**
+   * @field 当前文档的 front matter
+   */
+  frontMatter: IDocumentFrontMatter;
+  /**
    * @field 标签列表
    */
   tabList: Array<ITab>;
+  /**
+   * @field TOC 列表
+   */
+  tocList: Array<ITocItem>;
 }

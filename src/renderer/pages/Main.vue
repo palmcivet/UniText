@@ -26,8 +26,6 @@
     </main>
 
     <StatusBar class="layout-statusbar" />
-
-    <!-- <MessagePanel class="layout-float" v-show="showMessage" /> -->
   </div>
 </template>
 
@@ -40,7 +38,6 @@ import Browser from "@/renderer/containers/Browser/Index.vue";
 import StatusBar from "@/renderer/containers/StatusBar/Index.vue";
 import Workbench from "@/renderer/containers/Workbench/Index.vue";
 import ActivityBar from "@/renderer/containers/ActivityBar/Index.vue";
-// import MessagePanel from "@/renderer/containers/StatusBar/widgets/MessagePanel.vue";
 import SplitView from "@/renderer/components/SplitView/Index.vue";
 import useBrowser from "@/renderer/stores/browser";
 import useEnvironment from "@/renderer/stores/environment";
@@ -78,18 +75,23 @@ export default defineComponent({
     background: var(--titleBar-activeBg);
   }
 
+  .layout-statusbar {
+    height: @layout-statusbar-height;
+    background: var(--statusBar-Bg);
+  }
+
   main {
     display: flex;
     height: calc(100vh - @layout-titlebar-height - @layout-statusbar-height);
 
     .layout-activitybar {
       height: 100%;
-      width: @layout-leftside-left-width;
+      width: @layout-activitybar-width;
       background: var(--activityBar-Bg);
     }
 
     .splitview {
-      width: calc(100vw - @layout-leftside-left-width);
+      width: calc(100vw - @layout-activitybar-width);
     }
 
     .layout-browser {

@@ -30,6 +30,7 @@ const mainConfig = {
     },
     extensions: [".ts", ".js", ".json"],
   },
+  externals: ["level"],
   plugins: [new webpack.NoEmitOnErrorsPlugin(), new webpack.DefinePlugin(mainEnv(isDev))],
   module: {
     rules: [

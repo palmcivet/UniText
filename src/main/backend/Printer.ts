@@ -2,8 +2,9 @@ import { ipcMain, BrowserWindow, dialog, shell } from "electron";
 import * as fse from "fs-extra";
 import { join } from "path";
 
+import { isDev } from "@/main/utils/env";
+import { PUBLIC } from "@/shared/constant";
 import { IPC_EXPORT } from "@/shared/channel/ipc";
-import { isDev, PUBLIC } from "@/shared/constant";
 
 const genTemplate = (content: string, style = "", title = "Untitled") => `
 <html lang="en">

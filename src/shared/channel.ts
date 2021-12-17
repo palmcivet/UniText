@@ -1,20 +1,9 @@
-export enum BUS_EDITOR {
-  SYNC_TOC = "EDITOR::SYNC_TOC",
-  SYNC_IMGLIST = "EDITOR::SYNC_IMGLIST",
-  SYNC_VIEW = "EDITOR::SYNC_VIEW",
-  CLOSE_FILE = "EDITOR::CLOSE_FILE",
-  REVEAL_SECTION = "EDITOR::REVEAL_SECTION",
-  SWITCH_SECTION = "EDITOR::SWITCH_SECTION",
-}
-
 export enum BUS_CHANNEL {
-  SYNC_VIEW = "EDITOR::SYNC_VIEW",
-  REVEAL_SECTION = "EDITOR::REVEAL_SECTION",
-  SWITCH_SECTION = "EDITOR::SWITCH_SECTION",
-
   /* editor */
-  EDITOR_SYNC_TOC = "editor::sync-toc",
   EDITOR_SYNC_IMG = "editor::sync-img",
+  EDITOR_SYNC_DOC = "editor::sync-toc",
+  EDITOR_SYNC_VIEW = "editor::sync-view",
+  EDITOR_REVEAL_SECTION = "editor::reveal-section",
 
   /* global */
   UPDATE_SETTING = "global::update-setting",
@@ -32,4 +21,9 @@ export enum BUS_CHANNEL {
   /* image */
   BROWSER_OPEN_IMG = "browser::open-img",
   BROWSER_CLOSE_IMG = "browser::close-img",
+}
+
+export enum IPC_CHANNEL {
+  /* Service */
+  SERVICE_CALL = "service:call",
 }

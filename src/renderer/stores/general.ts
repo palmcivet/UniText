@@ -1,12 +1,50 @@
 import { defineStore } from "pinia";
 
-import { EEditMode, EPanelType, ETypeMode } from "@/shared/typings/setting/preference";
+import { EEditMode, ETypeMode } from "@/shared/typings/setting/preference";
 import { IGeneralState } from "@/shared/typings/store";
 
 export default defineStore({
   id: "general",
 
-  state: (): IGeneralState => ({} as IGeneralState),
+  state: (): IGeneralState =>
+    ({
+      interface: {
+        showSideBar: true,
+        showStatusBar: true,
+        showPanel: true,
+        readMode: false,
+        dbColumn: true,
+        editMode: "SOURCE",
+        typeMode: "NORMAL",
+      },
+      workbench: {
+        startup: "CREATE",
+        saveRecent: true,
+        autoOpen: true,
+        autoSave: false,
+        saveDelay: 5000,
+      },
+      browser: {
+        ignoreFile: [],
+        showIndent: true,
+      },
+      editor: {
+        lineWrap: true,
+        showMiniMap: false,
+        showLineNumber: true,
+        highlightLine: true,
+      },
+      document: {
+        indent: "T4",
+        encoding: "UTF8",
+        endOfLine: "LF",
+        tag: [],
+        picture: "LOCAL",
+        category: "",
+        remark: "",
+        complete: false,
+      },
+    } as IGeneralState),
 
   getters: {},
 
@@ -23,24 +61,24 @@ export default defineStore({
       this.interface.showStatusBar = !this.interface.showStatusBar;
     },
 
-    TOGGLE_CHECK() {
-      this.interface.dbColumn = !this.interface.dbColumn;
-    },
-
     TOGGLE_PANEL() {
       this.interface.showPanel = !this.interface.showPanel;
     },
 
-    TOGGLE_PANEL_STYLE() {
-      this.interface.panelFloat = !this.interface.panelFloat;
+    TOGGLE_READ_MODE() {
+      this.interface.readMode = !this.interface.readMode;
     },
 
-    SET_PANEL_TYPE(type: EPanelType) {
-      this.interface.panelType = type;
+    TOGGLE_DB_COLUMN() {
+      this.interface.dbColumn = !this.interface.dbColumn;
     },
 
-    SET_READ_MODE(mode: boolean) {
-      this.interface.readMode = mode;
+    /**
+     * @description 聚合 `TOGGLE_READ_MODE()` | `TOGGLE_DB_COLUMN()` | `TOGGLE_PANEL()`
+     * @param mode "readMode" | "dbColumn" | "showPanel"
+     */
+    TOGGLE_MODE_GROUP(mode: "readMode" | "dbColumn" | "showPanel") {
+      this.interface[mode] = !this.interface[mode];
     },
 
     SET_TYPE_MODE(mode: ETypeMode) {

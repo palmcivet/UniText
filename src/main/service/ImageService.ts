@@ -1,19 +1,17 @@
 import * as fse from "fs-extra";
 import * as https from "https";
 import { join } from "path";
-import crypto from "crypto";
-// import level, { LevelDB } from "level";
+import { clipboard } from "electron";
+import level, { LevelDB } from "level";
 
-import { URL_PATH } from "@/shared/constant";
+import { URL_PATH } from "@/shared/pattern";
+import { hashBinary } from "@/shared/utils";
+import { hashString } from "@/shared/utils";
 import Logger from "@/main/backend/Logger";
 import Service, { Inject } from "./Service";
 import EnvService from "./EnvService";
 
-const getHash = (content: string) => {
-  return crypto.createHash("md5").update(content, "utf-8").digest("hex");
-};
-
-const httpGet = (url: string, dest: string): Promise<void> => {
+function httpGet(url: string, dest: string): Promise<void> {
   return new Promise((resolve, reject) => {
     https
       .get(url, (res) => {
@@ -34,123 +32,155 @@ const httpGet = (url: string, dest: string): Promise<void> => {
         reject(err);
       });
   });
-};
+}
+
+function forEachLevelDB<K, V>(
+  db: LevelDB,
+  callback: (err: Error | undefined, key: K, value: V) => void,
+  options?: any
+): void {
+  const iterator = db.iterator(options);
+
+  const loop = () => {
+    iterator.next((error, key, value) => {
+      if (error) {
+        return iterator.end((_error) => {
+          (callback as any)(error || _error);
+        });
+      }
+
+      if (key === undefined && value === undefined) {
+        return iterator.end(() => {});
+      }
+
+      callback(undefined, key, value);
+
+      loop();
+    });
+  };
+
+  return loop();
+}
 
 export default class ImageService extends Service {
-  // private readonly _db: LevelDB<string, number>;
-
-  /**
-   * @deprecated
-   */
-  private readonly _dataSet!: Map<string, number>;
+  private readonly _db: LevelDB<string, number>;
 
   @Inject("EnvService")
   private readonly _envService!: EnvService;
 
-  constructor(logger: Logger, dbPath: string) {
+  constructor(logger: Logger, path: string) {
     super(logger);
-
-    // this._db = level(dbPath);
-
-    /**
-     * @deprecated
-     */
-    try {
-      fse.ensureFileSync(dbPath);
-      const res = fse.readJSONSync(dbPath);
-      this._dataSet = new Map<string, number>(res);
-    } catch (error) {
-      this._dataSet = new Map<string, number>([]);
-    }
-  }
-
-  /**
-   * @deprecated
-   */
-  private async _store() {
-    try {
-      await fse.writeJSON(this._envService.resolveCabinFile("IMAGE"), [...this._dataSet]);
-    } catch (error) {
-      this.error(error);
-    }
+    this._db = level(path, { valueEncoding: "ascii" });
   }
 
   /**
    * @description 索引加一
    */
-  private _insertImage(key: string): void {
-    const cnt = this._dataSet.get(key) as number;
-    this._dataSet.set(key, cnt + 1);
+  private async _insertImage(key: string): Promise<void> {
+    const count = await this._db.get(key);
+    this._db.put(key, count + 1);
   }
 
   /**
    * @description 索引减一
    */
-  private _deleteImage(key: string): void {
-    const cnt = this._dataSet.get(key) as number;
-    if (cnt !== 0) {
-      this._dataSet.set(key, cnt - 1);
+  private async _deleteImage(key: string): Promise<void> {
+    const count = await this._db.get(key);
+    if (count !== 0) {
+      this._db.put(key, count - 1);
     }
   }
 
-  async setImage(url: string, data: Buffer) {
+  /**
+   * @description 保存图片到本地
+   * @param url 以 `unitext://img/` 开头的图片路径
+   * @param data 二进制数据
+   */
+  public async setImage(url: string, data: Buffer): Promise<void> {
     const name = url.replace(URL_PATH.IMG, "");
     const imagePath = join(this._envService.resolveCabinFolder("IMAGES"), name);
 
     try {
       await fse.writeFile(imagePath, data);
+      await this._db.put(name, 0);
     } catch (error) {
       this.error(`${url} 写入失败`);
     }
-
-    this._dataSet.set(name, 0);
   }
 
-  getImage(url: string) {
+  /**
+   * @description 获取本地图片路径
+   * @param url 以 `unitext://img/` 开头的图片路径
+   */
+  public async getLocalImage(url: string): Promise<string> {
     const key = url.replace(URL_PATH.IMG, "");
     return join(this._envService.resolveCabinFolder("IMAGES"), key);
   }
 
-  async getCache(url: string) {
-    const key = getHash(url);
+  /**
+   * @description 获取远程图片，同时缓存
+   * @param url 标准 URL
+   */
+  public async getRemoteImage(url: string): Promise<string> {
+    const key = hashString(url);
     /* 缓存没有后缀 */
-    const redirPath = join(this._envService.resolveCabinFolder("CACHE"), key);
+    const redirectPath = join(this._envService.resolveCabinFolder("CACHE"), key);
 
-    if (!this._dataSet.has(key)) {
+    if (!(await this._db.get(key))) {
       try {
-        await httpGet(url, redirPath);
-        this._dataSet.set(key, 0);
+        await httpGet(url, redirectPath);
+        await this._db.put(key, 0);
       } catch (error) {
         this.error(`${url} 缓存建立失败`);
       }
     }
 
-    return redirPath;
+    return redirectPath;
   }
 
   /**
-   * 更新索引
+   * @description 获取剪切板的图片并保存，返回 URL
+   */
+  public async getClipedImage(): Promise<string> {
+    const data = clipboard.readImage("clipboard").toPNG();
+    const text = URL_PATH.IMG + hashBinary(data).concat(".png");
+    await this.setImage(text, data);
+    return text;
+  }
+
+  /**
+   * @description 清理已失效缓存
+   */
+  public async cleanCache(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      forEachLevelDB<string, number>(this._db, async (error, key, value) => {
+        if (error) {
+          this.error(error);
+          reject(error);
+        }
+        if (value !== 0) {
+          reject(error);
+        }
+
+        if (/\.png/.test(key)) {
+          await fse.unlink(join(this._envService.resolveCabinFolder("IMAGES"), key));
+        } else {
+          await fse.unlink(join(this._envService.resolveCabinFolder("CACHE"), key));
+        }
+
+        await this._db.del(key);
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * @description 更新索引
    * @param del
    * @param add
    */
-  updateIndice(del: Array<string>, add: Array<string>) {
+  public updateIndice(del: Array<string>, add: Array<string>): void {
     del.forEach((item) => this._deleteImage(item));
     add.forEach((item) => this._insertImage(item));
-    this._store();
-    this.cleanCache();
-  }
-
-  cleanCache() {
-    this._dataSet.forEach(async (value, key) => {
-      if (value !== 0) {
-        return;
-      }
-      if (/\.png/.test(key)) {
-        await fse.unlink(join(this._envService.resolveCabinFolder("IMAGES"), key));
-      } else {
-        await fse.unlink(join(this._envService.resolveCabinFolder("CACHE"), key));
-      }
-      this._dataSet.delete(key);
-    });
   }
 }

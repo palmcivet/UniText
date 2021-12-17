@@ -33,6 +33,7 @@ export default defineComponent({
 
   &-tips {
     font-size: 1.8em;
+    font-weight: bolder;
     width: 200px;
     text-align: center;
   }
