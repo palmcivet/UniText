@@ -1,66 +1,88 @@
 <template>
   <div class="setting">
     <div class="setting-controls">
-      <div class="setting-search-box"></div>
+      <div class="controls-button-group">
+        <button class="unitext-button" @click="onLoadSetting()">载入设置</button>
+        <button class="unitext-button" @click="onRevealSetting()">存储位置</button>
+      </div>
 
-      <div class="setting-button-group">
-        <button class="unitext-button" @click="handleLoad()">载入设置</button>
-        <button class="unitext-button" @click="handleReveal()">存储位置</button>
+      <div class="controls-search-box">
+        <input
+          class="search-box"
+          type="search"
+          v-model="keyword"
+          placeholder="搜索设置"
+        />
+        <i class="search-clear ri-filter-off-line" @click="keyword = ''"></i>
       </div>
     </div>
 
-    <div class="setting-container" v-if="hasSetup">
-      <div class="setting-toc">
-        <a class="nav-1" href="#preference">偏好设置</a>
-        <a class="nav-1" href="#markdown">Markdown</a>
-        <a class="nav-1" href="#system">系统设置</a>
-        <a class="nav-1" href="#snippet">主题样式</a>
-        <a class="nav-1" href="#theme">代码片段</a>
-        <a class="nav-1" href="#keybinding">按键绑定</a>
+    <div class="setting-options" v-if="hasSetup">
+      <div class="options-toc">
+        <template v-for="(nav, index) in navList" :key="index">
+          <a class="group-nav-1" :href="nav.href" :draggable="false">{{ nav.label }}</a>
+          <a
+            class="group-nav-2"
+            v-for="(subNav, id) in nav.child"
+            :key="id"
+            :href="subNav.href"
+            :draggable="false"
+          >
+            {{ subNav.label }}
+          </a>
+        </template>
       </div>
 
-      <h2 id="preference">偏好设置</h2>
-      <SettingGroup
-        v-for="(properties, key, index) of schemaPreference"
-        :key="index"
-        :userData="dataAll.preference"
-        :properties="properties"
-        :field="key"
-        @submit="onSubmit($event)"
-      />
+      <div class="options-container">
+        <template v-for="(schema, key, index) of schemaMap" :key="index">
+          <h2 class="group-h1" :id="key">{{ key }}</h2>
 
-      <h2 id="markdown">{{ "Markdown" }}</h2>
-      <SettingGroup
-        v-for="(properties, key, index) of schemaMarkdown"
-        :key="index"
-        :userData="dataAll.markdown"
-        :properties="properties"
-        :field="key"
-        @submit="onSubmit($event)"
-      />
+          <template v-for="(subSchema, firstKey, id) of schema" :key="id">
+            <h3 class="group-h2" :id="firstKey">
+              <div class="group-title">{{ $g(subSchema.title) }}</div>
+              <div class="group-description">{{ $g(subSchema.description) }}</div>
+            </h3>
 
-      <h2 id="system">系统设置</h2>
-      <SettingGroup
-        v-for="(properties, key, index) of schemaSystem"
-        :key="index"
-        :userData="dataAll.system"
-        :properties="properties"
-        :field="key"
-        @submit="onSubmit($event)"
-      />
+            <div
+              class="group-option"
+              v-for="(_properties, secondKey, i) of subSchema.properties"
+              :key="i"
+            >
+              <div class="group-code">
+                <span>{{ firstKey }}</span>
+                <span>.</span>
+                <span>{{ secondKey }}</span>
+              </div>
+              <component
+                :is="_properties.type"
+                :prop="_properties"
+                :value="dataAll[key][firstKey][secondKey]"
+                @u-change="onChangeSetting([key, firstKey, secondKey, $event])"
+              />
+            </div>
+          </template>
 
-      <h2 id="Theme">主题样式</h2>
-      <SettingGroup
-        v-for="(properties, key, index) of schemaTheme"
-        :key="index"
-        :userData="dataAll.theme"
-        :properties="properties"
-        :field="key"
-        @submit="onSubmit($event)"
-      />
+          <div class="group-divider"></div>
+        </template>
 
-      <h2 id="snippet">代码片段</h2>
-      <h2 id="keybinding">按键绑定</h2>
+        <h2 class="group-h1" :id="navList.at(-3).href.replace('#', '')">
+          {{ navList.at(-3).label }}
+        </h2>
+        <SnippetGroup :schema="schemaSnippet.properties" :userData="dataAll.snippet" />
+
+        <!--
+        <h2 class="group-h1" :id="navList.at(-2).href.replace('#', '')">
+          {{ navList.at(-2).label }}
+        </h2>
+
+        <h2 class="group-h1" :id="navList.at(-1).href.replace('#', '')">
+          {{ navList.at(-1).label }}
+        </h2>
+        -->
+
+        <!-- 其他交互逻辑的控件 -->
+        <!-- 导入、批量导出、debug 模式、上传工具、测试上传、auth -->
+      </div>
     </div>
   </div>
 </template>
@@ -68,27 +90,50 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref } from "vue";
 
+import Range from "@/renderer/components/Form/UInputNumber.vue";
+import CheckBox from "@/renderer/components/Form/UCheckBox.vue";
+import TextBox from "@/renderer/components/Form/UInputText.vue";
+import TextGroup from "@/renderer/components/Form/UTextGroup.vue";
+import DropDown from "@/renderer/components/Form/USelect.vue";
 import { schemaTheme } from "@/shared/schema/theme";
 import { schemaSystem } from "@/shared/schema/system";
+import { schemaSnippet } from "@/shared/schema/snippet";
 import { schemaMarkdown } from "@/shared/schema/markdown";
 import { schemaPreference } from "@/shared/schema/preference";
 import { useService } from "@/renderer/composables/service";
+import { useShell } from "@/renderer/composables/electron";
 import { ISetting } from "@/shared/typings/setting";
-import SettingGroup from "./SettingGroup.vue";
+import { BUS_CHANNEL } from "@/shared/channel";
+import SnippetGroup from "./SnippetGroup.vue";
+
+interface INavItem {
+  label: string;
+  href: string;
+  child: Array<INavItem>;
+}
 
 export default defineComponent({
   name: "Setting",
 
   components: {
-    SettingGroup,
+    SnippetGroup,
+    Range,
+    CheckBox,
+    TextBox,
+    TextGroup,
+    DropDown,
   },
 
   data() {
     return {
-      schemaTheme,
-      schemaSystem,
-      schemaMarkdown,
-      schemaPreference,
+      navList: [] as Array<INavItem>,
+      schemaMap: {
+        system: schemaSystem,
+        preference: schemaPreference,
+        markdown: schemaMarkdown,
+        theme: schemaTheme,
+      },
+      schemaSnippet,
     };
   },
 
@@ -104,20 +149,69 @@ export default defineComponent({
       hasSetup.value = true;
     });
 
-    const onSubmit = (value: any) => {};
+    const onRevealSetting = async () => {
+      return useShell().showItemInFolder(
+        await useService("EnvService").resolveCabinFile("SETTING")
+      );
+    };
 
-    const handleLoad = () => {};
-
-    const handleReveal = () => {};
+    const keyword = ref("");
+    const onSearch = () => {};
 
     return {
       hasSetup,
       dataAll,
 
-      onSubmit,
-      handleLoad,
-      handleReveal,
+      keyword,
+      onSearch,
+
+      onRevealSetting,
     };
+  },
+
+  mounted() {
+    Object.entries(this.schemaMap).forEach(([schemaName, schema]) => {
+      const child = Object.entries(schema).map(([key, subSchema]) => ({
+        label: subSchema.title[0],
+        href: `#${key}`,
+        child: [],
+      }));
+
+      this.navList.push({
+        label: schemaName.replace("schema", ""),
+        href: `#${schemaName.replace("schema", "")}`,
+        child,
+      });
+    });
+
+    this.navList.push(
+      ...[
+        {
+          label: "代码片段",
+          href: `#snippet`,
+          child: [
+            { label: "fragment", href: "#fragment", child: [] },
+            { label: "template", href: "#template", child: [] },
+          ],
+        },
+        // { label: "快捷键", href: `#keybinding`, child: [] },
+        // { label: "插件", href: `#plugin`, child: [] },
+      ]
+    );
+  },
+
+  methods: {
+    onChangeSetting([module, key, subKey, value]: any) {
+      try {
+        useService("SettingService").setSetting(module, `${key}.${subKey}`, value);
+      } catch (error) {
+        // FEAT 输出错误
+      }
+    },
+
+    async onLoadSetting() {
+      this.$bus.emit(BUS_CHANNEL.UPDATE_SETTING);
+    },
   },
 });
 </script>
@@ -125,66 +219,147 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "~@/renderer/styles/var.less";
 @import "~@/renderer/styles/mixins.less";
+@import "./style.less";
 
 .setting {
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-
-  &-button-group {
-    width: calc(100% - @scrollBar-width);
-    top: 0;
-    right: @scrollBar-width;
-    position: absolute;
-    backdrop-filter: blur(2px);
-    display: flex;
-    z-index: 999;
-    justify-content: flex-end;
-    box-shadow: var(--tabBarShadow-Color) 0 -2px 2px -2px inset;
-
-    button {
-      margin: 0 0.5em 0.5em 0;
-    }
-  }
-
+  @controls-height: 46px;
   @toc-width: 160px;
-  @container-gap: 20px;
-  @container-padding: 30px;
+  @padding-y: 10px;
+  @padding-x: 30px;
 
-  &-container {
-    height: 100%;
-    margin-top: 40px;
-    overflow-y: auto;
-    padding-left: @container-padding + @container-gap + @toc-width;
-    padding-right: @container-padding;
-  }
+  height: 100%;
 
-  &-toc {
-    left: @container-padding;
-    width: @toc-width;
-    position: absolute;
+  &-controls {
+    display: flex;
+    align-items: center;
+    height: @controls-height;
+    padding: 0 @padding-x;
 
-    .nav-1 {
-      width: 100%;
-      padding: 2px 4px;
-      line-height: 24px;
-      display: list-item;
-      list-style: none;
-      text-decoration: none;
-      color: var(--formGroup-Fg);
-      .ellipsis();
+    .controls-button-group {
+      display: flex;
+      justify-content: space-around;
+      height: 30px;
+      width: @toc-width;
+    }
 
-      &:hover {
-        color: var(--formGroup-hoverFg);
-        background-color: var(--formGroup-hoverBg);
+    .controls-search-box {
+      height: 30px;
+      width: calc(100% - 160px);
+      margin-left: @padding-x;
+      background-color: var(--inputBox-Bg);
+      display: flex;
+      align-items: center;
+
+      .search-box {
+        height: 30px;
+        width: calc(100% - 30px);
+        padding-left: 5px;
+        font-size: 15px;
+        color: var(--inputBox-Fg);
+        background-color: var(--inputBox-Bg);
+      }
+
+      .search-clear {
+        cursor: pointer;
+        font-size: 1.5em;
+        background-color: var(--inputBox-Bg);
       }
     }
   }
 
-  h2 {
-    margin: 0;
-    padding: 0;
+  &-options {
+    height: calc(100% - @controls-height);
+    padding: 0 0 0 @padding-x;
+    position: relative;
+
+    &::before {
+      content: " ";
+      position: absolute;
+      top: 0;
+      left: @padding-x;
+      right: @padding-x;
+      border-top: 1px solid rgb(53, 53, 53);
+    }
+
+    .options-toc {
+      width: calc(@toc-width - @padding-x);
+      height: calc(100% - @padding-y * 2);
+      overflow-y: auto;
+      display: inline-block;
+      margin: @padding-y @padding-x @padding-y 0;
+      vertical-align: top;
+      transition: width 0.2s ease-out;
+
+      @media screen and (max-width: 768px) {
+        width: 0;
+      }
+
+      @decoration-width: 6px;
+      @padding-toc-x: 4px;
+
+      .group-nav-1,
+      .group-nav-2,
+      .group-nav-3 {
+        width: 100%;
+        padding: 2px 4px;
+        line-height: 24px;
+        display: list-item;
+        list-style: none;
+        .ellipsis();
+
+        &:hover {
+          color: var(--formGroup-hoverFg);
+          background-color: var(--formGroup-hoverBg);
+        }
+      }
+
+      a {
+        color: var(--formGroup-Fg);
+        text-decoration: none;
+      }
+
+      .group-nav-1 {
+        font-weight: bold;
+
+        &::before {
+          content: "";
+          height: 24px;
+          border-left: ridge @decoration-width var(--formGroupTitleBorder-Color);
+          margin-right: 10px;
+        }
+      }
+
+      .group-nav-2 {
+        padding-left: @padding-toc-x + @decoration-width + 10px;
+      }
+
+      .group-nav-3 {
+        padding-left: @padding-toc-x + @decoration-width + 14px;
+      }
+    }
+
+    .options-container {
+      width: calc(100% - @toc-width);
+      height: 100%;
+      display: inline-block;
+      padding: @padding-y @padding-x @padding-y 0;
+      overflow-y: auto;
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+      }
+    }
+  }
+
+  @media screen and (min-width: 1440px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-controls,
+    &-options {
+      width: 1024px;
+    }
   }
 }
 </style>

@@ -25,5 +25,9 @@ export default defineStore({
     },
   },
 
-  actions: {},
+  actions: {
+    FILL_STORE(state: IEnvironmentState) {
+      this.$state = state;
+    },
+  },
 });

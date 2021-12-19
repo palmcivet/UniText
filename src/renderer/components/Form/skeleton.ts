@@ -5,9 +5,12 @@ interface IProperties {
   description: Array<string>;
   maximum?: number;
   minimum?: number;
+  enum?: Array<string | number>;
 }
 
 export default defineComponent({
+  emits: ["u-change"],
+
   props: {
     /**
      * @member 字段属性

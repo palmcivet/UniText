@@ -1,5 +1,5 @@
 <template>
-  <ul class="toc">
+  <ul class="panel-toc">
     <div class="toc-empty" v-if="isNoToc">
       <!-- DEV -->
       目录为空
@@ -58,7 +58,7 @@ export default defineComponent({
 @import "~@/renderer/styles/var.less";
 @import "~@/renderer/styles/mixins.less";
 
-.toc {
+.panel-toc {
   height: 100%;
   width: 100%;
   position: relative;

@@ -17,6 +17,7 @@ import { BUS_CHANNEL } from "@/shared/channel";
 import { IEditorState, ITab, IViewState, IWorkbenchState } from "@/shared/typings/model";
 import { EWorkbenchType } from "@/shared/typings/store";
 import { IDisposable } from "@/shared/typings/renderer";
+import { ISnippetMonaco } from "@/shared/typings/setting/snippet";
 import { IDocumentFrontMatter } from "@/shared/typings/document";
 
 import { OneDarkPro } from "../containers/Workbench/Document/Editor/Monaco/theme";
@@ -25,8 +26,8 @@ import { init } from "../containers/Workbench/Document/Editor/Monaco/option";
 function DocumentFactory(data?: IDocumentFrontMatter, stat?: StatsBase<number>): IDocumentFrontMatter {
   return {
     meta: {
-      cTime: formatDate(stat?.birthtime || new Date()),
-      mTime: formatDate(stat?.mtime || new Date()),
+      cTime: (stat?.birthtime ?? new Date()).getTime(),
+      mTime: (stat?.mtime ?? new Date()).getTime(),
       editTime: 0,
     },
     format: {
@@ -43,42 +44,6 @@ function DocumentFactory(data?: IDocumentFrontMatter, stat?: StatsBase<number>):
     images: [],
     ...data,
   };
-}
-
-function SnippetRegister(
-  snippets: Array<{
-    label: string;
-    command: string;
-    documentation: string;
-    insertText: string;
-  }>
-): void {
-  MonacoEditor.languages.registerCompletionItemProvider("markdown-math", {
-    provideCompletionItems: (model, position) => {
-      const word = model.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
-
-      const suggestions: MonacoEditor.languages.CompletionItem[] = [
-        ...snippets.map(({ command, ...item }) => {
-          return {
-            ...item,
-            range,
-            kind: MonacoEditor.languages.CompletionItemKind.Snippet,
-            insertTextRules: MonacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          };
-        }),
-      ];
-
-      return {
-        suggestions,
-      };
-    },
-  });
 }
 
 async function DiffImageList(newList: Array<string>, oldList: Array<string>): Promise<Array<string>> {
@@ -206,57 +171,13 @@ export default class Workbench implements IDisposable {
       const extension = new MonacoMarkdownExtension();
       extension.activate(this.editorInstance);
 
-      this.editorInstance.onDidChangeModelContent((event) => {
-        // FEAT 增量更新 `event.changes`
-        this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, this.editorInstance.getValue());
-
-        const state = this.cachedStateList[this.activatedStateIndex] as IEditorState;
-
-        if (!state.isModified) {
-          state.isModified = true;
-          useWorkbench().SYNC_TAB_STATE(this.activatedStateIndex, state);
-        }
-      });
-
-      this.editorInstance.addCommand(MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V, async () => {
-        {
-          // FEAT 清洗 URL
-          const isFilter = true;
-          const selection = this.editorInstance.getSelection() as MonacoEditor.Range;
-
-          let { isImg, isUrl, text } = await getClipboard();
-
-          if (
-            isUrl &&
-            (selection.startColumn !== selection.endColumn || selection.startLineNumber !== selection.endLineNumber)
-          ) {
-            const alt = this.editorInstance.getModel()?.getValueInRange(selection);
-            text = isImg ? `![${alt}](${isFilter && cleanURL(text)} '${alt}')` : `[${alt}](${text} '${alt}')`;
-          }
-
-          this.editorInstance.executeEdits("", [
-            {
-              range: new MonacoEditor.Range(
-                selection.startLineNumber,
-                selection.startColumn,
-                selection.endLineNumber,
-                selection.endColumn
-              ),
-              text,
-            },
-          ]);
-
-          // FEAT 改成 snippet
-          const { endLineNumber, endColumn } = this.editorInstance.getSelection() as MonacoEditor.Selection;
-
-          this.editorInstance.setPosition({ lineNumber: endLineNumber, column: endColumn });
-        }
-      });
+      this.editorInstance.onDidChangeModelContent(this.onMonacoChange);
+      this.editorInstance.addCommand(MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V, this.onMonacoPaste);
 
       this.bus.on(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown.bind(this));
       this.bus.on(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown.bind(this));
       this.bus.on(BUS_CHANNEL.EDITOR_SYNC_IMG, () => {});
-      this.bus.on(BUS_CHANNEL.EDITOR_REVEAL_SECTION, this.onRevealSection.bind(this));
+      this.bus.on(BUS_CHANNEL.EDITOR_REVEAL_SECTION, this.onMonacoRevealSection);
 
       // TODO 读取配置：新建文件/打开历史
       // this.onCreateMarkdown();
@@ -267,7 +188,38 @@ export default class Workbench implements IDisposable {
     this.editorInstance.dispose();
     this.bus.off(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown);
     this.bus.off(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown);
-    this.bus.off(BUS_CHANNEL.EDITOR_REVEAL_SECTION, this.onRevealSection);
+    this.bus.off(BUS_CHANNEL.EDITOR_REVEAL_SECTION, this.onMonacoRevealSection);
+  }
+
+  public update(): void {
+    const snippets: Array<ISnippetMonaco> = [];
+
+    MonacoEditor.languages.registerCompletionItemProvider("markdown-math", {
+      provideCompletionItems: (model, position) => {
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn,
+        };
+
+        const suggestions: MonacoEditor.languages.CompletionItem[] = [
+          ...snippets.map(({ command, ...item }) => {
+            return {
+              ...item,
+              range,
+              kind: MonacoEditor.languages.CompletionItemKind.Snippet,
+              insertTextRules: MonacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            };
+          }),
+        ];
+
+        return {
+          suggestions,
+        };
+      },
+    });
   }
 
   /* Tab operation begin */
@@ -379,6 +331,8 @@ export default class Workbench implements IDisposable {
     }
   }
 
+  /* utils begin */
+
   private _getTabList(): Array<ITab> {
     const { workbenchType } = useWorkbench();
 
@@ -425,6 +379,8 @@ export default class Workbench implements IDisposable {
     this.cachedStateList.splice(nextIndex, 0, state);
     this.doActivateTab(nextIndex);
   }
+
+  /* utils end */
 
   // TODO 将类型写入 `typings/model`
   private onOpenMarkdown(payload: { rawString: string; statInfo: StatsBase<number>; route: Array<string> }): void {
@@ -523,8 +479,54 @@ export default class Workbench implements IDisposable {
   }
 
   /* Monaco events */
-  private onRevealSection(value: Array<number>): void {
+
+  private onMonacoRevealSection = (value: Array<number>): void => {
     this.editorInstance.revealLineInCenter(value[1], MonacoEditor.editor.ScrollType.Smooth);
     this.editorInstance.setPosition({ column: 1, lineNumber: value[1] });
-  }
+  };
+
+  private onMonacoChange = async (event: MonacoEditor.editor.IModelContentChangedEvent): Promise<void> => {
+    // FEAT 增量更新 `event.changes`
+    this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, this.editorInstance.getValue());
+
+    const state = this.cachedStateList[this.activatedStateIndex] as IEditorState;
+
+    if (!state.isModified) {
+      state.isModified = true;
+      useWorkbench().SYNC_TAB_STATE(this.activatedStateIndex, state);
+    }
+  };
+
+  private onMonacoPaste = async (): Promise<void> => {
+    // FEAT 清洗 URL
+    const isFilter = true;
+    const selection = this.editorInstance.getSelection() as MonacoEditor.Range;
+
+    let { isImg, isUrl, text } = await getClipboard();
+
+    if (
+      isUrl &&
+      (selection.startColumn !== selection.endColumn || selection.startLineNumber !== selection.endLineNumber)
+    ) {
+      const alt = this.editorInstance.getModel()?.getValueInRange(selection);
+      text = isImg ? `![${alt}](${isFilter && cleanURL(text)} '${alt}')` : `[${alt}](${text} '${alt}')`;
+    }
+
+    this.editorInstance.executeEdits("", [
+      {
+        range: new MonacoEditor.Range(
+          selection.startLineNumber,
+          selection.startColumn,
+          selection.endLineNumber,
+          selection.endColumn
+        ),
+        text,
+      },
+    ]);
+
+    // FEAT 改成 snippet
+    const { endLineNumber, endColumn } = this.editorInstance.getSelection() as MonacoEditor.Selection;
+
+    this.editorInstance.setPosition({ lineNumber: endLineNumber, column: endColumn });
+  };
 }

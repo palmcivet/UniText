@@ -4,13 +4,8 @@
     "FIX", // 待修复 Bug
     "TODO", // 待办
     "FEAT", // 后期添加特性
-    "DEV", // 开发时参数
-    "NOTE" // 通知
+    "DEV" // 开发时参数
   ],
-  "todo-tree.highlights.defaultHighlight": {
-    "type": "tag-comment",
-    "fontWeight": 600
-  },
   "todo-tree.highlights.customHighlight": {
     "FIX": {
       "foreground": "#ff0a0a",
@@ -55,5 +50,5 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabSize": 2,
   "npm.packageManager": "yarn",
-  "npm.exclude": "dist",
+  "npm.exclude": "dist"
 }

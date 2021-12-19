@@ -44,9 +44,9 @@ const pInterface: IGroup<IPreferenceInterface> = {
     },
     dbColumn: {
       type: "CheckBox",
-      title: ["查看编辑状态"],
+      title: ["查看编辑状态。对于源码模式，查看预览；对于 WYSIWYG，查看源码"],
       default: false,
-      description: ["对于源码模式，查看预览；对于 WYSIWYG，查看源码"],
+      description: [""],
     },
     editMode: {
       type: "DropDown",
@@ -80,9 +80,9 @@ const pWorkBench: IGroup<IPreferenceWorkbench> = {
     },
     saveRecent: {
       type: "CheckBox",
-      title: ["记录最近打开的文件"],
+      title: ["记录最近打开的文件。记录最近打开的文件，以快速恢复工作"],
       default: true,
-      description: ["记录最近打开的文件，以快速恢复工作"],
+      description: [""],
     },
     autoOpen: {
       type: "CheckBox",

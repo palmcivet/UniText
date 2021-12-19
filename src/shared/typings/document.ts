@@ -57,11 +57,11 @@ export interface IDocumentMeta {
   /**
    * @field 创建日期
    */
-  cTime: string;
+  cTime: number;
   /**
    * @field 更改日期
    */
-  mTime: string;
+  mTime: number;
   /**
    * @field 编辑时长
    */
@@ -118,10 +118,11 @@ export interface IDocumentFrontMatter {
   config: IDocumentConfig;
   /**
    * @field 编辑器相关属性
+   * @deprecated 可自动检测，移动到 front matter 外部
    */
   format: IDocumentFormat;
   /**
-   * @field 文章的元信息，自动生成
+   * @field 文章的元信息，自动生成。即 Stat 信息，需要跨平台
    */
   meta: IDocumentMeta;
   /**

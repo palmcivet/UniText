@@ -1,5 +1,5 @@
 <template>
-  <SplitView :showLeft="true" :showRight="showPanel" :threshold="[3 / 4, 5 / 6]">
+  <SplitView :showLeft="true" :showRight="showPanel" :threshold="[21 / 31, 25 / 31]">
     <template #left>
       <div class="wrapper">
         <SplitView
@@ -19,7 +19,7 @@
     </template>
     <template #right>
       <div class="wrapper">
-        <Toc />
+        <Panel />
       </div>
     </template>
   </SplitView>
@@ -32,13 +32,13 @@ import useGeneral from "@/renderer/stores/general";
 import SplitView from "@/renderer/components/SplitView/Index.vue";
 import EditorSource from "./Editor/Monaco/Index.vue";
 import ViewerMarkdown from "./Viewer/Markdown/Index.vue";
-import Toc from "./Panel/Toc.vue";
+import Panel from "./Panel/Index.vue";
 
 export default defineComponent({
   name: "Editor",
 
   components: {
-    Toc,
+    Panel,
     SplitView,
     EditorSource,
     ViewerMarkdown,

@@ -75,6 +75,7 @@ export const localesMenu = {
     "about-unitext": "关于 UniText",
     "check-for-updates": "检查更新",
     "setting": _commom.setting,
+    "setting.theme": _commom.theme,
     "setting.system": _commom.system,
     "setting.preference": _commom.preference,
     "setting.markdown": _commom.markdown,

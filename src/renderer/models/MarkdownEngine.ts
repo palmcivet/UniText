@@ -47,7 +47,9 @@ export default class MarkdownEngine implements IDisposable {
     this.bus = bus;
   }
 
-  public invoke(data: IMarkdown) {
+  public invoke(): void {}
+
+  public update(data: IMarkdown): void {
     this.engine = new MarkdownIt({
       html: data.habit.html,
       breaks: data.habit.hardBreaks,

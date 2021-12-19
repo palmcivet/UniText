@@ -23,7 +23,7 @@ export const hasFileList = async (base: string, samp: Array<string>) => {
  * 递归删除
  * @param dir 路径
  */
-export const deleteAll = (dir: string) => {
+export function deleteAll(dir: string) {
   if (!fse.existsSync(dir)) {
     return;
   }
@@ -39,4 +39,4 @@ export const deleteAll = (dir: string) => {
   });
 
   fse.rmdirSync(dir);
-};
+}

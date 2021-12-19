@@ -1,12 +1,14 @@
 <template>
-  <div class="option" :title="$g(prop.description)" @click.stop="onChange()">
-    <input
-      type="checkbox"
-      :checked="currentValue"
-      :disabled="disabled"
-      @change="onChange()"
-    />
-    <label>{{ $g(prop.title) }}</label>
+  <div class="option" :title="$g(prop.description)">
+    <label>
+      <input
+        type="checkbox"
+        v-model="currentValue"
+        :disabled="disabled"
+        @change.stop="onChange()"
+      />
+      {{ $g(prop.title) }}
+    </label>
   </div>
 </template>
 
@@ -19,7 +21,7 @@ export default defineComponent({
   mixins: [Skeleton],
   methods: {
     onChange() {
-      this.$emit("change", !this.currentValue);
+      this.$emit("u-change", this.currentValue);
     },
   },
 });
@@ -29,16 +31,21 @@ export default defineComponent({
 @import "./style.less";
 
 .option {
-  flex-direction: row;
-  align-items: center;
-
-  &,
-  * {
+  input,
+  label {
     cursor: pointer;
   }
 
   label {
-    margin-left: 3px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    line-height: 24px;
+  }
+
+  input {
+    margin: 0;
+    margin-right: 5px;
   }
 }
 </style>

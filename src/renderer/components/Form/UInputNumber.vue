@@ -21,7 +21,7 @@ export default defineComponent({
   mixins: [Skeleton],
   methods: {
     onChange() {
-      this.$emit("change", this.currentValue);
+      this.$emit("u-change", this.currentValue);
     },
   },
 });

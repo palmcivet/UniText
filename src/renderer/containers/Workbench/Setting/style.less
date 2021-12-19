@@ -1,0 +1,70 @@
+@import "~@/renderer/styles/var.less";
+
+@unit-bottom-primary: 2em;
+@unit-bottom-secondary: 0.6em;
+@unit-border: 6px;
+@unit-font-size: 0.5em;
+@padding-header: 15px;
+
+.group-h1 {
+  font-size: 2em;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  padding-left: @padding-header;
+  color: whitesmoke;
+  background: linear-gradient(to right, var(--formGroupTitleBorder-Color), transparent);
+  border-left: ridge @unit-border * 2 var(--formGroupTitleBorder-Color);
+}
+
+.group-h2 {
+  font-size: 1.5em;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  padding-left: @padding-header;
+  margin: @unit-bottom-secondary 0 @unit-bottom-secondary @unit-border;
+  border-left: solid @unit-border var(--formGroupTitleBorder-Color);
+}
+
+.group-h3 {
+  font-size: 1em;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  padding-left: @padding-header;
+  margin-bottom: @unit-bottom-secondary;
+}
+
+.group-description {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.group-option {
+  padding: 0.3em 0 0.5em calc(@padding-header + @unit-border);
+  margin-left: @unit-border;
+  user-select: none;
+
+  &:hover {
+    color: var(--formGroup-hoverFg);
+    background: var(--formGroup-hoverBg);
+  }
+}
+
+.group-code {
+  font-size: 1em;
+  font-family: @code-font-family;
+  display: inline-flex;
+  align-items: center;
+
+  span:last-child {
+    font-size: 1.1em;
+    color: var(--inputBox-Fg);
+  }
+}
+
+.group-divider {
+  width: 100%;
+  height: @unit-bottom-primary;
+}

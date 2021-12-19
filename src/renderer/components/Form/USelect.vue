@@ -2,11 +2,7 @@
   <div class="option" :title="$g(prop.description)">
     <label>{{ $g(prop.title) }}</label>
     <select v-model="currentValue" @change="onChange()">
-      <option
-        v-for="(optionValue, index) in optionList"
-        :key="index"
-        :value="optionValue"
-      >
+      <option v-for="(optionValue, index) in prop.enum" :key="index" :value="optionValue">
         {{ optionValue }}
       </option>
     </select>
@@ -20,15 +16,9 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "USelect",
   mixins: [Skeleton],
-  props: {
-    optionList: {
-      type: Array,
-      default: () => [],
-    },
-  },
   methods: {
     onChange() {
-      this.$emit("change", this.currentValue);
+      this.$emit("u-change", this.currentValue);
     },
   },
 });

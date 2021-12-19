@@ -30,7 +30,8 @@ async function register() {
   const { browser } = all.preference;
 
   _browser.update({ ...browser, cabinPath: all.system.launch.cabinPath });
-  _markdownEngine.invoke({ ...all.markdown });
+  _workbench.update();
+  _markdownEngine.update({ ...all.markdown });
 }
 
 /* 将配置注入 model */

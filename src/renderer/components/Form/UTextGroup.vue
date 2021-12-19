@@ -80,7 +80,7 @@ export default defineComponent({
     },
 
     handleSubmit() {
-      this.$emit("change", this.res);
+      this.$emit("u-change", this.res);
     },
   },
 });

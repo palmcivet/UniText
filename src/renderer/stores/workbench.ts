@@ -26,8 +26,8 @@ export default defineStore({
         endOfLine: EEoL.LF,
       },
       meta: {
-        cTime: "",
-        mTime: "",
+        cTime: new Date().getTime(),
+        mTime: new Date().getTime(),
         editTime: 0,
       },
       images: [],

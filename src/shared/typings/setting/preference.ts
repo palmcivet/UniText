@@ -114,6 +114,8 @@ export interface IPreferenceBrowser {
 
 /**
  * @interface 编辑器的默认设置
+ * @deprecated 单独设为模块 monaco
+ * extends IStandaloneEditorConstructionOptions {
  */
 export interface IPreferenceEditor {
   /**

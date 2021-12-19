@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 import { EEditMode, ETypeMode } from "@/shared/typings/setting/preference";
-import { IGeneralState } from "@/shared/typings/store";
+import { EWorkbenchType, IGeneralState } from "@/shared/typings/store";
 
 export default defineStore({
   id: "general",
