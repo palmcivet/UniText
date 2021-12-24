@@ -116,7 +116,7 @@ export default class MarkdownEngine implements IDisposable {
     this.bus.off(BUS_CHANNEL.EDITOR_SYNC_DOC, this.onGenerate);
   }
 
-  private onGenerate(content: string) {
+  private onGenerate(content: string): string {
     const rawHTML = this.engine.render(content);
     this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_VIEW, rawHTML);
     return rawHTML;

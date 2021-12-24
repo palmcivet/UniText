@@ -6,18 +6,18 @@
     <div class="info-grid">
       <InfoCardNormal
         class="info-cell"
-        :raw="meta.wordCount"
+        :raw="computable.wordCount"
         :remark="$t('panel.word_count')"
       />
       <InfoCardNormal
         class="info-cell"
-        :raw="meta.charCount"
+        :raw="computable.charCount"
         :remark="$t('panel.char_count')"
       />
     </div>
 
     <InfoCardTime :raw="meta.editTime" :remark="$t('panel.edit_time')" />
-    <InfoCardTime :raw="meta.readTime" :remark="$t('panel.read_time')" />
+    <InfoCardTime :raw="computable.readTime" :remark="$t('panel.read_time')" />
   </div>
 </template>
 
@@ -39,10 +39,13 @@ export default defineComponent({
 
   setup() {
     const meta = computed(() => useWorkbench().frontmatter.meta);
+    const computable = computed(() => useWorkbench().computable);
+
     const properties = {
       title: ["是否已完成"],
       description: "",
     };
+
     const onChangeComplete = (value: boolean) => {};
     const onChangeRemark = (remark: string) => {
       console.log(remark);
@@ -50,6 +53,7 @@ export default defineComponent({
 
     return {
       meta,
+      computable,
       properties,
       isCN: true,
       onChangeComplete,

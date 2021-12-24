@@ -500,7 +500,9 @@ export default class Workbench implements IDisposable {
 
   private onMonacoChange = async (event: MonacoEditor.editor.IModelContentChangedEvent): Promise<void> => {
     // FEAT 增量更新 `event.changes`
-    this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, this.editorInstance.getValue());
+    const content = this.editorInstance.getValue() ?? "";
+    this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, content);
+    useWorkbench().SYNC_COMPUTABLE(ComputableFactory(content));
 
     const state = this.cachedStateList[this.activatedStateIndex] as IEditorState;
 

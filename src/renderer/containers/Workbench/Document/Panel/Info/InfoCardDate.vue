@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" scoped>
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 
 const monthMap = [
   "Jan",
@@ -48,7 +48,7 @@ export default defineComponent({
   setup(props) {
     return {
       monthMap,
-      time: new Date(props.raw).toJSON(),
+      time: computed(() => new Date(props.raw).toJSON()),
     };
   },
 });

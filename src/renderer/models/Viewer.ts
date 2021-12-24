@@ -24,9 +24,11 @@ export default class Viewer implements IDisposable {
 
   /* events */
 
-  private onRender(raw: string): void {
+  private async onRender(raw: string): Promise<void> {
     this.root.innerHTML = raw;
-    Prism.highlightAll();
+    setTimeout(() => {
+      Prism.highlightAll();
+    });
   }
 
   private onChange(): void {}
