@@ -30,10 +30,10 @@ export default defineComponent({
   name: "StatusGroup",
 
   setup() {
-    const tagList = computed(() => useWorkbench().frontMatter.config.tag.slice(0, 5));
-    const indent = computed(() => useWorkbench().frontMatter.format.indent);
-    const encoding = computed(() => useWorkbench().frontMatter.format.encoding);
-    const endOfLine = computed(() => useWorkbench().frontMatter.format.endOfLine);
+    const tagList = computed(() => useWorkbench().frontmatter.config.tags.slice(0, 5));
+    const indent = computed(() => useWorkbench().format.indent);
+    const encoding = computed(() => useWorkbench().format.encoding);
+    const endOfLine = computed(() => useWorkbench().format.endOfLine);
 
     return {
       tagList,
@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
+@import "~@/renderer/styles/vars.less";
 @import "~@/renderer/styles/mixins.less";
 
 .editor-list {

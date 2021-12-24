@@ -1,4 +1,4 @@
-import { TSchema, IGroup, reduceType, reduceSchema } from "./_";
+import { ISchema, IGroup, reduceType, reduceSchema } from "./_";
 import { ETitleBar, ISystemLaunch, ISystemWindow, ISystem } from "@/shared/typings/setting/system";
 import { EI18n } from "@/shared/typings/setting/preference";
 
@@ -78,7 +78,7 @@ const sWindow: IGroup<ISystemWindow> = {
   default: {},
 };
 
-export const schemaSystem: TSchema<ISystem> = {
+export const schemaSystem: ISchema<ISystem> = {
   launch: sLaunch,
   window: sWindow,
 };

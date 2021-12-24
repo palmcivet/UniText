@@ -1,6 +1,6 @@
 export const INJECTIONS_SYMBOL = Symbol("__injections__");
 
-export type TKeyService =
+export type IKeyService =
   | "EnvService"
   | "MenuService"
   | "ImageService"

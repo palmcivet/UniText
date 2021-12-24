@@ -1,57 +1,5 @@
 /**
- * @enum { EIndent } 缩进
- */
-export enum EIndent {
-  /**
-   * @field Tab 2
-   */
-  T2 = "T2",
-  /**
-   * @field Tab 4
-   */
-  T4 = "T4",
-  /**
-   * @field Space 2
-   */
-  S2 = "S2",
-  /**
-   * @field Space 4
-   */
-  S4 = "S4",
-}
-
-/**
- * @enum { ECoding } 编码
- */
-export enum ECoding {
-  GBK = "GBK",
-  UTF8 = "UTF8",
-  ASCII = "ASCII",
-  GB2312 = "GB2312",
-}
-
-/**
- * @enum { EEoL } 行尾序列
- */
-export enum EEoL {
-  LF = "LF",
-  CRLF = "CRLF",
-}
-
-/**
- * @enum { EPicture } 图片存储方案
- */
-export enum EPicture {
-  LOCAL = "LOCAL",
-  SMMS = "SMMS",
-  IMGUR = "IMGUR",
-  QIUNIU = "QIUNIU",
-  ALI = "ALI",
-  TENCENT = "TENCENT",
-}
-
-/**
- * @interface 文章的元信息，自动生成
+ * @interface 元信息，从 Stat 获得。需要跨平台
  */
 export interface IDocumentMeta {
   /**
@@ -68,28 +16,92 @@ export interface IDocumentMeta {
   editTime: number;
 }
 
+/* plaintext begin */
+
+/**
+ * @enum { ETXTIndent } 缩进
+ */
+export enum ETXTIndent {
+  T2 = "T2",
+  T4 = "T4",
+  S2 = "S2",
+  S4 = "S4",
+}
+
+/**
+ * @enum { ETXTCoding } 编码
+ */
+export enum ETXTCoding {
+  GBK = "GBK",
+  UTF8 = "UTF8",
+  ASCII = "ASCII",
+  GB2312 = "GB2312",
+}
+
+/**
+ * @enum { ETXTEoL } 行尾序列
+ */
+export enum ETXTEoL {
+  LF = "LF",
+  CRLF = "CRLF",
+}
+
 /**
  * @interface 编辑器相关属性
  */
-export interface IDocumentFormat {
+export interface ITXTFormat {
   /**
    * @field 缩进
    */
-  indent: EIndent;
+  indent: ETXTIndent;
   /**
    * @field 编码
    */
-  encoding: ECoding;
+  encoding: ETXTCoding;
   /**
    * @field 行尾序列
    */
-  endOfLine: EEoL;
+  endOfLine: ETXTEoL;
+}
+
+/**
+ * @interface 文本的可计算属性
+ */
+export interface ITXTComputable {
+  /**
+   * @field 单词数量
+   */
+  wordCount: number;
+  /**
+   * @field 字符数量
+   */
+  charCount: number;
+  /**
+   * @field 预计阅读时长
+   */
+  readTime: number;
+}
+
+/* plaintext end */
+
+/* markdown begin */
+
+/**
+ * @enum { EMDPicture } 图片存储方案
+ */
+export enum EMDPicture {
+  LOCAL = "LOCAL",
+  SMMS = "SMMS",
+  IMGUR = "IMGUR",
+  QIUNIU = "QIUNIU",
+  ALI = "ALI",
+  TENCENT = "TENCENT",
 }
 
 /**
  * @interface 文档的默认设置
  */
-export interface IDocumentConfig {
+export interface IMDConfig {
   /**
    * @field 备注信息
    */
@@ -101,32 +113,27 @@ export interface IDocumentConfig {
   /**
    * @field 文章标签
    */
-  tag: Array<string>;
+  tags: Array<string>;
   /**
    * @field 图片存储方案
    */
-  picture: EPicture;
+  picture: EMDPicture;
 }
 
 /**
  * @interface Markdown 的 Front-Matter
  */
-export interface IDocumentFrontMatter {
+export interface IMDFrontMatter {
   /**
-   * @field 文档默认设置
-   */
-  config: IDocumentConfig;
-  /**
-   * @field 编辑器相关属性
-   * @deprecated 可自动检测，移动到 front matter 外部
-   */
-  format: IDocumentFormat;
-  /**
-   * @field 文章的元信息，自动生成。即 Stat 信息，需要跨平台
+   * @field markdown 文档的元信息，自动生成
    */
   meta: IDocumentMeta;
   /**
-   * @field 图片映射
+   * @field markdown 文档默认设置
+   */
+  config: IMDConfig;
+  /**
+   * @field markdown 文档中的图片映射
    */
   images: Array<string>;
 }
@@ -134,9 +141,17 @@ export interface IDocumentFrontMatter {
 /**
  * @interface 文章属性
  */
-export interface IDocument extends IDocumentFrontMatter {
+export interface IDocumentMD extends IMDFrontMatter {
   /**
    * @field 文档内容
    */
   content: string;
 }
+
+/* markdown end */
+
+/* pdf begin */
+
+export interface IDocumentPDF {}
+
+/* pdf end */

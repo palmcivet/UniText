@@ -1,5 +1,5 @@
 import Logger, { LoggerFacade } from "@/main/backend/Logger";
-import { INJECTIONS_SYMBOL, TKeyService } from "./_";
+import { INJECTIONS_SYMBOL, IKeyService } from "./_";
 
 interface IService {
   name: string;
@@ -41,7 +41,7 @@ export default class Service implements IService {
  * @param name 服务名
  * @returns 注入函数
  */
-export function Inject(name: TKeyService) {
+export function Inject(name: IKeyService) {
   return (target: any, propertyKey: string) => {
     if (!Reflect.has(target, INJECTIONS_SYMBOL)) {
       Reflect.set(target, INJECTIONS_SYMBOL, []);

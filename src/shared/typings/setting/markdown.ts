@@ -1,7 +1,7 @@
 /**
- * @enum { EPreset } 语法方案预设
+ * @enum { EMarkdownPreset } 语法方案预设
  */
-export enum EPreset {
+export enum EMarkdownPreset {
   CMM = "CommonMark",
   GFM = "GitHub Flavored Markdown",
   EVN = "Evernote",
@@ -17,7 +17,7 @@ export interface IMarkdownHabit {
   /**
    * @field 语法预设
    */
-  preset: EPreset;
+  preset: EMarkdownPreset;
   /**
    * @field 是否启用硬换行。空两格及以上或回车换行，否则认为是同一行
    */
@@ -186,9 +186,6 @@ export interface IMarkdownFeature {
   mermaid: boolean;
 }
 
-/**
- * @interface Markdown.json 的类型
- */
 export interface IMarkdown {
   habit: IMarkdownHabit;
   export: IMarkdownExport;

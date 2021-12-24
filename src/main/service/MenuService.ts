@@ -51,6 +51,5 @@ export default class MenuService extends Service {
 
   popContext(key: EMenuContextKey, value: any) {
     this._contextMenu[key].popup();
-    Bus.value = value;
   }
 }

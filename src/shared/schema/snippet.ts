@@ -1,5 +1,5 @@
-import { IGroup, reduceSchema, TSchema } from "./_";
-import { ISnippet } from "../typings/setting/snippet";
+import { IGroup, reduceSchema, ISchema } from "./_";
+import { ISnippet } from "@/shared/typings/setting/snippet";
 
 const template: IGroup<ISnippet> = {
   type: "Group",
@@ -22,6 +22,6 @@ const template: IGroup<ISnippet> = {
   default: {},
 };
 
-export const schemaSnippet = template as unknown as TSchema<ISnippet>;
+export const schemaSnippet = template as unknown as ISchema<ISnippet>;
 
 export default reduceSchema(schemaSnippet);

@@ -34,9 +34,6 @@ export interface IThemeColor extends IThemeColorCustom {
   preset: string;
 }
 
-/**
- * @interface theme.json 的类型
- */
 export interface ITheme {
   color: IThemeColor;
 }

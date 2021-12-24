@@ -12,6 +12,7 @@ import * as fse from "fs-extra";
 
 import { CABIN_FILE, CABIN_FOLDER, CABIN_NAME, SYSTEM_PATH } from "@/shared/constant";
 import { IBootArgs } from "@/shared/typings/main";
+import { IPathRoute } from "@/shared/typings/renderer";
 
 type TKeyConfigFolder = keyof typeof CABIN_FOLDER;
 type TKeyConfigFile = keyof typeof CABIN_FILE;
@@ -72,7 +73,7 @@ export default class EnvService {
 
   private async _serializeBoot() {}
 
-  normalizePath(route: Array<string>): string {
+  normalizePath(route: IPathRoute): string {
     return join(this._cabinPath, ...route);
   }
 

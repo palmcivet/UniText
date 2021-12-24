@@ -22,13 +22,13 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
+@import "~@/renderer/styles/vars.less";
 
 .editor-monaco {
   width: 100%;
   height: 100%;
 
-  /deep/ .monaco-editor {
+  ::v-deep(.monaco-editor) {
     .scrollbar .slider {
       background: var(--scrollBar-Bg);
     }
@@ -42,12 +42,12 @@ export default defineComponent({
     }
   }
 
-  /deep/ .context-view .monaco-scrollable-element {
+  ::v-deep(.context-view .monaco-scrollable-element) {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
     border-radius: 4px;
   }
 
-  /deep/ .monaco-menu .monaco-action-bar.vertical {
+  ::v-deep(.monaco-menu .monaco-action-bar.vertical) {
     .action-item {
       border: none;
     }
@@ -57,7 +57,7 @@ export default defineComponent({
     }
   }
 
-  /deep/ .action-menu-item {
+  ::v-deep(.action-menu-item) {
     color: #718096 !important;
     &:hover {
       color: #744210 !important;
@@ -65,7 +65,7 @@ export default defineComponent({
     }
   }
 
-  /deep/ .decorationsOverviewRuler {
+  ::v-deep(.decorationsOverviewRuler) {
     display: none !important;
   }
 }

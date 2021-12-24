@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
+@import "~@/renderer/styles/vars.less";
 
 .workbench {
   width: 100%;

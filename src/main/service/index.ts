@@ -6,7 +6,7 @@ import ImageService from "./ImageService";
 import WindowService from "./WindowService";
 import SettingService from "./SettingService";
 import KeybindingService from "./KeybindingService";
-import { INJECTIONS_SYMBOL, TKeyService } from "./_";
+import { INJECTIONS_SYMBOL, IKeyService } from "./_";
 
 interface IInjection {
   type: string;
@@ -47,15 +47,15 @@ export default class Container {
     this.containerMap = {};
   }
 
-  public setService<K extends TKeyService>(id: K, value: any): void {
+  public setService<K extends IKeyService>(id: K, value: any): void {
     this.containerMap[id] = value;
   }
 
-  public getService<K extends TKeyService, V extends IServiceMap[K]>(id: K): V {
+  public getService<K extends IKeyService, V extends IServiceMap[K]>(id: K): V {
     return this.containerMap[id] as V;
   }
 
-  public hasService<K extends TKeyService>(id: K): Boolean {
+  public hasService<K extends IKeyService>(id: K): Boolean {
     return Object.keys(this.containerMap).includes(id);
   }
 
@@ -71,8 +71,8 @@ export default class Container {
       const injects: IInjection[] = targetPrototype[INJECTIONS_SYMBOL] || [];
 
       injects.forEach(({ type, field }) => {
-        if (this.hasService(id as TKeyService)) {
-          const success = Reflect.set(service, field, this.getService(type as TKeyService));
+        if (this.hasService(id as IKeyService)) {
+          const success = Reflect.set(service, field, this.getService(type as IKeyService));
           if (!success) {
             throw new Error(`Cannot set service ${type} to ${targetPrototype}`);
           }
@@ -85,7 +85,7 @@ export default class Container {
     });
 
     /* 监听 IPC 通信 */
-    ipcMain.handle("service:call", (event, name: TKeyService, method: string, ...payloads: any[]) => {
+    ipcMain.handle("service:call", (event, name: IKeyService, method: string, ...payloads: any[]) => {
       if (!this.hasService(name)) {
         throw new ServiceNotFoundError(name);
       }

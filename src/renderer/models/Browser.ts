@@ -5,12 +5,10 @@ import { BUS_CHANNEL } from "@/shared/channel";
 import { arrayHasElements } from "@/shared/utils";
 import { ISystemLaunch } from "@/shared/typings/setting/system";
 import { IPreferenceBrowser } from "@/shared/typings/setting/preference";
-import { IMark } from "@/shared/typings/model";
+import { IMark, IPathRoute } from "@/shared/typings/model";
 import { IDisposable } from "@/shared/typings/renderer";
 
 interface IOptionsType extends IPreferenceBrowser, Pick<ISystemLaunch, "cabinPath"> {}
-
-type FileRoute = Array<string>;
 
 export default class Browser implements IDisposable {
   /**
@@ -102,7 +100,7 @@ export default class Browser implements IDisposable {
 
   private _watchProject(): void {}
 
-  private async onOpenFile(route: FileRoute): Promise<void> {
+  private async onOpenFile(route: IPathRoute): Promise<void> {
     const { cabinPath } = this.options!;
     // TODO 简单判断文件类型，文本类需要读取内容
     if (true) {
@@ -117,7 +115,7 @@ export default class Browser implements IDisposable {
 
   private onSelectItem(): void {}
 
-  private async onFetch(route: FileRoute): Promise<ITreeNodeFolder> {
+  private async onFetch(route: IPathRoute): Promise<ITreeNodeFolder> {
     const { cabinPath, ignoreFile } = this.options!;
     return useDisk().readDirectory([cabinPath, ...route], ignoreFile);
   }

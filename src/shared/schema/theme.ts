@@ -1,4 +1,4 @@
-import { TSchema, IGroup, reduceSchema } from "./_";
+import { ISchema, IGroup, reduceSchema } from "./_";
 import { ITheme, IThemeColor } from "@/shared/typings/setting/theme";
 
 const tColor: IGroup<IThemeColor> = {
@@ -46,7 +46,7 @@ const tColor: IGroup<IThemeColor> = {
   description: [""],
 };
 
-export const schemaTheme: TSchema<ITheme> = {
+export const schemaTheme: ISchema<ITheme> = {
   color: tColor,
 };
 

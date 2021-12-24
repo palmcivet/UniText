@@ -9,7 +9,7 @@ import yaml from "js-yaml";
 
 import { formatDate } from "@/shared/utils";
 import { BLANK_PATTERN, FRONT_MATTER_PATTERN } from "@/shared/pattern";
-import { IDocumentFrontMatter } from "@/shared/typings/document";
+import { IMDFrontMatter } from "@/shared/typings/document";
 
 /**
  * @type YAML 方案
@@ -56,7 +56,7 @@ interface ISpiltStructure {
   /**
    * @field 属性信息
    */
-  data?: IDocumentFrontMatter;
+  data?: IMDFrontMatter;
   /**
    * @field 是否在内容之前
    */
@@ -82,7 +82,7 @@ const escapeYAML = (str: string) => {
  * @param str 字符串
  * @param options js-yaml 选项
  */
-const parseYAML = (str: string, options?: ILoadOption): IDocumentFrontMatter | undefined => {
+const parseYAML = (str: string, options?: ILoadOption): IMDFrontMatter | undefined => {
   const result = yaml.load(escapeYAML(str), options);
   if (typeof result !== "object") return undefined;
   return result;
@@ -92,7 +92,7 @@ const parseYAML = (str: string, options?: ILoadOption): IDocumentFrontMatter | u
  * 将 JSON 字符串解析为 JS 对象
  * @param str 字符串
  */
-const parseJSON = (str: string): IDocumentFrontMatter | undefined => {
+const parseJSON = (str: string): IMDFrontMatter | undefined => {
   try {
     return JSON.parse(`{${str}}`);
   } catch (err) {

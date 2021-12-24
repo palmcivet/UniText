@@ -38,7 +38,7 @@ export default defineComponent({
   },
 
   setup() {
-    const meta = computed(() => useWorkbench().frontMatter.meta);
+    const meta = computed(() => useWorkbench().frontmatter.meta);
     const properties = {
       title: ["是否已完成"],
       description: "",

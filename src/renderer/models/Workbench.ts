@@ -9,40 +9,44 @@ import useEnvironment from "@/renderer/stores/environment";
 import { useDisk } from "@/renderer/composables/disk";
 import { useService } from "@/renderer/composables/service";
 import { useClipboard, useDialog } from "@/renderer/composables/electron";
+import { charCount, timeCalc, wordCount } from "@/renderer/utils/statistics";
 import { exportFrontMatter, importFrontMatter } from "@/renderer/utils/front-matter";
 import { IMG_IN_URL_PATTERN, PATH_SEPARATE, URL_PATH, URL_PROTOCOL } from "@/shared/pattern";
 import { cleanURL, validateURL } from "@/shared/utils/links";
-import { difference, formatDate, hashString, intersect } from "@/shared/utils";
+import { difference, hashString, intersect } from "@/shared/utils";
 import { BUS_CHANNEL } from "@/shared/channel";
-import { IEditorState, ITab, IViewState, IWorkbenchState } from "@/shared/typings/model";
+import { IEditorState, IViewState, IWorkbenchState } from "@/shared/typings/model";
 import { EWorkbenchType } from "@/shared/typings/store";
-import { IDisposable } from "@/shared/typings/renderer";
+import { IDisposable, IPathRoute, ITab } from "@/shared/typings/renderer";
 import { ISnippetMonaco } from "@/shared/typings/setting/snippet";
-import { IDocumentFrontMatter } from "@/shared/typings/document";
+import { IMDFrontMatter, ITXTComputable } from "@/shared/typings/document";
 
 import { OneDarkPro } from "../containers/Workbench/Document/Editor/Monaco/theme";
 import { init } from "../containers/Workbench/Document/Editor/Monaco/option";
 
-function DocumentFactory(data?: IDocumentFrontMatter, stat?: StatsBase<number>): IDocumentFrontMatter {
+function FrontMatterFactory(data?: IMDFrontMatter, stat?: StatsBase<number>): IMDFrontMatter {
   return {
     meta: {
       cTime: (stat?.birthtime ?? new Date()).getTime(),
       mTime: (stat?.mtime ?? new Date()).getTime(),
       editTime: 0,
     },
-    format: {
-      indent: useGeneral().$state.document.indent,
-      encoding: useGeneral().$state.document.encoding,
-      endOfLine: useGeneral().$state.document.endOfLine,
-    },
     config: {
       remark: "",
       complete: false,
-      tag: useGeneral().$state.document.tag,
+      tags: useGeneral().$state.document.tags,
       picture: useGeneral().$state.document.picture,
     },
     images: [],
     ...data,
+  };
+}
+
+function ComputableFactory(raw: string): ITXTComputable {
+  return {
+    wordCount: wordCount(raw),
+    charCount: charCount(raw),
+    readTime: timeCalc(raw),
   };
 }
 
@@ -230,17 +234,15 @@ export default class Workbench implements IDisposable {
     const { type } = targetTab;
 
     if (type === EWorkbenchType.EDITOR) {
-      const { uri, config, format, meta, images } = targetTab as IEditorState;
+      const { uri, frontmatter, format } = targetTab as IEditorState;
       const model = MonacoEditor.editor.getModel(uri);
       this.activatedStateUri = uri;
       this.editorInstance.setModel(model);
-      this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, model!.getValue());
-      useWorkbench().SYNC_FRONTMATTER({
-        config,
-        format,
-        meta,
-        images,
-      });
+      const content = model?.getValue() ?? "";
+      this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, content);
+      useWorkbench().SYNC_FORMAT(format);
+      useWorkbench().SYNC_FRONTMATTER(frontmatter);
+      useWorkbench().SYNC_COMPUTABLE(ComputableFactory(content));
     }
 
     useWorkbench().SWITCH_WORKBENCH(type);
@@ -382,8 +384,8 @@ export default class Workbench implements IDisposable {
 
   /* utils end */
 
-  // TODO 将类型写入 `typings/model`
-  private onOpenMarkdown(payload: { rawString: string; statInfo: StatsBase<number>; route: Array<string> }): void {
+  // TODO 将参数类型写入 `typings/model`
+  private onOpenMarkdown(payload: { rawString: string; statInfo: StatsBase<number>; route: IPathRoute }): void {
     const { rawString, statInfo, route } = payload;
     const { data, content } = importFrontMatter(rawString);
     const uri = MonacoEditor.Uri.parse(route.join(PATH_SEPARATE));
@@ -401,7 +403,13 @@ export default class Workbench implements IDisposable {
           isTemp: false,
           isModified: false,
           isReadMode: false,
-          ...DocumentFactory(data, statInfo),
+          frontmatter: FrontMatterFactory(data, statInfo),
+          format: {
+            // TODO 检测格式
+            indent: useGeneral().$state.document.indent,
+            encoding: useGeneral().$state.document.encoding,
+            endOfLine: useGeneral().$state.document.endOfLine,
+          },
         } as IEditorState
       );
     } else {
@@ -428,13 +436,18 @@ export default class Workbench implements IDisposable {
       isModified: false,
       isReadMode: false,
       isActivated: true,
-      ...DocumentFactory(),
+      frontmatter: FrontMatterFactory(),
+      format: {
+        indent: useGeneral().$state.document.indent,
+        encoding: useGeneral().$state.document.encoding,
+        endOfLine: useGeneral().$state.document.endOfLine,
+      },
     } as IEditorState);
   }
 
   private async onSaveMarkdown(): Promise<boolean> {
     const targetState = this.cachedStateList[this.activatedStateIndex] as IEditorState;
-    const { uri, route, isTemp, isReadMode, type, title, description, isActivated, isModified, ...rest } = targetState;
+    const { isTemp, isModified, title, frontmatter } = targetState;
 
     /* 未修改，则直接跳过 */
     if (!isModified) {
@@ -461,12 +474,12 @@ export default class Workbench implements IDisposable {
     }
 
     // TODO 更新图片;
-    const images = await DiffImageList(rest.images, rest.images);
+    const images = await DiffImageList(frontmatter.images, frontmatter.images);
 
     const markdown = exportFrontMatter({
       sep: "---",
       data: {
-        ...rest,
+        ...frontmatter,
         images,
         // TODO 更新其他属性
       },
@@ -493,7 +506,7 @@ export default class Workbench implements IDisposable {
 
     if (!state.isModified) {
       state.isModified = true;
-      useWorkbench().SYNC_TAB_STATE(this.activatedStateIndex, state);
+      useWorkbench().SET_TAB_STATE(this.activatedStateIndex, state);
     }
   };
 

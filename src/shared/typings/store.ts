@@ -1,6 +1,6 @@
-import { IDocumentFrontMatter } from "./document";
-import { ITab } from "./model";
-import { ITocItem } from "./renderer";
+import { ITocItem } from "@/library/markdown-it-toc-and-anchor";
+import { IMDFrontMatter, ITXTComputable, ITXTFormat } from "./document";
+import { ITab } from "./renderer";
 import { IPreference } from "./setting/preference";
 
 export type TNotificationLevel = "INFO" | "WARN" | "ERROR";
@@ -71,9 +71,17 @@ export interface IWorkbenchState {
    */
   workbenchType: EWorkbenchType;
   /**
-   * @field 当前文档的 front matter
+   * @field markdown 文件的 front matter
    */
-  frontMatter: IDocumentFrontMatter;
+  frontmatter: IMDFrontMatter;
+  /**
+   * @field 当前文本文件的计算属性
+   */
+  computable: ITXTComputable;
+  /**
+   * @field 文本的格式
+   */
+  format: ITXTFormat;
   /**
    * @field 标签列表
    */
@@ -82,4 +90,8 @@ export interface IWorkbenchState {
    * @field TOC 列表
    */
   tocList: Array<ITocItem>;
+  /**
+   * @field TOC 列表（HTML）
+   */
+  tocHTML: string;
 }

@@ -3,13 +3,12 @@ import { join, basename } from "path";
 import * as fse from "fs-extra";
 import { ITreeNodeFile, ITreeNodeFolder } from "@palmcivet/unitext-tree-view";
 import { deleteAll } from "@/main/utils/file";
-
-type FileRoute = Array<string>;
+import { IPathRoute } from "@/shared/typings/renderer";
 
 /**
  * @description 读取文件夹。限文件树操作
  */
-ipcMain.handle("disk:read-directory", (event, route: FileRoute, ignore: Array<string> = []): ITreeNodeFolder => {
+ipcMain.handle("disk:read-directory", (event, route: IPathRoute, ignore: Array<string> = []): ITreeNodeFolder => {
   const files: Array<ITreeNodeFile> = [];
   const folders: Array<ITreeNodeFolder> = [];
   const location = join(...route);
@@ -58,7 +57,7 @@ ipcMain.handle(
   "disk:read-text-file",
   async (
     event,
-    route: FileRoute,
+    route: IPathRoute,
     options?: { encoding?: BufferEncoding | string; flag?: string | undefined }
   ): Promise<string> => {
     const location = join(...route);
@@ -74,7 +73,7 @@ ipcMain.handle(
 /**
  * @description 读取二进制文件
  */
-ipcMain.handle("disk:read-binary-file", async (event, route: FileRoute): Promise<Buffer> => {
+ipcMain.handle("disk:read-binary-file", async (event, route: IPathRoute): Promise<Buffer> => {
   const location = join(...route);
   return await fse.readFile(location);
 });
@@ -86,7 +85,7 @@ ipcMain.handle(
   "disk:write-file",
   async (
     event,
-    route: FileRoute,
+    route: IPathRoute,
     data: any,
     options?: fse.WriteFileOptions | BufferEncoding | string
   ): Promise<void> => {
@@ -98,7 +97,7 @@ ipcMain.handle(
 /**
  * @description 删除文件（夹）。递归
  */
-ipcMain.handle("disk:delete", (event, routes: Array<FileRoute>): void => {
+ipcMain.handle("disk:delete", (event, routes: Array<IPathRoute>): void => {
   routes.forEach((route) => {
     const location = join(...route);
     deleteAll(location);
@@ -108,7 +107,7 @@ ipcMain.handle("disk:delete", (event, routes: Array<FileRoute>): void => {
 /**
  * @description 创建文件。递归
  */
-ipcMain.handle("disk:create-file", (event, route: FileRoute, data = "") => {
+ipcMain.handle("disk:create-file", (event, route: IPathRoute, data = "") => {
   const location = join(...route);
   fse.outputFile(location, data);
 });
@@ -116,7 +115,7 @@ ipcMain.handle("disk:create-file", (event, route: FileRoute, data = "") => {
 /**
  * @description 创建文件夹。递归
  */
-ipcMain.handle("disk:create-directory", (event, route: FileRoute) => {
+ipcMain.handle("disk:create-directory", (event, route: IPathRoute) => {
   const location = join(...route);
   fse.ensureDir(location);
 });
@@ -124,7 +123,7 @@ ipcMain.handle("disk:create-directory", (event, route: FileRoute) => {
 /**
  * @description 移动。批量
  */
-ipcMain.handle("disk:move", (event, srcRoutes: Array<FileRoute>, dstRoute: FileRoute) => {
+ipcMain.handle("disk:move", (event, srcRoutes: Array<IPathRoute>, dstRoute: IPathRoute) => {
   const dst = join(...dstRoute);
   srcRoutes.forEach((route) => {
     const src = join(...route);
@@ -135,7 +134,7 @@ ipcMain.handle("disk:move", (event, srcRoutes: Array<FileRoute>, dstRoute: FileR
 /**
  * @description 复制。批量
  */
-ipcMain.handle("disk:copy", (event, srcRoutes: Array<FileRoute>, dstRoute: FileRoute) => {
+ipcMain.handle("disk:copy", (event, srcRoutes: Array<IPathRoute>, dstRoute: IPathRoute) => {
   const dst = join(...dstRoute);
   srcRoutes.forEach((route) => {
     const src = join(...route);
@@ -146,7 +145,7 @@ ipcMain.handle("disk:copy", (event, srcRoutes: Array<FileRoute>, dstRoute: FileR
 /**
  * @description 复制。批量
  */
-ipcMain.handle("disk:stat", (event, route: FileRoute) => {
+ipcMain.handle("disk:stat", (event, route: IPathRoute) => {
   const location = join(...route);
   return fse.stat(location);
 });

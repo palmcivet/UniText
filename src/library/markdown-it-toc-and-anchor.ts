@@ -2,20 +2,13 @@
  * @GitHub https://github.com/medfreeman/markdown-it-toc-and-anchor
  */
 
-/* eslint-disable no-multi-assign */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable func-names */
-/* eslint-disable camelcase */
-/* eslint-disable no-continue */
-/* eslint-disable comma-spacing */
-
 import clone from "clone";
 import uslug from "uslug";
 import Token from "markdown-it/lib/token";
 import StateCore from "markdown-it/lib/rules_core/state_core";
 import MarkdownIt from "markdown-it";
 
-interface ITocItem {
+export interface ITocItem {
   content: string;
   anchor: string;
   level: number;
@@ -51,7 +44,7 @@ interface IOptionToc {
   toc: boolean;
   tocFirstLevel: number;
   tocLastLevel: number;
-  tocCallback: (tocMarkdown: string, tocArray: ITocItem, tocHtml: string) => {};
+  tocCallback(tocMarkdown: string, tocArray: Array<ITocItem>, tocHtml: string): void;
   tocClassName: string;
   anchorClassName: string;
   anchorLink: boolean;
@@ -60,14 +53,12 @@ interface IOptionToc {
   anchorLinkBefore: boolean;
   anchorLinkSymbol: string;
   anchorLinkSymbolClassName: string;
-  wrapHeadingTextInAnchor: string;
+  wrapHeadingTextInAnchor: boolean;
   resetIds: boolean;
-  sluglify: (str: string) => string;
+  sluglify(str: string): string;
 }
 
-interface IOption extends MarkdownIt.Options {
-  [index: string]: any;
-}
+interface IOption extends MarkdownIt.Options, IOptionToc {}
 
 const TOC = "[toc]";
 const TOC_RE = /^\[toc\]/im;
@@ -77,11 +68,7 @@ let tocHtml = "";
 
 const repeat = (str: string, num: number) => new Array(num + 1).join(str);
 
-const makeSafe = (
-  str: string,
-  id: { [index: string]: number },
-  slugifyFn: (str: string) => string
-) => {
+const makeSafe = (str: string, id: { [index: string]: number }, slugifyFn: (str: string) => string) => {
   const key = slugifyFn(str);
   if (!id[key]) {
     id[key] = 0;
@@ -117,12 +104,7 @@ const renderAnchorLinkSymbol = (options: IOption): IToken[] => {
   }
 };
 
-const renderAnchorLink = (
-  anchor: string,
-  options: IOption,
-  tokens: IToken[],
-  idx: number
-) => {
+const renderAnchorLink = (anchor: string, options: IOption, tokens: IToken[], idx: number) => {
   const attrs: Array<[string, string]> = [];
 
   if (options.anchorClassName !== null) {
@@ -141,11 +123,7 @@ const renderAnchorLink = (
     (tokens[idx + 1].children as IToken[]).unshift(openLinkToken);
     (tokens[idx + 1].children as IToken[]).push(closeLinkToken);
   } else {
-    const linkTokens = [
-      openLinkToken,
-      ...renderAnchorLinkSymbol(options),
-      closeLinkToken,
-    ];
+    const linkTokens = [openLinkToken, ...renderAnchorLinkSymbol(options), closeLinkToken];
 
     // `push` or `unshift` according to anchorLinkBefore option
     // space is at the opposite side.
@@ -166,10 +144,7 @@ const treeToMarkdownBulletList = (tree: Array<IToc>, indent = 0) =>
       const indentation = "  ";
       let node = `${repeat(indentation, indent)}*`;
       if (item.heading.content) {
-        const contentWithoutAnchor = item.heading.content.replace(
-          /\[([^\]]*)\]\([^)]*\)/g,
-          "$1"
-        );
+        const contentWithoutAnchor = item.heading.content.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
         node += ` [${contentWithoutAnchor}](#${item.heading.anchor})\n`;
       } else {
         node += "\n";
@@ -208,8 +183,9 @@ const generateTocMarkdownFromArray = (headings: Array<ITocItem>, options: IOptio
   return treeToMarkdownBulletList(tree.nodes);
 };
 
-export default function(md: MarkdownIt, opt: IOption) {
-  const options = {
+export default function (
+  md: MarkdownIt,
+  opt: IOption = {
     toc: true,
     tocFirstLevel: 1,
     tocLastLevel: 6,
@@ -218,16 +194,16 @@ export default function(md: MarkdownIt, opt: IOption) {
     anchorLink: true,
     anchorClassName: "markdownIt-Anchor",
     anchorLinkSpace: true,
-    anchorLinkPrefix: undefined,
+    anchorLinkPrefix: "",
     anchorLinkBefore: true,
     anchorLinkSymbol: "#",
-    anchorLinkSymbolClassName: null,
+    anchorLinkSymbolClassName: "",
     wrapHeadingTextInAnchor: false,
     resetIds: true,
-    sluglify: uslug,
-    ...opt,
-  };
-
+    sluglify: (arg) => arg,
+  }
+) {
+  const options: IOption = { ...{ sluglify: uslug }, ...opt };
   const markdownItSecondInstance = clone(md);
 
   // initialize key ids for each instance
@@ -243,7 +219,7 @@ export default function(md: MarkdownIt, opt: IOption) {
 
     let tocMarkdown = "";
     let tocTokens = [];
-    const tocArray = [];
+    const tocArray: Array<ITocItem> = [];
 
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i].type !== "heading_close") {
@@ -255,11 +231,7 @@ export default function(md: MarkdownIt, opt: IOption) {
 
       if (heading.type === "inline") {
         let content;
-        if (
-          heading.children &&
-          heading.children.length > 0 &&
-          heading.children[0].type === "link_open"
-        ) {
+        if (heading.children && heading.children.length > 0 && heading.children[0].type === "link_open") {
           // headings that contain links have to be processed
           // differently since nested links aren't allowed in markdown
           content = heading.children[1].content;
@@ -344,12 +316,12 @@ export default function(md: MarkdownIt, opt: IOption) {
 
   const originalHeadingOpen =
     md.renderer.rules.heading_open ||
-    function(...args) {
+    function (...args) {
       const [tokens, idx, opti, , self] = args;
       return self.renderToken(tokens, idx, opti);
     };
 
-  md.renderer.rules.heading_open = function(...args) {
+  md.renderer.rules.heading_open = function (...args) {
     const tokens: Array<ITokenToc> = args[0];
     const idx = args[1];
 

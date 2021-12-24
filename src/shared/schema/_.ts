@@ -47,7 +47,7 @@ export interface IDropDown {
   description: Array<string>;
 }
 
-export type TSchema<T> = {
+export type ISchema<T> = {
   [key in keyof T]: IGroup<T[key]>;
 };
 
@@ -59,7 +59,7 @@ export const reduceType = (type: any) => {
   return resArr;
 };
 
-export function reduceSchema<T>(data: TSchema<T>) {
+export function reduceSchema<T>(data: ISchema<T>) {
   enum ETypeMap {
     Group = "object",
     Range = "number",

@@ -1,6 +1,6 @@
-import { IGroup, reduceSchema, reduceType, TSchema } from "./_";
+import { IGroup, reduceSchema, reduceType, ISchema } from "./_";
 import {
-  EPreset,
+  EMarkdownPreset,
   IMarkdownHabit,
   IMarkdownExport,
   IMarkdownExtend,
@@ -16,8 +16,8 @@ const mHabit: IGroup<IMarkdownHabit> = {
     preset: {
       type: "DropDown",
       title: ["语法预设"],
-      enum: reduceType(EPreset),
-      default: EPreset.GFM,
+      enum: reduceType(EMarkdownPreset),
+      default: EMarkdownPreset.GFM,
       description: ["语法预设方案，可被单独设置覆盖"],
     },
     hardBreaks: {
@@ -225,7 +225,7 @@ const mFeature: IGroup<IMarkdownFeature> = {
   default: {},
 };
 
-export const schemaMarkdown: TSchema<IMarkdown> = {
+export const schemaMarkdown: ISchema<IMarkdown> = {
   habit: mHabit,
   export: mExport,
   extend: mExtend,

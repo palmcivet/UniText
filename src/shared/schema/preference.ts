@@ -1,5 +1,5 @@
-import { TSchema, IGroup, reduceType, reduceSchema } from "./_";
-import { ECoding, EEoL, EIndent, EPicture } from "@/shared/typings/document";
+import { ISchema, IGroup, reduceType, reduceSchema } from "./_";
+import { ETXTCoding, ETXTEoL, ETXTIndent, EMDPicture } from "@/shared/typings/document";
 import {
   EStartup,
   EEditMode,
@@ -169,25 +169,25 @@ const pDocument: IGroup<IPreferenceDocument> = {
     indent: {
       type: "DropDown",
       title: ["缩进"],
-      enum: reduceType(EIndent),
-      default: EIndent.T4,
+      enum: reduceType(ETXTIndent),
+      default: ETXTIndent.T4,
       description: [""],
     },
     encoding: {
       type: "DropDown",
       title: ["编码"],
-      enum: reduceType(ECoding),
-      default: ECoding.UTF8,
+      enum: reduceType(ETXTCoding),
+      default: ETXTCoding.UTF8,
       description: [""],
     },
     endOfLine: {
       type: "DropDown",
       title: ["行尾序列"],
-      enum: reduceType(EEoL),
-      default: EEoL.LF,
+      enum: reduceType(ETXTEoL),
+      default: ETXTEoL.LF,
       description: [""],
     },
-    tag: {
+    tags: {
       type: "TextGroup",
       title: ["默认标签"],
       default: ["Untaged"],
@@ -195,9 +195,9 @@ const pDocument: IGroup<IPreferenceDocument> = {
     },
     picture: {
       type: "DropDown",
-      enum: reduceType(EPicture),
+      enum: reduceType(EMDPicture),
       title: ["图片存储方案"],
-      default: EPicture.LOCAL,
+      default: EMDPicture.LOCAL,
       description: [""],
     },
     category: {
@@ -222,7 +222,7 @@ const pDocument: IGroup<IPreferenceDocument> = {
   default: {},
 };
 
-export const schemaPreference: TSchema<IPreference> = {
+export const schemaPreference: ISchema<IPreference> = {
   interface: pInterface,
   workbench: pWorkBench,
   browser: pFileManager,

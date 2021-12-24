@@ -11,13 +11,13 @@ import MarkdownItKatex from "@iktakahiro/markdown-it-katex";
 import MarkdownItImplicitFigures from "markdown-it-implicit-figures";
 // import MarkdownItImageLazyLoading from "markdown-it-image-lazy-loading";
 import MarkdownItImageList from "@/library/markdown-it-image-list";
-import MarkdownItTocAndAnchor from "@/library/markdown-it-toc-and-anchor";
+import MarkdownItTocAndAnchor, { ITocItem } from "@/library/markdown-it-toc-and-anchor";
 import MarkdownItHighlightLines from "@/library/markdown-it-hightlight-lines";
 import { EventBus } from "@palmcivet/unitext-tree-view";
 
 import { BUS_CHANNEL } from "@/shared/channel";
 import { IMarkdown } from "@/shared/typings/setting/markdown";
-import { IDisposable, ITocItem } from "@/shared/typings/renderer";
+import { IDisposable } from "@/shared/typings/renderer";
 import useWorkbench from "@/renderer/stores/workbench";
 
 const BAD_PROTO_RE = /^(vbscript|javascript|data):/;

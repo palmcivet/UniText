@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from "vue";
-import { ITab } from "@/shared/typings/model";
+import { ITab } from "@/shared/typings/renderer";
 
 export default defineComponent({
   name: "TabBarItem",
@@ -47,7 +47,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/var.less";
+@import "~@/renderer/styles/vars.less";
 @import "~@/renderer/styles/mixins.less";
 
 .tab-bar-item {

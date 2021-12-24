@@ -1,4 +1,4 @@
-import { IDocumentConfig, IDocumentFormat } from "../document";
+import { IMDConfig, ITXTFormat } from "../document";
 
 /**
  * @deprecated
@@ -139,20 +139,17 @@ export interface IPreferenceEditor {
 /**
  * @interface 文档的默认设置
  */
-export interface IPreferenceDocument extends IDocumentFormat, IDocumentConfig {
+export interface IPreferenceDocument extends ITXTFormat, IMDConfig {
   /**
    * @field 默认分类
    */
   category: string;
 }
 
-/**
- * @interface preference.json 的类型
- */
 export interface IPreference {
   interface: IPreferenceInterface;
   workbench: IPreferenceWorkbench;
   browser: IPreferenceBrowser;
-  editor: IPreferenceEditor;
   document: IPreferenceDocument;
+  editor: IPreferenceEditor;
 }

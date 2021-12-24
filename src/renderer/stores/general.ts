@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 import { EEditMode, ETypeMode } from "@/shared/typings/setting/preference";
-import { EWorkbenchType, IGeneralState } from "@/shared/typings/store";
+import { IGeneralState } from "@/shared/typings/store";
 
 export default defineStore({
   id: "general",
@@ -38,7 +38,7 @@ export default defineStore({
         indent: "T4",
         encoding: "UTF8",
         endOfLine: "LF",
-        tag: [],
+        tags: [],
         picture: "LOCAL",
         category: "",
         remark: "",
