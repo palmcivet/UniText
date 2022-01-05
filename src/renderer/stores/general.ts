@@ -28,12 +28,6 @@ export default defineStore({
         ignoreFile: [],
         showIndent: true,
       },
-      editor: {
-        lineWrap: true,
-        showMiniMap: false,
-        showLineNumber: true,
-        highlightLine: true,
-      },
       document: {
         indent: "T4",
         encoding: "UTF8",

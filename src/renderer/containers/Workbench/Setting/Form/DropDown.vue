@@ -1,22 +1,20 @@
 <template>
   <div class="option" :title="$g(prop.description)">
     <label>{{ $g(prop.title) }}</label>
-    <input
-      type="text"
-      v-model="currentValue"
-      :disabled="disabled"
-      spellcheck="false"
-      @change="onChange()"
-    />
+    <select v-model="currentValue" @change="onChange()">
+      <option v-for="(optionValue, index) in prop.enum" :key="index" :value="optionValue">
+        {{ optionValue }}
+      </option>
+    </select>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import Skeleton from "./skeleton";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "UInputText",
+  name: "DropDown",
   mixins: [Skeleton],
   methods: {
     onChange() {
@@ -28,4 +26,9 @@ export default defineComponent({
 
 <style lang="less" scoped>
 @import "./style.less";
+
+select {
+  cursor: pointer;
+  max-width: calc(@input-width / 2);
+}
 </style>

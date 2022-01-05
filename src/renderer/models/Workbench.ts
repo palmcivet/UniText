@@ -13,13 +13,13 @@ import { charCount, timeCalc, wordCount } from "@/renderer/utils/statistics";
 import { exportFrontMatter, importFrontMatter } from "@/renderer/utils/front-matter";
 import { IMG_IN_URL_PATTERN, PATH_SEPARATE, URL_PATH, URL_PROTOCOL } from "@/shared/pattern";
 import { cleanURL, validateURL } from "@/shared/utils/links";
-import { difference, hashString, intersect } from "@/shared/utils";
+import { debounce, difference, hashString, intersect } from "@/shared/utils";
 import { BUS_CHANNEL } from "@/shared/channel";
 import { IEditorState, IViewState, IWorkbenchState } from "@/shared/typings/model";
 import { EWorkbenchType } from "@/shared/typings/store";
 import { IDisposable, IPathRoute, ITab } from "@/shared/typings/renderer";
 import { ISnippetMonaco } from "@/shared/typings/setting/snippet";
-import { IMDFrontMatter, ITXTComputable } from "@/shared/typings/document";
+import { IMDConfig, IMDFrontMatter, ITXTComputable, ITXTFormat } from "@/shared/typings/document";
 
 import { OneDarkPro } from "../containers/Workbench/Document/Editor/Monaco/theme";
 import { init } from "../containers/Workbench/Document/Editor/Monaco/option";
@@ -119,6 +119,7 @@ async function getClipboard(): Promise<{
 type TState = IEditorState | IViewState | IWorkbenchState;
 
 let counter = 0;
+const SYNC_DELAY = 700;
 const CLOSE_NEXT_RIGHT = true; // 关闭后，打开右侧|打开左侧
 const OPEN_NEXT_RIGHT = true; // 打开出现在右侧|最后
 
@@ -175,8 +176,9 @@ export default class Workbench implements IDisposable {
       const extension = new MonacoMarkdownExtension();
       extension.activate(this.editorInstance);
 
-      this.editorInstance.onDidChangeModelContent(this.onMonacoChange);
+      this.editorInstance.onDidChangeModelContent(this.onMonacoModelContent);
       this.editorInstance.addCommand(MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V, this.onMonacoPaste);
+      this.editorInstance.addCommand(MonacoEditor.KeyMod.Alt | MonacoEditor.KeyCode.KEY_Z, this.onMonacoChangeWordWrap);
 
       this.bus.on(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown.bind(this));
       this.bus.on(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown.bind(this));
@@ -250,7 +252,7 @@ export default class Workbench implements IDisposable {
   }
 
   public async doCloseTab(index: number): Promise<void> {
-    const targetState = this.cachedStateList[this.activatedStateIndex];
+    const targetState = this.cachedStateList[index];
 
     /* 处理关闭的 Editor Model */
     if (targetState.type === EWorkbenchType.EDITOR) {
@@ -313,6 +315,25 @@ export default class Workbench implements IDisposable {
   public doMoveTab(src: number, dst: number): void {}
 
   /* Tab operation end */
+
+  public doChangeMarkdown({ config, format }: { config: IMDConfig; format: ITXTFormat }): void {
+    // TODO 更改编辑器设置
+    const currentState = this.cachedStateList[this.activatedStateIndex] as IEditorState;
+    const _frontmatter = { ...currentState.frontmatter, config: { ...currentState.frontmatter.config, ...config } };
+    const _format = { ...currentState.format, ...format };
+
+    currentState.frontmatter = _frontmatter;
+    currentState.format = _format;
+
+    const { SYNC_FORMAT, SYNC_FRONTMATTER, SET_TAB_STATE } = useWorkbench();
+    SYNC_FORMAT(_format);
+    SYNC_FRONTMATTER(_frontmatter);
+
+    if (!currentState.isModified) {
+      currentState.isModified = true;
+      SET_TAB_STATE(this.activatedStateIndex, currentState);
+    }
+  }
 
   public doCreateMarkdown(): void {
     this.onCreateMarkdown();
@@ -498,7 +519,7 @@ export default class Workbench implements IDisposable {
     this.editorInstance.setPosition({ column: 1, lineNumber: value[1] });
   };
 
-  private onMonacoChange = async (event: MonacoEditor.editor.IModelContentChangedEvent): Promise<void> => {
+  private onMonacoModelContent = debounce((event: MonacoEditor.editor.IModelContentChangedEvent): void => {
     // FEAT 增量更新 `event.changes`
     const content = this.editorInstance.getValue() ?? "";
     this.bus.emit(BUS_CHANNEL.EDITOR_SYNC_DOC, content);
@@ -510,7 +531,7 @@ export default class Workbench implements IDisposable {
       state.isModified = true;
       useWorkbench().SET_TAB_STATE(this.activatedStateIndex, state);
     }
-  };
+  }, SYNC_DELAY);
 
   private onMonacoPaste = async (): Promise<void> => {
     // FEAT 清洗 URL
@@ -543,5 +564,13 @@ export default class Workbench implements IDisposable {
     const { endLineNumber, endColumn } = this.editorInstance.getSelection() as MonacoEditor.Selection;
 
     this.editorInstance.setPosition({ lineNumber: endLineNumber, column: endColumn });
+  };
+
+  private onMonacoChangeWordWrap = (): void => {
+    const oldValue = this.editorInstance.getOption(MonacoEditor.editor.EditorOption.wordWrap);
+
+    this.editorInstance.updateOptions({
+      wordWrap: oldValue === "on" ? "off" : "on",
+    });
   };
 }

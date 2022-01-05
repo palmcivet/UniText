@@ -42,7 +42,7 @@ export default defineComponent({
   props: {
     raw: { type: Number, default: new Date().getTime() },
     remark: { type: String },
-    isCN: { type: Boolean },
+    isCN: { type: Boolean, default: true },
   },
 
   setup(props) {

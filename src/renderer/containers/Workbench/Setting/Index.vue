@@ -90,20 +90,20 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref } from "vue";
 
-import Range from "@/renderer/components/Form/UInputNumber.vue";
-import CheckBox from "@/renderer/components/Form/UCheckBox.vue";
-import TextBox from "@/renderer/components/Form/UInputText.vue";
-import TextGroup from "@/renderer/components/Form/UTextGroup.vue";
-import DropDown from "@/renderer/components/Form/USelect.vue";
+import { useShell } from "@/renderer/composables/electron";
+import { useService } from "@/renderer/composables/service";
 import { schemaTheme } from "@/shared/schema/theme";
 import { schemaSystem } from "@/shared/schema/system";
 import { schemaSnippet } from "@/shared/schema/snippet";
 import { schemaMarkdown } from "@/shared/schema/markdown";
 import { schemaPreference } from "@/shared/schema/preference";
-import { useService } from "@/renderer/composables/service";
-import { useShell } from "@/renderer/composables/electron";
-import { ISetting } from "@/shared/typings/setting";
 import { BUS_CHANNEL } from "@/shared/channel";
+import { ISetting } from "@/shared/typings/setting";
+import Range from "./Form/Range.vue";
+import TextBox from "./Form/TextBox.vue";
+import DropDown from "./Form/DropDown.vue";
+import CheckBox from "./Form/CheckBox.vue";
+import TextGroup from "./Form/TextGroup.vue";
 import SnippetGroup from "./SnippetGroup.vue";
 
 interface INavItem {
@@ -114,6 +114,8 @@ interface INavItem {
 
 export default defineComponent({
   name: "Setting",
+
+  inject: ["$bus"],
 
   components: {
     SnippetGroup,

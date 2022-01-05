@@ -55,9 +55,10 @@ export default defineComponent({
 
   .snippet-table {
     width: 100%;
+    max-width: 34em;
     height: 26px;
     line-height: 26px;
-    font-size: 14px;
+    font-size: 15px;
     list-style: none;
     cursor: pointer;
     background-color: var(--formGroup-hoverBg);

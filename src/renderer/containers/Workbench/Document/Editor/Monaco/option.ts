@@ -7,7 +7,7 @@ const init: editor.IStandaloneEditorConstructionOptions = {
   minimap: {
     enabled: false,
   },
-  wordWrap: "on",
+  wordWrap: "off",
   cursorWidth: 2,
   cursorSmoothCaretAnimation: true,
   cursorBlinking: "smooth",

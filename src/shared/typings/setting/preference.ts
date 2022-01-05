@@ -113,30 +113,6 @@ export interface IPreferenceBrowser {
 }
 
 /**
- * @interface 编辑器的默认设置
- * @deprecated 单独设为模块 monaco
- * extends IStandaloneEditorConstructionOptions {
- */
-export interface IPreferenceEditor {
-  /**
-   * @field 换行
-   */
-  lineWrap: boolean;
-  /**
-   * @field 显示迷你地图
-   */
-  showMiniMap: boolean;
-  /**
-   * @field 显示行号
-   */
-  showLineNumber: boolean;
-  /**
-   * @field 高亮当前行
-   */
-  highlightLine: boolean;
-}
-
-/**
  * @interface 文档的默认设置
  */
 export interface IPreferenceDocument extends ITXTFormat, IMDConfig {
@@ -151,5 +127,4 @@ export interface IPreference {
   workbench: IPreferenceWorkbench;
   browser: IPreferenceBrowser;
   document: IPreferenceDocument;
-  editor: IPreferenceEditor;
 }

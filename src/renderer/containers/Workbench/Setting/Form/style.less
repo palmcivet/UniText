@@ -1,0 +1,45 @@
+@import "~@/renderer/styles/vars.less";
+
+@input-width: 34em;
+@input-height: 1.6em;
+@font-size-normal: 1em;
+@margin-width: 5px;
+
+.option {
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+
+  label {
+    font-size: @font-size-normal;
+
+    &:first-child {
+      margin: @margin-width 0;
+    }
+  }
+
+  input,
+  select {
+    height: @input-height;
+    font-size: @font-size-normal;
+    color: var(--inputBox-Fg);
+    background: var(--inputBox-Bg);
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    max-width: @input-width;
+    font-family: @normal-font-family;
+
+    &:focus {
+      color: var(--inputBox-hoverFg);
+      background: var(--inputBox-hoverBg);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      color: var(--inputBox-disabledFg);
+      background: var(--inputBox-disabledBg);
+    }
+  }
+}

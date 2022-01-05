@@ -17,7 +17,7 @@ import { defineComponent } from "vue";
 import Skeleton from "./skeleton";
 
 export default defineComponent({
-  name: "UInputNumber",
+  name: "Range",
   mixins: [Skeleton],
   methods: {
     onChange() {

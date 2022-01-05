@@ -29,6 +29,8 @@ import useWorkbench from "@/renderer/stores/workbench";
 import { BUS_CHANNEL } from "@/shared/channel";
 
 export default defineComponent({
+  name: "Toc",
+
   inject: ["$bus"],
 
   props: {},
@@ -60,11 +62,10 @@ export default defineComponent({
 
 .panel-toc {
   height: 100%;
-  width: 100%;
+  overflow-y: auto;
   position: relative;
   color: var(--sidePanel-Fg);
   background: var(--sidePanel-Bg);
-  overflow-y: auto;
 
   .toc-empty {
     height: 100%;

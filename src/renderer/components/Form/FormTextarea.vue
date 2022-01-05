@@ -1,0 +1,96 @@
+<template>
+  <div class="form-textarea">
+    <textarea
+      class="form-textarea__textarea"
+      v-bind="$attrs"
+      v-model="currentValue"
+      @change.stop="onChange()"
+    />
+    <i
+      class="form-textarea__clear ri-close-line"
+      v-if="canClear"
+      @click.stop="onClear()"
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, ref, watch } from "vue";
+
+export default defineComponent({
+  name: "FormTextarea",
+
+  inheritAttrs: false,
+
+  emits: ["form-change"],
+
+  props: {
+    value: {
+      type: String,
+      default: "",
+    },
+  },
+
+  setup(props, { emit }) {
+    const currentValue = ref(props.value);
+
+    watch(
+      () => props.value,
+      (newValue) => {
+        console.log(newValue);
+        currentValue.value = newValue;
+      }
+    );
+
+    const onChange = () => {
+      emit("form-change", currentValue.value);
+    };
+
+    const canClear = computed(() => currentValue.value?.length !== 0);
+    const onClear = () => {
+      currentValue.value = "";
+    };
+
+    return {
+      currentValue,
+      canClear,
+
+      onClear,
+      onChange,
+    };
+  },
+});
+</script>
+
+<style lang="less" scoped>
+@import "./style.less";
+
+.form-textarea {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  &__textarea {
+    margin: 0;
+    width: 100%;
+    color: var(--inputBox-Fg);
+    background: var(--inputBox-Bg);
+  }
+
+  &__clear {
+    @align-offset: 1px;
+    @position-offset: 3px;
+
+    cursor: pointer;
+    position: absolute;
+    border-radius: 50%;
+    right: @position-offset;
+    bottom: @position-offset;
+    font-size: @icon-size - @align-offset * 2;
+    padding-left: @align-offset;
+    padding-top: @align-offset;
+    width: @icon-size - @align-offset;
+    height: @icon-size - @align-offset;
+  }
+}
+</style>

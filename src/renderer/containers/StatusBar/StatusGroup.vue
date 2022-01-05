@@ -54,10 +54,4 @@ export default defineComponent({
     margin: 0 0.2em;
   }
 }
-
-.tag-list {
-  li {
-    border-radius: @layout-statusbar-height;
-  }
-}
 </style>

@@ -5,8 +5,7 @@ import { BUS_CHANNEL } from "@/shared/channel";
 import { arrayHasElements } from "@/shared/utils";
 import { ISystemLaunch } from "@/shared/typings/setting/system";
 import { IPreferenceBrowser } from "@/shared/typings/setting/preference";
-import { IMark, IPathRoute } from "@/shared/typings/model";
-import { IDisposable } from "@/shared/typings/renderer";
+import { IDisposable, IMark, IPathRoute } from "@/shared/typings/renderer";
 
 interface IOptionsType extends IPreferenceBrowser, Pick<ISystemLaunch, "cabinPath"> {}
 

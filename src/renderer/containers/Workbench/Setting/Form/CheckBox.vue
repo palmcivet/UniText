@@ -17,7 +17,7 @@ import { defineComponent } from "vue";
 import Skeleton from "./skeleton";
 
 export default defineComponent({
-  name: "UCheckBox",
+  name: "CheckBox",
   mixins: [Skeleton],
   methods: {
     onChange() {

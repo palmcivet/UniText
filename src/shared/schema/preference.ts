@@ -7,7 +7,6 @@ import {
   IPreferenceInterface,
   IPreferenceWorkbench,
   IPreferenceBrowser,
-  IPreferenceEditor,
   IPreferenceDocument,
   IPreference,
 } from "@/shared/typings/setting/preference";
@@ -128,39 +127,6 @@ const pFileManager: IGroup<IPreferenceBrowser> = {
   default: {},
 };
 
-const pEditor: IGroup<IPreferenceEditor> = {
-  type: "Group",
-  title: ["编辑器"],
-  description: ["编辑器的默认设置"],
-  properties: {
-    lineWrap: {
-      type: "CheckBox",
-      title: ["换行"],
-      default: true,
-      description: [""],
-    },
-    showMiniMap: {
-      type: "CheckBox",
-      title: ["显示代码地图"],
-      default: false,
-      description: ["编辑区右侧显示代码地图"],
-    },
-    showLineNumber: {
-      type: "CheckBox",
-      title: ["显示行号"],
-      default: true,
-      description: [""],
-    },
-    highlightLine: {
-      type: "CheckBox",
-      title: ["高亮当前行"],
-      default: true,
-      description: [""],
-    },
-  },
-  default: {},
-};
-
 const pDocument: IGroup<IPreferenceDocument> = {
   type: "Group",
   title: ["文档"],
@@ -202,15 +168,15 @@ const pDocument: IGroup<IPreferenceDocument> = {
     },
     category: {
       type: "TextBox",
-      title: ["默认分类"],
+      title: ["默认分类。未分类文件将归到该类别"],
       default: "Uncategory",
-      description: ["未分类文件归到该类别"],
+      description: [""],
     },
     remark: {
       type: "TextBox",
-      title: ["默认备注"],
+      title: ["默认备注。文档的备注"],
       default: "",
-      description: ["文档的备注"],
+      description: [""],
     },
     complete: {
       type: "CheckBox",
@@ -226,7 +192,6 @@ export const schemaPreference: ISchema<IPreference> = {
   interface: pInterface,
   workbench: pWorkBench,
   browser: pFileManager,
-  editor: pEditor,
   document: pDocument,
 };
 

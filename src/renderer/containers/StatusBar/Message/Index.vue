@@ -14,7 +14,7 @@ export default defineComponent({
 
   setup() {
     const icon = computed(() => {
-      return true ? "ri-notification-2-fill" : "ri-notification-2-line";
+      return false ? "ri-notification-2-fill" : "ri-notification-2-line";
     });
 
     return {
