@@ -1,7 +1,7 @@
 "use strict";
 
 const webpack = require("webpack");
-const { VueLoaderPlugin } = require("vue-loader/dist/index");
+const { VueLoaderPlugin } = require("vue-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const env = require("dotenv").config();
