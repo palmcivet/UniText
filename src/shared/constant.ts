@@ -1,3 +1,5 @@
+export const ID_PREVIEW = "markdown-preview";
+
 export const THEME_CSS = ["appearance", "renderView", "renderCode"];
 export const THEME_JS = ["monacoEditor"];
 export const THEME_PRESET = ["OneDarkPro", "OneDarkCyber", "Custom"];
@@ -6,6 +8,15 @@ export const PUBLIC = {
   BIN: "bin",
   LIB: "lib",
   THEME: "themes",
+};
+
+export const FORMAT = {
+  MD: ".md",
+  PDF: ".pdf",
+  HTML: ".html",
+  DOCX: ".docx",
+  RTF: ".rtf",
+  IMAGE: ".image",
 };
 
 export const SYSTEM_PATH = {

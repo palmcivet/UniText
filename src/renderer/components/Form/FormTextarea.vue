@@ -29,6 +29,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    clearable: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   setup(props, { emit }) {
@@ -37,7 +41,6 @@ export default defineComponent({
     watch(
       () => props.value,
       (newValue) => {
-        console.log(newValue);
         currentValue.value = newValue;
       }
     );
@@ -46,9 +49,10 @@ export default defineComponent({
       emit("form-change", currentValue.value);
     };
 
-    const canClear = computed(() => currentValue.value?.length !== 0);
+    const canClear = computed(() => props.clearable && currentValue.value?.length !== 0);
     const onClear = () => {
       currentValue.value = "";
+      onChange()
     };
 
     return {
@@ -86,7 +90,7 @@ export default defineComponent({
     border-radius: 50%;
     right: @position-offset;
     bottom: @position-offset;
-    font-size: @icon-size - @align-offset * 2;
+    font-size: @icon-size;
     padding-left: @align-offset;
     padding-top: @align-offset;
     width: @icon-size - @align-offset;

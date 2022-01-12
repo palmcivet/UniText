@@ -1,7 +1,10 @@
 import { toRaw } from "vue";
-import { useIpc } from "./electron";
+import Electron from "electron";
+
 import { IServiceMap } from "@/main/service/index";
 import { IPC_CHANNEL } from "@/shared/channel";
+
+const { shell, clipboard, ipcRenderer, dialog } = (window as any).electron as typeof Electron;
 
 function createProxy(service: string) {
   return new Proxy({} as any, {
@@ -22,4 +25,24 @@ const servicesProxy: IServiceMap = new Proxy({} as any, {
 
 export function useService<K extends keyof IServiceMap>(name: K): IServiceMap[K] {
   return servicesProxy[name];
+}
+
+export function useShell() {
+  return shell;
+}
+
+export function useClipboard() {
+  return clipboard;
+}
+
+export function useIpc() {
+  return ipcRenderer;
+}
+
+export function useDialog() {
+  return dialog;
+}
+
+export function useDisk() {
+  return (window as any).disk;
 }

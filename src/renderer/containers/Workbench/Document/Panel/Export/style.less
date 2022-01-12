@@ -1,0 +1,48 @@
+@cell-gap: 5px;
+
+.export-form {
+  &-item {
+    width: 100%;
+    min-height: 24px;
+    display: flex;
+  }
+
+  &-label {
+    line-height: 24px;
+    user-select: none;
+  }
+
+  &-divider {
+    width: 100%;
+    height: @cell-gap * 2;
+  }
+
+  &-dynamic {
+    margin-top: 0;
+    min-height: 0;
+    overflow-y: hidden;
+    transition: height 0.3s ease-in-out;
+  }
+}
+
+.export-format,
+.export-specific {
+  min-width: 90%;
+}
+
+.export-specific {
+  max-height: calc(100% - 300px);
+  overflow-y: overlay;
+
+  .export-form-label {
+    margin: @cell-gap 0 calc(@cell-gap / 2);
+  }
+
+  .export-form-item {
+    flex-direction: column;
+  }
+
+  .export-form-item + .export-form-item {
+    margin-top: @cell-gap;
+  }
+}

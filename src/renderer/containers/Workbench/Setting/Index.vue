@@ -90,8 +90,7 @@
 <script lang="ts">
 import { defineComponent, onBeforeMount, ref } from "vue";
 
-import { useShell } from "@/renderer/composables/electron";
-import { useService } from "@/renderer/composables/service";
+import { useShell, useService } from "@/renderer/composables";
 import { schemaTheme } from "@/shared/schema/theme";
 import { schemaSystem } from "@/shared/schema/system";
 import { schemaSnippet } from "@/shared/schema/snippet";

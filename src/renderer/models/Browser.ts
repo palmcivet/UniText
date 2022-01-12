@@ -1,6 +1,5 @@
 import { TreeView, ITreeNodeFolder, EventBus } from "@palmcivet/unitext-tree-view";
-import { useDialog } from "@/renderer/composables/electron";
-import { useDisk } from "@/renderer/composables/disk";
+import { useDisk, useDialog } from "@/renderer/composables";
 import { BUS_CHANNEL } from "@/shared/channel";
 import { arrayHasElements } from "@/shared/utils";
 import { ISystemLaunch } from "@/shared/typings/setting/system";

@@ -195,8 +195,6 @@ export default defineComponent({
   height: 100%;
   overflow-y: overlay;
   padding: 0 @cell-gap;
-  color: var(--sidePanel-Fg);
-  background: var(--sidePanel-Bg);
 
   .info-card {
     margin: @cell-gap 0;

@@ -3,7 +3,6 @@ import { autoUpdater } from "electron-updater";
 import { join } from "path";
 
 import Logger from "./backend/Logger";
-import Printer from "./backend/Printer";
 import Container from "./service";
 import EnvService from "./service/EnvService";
 // import MenuService from "./service/MenuService";
@@ -143,6 +142,8 @@ function main(): void {
         mainWindow = await createMainWindow();
       }
     });
+
+    _container.getService("WindowService").createPrinterWindow();
 
     autoUpdater.on("update-downloaded", () => {
       autoUpdater.quitAndInstall();

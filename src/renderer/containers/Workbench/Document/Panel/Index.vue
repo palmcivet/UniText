@@ -79,12 +79,15 @@ export default defineComponent({
 
     &-text {
       margin-left: 4px;
+      user-select: none;
     }
   }
 
   &-wrapper {
     height: calc(100% - v-bind(panelListLength) * @title-height);
     transition: height 0.3s ease-in-out;
+    color: var(--sidePanel-Fg);
+    background: var(--sidePanel-Bg);
   }
 }
 </style>

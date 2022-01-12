@@ -24,6 +24,12 @@ export enum BUS_CHANNEL {
 }
 
 export enum IPC_CHANNEL {
-  /* Service */
+  /* service */
   SERVICE_CALL = "service:call",
+  PRINTER_CALL = "printer::call",
+
+  /* external */
+  EXTERNAL_PANDOC = "external::pandoc",
+  EXTERNAL_RIPGREP = "external::ripgrep",
+  EXTERNAL_PRINT_PDF = "external::print-pdf",
 }

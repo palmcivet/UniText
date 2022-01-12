@@ -1,4 +1,4 @@
-import { THEME_PRESET, THEME_CSS, PUBLIC, CONFIG_FILE, CONFIG_FOLDER } from "@/common/env";
+import { THEME_PRESET, THEME_CSS, PUBLIC, CONFIG_FOLDER } from "@/common/env";
 import { $id } from "@/shared/utils";
 
 export default class ThemeEngine {

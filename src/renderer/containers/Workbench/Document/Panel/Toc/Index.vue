@@ -62,10 +62,8 @@ export default defineComponent({
 
 .panel-toc {
   height: 100%;
-  overflow-y: auto;
+  overflow-y: overlay;
   position: relative;
-  color: var(--sidePanel-Fg);
-  background: var(--sidePanel-Bg);
 
   .toc-empty {
     height: 100%;

@@ -1,40 +1,41 @@
 <template>
-  <select class="form-select" v-model="currentValue" @change.stop="onChange()">
-    <option v-if="tips" :value="''" style="display: none">{{ tips }}</option>
-    <option
-      class="form-select__option"
-      v-for="(option, index) in options"
-      :key="index"
+  <label
+    class="form-radio"
+    v-for="(option, index) in options"
+    :key="index"
+    @change.stop="onChange()"
+  >
+    <input
+      class="form-radio__radio"
+      type="radio"
       :value="option.value"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+      v-model="currentValue"
+    />
+    <span class="form-radio__label">{{ option.label }}</span>
+  </label>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
 
-interface IFormSelectOption<T> {
+interface IFormRadioOption<T> {
   label: string;
   value: T;
 }
 
 export default defineComponent({
-  name: "FormSelect",
+  name: "FormRadio",
+
+  emits: ["form-change"],
 
   props: {
     value: {
-      type: [Object, String, Boolean, Number] as PropType<any>,
+      type: [String, Boolean, Number] as PropType<any>,
       default: "",
     },
     options: {
-      type: Array as PropType<Array<IFormSelectOption<any>>>,
+      type: Array as PropType<Array<IFormRadioOption<any>>>,
       default: [],
-    },
-    tips: {
-      type: String,
-      default: "",
     },
   },
 
@@ -64,8 +65,16 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "./style.less";
 
-.form-select {
+.form-radio {
   cursor: pointer;
-  width: 100%;
+
+  &__radio {
+    cursor: pointer;
+    vertical-align: bottom;
+  }
+
+  &__label {
+    line-height: @line-height;
+  }
 }
 </style>

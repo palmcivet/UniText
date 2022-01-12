@@ -2,7 +2,7 @@ import { App } from "vue";
 import { EventBus } from "@palmcivet/unitext-tree-view";
 
 import useGeneral from "@/renderer/stores/general";
-import { useService } from "@/renderer/composables/service";
+import { useService } from "@/renderer/composables";
 import { ISetting } from "@/shared/typings/setting";
 import { BUS_CHANNEL } from "@/shared/channel";
 import Viewer from "./Viewer";

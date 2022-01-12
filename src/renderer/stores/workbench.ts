@@ -1,9 +1,8 @@
 import { defineStore } from "pinia";
 
 import { ITocItem } from "@/library/markdown-it-toc-and-anchor";
-import { useIpc } from "@/renderer/composables/electron";
+import { ID_PREVIEW } from "@/shared/constant";
 import { $id } from "@/shared/utils";
-import { IPC_EXPORT } from "@/shared/channel/ipc";
 import { ITab } from "@/shared/typings/renderer";
 import { EWorkbenchType, IWorkbenchState } from "@/shared/typings/store";
 import {
@@ -15,6 +14,37 @@ import {
   EMDPicture,
   IMDFrontMatter,
 } from "@/shared/typings/document";
+import { useDialog, useDisk, useService, useShell } from "../composables";
+
+export function TemplateFactory({
+  body,
+  title,
+  styleText = "",
+  styleLink = [],
+  scriptLink = [],
+}: {
+  body: string;
+  title: string;
+  styleText?: string;
+  styleLink?: Array<string>;
+  scriptLink?: Array<string>;
+}) {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    ${styleLink.map((style) => `<link rel="stylesheet" type="text/css" href="${style}" />`).join("")}
+    <style>${styleText}</style>
+</head>
+<body>
+    ${scriptLink.map((script) => `<script src="${script}"></script>`).join("")}
+    ${body}
+</body>
+</html>`;
+
+  return html;
+}
 
 export default defineStore({
   id: "workbench",
@@ -73,17 +103,64 @@ export default defineStore({
       this.workbenchType = type;
     },
 
-    EXPORT(args: string[]) {
-      switch (args[0]) {
-        case "MD":
-          break;
-        case "HTML":
-          useIpc().send(IPC_EXPORT.AS_HTML, $id("markdown-preview").innerHTML);
-          break;
-        case "PDF":
-          useIpc().send(IPC_EXPORT.AS_PDF, $id("markdown-preview").innerHTML);
-          break;
+    EXPORT_MD() {},
+
+    async EXPORT_HTML() {
+      const defaultPath = await useService("EnvService").getCabinPath();
+      const { filePath, canceled } = await useDialog().showSaveDialog({
+        filters: [{ name: "HTML", extensions: ["html"] }],
+        defaultPath,
+      });
+
+      if (filePath == undefined || canceled) {
+        return;
       }
+
+      try {
+        const rawHtml = TemplateFactory({
+          body: `
+<div id="#markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`,
+          title: "",
+          styleText: `
+#markdown-preview {
+  margin: 2em 15%;
+}`,
+          styleLink: [
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/themes/prism.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.css",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/line-numbers/prism-line-numbers.min.css",
+          ],
+          scriptLink: [
+            "https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/components/prism-core.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/toolbar/prism-toolbar.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/line-numbers/prism-line-numbers.min.js",
+            "https://cdn.bootcdn.net/ajax/libs/prism/1.23.0/plugins/show-language/prism-show-language.min.js",
+          ],
+        });
+        await useDisk().writeFile([filePath], rawHtml);
+        useShell().showItemInFolder(filePath);
+      } catch (error) {}
+    },
+
+    async EXPORT_PDF() {
+      const defaultPath = await useService("EnvService").getCabinPath();
+      const { filePath, canceled } = await useDialog().showSaveDialog({
+        filters: [{ name: "PDF", extensions: ["pdf"] }],
+        defaultPath,
+      });
+
+      if (filePath == undefined || canceled) {
+        return;
+      }
+
+      try {
+        const rawHtml = `
+        <div id="#markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`;
+        await useService("WindowService").printToPDF([filePath], rawHtml);
+        useShell().showItemInFolder(filePath);
+      } catch (error) {}
     },
   },
 });

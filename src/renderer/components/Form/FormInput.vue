@@ -27,11 +27,11 @@ export default defineComponent({
       default: "text",
     },
     value: {
-      type: [Object, Boolean, String],
+      type: [String, Object, Boolean, Number],
     },
     clearable: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
 
@@ -49,13 +49,17 @@ export default defineComponent({
       emit("form-change", currentValue.value);
     };
 
+    const canClear = computed(() => {
+      return (
+        !["password", "number", "checkbox"].includes(props.type) &&
+        props.clearable &&
+        currentValue.value?.toString().length !== 0
+      );
+    });
     const onClear = () => {
       currentValue.value = "";
+      onChange();
     };
-
-    const canClear = computed(() => {
-      return props.clearable && ["password", "checkbox"].includes(props.type);
-    });
 
     return {
       currentValue,
@@ -70,4 +74,34 @@ export default defineComponent({
 
 <style lang="less" scoped>
 @import "./style.less";
+
+.form-input {
+  position: relative;
+
+  &__input {
+    box-sizing: border-box;
+
+    &[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    &[type="number"] {
+      width: 100%;
+    }
+
+    &[type="text"] {
+      width: 100%;
+      background: var(--inputBox-Bg);
+    }
+  }
+
+  &__clear {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    border-radius: 50%;
+    font-size: @icon-size;
+    line-height: @line-height;
+  }
+}
 </style>
