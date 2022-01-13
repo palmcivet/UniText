@@ -4,8 +4,9 @@ const fse = require("fs-extra");
 const chalk = require("chalk");
 const webpack = require("webpack");
 
-const { buildPath } = require("./config/environment");
+const { BuildPath } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
+const preloadConfig = require("./config/webpack.preload");
 const rendererConfig = require("./config/webpack.renderer");
 const { getLicenses } = require("./tools/thirdParty");
 
@@ -32,30 +33,30 @@ const filterPkg = [
 async function preBuild() {
   console.log(chalk.greenBright.bold("UniText Building"));
 
-  await fse.remove(buildPath.build());
+  await fse.remove(BuildPath.build());
   console.log(`${doneLog}Clean up dist folder`);
 }
 
 async function copyResources() {
-  const from = buildPath.public();
-  const to = buildPath.build();
+  const from = BuildPath.public();
+  const to = BuildPath.build();
   await fse.copy(from, to);
   console.log(`${okayLog}Copy resources`);
 }
 
 function copyPackages() {
   bundledPkg.forEach(async (key) => {
-    const from = buildPath.cwd("node_modules", key);
-    const to = buildPath.build("node_modules", key);
+    const from = BuildPath.cwd("node_modules", key);
+    const to = BuildPath.build("node_modules", key);
     await fse.copy(from, to, {
       filter: (src, dst) => !filterPkg.some((item) => src.indexOf(item) !== -1),
     });
   });
-  console.log(`${okayLog}Copy Packages`);
+  console.log(`${okayLog}Copy packages`);
 }
 
 async function getPackageJson() {
-  const pkgPath = buildPath.cwd("package.json");
+  const pkgPath = BuildPath.cwd("package.json");
   const raw = await fse.readFile(pkgPath, "utf-8");
   const pkgJson = JSON.parse(raw);
 
@@ -65,7 +66,7 @@ async function getPackageJson() {
   delete pkgJson.husky;
   delete pkgJson["lint-staged"];
 
-  await fse.writeFile(buildPath.build("package.json"), JSON.stringify(pkgJson));
+  await fse.writeFile(BuildPath.build("package.json"), JSON.stringify(pkgJson));
   console.log(`${okayLog}Truncate package.json`);
 }
 
@@ -102,7 +103,17 @@ function build(config) {
 (async () => {
   await preBuild();
 
-  build(mainConfig)
+  await build(preloadConfig)
+    .then((result) => {
+      console.log(`${okayLog}Preload script built successfully`);
+    })
+    .catch((err) => {
+      console.log(`\n  ${errorLog}failed to build preload script`);
+      console.error(`\n${err}\n`);
+      process.exit(1);
+    });
+
+  await build(mainConfig)
     .then((result) => {
       console.log(`${okayLog}Main process built successfully`);
     })
@@ -112,7 +123,7 @@ function build(config) {
       process.exit(1);
     });
 
-  build(rendererConfig)
+  await build(rendererConfig)
     .then((result) => {
       console.log(`${okayLog}Renderer process built successfully`);
     })
@@ -128,7 +139,7 @@ function build(config) {
 
   await getPackageJson();
 
-  getLicenses(process.cwd(), buildPath.build("THIRD-PARTY-LICENSES.txt"), () => {
+  getLicenses(process.cwd(), BuildPath.build("THIRD-PARTY-LICENSES.txt"), () => {
     console.log(`${okayLog}Generate License statement`);
   });
 })();

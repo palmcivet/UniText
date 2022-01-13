@@ -29,7 +29,7 @@ async function createMainWindow(): Promise<BrowserWindow> {
     minWidth: 647,
     minHeight: 400,
     webPreferences: {
-      preload: join(__static, "lib/preload.js"),
+      preload: join(__preload, "index.js"),
       spellcheck: false,
       nativeWindowOpen: true,
     },

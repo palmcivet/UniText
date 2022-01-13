@@ -28,7 +28,7 @@ export default class WindowService extends Service {
 
     this._printer = new BrowserWindow({
       webPreferences: {
-        preload: join(__static, "lib/preload.js"),
+        preload: join(__preload, "index.js"),
       },
       show: false,
     });

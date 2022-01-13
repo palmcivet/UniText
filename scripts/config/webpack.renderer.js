@@ -4,11 +4,8 @@ const webpack = require("webpack");
 const { VueLoaderPlugin } = require("vue-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const env = require("dotenv").config();
 
-const { buildPath, rendererEnv } = require("./environment");
-
-const isDev = env.NODE_ENV !== "prod";
+const { isDev, BuildPath, rendererEnv } = require("./environment");
 
 /**
  * @type {import('webpack').Configuration}
@@ -18,11 +15,11 @@ const rendererConfig = {
   devtool: "cheap-module-source-map",
   target: "web",
   entry: {
-    index: buildPath.src("renderer/index.ts"),
+    index: BuildPath.src("renderer/index.ts"),
   },
   output: {
-    path: buildPath.build(),
-    filename: "js/[name].js",
+    path: BuildPath.build(),
+    filename: "script/[name].js",
   },
   node: {
     __dirname: false,
@@ -31,8 +28,8 @@ const rendererConfig = {
   resolve: {
     alias: {
       "vue$": `vue/dist/vue.runtime.esm-browser${isDev ? "" : ".prod"}.js`,
-      "@": buildPath.src(),
-      "&": buildPath.public(),
+      "@": BuildPath.src(),
+      "&": BuildPath.public(),
     },
     extensions: [".ts", ".js", ".vue", ".json", ".css", ".less"],
     fallback: { crypto: false },
@@ -41,12 +38,12 @@ const rendererConfig = {
     new HtmlWebpackPlugin({
       title: "UniText",
       filename: "index.html",
-      template: buildPath.public("index.html"),
+      template: BuildPath.public("index.html"),
       inject: "body",
     }),
     new VueLoaderPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.DefinePlugin(rendererEnv(isDev)),
+    new webpack.DefinePlugin(rendererEnv()),
   ],
   module: {
     rules: [
@@ -86,7 +83,7 @@ const rendererConfig = {
           loader: "file-loader",
           options: {
             name: isDev ? "[name].[ext]" : "[hash:5].[ext]",
-            outputPath: "img",
+            outputPath: "image",
           },
         },
       },
@@ -106,9 +103,7 @@ const rendererConfig = {
 
 if (isDev) {
   rendererConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
-}
-
-if (!isDev) {
+} else {
   rendererConfig.devtool = "nosources-source-map";
   rendererConfig.mode = "production";
   rendererConfig.plugins.push(

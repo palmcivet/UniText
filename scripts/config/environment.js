@@ -10,18 +10,20 @@ if (env.error) {
   throw Error(".env 配置文件无效或不存在");
 }
 
-const git = (command) => {
-  return child_process.execSync(`git ${command}`, { encoding: "utf8" }).trim();
-};
+const isDev = process.env.NODE_ENV !== "prod";
 
-const buildPath = {
+const BuildPath = {
   cwd: (...dir) => join(process.cwd(), ...dir),
   src: (...dir) => join(__dirname, "../", "../", "src", ...dir),
   build: (...dir) => join(__dirname, "../", "../", "dist", "build", ...dir),
   public: (...dir) => join(__dirname, "../", "../", "public", ...dir),
 };
 
-const mainEnv = (isDev) => {
+function git(command) {
+  return child_process.execSync(`git ${command}`, { encoding: "utf8" }).trim();
+}
+
+function mainEnv() {
   const shortHash = git("describe --always");
   const commitDate = git("log -1 --format=%aI");
 
@@ -30,24 +32,27 @@ const mainEnv = (isDev) => {
     "global.GIT_SHORT_HASH": JSON.stringify(shortHash),
     "global.GIT_COMMIT_DATE": JSON.stringify(commitDate),
     "global.UNITEXT_VERSION": JSON.stringify(pkg.version),
-    "__static": !isDev
-      ? JSON.stringify(`http://localhost:${env.PORT_RENDERER}/public`)
-      : JSON.stringify(buildPath.public()),
+    "__static": isDev
+      ? JSON.stringify(BuildPath.public())
+      : JSON.stringify(`http://localhost:${env.PORT_RENDERER}/public`),
+    "__preload": isDev
+      ? JSON.stringify(BuildPath.build("preload"))
+      : JSON.stringify(`http://localhost:${env.PORT_RENDERER}/public/preload`),
   };
-};
+}
 
-const rendererEnv = (isDev) => {
-  const main = mainEnv(isDev);
+function rendererEnv() {
+  const main = mainEnv();
 
   return {
     __static: main["__static"],
   };
-};
+}
 
 module.exports = {
-  isDev: process.env.NODE_ENV !== "prod",
   env: Object.assign({}, env.parsed),
-  buildPath,
-  mainEnv,
+  BuildPath,
   rendererEnv,
+  mainEnv,
+  isDev,
 };

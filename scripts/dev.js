@@ -7,8 +7,9 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackDevServer = require("webpack-dev-server");
 
-const { env, buildPath } = require("./config/environment");
+const { env, BuildPath } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
+const preloadConfig = require("./config/webpack.preload");
 const rendererConfig = require("./config/webpack.renderer");
 
 let electronProcess = null;
@@ -72,7 +73,7 @@ function startRenderer() {
     const server = new WebpackDevServer(
       {
         port: env.PORT_RENDERER,
-        static: buildPath.public(),
+        static: BuildPath.public(),
       },
       compiler
     );
@@ -84,16 +85,29 @@ function startRenderer() {
 
 function startMain() {
   return new Promise((resolve, reject) => {
-    const compiler = webpack(mainConfig);
-
-    compiler.hooks.watchRun.tapAsync("Compiling", (_, done) => {
-      logStats("Main", chalk.white.bold("compiling..."));
+    const preloadCompiler = webpack(preloadConfig);
+    preloadCompiler.hooks.watchRun.tapAsync("Compiling", (_, done) => {
+      logStats("Preload", chalk.white.bold("compiling..."));
       done();
     });
 
-    compiler.watch({}, (err, stats) => {
-      if (err) {
-        console.log(err);
+    preloadCompiler.watch({}, (error, stats) => {
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      logStats("Preload", stats);
+    });
+
+    const mainCompiler = webpack(mainConfig);
+    mainCompiler.hooks.watchRun.tapAsync("Compiling", (_, done) => {
+      logStats("Main", chalk.white.bold("compiling..."));
+      done();
+    });
+    mainCompiler.watch({}, (error, stats) => {
+      if (error) {
+        console.log(error);
         return;
       }
 
@@ -122,7 +136,7 @@ function startElectron() {
     `--inspect=${env.PORT_INSPECT}`,
     `--remote-debugging-port=${env.PORT_DEBUG}`,
     "--nolazy",
-    buildPath.build(pkg.main),
+    BuildPath.build(pkg.main),
   ]);
 
   electronProcess.stdout.on("data", (data) => {
@@ -144,7 +158,7 @@ function startElectron() {
     .then(() => {
       startElectron();
     })
-    .catch((err) => {
-      console.error(err);
+    .catch((error) => {
+      console.error(error);
     });
 })();

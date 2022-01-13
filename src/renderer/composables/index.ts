@@ -3,6 +3,7 @@ import Electron from "electron";
 
 import { IServiceMap } from "@/main/service/index";
 import { IPC_CHANNEL } from "@/shared/channel";
+import { TPreloadDisk } from "@/preload";
 
 const { shell, clipboard, ipcRenderer, dialog } = (window as any).electron as typeof Electron;
 
@@ -44,5 +45,5 @@ export function useDialog() {
 }
 
 export function useDisk() {
-  return (window as any).disk;
+  return (window as any).disk as TPreloadDisk;
 }
