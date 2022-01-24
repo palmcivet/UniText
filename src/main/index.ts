@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, protocol, shell } from "electron";
 import { autoUpdater } from "electron-updater";
+import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import { join } from "path";
 
 import Logger from "./backend/Logger";
@@ -143,6 +144,13 @@ function main(): void {
       }
     });
 
+    app.on("browser-window-created", async (event, window) => {
+      if (!window.webContents.isDevToolsOpened()) {
+        window.webContents.openDevTools();
+        installExtension(VUEJS3_DEVTOOLS);
+      }
+    });
+
     _container.getService("WindowService").createPrinterWindow();
 
     autoUpdater.on("update-downloaded", () => {
@@ -176,7 +184,6 @@ app.on("web-contents-created", (e, webContents) => {
     shell.openExternal(url);
   };
 
-  webContents.on("new-window", handleURL);
   webContents.on("will-navigate", handleURL);
 });
 

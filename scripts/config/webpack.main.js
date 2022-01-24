@@ -12,7 +12,7 @@ const mainConfig = {
   devtool: "cheap-module-source-map",
   target: "electron-main",
   entry: {
-    index: BuildPath.src(isDev ? "main/index.dev.ts" : "main/index.ts"),
+    index: BuildPath.src("main/index.ts"),
   },
   output: {
     path: BuildPath.build(),
