@@ -7,7 +7,7 @@
   </head>
   <body></body>
   <script>
-    electron.ipcRenderer.on("printer::call", (event, data) => {
+    electron.ipcRenderer.on("printer:call", (event, data) => {
       document.body.innerHTML = data;
     });
   </script>

@@ -26,10 +26,29 @@ export enum BUS_CHANNEL {
 export enum IPC_CHANNEL {
   /* service */
   SERVICE_CALL = "service:call",
-  PRINTER_CALL = "printer::call",
+  PRINTER_CALL = "printer:call",
+
+  /* dialog */
+  DIALOG_SHOW_CERTIFICATE_TRUST_DIALOG = "dialog:show-certificate-trust-dialog",
+  DIALOG_SHOW_ERROR_BOX = "dialog:show-error-box",
+  DIALOG_SHOW_MESSAGE_BOX = "dialog:show-message-box",
+  DIALOG_SHOW_OPEN_DIALOG = "dialog:show-open-dialog",
+  DIALOG_SHOW_SAVE_DIALOG = "dialog:show-save-dialog",
+
+  /* disk */
+  DISK_READ_DIRECTORY = "disk:read-directory",
+  DISK_READ_TEXT_FILE = "disk:read-text-file",
+  DISK_READ_BINARY_FILE = "disk:read-binary-file",
+  DISK_WRITE_FILE = "disk:write-file",
+  DISK_DELETE = "disk:delete",
+  DISK_CREATE_FILE = "disk:create-file",
+  DISK_CREATE_DIRECTORY = "disk:create-directory",
+  DISK_MOVE = "disk:move",
+  DISK_COPY = "disk:copy",
+  DISK_STAT = "disk:stat",
 
   /* external */
-  EXTERNAL_PANDOC = "external::pandoc",
-  EXTERNAL_RIPGREP = "external::ripgrep",
-  EXTERNAL_PRINT_PDF = "external::print-pdf",
+  EXTERNAL_PANDOC = "external:pandoc",
+  EXTERNAL_RIPGREP = "external:ripgrep",
+  EXTERNAL_PRINT_PDF = "external:print-pdf",
 }

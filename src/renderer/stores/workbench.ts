@@ -106,6 +106,7 @@ export default defineStore({
     EXPORT_MD() {},
 
     async EXPORT_HTML() {
+      // TODO 获得默认路径才用专有接口，用户自定义+缓存上一次结果
       const defaultPath = await useService("EnvService").getCabinPath();
       const { filePath, canceled } = await useDialog().showSaveDialog({
         filters: [{ name: "HTML", extensions: ["html"] }],

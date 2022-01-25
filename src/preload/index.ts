@@ -1,3 +1,4 @@
+import { IPC_CHANNEL } from "@/shared/channel";
 import { shell, clipboard, ipcRenderer, contextBridge } from "electron";
 
 const _ipcRenderer = {
@@ -74,34 +75,34 @@ const _dialog = {
 
 const _disk = {
   readDirectory(...args: any[]) {
-    return ipcRenderer.invoke("disk:read-directory", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_READ_DIRECTORY, ...args);
   },
   readTextFile(...args: any[]) {
-    return ipcRenderer.invoke("disk:read-text-file", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_READ_TEXT_FILE, ...args);
   },
   readBinaryFile(...args: any[]) {
-    return ipcRenderer.invoke("disk:read-binary-file", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_READ_BINARY_FILE, ...args);
   },
   writeFile(...args: any[]) {
-    return ipcRenderer.invoke("disk:write-file", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_WRITE_FILE, ...args);
   },
   delete(...args: any[]) {
-    return ipcRenderer.invoke("disk:delete", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_DELETE, ...args);
   },
   createFile(...args: any[]) {
-    return ipcRenderer.invoke("disk:create-file", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_CREATE_FILE, ...args);
   },
   createDirectory(...args: any[]) {
-    return ipcRenderer.invoke("disk:create-directory", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_CREATE_DIRECTORY, ...args);
   },
   move(...args: any[]) {
-    return ipcRenderer.invoke("disk:move", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_MOVE, ...args);
   },
   copy(...args: any[]) {
-    return ipcRenderer.invoke("disk:copy", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_COPY, ...args);
   },
   stat(...args: any[]) {
-    return ipcRenderer.invoke("disk:stat", ...args);
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_STAT, ...args);
   },
 };
 

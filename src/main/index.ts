@@ -135,6 +135,13 @@ function main(): void {
     handleClosed(mainWindow);
     registerProtocol();
 
+    if (isDev) {
+      mainWindow.webContents.openDevTools();
+      installExtension(VUEJS3_DEVTOOLS);
+    }
+
+    _container.getService("WindowService").createPrinterWindow();
+
     /**
      * macOS only
      */
@@ -143,15 +150,6 @@ function main(): void {
         mainWindow = await createMainWindow();
       }
     });
-
-    app.on("browser-window-created", async (event, window) => {
-      if (!window.webContents.isDevToolsOpened()) {
-        window.webContents.openDevTools();
-        installExtension(VUEJS3_DEVTOOLS);
-      }
-    });
-
-    _container.getService("WindowService").createPrinterWindow();
 
     autoUpdater.on("update-downloaded", () => {
       autoUpdater.quitAndInstall();
