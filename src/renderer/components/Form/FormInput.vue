@@ -1,13 +1,21 @@
 <template>
   <div class="form-input">
-    <input
-      class="form-input__input"
-      :type="type"
-      v-bind="$attrs"
-      v-model="currentValue"
-      @change.stop="onChange()"
-    />
-    <i class="form-input__clear ri-close-line" v-if="canClear" @click.stop="onClear()" />
+    <slot name="before"></slot>
+    <div class="form-input__wrapper">
+      <input
+        class="form-input__input"
+        :type="type"
+        v-bind="$attrs"
+        v-model="currentValue"
+        @change.stop="onChange()"
+      />
+      <i
+        class="form-input__clear ri-close-line"
+        v-if="canClear"
+        @click.stop="onClear()"
+      />
+    </div>
+    <slot name="after"></slot>
   </div>
 </template>
 
@@ -76,7 +84,12 @@ export default defineComponent({
 @import "./style.less";
 
 .form-input {
-  position: relative;
+  display: flex;
+
+  &__wrapper {
+    width: 100%;
+    position: relative;
+  }
 
   &__input {
     box-sizing: border-box;

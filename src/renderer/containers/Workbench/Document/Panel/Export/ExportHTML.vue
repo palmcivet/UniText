@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, onMounted, reactive, watch } from "vue";
 import FormInput from "@/renderer/components/Form/FormInput.vue";
 
 export default defineComponent({
@@ -31,8 +31,16 @@ export default defineComponent({
     });
 
     const onChange = () => {
-      emit("export-change");
+      emit("export-change", filledFormHTML);
     };
+
+    watch([filledFormHTML], () => {
+      onChange();
+    });
+
+    onMounted(() => {
+      onChange();
+    });
 
     return {
       filledFormHTML,

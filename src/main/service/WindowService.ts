@@ -1,4 +1,4 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, PrintToPDFOptions } from "electron";
 import { writeFile } from "fs-extra";
 
 import Logger from "@/main/backend/Logger";
@@ -37,14 +37,13 @@ export default class WindowService extends Service {
     this._printer?.webContents.loadURL(`${URL_HOST}/printer.html`);
   }
 
-  public async printToPDF(filepath: IPathRoute, html: string): Promise<void> {
+  public async printToPDF(filepath: IPathRoute, html: string, options: PrintToPDFOptions): Promise<void> {
     try {
       this._printer?.webContents.send(IPC_CHANNEL.PRINTER_CALL, html);
-
-      const options: Electron.PrintToPDFOptions = { printBackground: true };
       const data = await this._printer?.webContents.printToPDF(options);
-
       return writeFile(join(...filepath), data);
-    } catch (error) {}
+    } catch (error) {
+      this.error(error);
+    }
   }
 }

@@ -1,8 +1,9 @@
+import { toRaw } from "vue";
 import { defineStore } from "pinia";
 
 import { ITocItem } from "@/library/markdown-it-toc-and-anchor";
 import { ID_PREVIEW } from "@/shared/constant";
-import { $id } from "@/shared/utils";
+import { $id, rawObject } from "@/shared/utils";
 import { ITab } from "@/shared/typings/renderer";
 import { EWorkbenchType, IWorkbenchState } from "@/shared/typings/store";
 import {
@@ -14,6 +15,7 @@ import {
   EMDPicture,
   IMDFrontMatter,
 } from "@/shared/typings/document";
+import { TExportHTML, TExportPDF } from "@/shared/typings/export";
 import { useDialog, useDisk, useService, useShell } from "../composables";
 
 export function TemplateFactory({
@@ -103,9 +105,9 @@ export default defineStore({
       this.workbenchType = type;
     },
 
-    EXPORT_MD() {},
+    async EXPORT_MD({ scheme }: { scheme: "gfm" | "cmk" | "yd" }) {},
 
-    async EXPORT_HTML() {
+    async EXPORT_HTML({ title = "" }: TExportHTML) {
       // TODO 获得默认路径才用专有接口，用户自定义+缓存上一次结果
       const defaultPath = await useService("EnvService").getCabinPath();
       const { filePath, canceled } = await useDialog().showSaveDialog({
@@ -121,7 +123,7 @@ export default defineStore({
         const rawHtml = TemplateFactory({
           body: `
 <div id="#markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`,
-          title: "",
+          title: title,
           styleText: `
 #markdown-preview {
   margin: 2em 15%;
@@ -145,7 +147,7 @@ export default defineStore({
       } catch (error) {}
     },
 
-    async EXPORT_PDF() {
+    async EXPORT_PDF({ landscape, pageSize, marginCSS }: TExportPDF) {
       const defaultPath = await useService("EnvService").getCabinPath();
       const { filePath, canceled } = await useDialog().showSaveDialog({
         filters: [{ name: "PDF", extensions: ["pdf"] }],
@@ -159,7 +161,13 @@ export default defineStore({
       try {
         const rawHtml = `
         <div id="#markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`;
-        await useService("WindowService").printToPDF([filePath], rawHtml);
+        // TODO 添加主题 CSS
+
+        await useService("WindowService").printToPDF([filePath], rawHtml, {
+          printBackground: true,
+          landscape: toRaw(landscape),
+          pageSize: toRaw(pageSize),
+        });
         useShell().showItemInFolder(filePath);
       } catch (error) {}
     },

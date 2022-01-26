@@ -1,13 +1,14 @@
 <template>
   <div
-    id="markdown-preview"
+    :id="ID_PREVIEW"
     ref="markdownRef"
-    class="line-numbers match-braces rainbow-braces"
+    class="viewer-markdown line-numbers match-braces rainbow-braces"
   />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { ID_PREVIEW } from "@/shared/constant";
 
 export default defineComponent({
   name: "ViewerMarkdown",
@@ -17,6 +18,12 @@ export default defineComponent({
   components: {},
 
   props: {},
+
+  data() {
+    return {
+      ID_PREVIEW,
+    };
+  },
 
   mounted() {
     const root = this.$refs.markdownRef as HTMLElement;
@@ -32,7 +39,7 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "~@/renderer/styles/vars.less";
 
-#markdown-preview {
+.viewer-markdown {
   height: 100%;
   overflow: auto;
   padding: 1em;

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, onMounted, reactive, watch } from "vue";
 import FormSelect from "@/renderer/components/Form/FormSelect.vue";
 
 export default defineComponent({
@@ -25,6 +25,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    // TODO 使用 markdown.ts 枚举
     const markdownOption = [
       { value: "gfm", label: "GitHub Flavored" },
       { value: "cmk", label: "CommonMark" },
@@ -35,8 +36,16 @@ export default defineComponent({
     });
 
     const onChange = () => {
-      emit("export-change");
+      emit("export-change", filledFormMarkdown);
     };
+
+    watch([filledFormMarkdown], () => {
+      onChange();
+    });
+
+    onMounted(() => {
+      onChange();
+    });
 
     return {
       markdownOption,

@@ -2,80 +2,97 @@
   <div class="export-specific">
     <label class="export-form-item">
       <div class="export-form-label">页面大小</div>
+      <FormSelect
+        :options="pageSizeOption"
+        :value="pageSizeSelect"
+        @form-change="pageSizeSelect = $event"
+      />
 
-      <FormInput
-        type="number"
-        :value="filledFormPDF.width"
-        @form-change="filledFormPDF.width = $event"
-      />
-      <FormInput
-        type="number"
-        :value="filledFormPDF.height"
-        @form-change="filledFormPDF.height = $event"
-      />
+      <div class="export-form-row" v-if="isPageSizeCustom">
+        <FormInput
+          type="number"
+          :value="pageSizeInput.width"
+          @form-change="pageSizeInput.width = $event"
+        >
+          <template v-slot:before>
+            <div class="export-form-before">宽</div>
+          </template>
+        </FormInput>
+        <FormInput
+          type="number"
+          :value="pageSizeInput.height"
+          @form-change="pageSizeInput.height = $event"
+        >
+          <template v-slot:before>
+            <div class="export-form-before">长</div>
+          </template>
+        </FormInput>
+      </div>
     </label>
 
     <label class="export-form-item">
       <div class="export-form-label">方向</div>
       <div class="export-form-radio">
         <FormRadio
-          :options="sizeOption"
-          :value="filledFormPDF.size"
-          @form-change="filledFormPDF.size = $event"
+          :options="landscapeOption"
+          :value="landscape"
+          @form-change="landscape = $event"
         />
       </div>
     </label>
 
     <label class="export-form-item">
       <div class="export-form-label">页边距</div>
-
-      <FormInput
-        type="number"
-        :value="filledFormPDF.top"
-        @form-change="filledFormPDF.top = $event"
-      />
-      <FormInput
-        type="number"
-        :value="filledFormPDF.right"
-        @form-change="filledFormPDF.right = $event"
-      />
-      <FormInput
-        type="number"
-        :value="filledFormPDF.bottom"
-        @form-change="filledFormPDF.bottom = $event"
-      />
-      <FormInput
-        type="number"
-        :value="filledFormPDF.left"
-        @form-change="filledFormPDF.left = $event"
-      />
-    </label>
-
-    <label class="export-form-item">
-      <div class="export-form-label">页眉</div>
-      <FormInput
-        type="number"
-        :value="filledFormPDF.left"
-        @form-change="filledFormPDF.left = $event"
-      />
-    </label>
-
-    <label class="export-form-item">
-      <div class="export-form-label">页脚</div>
-      <FormInput
-        type="number"
-        :value="filledFormPDF.left"
-        @form-change="filledFormPDF.left = $event"
-      />
+      <div class="export-form-row">
+        <FormInput
+          type="number"
+          :value="marginCSS.top"
+          @form-change="margin.top = $event"
+        >
+          <template v-slot:before>
+            <div class="export-form-before">上</div>
+          </template>
+        </FormInput>
+        <FormInput
+          type="number"
+          :value="marginCSS.bottom"
+          @form-change="marginCSS.bottom = $event"
+        >
+          <template v-slot:before>
+            <div class="export-form-before">下</div>
+          </template>
+        </FormInput>
+      </div>
+      <div class="export-form-row">
+        <FormInput
+          type="number"
+          :value="marginCSS.left"
+          @form-change="marginCSS.left = $event"
+        >
+          <template v-slot:before>
+            <div class="export-form-before">左</div>
+          </template>
+        </FormInput>
+        <FormInput
+          type="number"
+          :value="marginCSS.right"
+          @form-change="marginCSS.right = $event"
+        >
+          <template v-slot:before>
+            <div class="export-form-before">右</div>
+          </template>
+        </FormInput>
+      </div>
     </label>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch } from "vue";
 import FormSelect from "@/renderer/components/Form/FormSelect.vue";
 import FormInput from "@/renderer/components/Form/FormInput.vue";
 import FormRadio from "@/renderer/components/Form/FormRadio.vue";
+import { TMarginCSS, TPageSize, TPageSizeNumber } from "@/shared/typings/export";
 
 export default defineComponent({
   name: "ExportPDF",
@@ -89,14 +106,26 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const sizeOption = [
-      { value: "portrait", label: "纵向" },
-      { value: "landscape", label: "横向" },
+    const landscapeOption = [
+      { value: false, label: "纵向" },
+      { value: true, label: "横向" },
     ];
-    const filledFormPDF = reactive({
-      width: 2480,
-      height: 3508,
-      size: sizeOption[0].value,
+    const landscape = ref(false);
+
+    const pageSizeOption = [
+      { value: "A3", label: "A3" },
+      { value: "A4", label: "A4" },
+      { value: "A5", label: "A5" },
+      { value: "Legal", label: "Legal" },
+      { value: "Letter", label: "Letter" },
+      { value: "Tabloid", label: "Tabloid" },
+      { value: "Custom", label: "自定义：mm" },
+    ];
+    const pageSizeSelect = ref<TPageSize>("A4");
+    const pageSizeInput = ref<TPageSizeNumber>({ width: 100, height: 200 });
+    const isPageSizeCustom = computed(() => pageSizeSelect.value === "Custom");
+
+    const marginCSS = reactive<TMarginCSS>({
       top: 1,
       right: 2,
       bottom: 1,
@@ -104,13 +133,34 @@ export default defineComponent({
     });
 
     const onChange = () => {
-      emit("export-change");
+      emit("export-change", {
+        landscape: landscape.value,
+        pageSize: isPageSizeCustom.value ? pageSizeInput.value : pageSizeSelect.value,
+        marginCSS,
+      });
     };
 
+    watch([landscape, isPageSizeCustom, marginCSS], () => {
+      onChange();
+    });
+
+    onMounted(() => {
+      onChange();
+    });
+
     return {
-      sizeOption,
-      filledFormPDF,
+      landscapeOption,
+      landscape,
+      pageSizeOption,
+      pageSizeSelect,
+      pageSizeInput,
+      isPageSizeCustom,
+      marginCSS,
+
       onChange,
+      form: (e: any) => {
+        console.log(e);
+      },
     };
   },
 });
@@ -131,6 +181,19 @@ export default defineComponent({
         padding-left: 5%;
       }
     }
+  }
+
+  .export-form-row {
+    width: 100%;
+    display: flex;
+    gap: @cell-gap;
+    margin-top: @cell-gap;
+  }
+
+  .export-form-before {
+    text-align: center;
+    width: 2em;
+    line-height: 24px;
   }
 }
 </style>

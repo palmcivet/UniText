@@ -13,11 +13,20 @@
 
     <div class="export-form-divider"></div>
 
-    <ExportMD v-if="selectedFormat === FORMAT.MD" />
-    <ExportHTML v-else-if="selectedFormat === FORMAT.HTML" />
-    <ExportPDF v-else-if="selectedFormat === FORMAT.PDF" />
-    <div class="export-specific" v-if="selectedFormat === FORMAT.IMAGE"></div>
-    <div class="export-specific" v-if="selectedFormat === FORMAT.DOCX"></div>
+    <ExportMD
+      v-if="selectedFormat === FORMAT.MD"
+      @export-change="onChangeFormatForm($event)"
+    />
+    <ExportHTML
+      v-else-if="selectedFormat === FORMAT.HTML"
+      @export-change="onChangeFormatForm($event)"
+    />
+    <ExportPDF
+      v-else-if="selectedFormat === FORMAT.PDF"
+      @export-change="onChangeFormatForm($event)"
+    />
+    <div v-if="selectedFormat === FORMAT.IMAGE"></div>
+    <div v-if="selectedFormat === FORMAT.DOCX"></div>
 
     <div class="export-form-divider"></div>
 
@@ -130,7 +139,6 @@ export default defineComponent({
       { value: FORMAT.DOCX, label: "Word" },
     ];
     const selectedFormat = ref(formatList[2].value);
-    const onSelectFormat = () => {};
 
     const checkedOption = reactive({
       grammar: true,
@@ -144,40 +152,34 @@ export default defineComponent({
     const scriptList = ref([{ value: "", label: "" }]);
     const selectedScript = ref(scriptList.value[0].value);
 
-    const onExport = () => {
-      console.log(
-        selectedFormat.value,
-        checkedOption,
-        checkedOption.theme && selectedTheme.value,
-        checkedOption.script && selectedScript.value
-      );
+    const filledForm = ref<any>();
+    const onChangeFormatForm = (form: any) => (filledForm.value = form);
 
+    const onExport = () => {
       switch (selectedFormat.value) {
         case FORMAT.MD:
-          useWorkbench().EXPORT_MD();
+          useWorkbench().EXPORT_MD(filledForm.value);
           break;
         case FORMAT.HTML:
-          useWorkbench().EXPORT_HTML();
+          useWorkbench().EXPORT_HTML(filledForm.value);
           break;
         case FORMAT.PDF:
-          useWorkbench().EXPORT_PDF();
+          useWorkbench().EXPORT_PDF(filledForm.value);
           break;
         default:
           break;
       }
     };
 
-    const filledFormImage = reactive({});
-
-    const filledFormDocx = reactive({});
-
     return {
       FORMAT,
       formatList,
       selectedFormat,
-      onSelectFormat,
 
       checkedOption,
+
+      filledForm,
+      onChangeFormatForm,
 
       themeList,
       selectedTheme,
@@ -185,9 +187,6 @@ export default defineComponent({
       selectedScript,
 
       onExport,
-
-      filledFormImage,
-      filledFormDocx,
     };
   },
 });
@@ -213,10 +212,6 @@ export default defineComponent({
 
     .export-form-item {
       flex-direction: column;
-
-      ::v-deep(.form-select) {
-        text-align: center;
-      }
     }
   }
 

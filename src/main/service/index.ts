@@ -7,6 +7,7 @@ import WindowService from "./WindowService";
 import SettingService from "./SettingService";
 import KeybindingService from "./KeybindingService";
 import { INJECTIONS_SYMBOL, IKeyService } from "./_";
+import { IPC_CHANNEL } from "@/shared/channel";
 
 interface IInjection {
   type: string;
@@ -85,7 +86,7 @@ export default class Container {
     });
 
     /* 监听 IPC 通信 */
-    ipcMain.handle("service:call", (event, name: IKeyService, method: string, ...payloads: any[]) => {
+    ipcMain.handle(IPC_CHANNEL.SERVICE_CALL, (event, name: IKeyService, method: string, ...payloads: any[]) => {
       if (!this.hasService(name)) {
         throw new ServiceNotFoundError(name);
       }

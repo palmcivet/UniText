@@ -37,6 +37,23 @@ export const cloneObj = (obj: object, deepCopy = true) => {
   return deepCopy ? JSON.parse(JSON.stringify(obj)) : Object.assign({}, obj);
 };
 
+export function rawObject(object: Object): Object {
+  const copyObject = (_object: Object) => {
+    const rawObject: Object = Object.create(null);
+    const entries = Object.entries(_object);
+
+    for (let index = 0; index < entries.length; index++) {
+      const [key, value] = entries[index];
+      const rawValue = typeof value === "object" ? copyObject(value) : value;
+      (rawObject as any)[key] = rawValue;
+    }
+
+    return rawObject;
+  };
+
+  return copyObject(object);
+}
+
 export const deepGet = (object: any, path: string) => {
   const keys = path.split(".");
   let result = object;

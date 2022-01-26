@@ -1,5 +1,5 @@
-import { IPC_CHANNEL } from "@/shared/channel";
 import { shell, clipboard, ipcRenderer, contextBridge } from "electron";
+import { IPC_CHANNEL } from "@/shared/channel";
 
 const _ipcRenderer = {
   invoke: (channel: string, ...args: any) => ipcRenderer.invoke(channel, ...args),
