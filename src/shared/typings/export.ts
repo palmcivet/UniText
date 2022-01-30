@@ -14,10 +14,10 @@ export type TPageSizeNumber = {
 };
 
 export type TMarginCSS = {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
 };
 
 export type TExportPDF = {

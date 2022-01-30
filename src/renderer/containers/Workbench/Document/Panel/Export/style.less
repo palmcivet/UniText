@@ -1,20 +1,16 @@
 @cell-gap: 5px;
+@row-height: 24px;
 
 .export-form {
   &-item {
     width: 100%;
-    min-height: 24px;
+    min-height: @row-height;
     display: flex;
   }
 
   &-label {
-    line-height: 24px;
+    line-height: @row-height;
     user-select: none;
-  }
-
-  &-divider {
-    width: 100%;
-    height: @cell-gap * 2;
   }
 
   &-dynamic {
@@ -25,19 +21,13 @@
   }
 }
 
+.export-common,
 .export-format,
 .export-specific {
-  width: 90%;
+  margin: @cell-gap 5%;
 }
 
 .export-specific {
-  max-height: calc(100% - 300px);
-  overflow-y: auto;
-
-  .export-form-label {
-    margin: @cell-gap 0 calc(@cell-gap / 2);
-  }
-
   .export-form-item {
     flex-direction: column;
   }

@@ -243,9 +243,8 @@ export default defineComponent({
       height: 100%;
       cursor: pointer;
 
-      .form-input {
-        display: flex;
-        align-items: center;
+      .form-input__wrapper {
+        line-height: 0;
       }
 
       &__label {

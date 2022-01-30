@@ -107,7 +107,7 @@ export default defineStore({
 
     async EXPORT_MD({ scheme }: { scheme: "gfm" | "cmk" | "yd" }) {},
 
-    async EXPORT_HTML({ title = "" }: TExportHTML) {
+    async EXPORT_HTML({ title = "" }: TExportHTML, isReveal: boolean) {
       // TODO 获得默认路径才用专有接口，用户自定义+缓存上一次结果
       const defaultPath = await useService("EnvService").getCabinPath();
       const { filePath, canceled } = await useDialog().showSaveDialog({
@@ -143,11 +143,14 @@ export default defineStore({
           ],
         });
         await useDisk().writeFile([filePath], rawHtml);
-        useShell().showItemInFolder(filePath);
+
+        if (isReveal) {
+          useShell().showItemInFolder(filePath);
+        }
       } catch (error) {}
     },
 
-    async EXPORT_PDF({ landscape, pageSize, marginCSS }: TExportPDF) {
+    async EXPORT_PDF({ landscape, pageSize, marginCSS }: TExportPDF, isReveal: boolean) {
       const defaultPath = await useService("EnvService").getCabinPath();
       const { filePath, canceled } = await useDialog().showSaveDialog({
         filters: [{ name: "PDF", extensions: ["pdf"] }],
@@ -163,12 +166,17 @@ export default defineStore({
         <div id="#markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`;
         // TODO 添加主题 CSS
 
+        console.log(toRaw(marginCSS));
+
         await useService("WindowService").printToPDF([filePath], rawHtml, {
           printBackground: true,
           landscape: toRaw(landscape),
           pageSize: toRaw(pageSize),
         });
-        useShell().showItemInFolder(filePath);
+
+        if (isReveal) {
+          useShell().showItemInFolder(filePath);
+        }
       } catch (error) {}
     },
   },

@@ -1,111 +1,107 @@
 <template>
   <div class="panel-export">
-    <div class="export-format">
-      <label class="export-form-item">
-        <div class="export-form-label">导出类型</div>
-        <FormSelect
-          :value="selectedFormat"
-          :options="formatList"
-          @form-change="selectedFormat = $event"
-        />
-      </label>
+    <div class="panel-export__wrapper">
+      <div class="export-common">
+        <label class="export-form-item">
+          <FormInput
+            type="checkbox"
+            :value="checkedOption.grammar"
+            @form-change="checkedOption.grammar = $event"
+          />
+          <div class="export-form-label">执行语法检查</div>
+        </label>
+
+        <label class="export-form-item">
+          <FormInput
+            type="checkbox"
+            :value="checkedOption.reference"
+            @form-change="checkedOption.reference = $event"
+          />
+          <div class="export-form-label">执行引用检查</div>
+        </label>
+
+        <label class="export-form-item">
+          <FormInput
+            type="checkbox"
+            :value="checkedOption.reveal"
+            @form-change="checkedOption.reveal = $event"
+          />
+          <div class="export-form-label">完成后打开文件夹</div>
+        </label>
+
+        <label class="export-form-item">
+          <FormInput
+            type="checkbox"
+            :value="checkedOption.theme"
+            @form-change="checkedOption.theme = $event"
+          />
+          <div class="export-form-label">自定义样式</div>
+        </label>
+
+        <label
+          class="export-form-item export-form-dynamic"
+          :style="{ height: checkedOption.theme ? '24px' : '0' }"
+        >
+          <FormSelect
+            tips="选择主题"
+            :value="selectedTheme"
+            :options="themeList"
+            @form-change="selectedTheme = $event"
+          />
+        </label>
+
+        <label class="export-form-item">
+          <FormInput
+            type="checkbox"
+            :value="checkedOption.script"
+            @form-change="checkedOption.script = $event"
+          />
+          <div class="export-form-label">完成后执行脚本</div>
+        </label>
+
+        <label
+          class="export-form-item export-form-dynamic"
+          :style="{ height: checkedOption.script ? '24px' : '0' }"
+        >
+          <FormSelect
+            tips="选择脚本"
+            :value="selectedScript"
+            :options="scriptList"
+            @form-change="selectedScript = $event"
+          />
+        </label>
+      </div>
+
+      <div class="export-format">
+        <label class="export-form-item">
+          <div class="export-form-label">导出类型</div>
+          <FormSelect
+            :value="selectedFormat"
+            :options="formatList"
+            @form-change="selectedFormat = $event"
+          />
+        </label>
+      </div>
+
+      <ExportMD
+        v-if="selectedFormat === FORMAT.MD"
+        @export-change="onChangeFormatForm($event)"
+      />
+      <ExportHTML
+        v-else-if="selectedFormat === FORMAT.HTML"
+        @export-change="onChangeFormatForm($event)"
+      />
+      <ExportPDF
+        v-else-if="selectedFormat === FORMAT.PDF"
+        @export-change="onChangeFormatForm($event)"
+      />
+      <div v-if="selectedFormat === FORMAT.IMAGE"></div>
+      <div v-if="selectedFormat === FORMAT.DOCX"></div>
     </div>
 
-    <div class="export-form-divider"></div>
-
-    <ExportMD
-      v-if="selectedFormat === FORMAT.MD"
-      @export-change="onChangeFormatForm($event)"
-    />
-    <ExportHTML
-      v-else-if="selectedFormat === FORMAT.HTML"
-      @export-change="onChangeFormatForm($event)"
-    />
-    <ExportPDF
-      v-else-if="selectedFormat === FORMAT.PDF"
-      @export-change="onChangeFormatForm($event)"
-    />
-    <div v-if="selectedFormat === FORMAT.IMAGE"></div>
-    <div v-if="selectedFormat === FORMAT.DOCX"></div>
-
-    <div class="export-form-divider"></div>
-
-    <div class="export-common">
-      <label class="export-form-item">
-        <FormInput
-          type="checkbox"
-          :value="checkedOption.grammar"
-          @form-change="checkedOption.grammar = $event"
-        />
-        <div class="export-form-label">语法检查</div>
-      </label>
-
-      <label class="export-form-item">
-        <FormInput
-          type="checkbox"
-          :value="checkedOption.reference"
-          @form-change="checkedOption.reference = $event"
-        />
-        <div class="export-form-label">引用检查</div>
-      </label>
-
-      <label class="export-form-item">
-        <FormInput
-          type="checkbox"
-          :value="checkedOption.reveal"
-          @form-change="checkedOption.reveal = $event"
-        />
-        <div class="export-form-label">打开文件夹</div>
-      </label>
-
-      <div class="export-form-divider"></div>
-
-      <label class="export-form-item">
-        <FormInput
-          type="checkbox"
-          :value="checkedOption.theme"
-          @form-change="checkedOption.theme = $event"
-        />
-        <div class="export-form-label">自定义样式</div>
-      </label>
-
-      <label
-        class="export-form-item export-form-dynamic"
-        :style="{ height: checkedOption.theme ? '24px' : '0' }"
-      >
-        <FormSelect
-          tips="选择主题"
-          :value="selectedTheme"
-          :options="themeList"
-          @form-change="selectedTheme = $event"
-        />
-      </label>
-
-      <label class="export-form-item">
-        <FormInput
-          type="checkbox"
-          :value="checkedOption.script"
-          @form-change="checkedOption.script = $event"
-        />
-        <div class="export-form-label">执行脚本</div>
-      </label>
-
-      <label
-        class="export-form-item export-form-dynamic"
-        :style="{ height: checkedOption.script ? '24px' : '0' }"
-      >
-        <FormSelect
-          tips="选择脚本"
-          :value="selectedScript"
-          :options="scriptList"
-          @form-change="selectedScript = $event"
-        />
-      </label>
+    <div class="panel-export__controls">
+      <button class="unitext-button" @click="onExport()">导出</button>
     </div>
-
-    <div class="export-form-divider"></div>
-
-    <div class="unitext-button" @click="onExport()">导出</div>
   </div>
 </template>
 
@@ -161,10 +157,10 @@ export default defineComponent({
           useWorkbench().EXPORT_MD(filledForm.value);
           break;
         case FORMAT.HTML:
-          useWorkbench().EXPORT_HTML(filledForm.value);
+          useWorkbench().EXPORT_HTML(filledForm.value, checkedOption.reveal);
           break;
         case FORMAT.PDF:
-          useWorkbench().EXPORT_PDF(filledForm.value);
+          useWorkbench().EXPORT_PDF(filledForm.value, checkedOption.reveal);
           break;
         default:
           break;
@@ -198,43 +194,53 @@ export default defineComponent({
 .panel-export {
   width: 100%;
   height: 100%;
-  overflow-y: overlay;
+  overflow-y: hidden;
   font-size: 14px;
-  padding: 0 @cell-gap;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 
-  .export-format {
-    .export-form-label {
-      margin: @cell-gap 0 calc(@cell-gap / 2);
+  @controls-height: 40px;
+
+  &__wrapper {
+    max-height: calc(100% - @controls-height);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 0 @cell-gap;
+
+    .export-common {
+      .export-form-label {
+        cursor: pointer;
+      }
+
+      ::v-deep(.form-input) {
+        margin-right: 5%;
+        height: @row-height;
+      }
+
+      ::v-deep(.form-select) {
+        margin-left: calc(5% + 13px);
+      }
     }
 
-    .export-form-item {
-      flex-direction: column;
+    .export-format {
+      .export-form-label {
+        margin: @cell-gap 0 calc(@cell-gap / 2);
+      }
+
+      .export-form-item {
+        flex-direction: column;
+      }
     }
   }
 
-  .export-common {
-    min-width: 80%;
+  &__controls {
+    height: @controls-height;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-    .export-form-label {
-      cursor: pointer;
+    .unitext-button {
+      width: 80%;
     }
-
-    ::v-deep(.form-input) {
-      margin-left: 8%;
-      margin-right: 5%;
-      height: 24px;
-    }
-
-    ::v-deep(.form-select) {
-      margin-left: calc(13% + 13px);
-    }
-  }
-
-  .unitext-button {
-    width: 80%;
   }
 }
 </style>

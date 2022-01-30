@@ -7,28 +7,26 @@
         :value="pageSizeSelect"
         @form-change="pageSizeSelect = $event"
       />
+    </label>
 
-      <div class="export-form-row" v-if="isPageSizeCustom">
+    <template v-if="isPageSizeCustom">
+      <label class="export-row">
+        <div class="export-row-label">宽度</div>
         <FormInput
           type="number"
           :value="pageSizeInput.width"
           @form-change="pageSizeInput.width = $event"
-        >
-          <template v-slot:before>
-            <div class="export-form-before">宽</div>
-          </template>
-        </FormInput>
+        />
+      </label>
+      <label class="export-row">
+        <div class="export-row-label">宽度</div>
         <FormInput
           type="number"
           :value="pageSizeInput.height"
           @form-change="pageSizeInput.height = $event"
-        >
-          <template v-slot:before>
-            <div class="export-form-before">长</div>
-          </template>
-        </FormInput>
-      </div>
-    </label>
+        />
+      </label>
+    </template>
 
     <label class="export-form-item">
       <div class="export-form-label">方向</div>
@@ -43,46 +41,55 @@
 
     <label class="export-form-item">
       <div class="export-form-label">页边距</div>
-      <div class="export-form-row">
+
+      <label class="export-row">
+        <div class="export-row-label">单位</div>
+        <FormSelect
+          :options="marginUnitOption"
+          :value="marginUnit"
+          @form-change="marginUnit = $event"
+        />
+      </label>
+
+      <label class="export-row">
+        <div class="export-row-label">上边距</div>
         <FormInput
           type="number"
           :value="marginCSS.top"
           @form-change="margin.top = $event"
-        >
-          <template v-slot:before>
-            <div class="export-form-before">上</div>
-          </template>
-        </FormInput>
+        />
+        <div class="export-row-unit">{{ marginUnit }}</div>
+      </label>
+
+      <label class="export-row">
+        <div class="export-row-label">下边距</div>
         <FormInput
           type="number"
           :value="marginCSS.bottom"
           @form-change="marginCSS.bottom = $event"
-        >
-          <template v-slot:before>
-            <div class="export-form-before">下</div>
-          </template>
-        </FormInput>
-      </div>
-      <div class="export-form-row">
+        />
+        <div class="export-row-unit">{{ marginUnit }}</div>
+      </label>
+
+      <label class="export-row">
+        <div class="export-row-label">左边距</div>
         <FormInput
           type="number"
           :value="marginCSS.left"
           @form-change="marginCSS.left = $event"
-        >
-          <template v-slot:before>
-            <div class="export-form-before">左</div>
-          </template>
-        </FormInput>
+        />
+        <div class="export-row-unit">{{ marginUnit }}</div>
+      </label>
+
+      <label class="export-row">
+        <div class="export-row-label">右边距</div>
         <FormInput
           type="number"
           :value="marginCSS.right"
           @form-change="marginCSS.right = $event"
-        >
-          <template v-slot:before>
-            <div class="export-form-before">右</div>
-          </template>
-        </FormInput>
-      </div>
+        />
+        <div class="export-row-unit">{{ marginUnit }}</div>
+      </label>
     </label>
   </div>
 </template>
@@ -122,45 +129,53 @@ export default defineComponent({
       { value: "Custom", label: "自定义：mm" },
     ];
     const pageSizeSelect = ref<TPageSize>("A4");
-    const pageSizeInput = ref<TPageSizeNumber>({ width: 100, height: 200 });
+    const pageSizeInput = ref<TPageSizeNumber>({ width: 210, height: 297 });
     const isPageSizeCustom = computed(() => pageSizeSelect.value === "Custom");
 
-    const marginCSS = reactive<TMarginCSS>({
+    const marginCSS = reactive<Record<keyof TMarginCSS, number>>({
       top: 1,
-      right: 2,
       bottom: 1,
       left: 2,
+      right: 2,
     });
+    const marginUnitOption = [
+      { value: "cm", label: "cm" },
+      { value: "mm", label: "mm" },
+      { value: "px", label: "px" },
+    ];
+    const marginUnit = ref(marginUnitOption[0].value);
 
     const onChange = () => {
       emit("export-change", {
         landscape: landscape.value,
         pageSize: isPageSizeCustom.value ? pageSizeInput.value : pageSizeSelect.value,
-        marginCSS,
+        marginCSS: {
+          top: `${marginCSS.top}${marginUnit.value}`,
+          bottom: `${marginCSS.bottom}${marginUnit.value}`,
+          left: `${marginCSS.left}${marginUnit.value}`,
+          right: `${marginCSS.right}${marginUnit.value}`,
+        },
       });
     };
 
-    watch([landscape, isPageSizeCustom, marginCSS], () => {
-      onChange();
-    });
+    watch([landscape, isPageSizeCustom, marginCSS], () => onChange());
 
-    onMounted(() => {
-      onChange();
-    });
+    onMounted(() => onChange());
 
     return {
       landscapeOption,
       landscape,
+
       pageSizeOption,
       pageSizeSelect,
       pageSizeInput,
       isPageSizeCustom,
+
       marginCSS,
+      marginUnitOption,
+      marginUnit,
 
       onChange,
-      form: (e: any) => {
-        console.log(e);
-      },
     };
   },
 });
@@ -172,10 +187,10 @@ export default defineComponent({
 .export-specific {
   .export-form-radio {
     display: flex;
-    justify-content: space-between;
 
     ::v-deep(.form-radio) {
       width: 50%;
+      text-align: center;
 
       .form-radio__label {
         padding-left: 5%;
@@ -183,17 +198,29 @@ export default defineComponent({
     }
   }
 
-  .export-form-row {
-    width: 100%;
+  .export-row {
     display: flex;
-    gap: @cell-gap;
+    flex-direction: row;
+    align-items: center;
     margin-top: @cell-gap;
-  }
+    line-height: @row-height;
 
-  .export-form-before {
-    text-align: center;
-    width: 2em;
-    line-height: 24px;
+    &-label {
+      min-width: 30%;
+      text-align: right;
+      padding-right: 2%;
+    }
+
+    &-unit {
+      width: 15%;
+      padding-left: 2%;
+      text-align: center;
+    }
+
+    .form-input {
+      min-width: 30%;
+      height: @row-height;
+    }
   }
 }
 </style>
