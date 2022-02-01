@@ -44,7 +44,6 @@ export default defineComponent({
   overflow: auto;
   padding: 1em;
   box-sizing: border-box;
-  background-color: #343942;
   font-family: @normal-font-family;
   font-size: @preview-font-size;
 }

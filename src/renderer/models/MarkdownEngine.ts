@@ -37,10 +37,13 @@ const GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
 export default class MarkdownEngine implements IDisposable {
   /**
-   * @description 事件同步
+   * @description Event Bus 实例
    */
   private readonly bus: EventBus;
 
+  /**
+   * @description markdown-it 实例
+   */
   private engine!: MarkdownIt;
 
   constructor(bus: EventBus) {

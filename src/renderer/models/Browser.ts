@@ -10,7 +10,7 @@ interface IOptionsType extends IPreferenceBrowser, Pick<ISystemLaunch, "cabinPat
 
 export default class Browser implements IDisposable {
   /**
-   * @description 事件同步
+   * @description Event Bus 实例
    */
   private readonly bus: EventBus;
 

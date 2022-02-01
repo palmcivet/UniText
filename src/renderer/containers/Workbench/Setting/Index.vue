@@ -65,6 +65,11 @@
           <div class="group-divider"></div>
         </template>
 
+        <h2 class="group-h1" :id="navList.at(-4).href.replace('#', '')">
+          {{ navList.at(-4).label }}
+        </h2>
+        <ThemeGroup :userData="dataAll.theme" />
+
         <h2 class="group-h1" :id="navList.at(-3).href.replace('#', '')">
           {{ navList.at(-3).label }}
         </h2>
@@ -103,6 +108,7 @@ import TextBox from "./Form/TextBox.vue";
 import DropDown from "./Form/DropDown.vue";
 import CheckBox from "./Form/CheckBox.vue";
 import TextGroup from "./Form/TextGroup.vue";
+import ThemeGroup from "./ThemeGroup.vue";
 import SnippetGroup from "./SnippetGroup.vue";
 
 interface INavItem {
@@ -118,6 +124,7 @@ export default defineComponent({
 
   components: {
     SnippetGroup,
+    ThemeGroup,
     Range,
     CheckBox,
     TextBox,
@@ -132,7 +139,6 @@ export default defineComponent({
         system: schemaSystem,
         preference: schemaPreference,
         markdown: schemaMarkdown,
-        theme: schemaTheme,
       },
       schemaSnippet,
     };
@@ -187,6 +193,7 @@ export default defineComponent({
 
     this.navList.push(
       ...[
+        { label: "主题", href: `#theme`, child: [] },
         {
           label: "代码片段",
           href: `#snippet`,

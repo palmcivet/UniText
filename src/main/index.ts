@@ -71,11 +71,14 @@ function registerProtocol(): void {
   protocol.interceptFileProtocol("https", handleHttp);
 
   protocol.registerFileProtocol(URL_PROTOCOL.replace("://", ""), async (request, callback) => {
-    let path = request.url;
+    let path = decodeURI(request.url);
+
     if (path.startsWith(URL_PATH.IMG)) {
       path = await imageService.getLocalImage(path);
+    } else if (path.startsWith(`${URL_PROTOCOL}/`)) {
+      path = path.replace(URL_PROTOCOL, "");
     }
-    // FEAT 相对路径
+
     callback({ path });
   });
 }
@@ -124,6 +127,8 @@ function main(): void {
   _container.getService("SettingService").setSetting("system", "launch.cabinPath", envService.getCabinPath());
 
   app.whenReady().then(async () => {
+    registerProtocol();
+
     let mainWindow: BrowserWindow | null = null;
 
     mainWindow = await createMainWindow();
@@ -133,7 +138,6 @@ function main(): void {
     });
 
     handleClosed(mainWindow);
-    registerProtocol();
 
     if (isDev) {
       mainWindow.webContents.openDevTools();

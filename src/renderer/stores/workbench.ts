@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 import { ITocItem } from "@/library/markdown-it-toc-and-anchor";
 import { ID_PREVIEW } from "@/shared/constant";
-import { $id, rawObject } from "@/shared/utils";
+import { $id } from "@/shared/utils";
 import { ITab } from "@/shared/typings/renderer";
 import { EWorkbenchType, IWorkbenchState } from "@/shared/typings/store";
 import {
@@ -161,13 +161,13 @@ export default defineStore({
         return;
       }
 
+      const { top, right, bottom, left } = toRaw(marginCSS);
+      const styleText = await useDisk().readTextFile([__static, "themes", "OneDarkPro", "renderView.css"]);
+      const printCSS = `<style>@media print { @page { margin: ${top} ${right} ${bottom} ${left}; } ${styleText} }</style>`;
+      const rawHtml = `${printCSS}
+<div id="markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`;
+
       try {
-        const rawHtml = `
-        <div id="#markdown-preview" class="line-numbers match-braces rainbow-braces">${$id(ID_PREVIEW).innerHTML}<div>`;
-        // TODO 添加主题 CSS
-
-        console.log(toRaw(marginCSS));
-
         await useService("WindowService").printToPDF([filePath], rawHtml, {
           printBackground: true,
           landscape: toRaw(landscape),

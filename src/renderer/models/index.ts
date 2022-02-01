@@ -15,7 +15,7 @@ const _bus = new EventBus();
 const _viewer = new Viewer(_bus);
 const _browser = new Browser(_bus);
 const _workbench = new Workbench(_bus);
-// const _themeEngine = new ThemeEngine(_bus);
+const _themeEngine = new ThemeEngine(_bus);
 const _markdownEngine = new MarkdownEngine(_bus);
 
 (window as any).stack = _workbench;
@@ -31,7 +31,8 @@ async function register() {
 
   _browser.update({ ...browser, cabinPath: all.system.launch.cabinPath });
   _workbench.update();
-  _markdownEngine.update({ ...all.markdown });
+  _themeEngine.update(all.theme);
+  _markdownEngine.update(all.markdown);
 }
 
 /* 将配置注入 model */
@@ -42,7 +43,7 @@ export default function createModel() {
       app.provide("$viewer", _viewer);
       app.provide("$browser", _browser);
       app.provide("$workbench", _workbench);
-      // app.provide("$theme", _themeEngine);
+      app.provide("$theme", _themeEngine);
       _bus.on(BUS_CHANNEL.UPDATE_SETTING, register);
       return register();
     },

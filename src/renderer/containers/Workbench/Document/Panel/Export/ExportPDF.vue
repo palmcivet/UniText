@@ -133,10 +133,10 @@ export default defineComponent({
     const isPageSizeCustom = computed(() => pageSizeSelect.value === "Custom");
 
     const marginCSS = reactive<Record<keyof TMarginCSS, number>>({
-      top: 1,
-      bottom: 1,
-      left: 2,
-      right: 2,
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
     });
     const marginUnitOption = [
       { value: "cm", label: "cm" },

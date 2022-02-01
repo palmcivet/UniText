@@ -46,6 +46,9 @@ export const IPC_CHANNEL = {
   DISK_MOVE: "disk:move",
   DISK_COPY: "disk:copy",
   DISK_STAT: "disk:stat",
+  DISK_WATCHER_START: "disk:watcher-start",
+  DISK_WATCHER_CLOSE: "disk:watcher-close",
+  DISK_WATCHER_NOTIFY: "disk:watcher-notify",
 
   /* external */
   EXTERNAL_PANDOC: "external:pandoc",

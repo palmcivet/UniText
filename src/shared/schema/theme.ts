@@ -1,7 +1,7 @@
 import { ISchema, IGroup, reduceSchema } from "./_";
-import { ITheme, IThemeColor } from "@/shared/typings/setting/theme";
+import { ITheme, IThemeCustom, IThemeOverview } from "@/shared/typings/setting/theme";
 
-const tColor: IGroup<IThemeColor> = {
+const tOverview: IGroup<IThemeOverview> = {
   type: "Group",
   title: ["主题样式"],
   properties: {
@@ -13,10 +13,19 @@ const tColor: IGroup<IThemeColor> = {
     },
     preset: {
       type: "TextBox",
-      title: ["预设"],
-      description: ["预设主题"],
+      title: ["预设主题"],
+      description: [""],
       default: "OneDarkPro",
     },
+  },
+  default: {},
+  description: [""],
+};
+
+const tCustom: IGroup<IThemeCustom> = {
+  type: "Group",
+  title: ["自定义"],
+  properties: {
     appearance: {
       type: "TextBox",
       title: ["外观主题"],
@@ -47,7 +56,8 @@ const tColor: IGroup<IThemeColor> = {
 };
 
 export const schemaTheme: ISchema<ITheme> = {
-  color: tColor,
+  overview: tOverview,
+  custom: tCustom,
 };
 
 export default reduceSchema(schemaTheme);

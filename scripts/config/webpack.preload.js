@@ -2,7 +2,7 @@
 
 const webpack = require("webpack");
 
-const { isDev, BuildPath: buildPath } = require("./environment");
+const { isDev, BuildPath } = require("./environment");
 
 /**
  * @type {import('webpack').Configuration}
@@ -12,14 +12,17 @@ const preloadConfig = {
   devtool: "cheap-module-source-map",
   target: "electron-preload",
   entry: {
-    index: buildPath.src("preload/index.ts"),
+    index: BuildPath.src("preload/index.ts"),
   },
   output: {
-    path: buildPath.build("preload"),
+    path: BuildPath.build("preload"),
     filename: "index.js",
     libraryTarget: "commonjs2",
   },
   resolve: {
+    alias: {
+      "@": BuildPath.src(),
+    },
     extensions: [".ts"],
   },
   plugins: [new webpack.NoEmitOnErrorsPlugin()],

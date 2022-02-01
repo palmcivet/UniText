@@ -1,6 +1,6 @@
+import * as fse from "fs-extra";
 import { ipcMain } from "electron";
 import { join, basename } from "path";
-import * as fse from "fs-extra";
 import { ITreeNodeFile, ITreeNodeFolder } from "@palmcivet/unitext-tree-view";
 import { deleteAll } from "@/main/utils/file";
 import { IPathRoute } from "@/shared/typings/renderer";
@@ -152,4 +152,28 @@ ipcMain.handle(IPC_CHANNEL.DISK_COPY, (event, srcRoutes: Array<IPathRoute>, dstR
 ipcMain.handle(IPC_CHANNEL.DISK_STAT, (event, route: IPathRoute) => {
   const location = join(...route);
   return fse.stat(location);
+});
+
+/* 目录监视器 */
+
+const _watchMap: { [key: string]: fse.FSWatcher } = {};
+
+ipcMain.handle(IPC_CHANNEL.DISK_WATCHER_START, (event, route: IPathRoute, key: string) => {
+  const location = join(...route);
+
+  _watchMap[key] ||= fse.watch(
+    location,
+    {
+      recursive: true,
+    },
+    (_event, filename) => {
+      if (filename && _event === "change") {
+        event.sender.send(IPC_CHANNEL.DISK_WATCHER_NOTIFY, key, filename);
+      }
+    }
+  );
+});
+
+ipcMain.handle(IPC_CHANNEL.DISK_WATCHER_CLOSE, (event, key: string) => {
+  _watchMap[key]?.close();
 });

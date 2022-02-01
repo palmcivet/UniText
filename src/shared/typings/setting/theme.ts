@@ -1,7 +1,21 @@
 /**
- * @interface 文件路径
+ * @interface 主题样式
  */
-export interface IThemeColorCustom {
+export interface IThemeOverview {
+  /**
+   * @field 动态主题
+   */
+  dynamic: boolean;
+  /**
+   * @field 预设主题 + 自定义主题
+   */
+  preset: string;
+}
+
+/**
+ * @interface 单独指定主题
+ */
+export interface IThemeCustom {
   /**
    * @field 外观主题
    */
@@ -20,20 +34,7 @@ export interface IThemeColorCustom {
   renderView: string;
 }
 
-/**
- * @interface 颜色主题
- */
-export interface IThemeColor extends IThemeColorCustom {
-  /**
-   * @field 动态主题
-   */
-  dynamic: boolean;
-  /**
-   * @field 预设
-   */
-  preset: string;
-}
-
 export interface ITheme {
-  color: IThemeColor;
+  overview: IThemeOverview;
+  custom: IThemeCustom;
 }

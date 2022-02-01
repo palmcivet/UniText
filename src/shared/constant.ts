@@ -2,7 +2,7 @@ export const ID_PREVIEW = "markdown-preview";
 
 export const THEME_CSS = ["appearance", "renderView", "renderCode"];
 export const THEME_JS = ["monacoEditor"];
-export const THEME_PRESET = ["OneDarkPro", "OneDarkCyber", "Custom"];
+export const THEME_PRESET = ["OneDarkPro", "CyberLight", "CyberDark", "Custom"];
 
 export const PUBLIC = {
   BIN: "bin",

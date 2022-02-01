@@ -10,9 +10,19 @@ import { app } from "electron";
 import { join } from "path";
 import * as fse from "fs-extra";
 
-import { CABIN_FILE, CABIN_FOLDER, CABIN_NAME, SYSTEM_PATH } from "@/shared/constant";
+import {
+  CABIN_FILE,
+  CABIN_FOLDER,
+  CABIN_NAME,
+  SYSTEM_PATH,
+  THEME_CSS,
+  THEME_JS,
+  THEME_PRESET,
+} from "@/shared/constant";
 import { IBootArgs } from "@/shared/typings/main";
 import { IPathRoute } from "@/shared/typings/renderer";
+
+const ThemeConfigList = [...THEME_CSS.map((item) => `${item}.css`), ...THEME_JS.map((item) => `${item}.js`)];
 
 type TKeyConfigFolder = keyof typeof CABIN_FOLDER;
 type TKeyConfigFile = keyof typeof CABIN_FILE;
@@ -35,9 +45,16 @@ export default class EnvService {
     };
   }
 
-  initCli(): void {}
+  /**
+   * @description 建立笔记库样例
+   */
+  private async initTemplate(): Promise<void> {}
 
-  initBoot(): IBootParam {
+  private async _serializeBoot() {}
+
+  public initCli(): void {}
+
+  public initBoot(): IBootParam {
     const userDataPath = app.getPath("userData");
 
     /* 获取 cabinPath */
@@ -66,33 +83,59 @@ export default class EnvService {
     };
   }
 
-  /**
-   * @description 建立笔记库样例
-   */
-  async initTemplate(): Promise<void> {}
-
-  private async _serializeBoot() {}
-
-  normalizePath(route: IPathRoute): string {
+  public normalizePath(route: IPathRoute): string {
     return join(this._cabinPath, ...route);
   }
 
-  getCabinPath(): string {
+  public getAppPath(): string {
+    return app.getAppPath();
+  }
+
+  public getCabinPath(): string {
     return this._cabinPath;
   }
 
-  setCabinPath(newPath: string): void {
+  public setCabinPath(newPath: string): void {
     this._cabinPath = newPath;
     this._serializeBoot();
   }
 
-  resolveCabinFile(key: TKeyConfigFile): string {
+  public resolveCabinFile(key: TKeyConfigFile): string {
     const cabinPath = this.getCabinPath();
     return join(cabinPath, CABIN_NAME, CABIN_FILE[key]);
   }
 
-  resolveCabinFolder(key: TKeyConfigFolder): string {
+  public resolveCabinFolder(key: TKeyConfigFolder, file: Array<string> = []): string {
     const cabinPath = this.getCabinPath();
-    return join(cabinPath, CABIN_NAME, CABIN_FOLDER[key]);
+    return join(cabinPath, CABIN_NAME, CABIN_FOLDER[key], ...file);
+  }
+
+  public async resolveThemeList(): Promise<Array<string>> {
+    const validThemeList: Array<string> = [];
+    const cabinPathTheme = this.resolveCabinFolder("THEMES");
+
+    const themeList = await fse.readdir(cabinPathTheme);
+    themeList.forEach(async (theme) => {
+      /* 排除预设主题 */
+      if (THEME_PRESET.includes(theme)) {
+        return;
+      }
+
+      let valid = true;
+      for (let index = 0; index < ThemeConfigList.length; index++) {
+        const config = ThemeConfigList[index];
+        const configPath = join(cabinPathTheme, theme, config);
+        if (!fse.pathExistsSync(configPath)) {
+          valid = false;
+          break;
+        }
+      }
+
+      if (valid) {
+        validThemeList.push(theme);
+      }
+    });
+
+    return validThemeList;
   }
 }

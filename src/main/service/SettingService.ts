@@ -24,7 +24,7 @@ export default class SettingService extends Service {
    * @param module 模块名
    * @param key 键名，用 . 分隔
    */
-  getSetting<K extends keyof ISetting, T extends ISetting>(module: K, key: MapGet<T[K]>): any {
+  public getSetting<K extends keyof ISetting, T extends ISetting>(module: K, key: MapGet<T[K]>): any {
     return this._dataSet.get(`${module}.${key}` as string) as any;
   }
 
@@ -34,11 +34,11 @@ export default class SettingService extends Service {
    * @param key 键名，用 . 分隔
    * @param value 新值
    */
-  setSetting<K extends keyof ISetting, T extends ISetting>(module: K, key: MapGet<T[K]>, value: any): void {
+  public setSetting<K extends keyof ISetting, T extends ISetting>(module: K, key: MapGet<T[K]>, value: any): void {
     this._dataSet.set(`${module}.${key}`, value);
   }
 
-  getAll(): ISetting {
+  public getAll(): ISetting {
     return this._dataSet.store;
   }
 }

@@ -118,6 +118,8 @@ import useWorkbench from "@/renderer/stores/workbench";
 export default defineComponent({
   name: "Export",
 
+  inject: ["$theme"],
+
   components: {
     FormSelect,
     FormInput,
