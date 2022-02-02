@@ -35,7 +35,7 @@ export default defineComponent({
       default: "text",
     },
     value: {
-      type: [String, Object, Boolean, Number],
+      type: [String, Object, Number, Boolean],
     },
     clearable: {
       type: Boolean,

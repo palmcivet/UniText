@@ -1,262 +1,477 @@
 <template>
-  <BaseView :isBlank="false">
-    <template slot="view-title">
-      <span>{{ $t("sidebar.search") }}</span>
-      <div>
+  <div class="browser-search">
+    <div class="browser-toolbar">
+      <div class="toolbar-label">{{ $t("sidebar.search") }}</div>
+      <div class="toolbar-controls">
         <i
           class="ri-refresh-line"
           :title="$t('sidebar.search_refresh')"
-          @click="handleSearch()"
+          @click="onSearch()"
         />
         <i
           class="ri-filter-off-line"
           :title="$t('sidebar.search_clear')"
-          @click="keyword = ''"
+          @click="onClearSearch()"
         />
       </div>
-    </template>
+    </div>
 
-    <template slot="view">
-      <div class="tool-bar">
-        <!-- TODO 复用组件 -->
-        <input
+    <div class="browser-container">
+      <div class="search-widget">
+        <FormInput
           type="text"
-          class="search-box"
-          v-model="keyword"
-          @input="handleSearch()"
+          :value="keyword"
           placeholder="搜索"
+          @form-change="onSearch($event)"
         />
-        <div class="controls">
+        <div class="widget-wrapper">
           <div
-            :class="isCaseSensitive ? 'active' : ''"
-            @click="isCaseSensitive = !isCaseSensitive"
+            :class="parameter.isCaseSensitive ? 'active' : ''"
+            @click="parameter.isCaseSensitive = !parameter.isCaseSensitive"
           >
             <i class="ri-a-b" title="大小写" />
           </div>
-          <div :class="isWholeWord ? 'active' : ''" @click="isWholeWord = !isWholeWord">
+          <div
+            :class="parameter.isWholeWord ? 'active' : ''"
+            @click="parameter.isWholeWord = !parameter.isWholeWord"
+          >
             <i class="ri-bar-chart-horizontal-line" title="全字匹配" />
           </div>
-          <div :class="isRegexp ? 'active' : ''" @click="isRegexp = !isRegexp">
+          <div
+            :class="parameter.isRegexp ? 'active' : ''"
+            @click="parameter.isRegexp = !parameter.isRegexp"
+          >
             <i class="ri-registered-line" title="正则" />
           </div>
-          <div :class="isInclude ? 'active' : ''" @click="isInclude = !isInclude">
+          <div
+            :class="parameter.isInclude ? 'active' : ''"
+            @click="parameter.isInclude = !parameter.isInclude"
+          >
             <i class="ri-add-circle-line" title="包含" />
           </div>
-          <div :class="isExclude ? 'active' : ''" @click="isExclude = !isExclude">
+          <div
+            :class="parameter.isExclude ? 'active' : ''"
+            @click="parameter.isExclude = !parameter.isExclude"
+          >
             <i class="ri-subtract-line" title="排除" />
           </div>
         </div>
-        <input
+        <FormInput
+          v-if="parameter.isInclude"
           type="text"
-          class="include"
           placeholder="包含文件"
-          v-if="isInclude"
-          v-model="searchInclusions"
+          :value="searchInclusions"
+          @form-change="searchInclusions = $event"
         />
-        <input
+        <FormInput
+          v-if="parameter.isExclude"
           type="text"
-          class="exclude"
           placeholder="排除文件"
-          v-if="isExclude"
-          v-model="searchExclusions"
+          :value="searchExclusions"
+          @form-change="searchExclusions = $event"
         />
       </div>
+
       <ul class="search-result">
-        <ListNode
-          v-for="(item, idx) in searchResult"
-          :key="idx"
-          :nodeName="trailPath(item.filePath)"
-        >
-          <li
-            v-for="(v, i) in item.matches"
-            :key="i"
-            @click="handleReveal(item.filePath, v.range)"
-          >
-            {{ v.lineText }}
-          </li>
-        </ListNode>
+        <BrowserSearchNode
+          v-show="keyword.length !== 0"
+          v-for="(result, index) in searchResultList"
+          :key="index"
+          :result="result"
+        />
       </ul>
-    </template>
-  </BaseView>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { IRipgrepSearchResult } from "@/library/ripgrep-searcher";
-import CheckList from "@/renderer/components/CheckList.vue";
-import ListNode from "@/renderer/containers/SideBar/widgets/ListNode.vue";
-import BaseView from "@/renderer/containers/SideBar/widgets/BaseView.vue";
-import { IGeneralState } from "@/typings/vuex/general";
-import { ipcRenderer } from "electron";
-import { IPC_FILE } from "@/shared/channel/ipc";
-import { BUS_EDITOR } from "@/shared/channel";
+import { defineComponent, onMounted, reactive, ref, toRaw } from "vue";
+import FormInput from "@/renderer/components/Form/FormInput.vue";
+import { useDisk, useService } from "@/renderer/composables";
+import { IRipgrepSearchResult } from "@/main/utils/ripgrep";
+import BrowserSearchNode from "./BrowserSearchNode.vue";
 
-const sideBar = namespace("sideBar");
-const general = namespace("general");
-
-@Component({
+export default defineComponent({
   name: "Search",
+
   components: {
-    BaseView,
-    CheckList,
-    ListNode,
+    FormInput,
+    BrowserSearchNode,
   },
-})
-export default class Search extends Vue {
-  @general.State((state: IGeneralState) => state.fileManager.folderDir)
-  folderDir!: string;
 
-  @sideBar.Getter("isEmptyFolder")
-  isEmptyFolder!: boolean;
+  setup() {
+    const cabinPath = ref("");
+    onMounted(async () => {
+      cabinPath.value = await useService("EnvService").getCabinPath();
+    });
 
-  isInclude = false;
+    const keyword = ref("");
+    // const searchResultList = ref<Array<IRipgrepSearchResult>>([]);
+    const searchResultList = ref<Array<IRipgrepSearchResult>>([
+      {
+        filePath:
+          "/Users/palmcivet/Documents/Develop/Dealing/PKM/测试笔记/环境与工具/生产工具/VS Code/项目分析.md",
+        matches: [
+          {
+            matchText: "markdown",
+            lineText:
+              "    │   ├── common  # diff描述，markdown解析器，worker协议，各种工具函数",
+            lineTextOffset: 0,
+            range: [
+              [21, 29],
+              [21, 37],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+        ],
+      },
+      {
+        filePath:
+          "/Users/palmcivet/Documents/Develop/Dealing/PKM/测试笔记/环境与工具/桌面环境/笔记 - macOS.md",
+        matches: [
+          {
+            matchText: "mArkdown",
+            lineText: "- qlmArkdown 预览 Markdown",
+            lineTextOffset: 0,
+            range: [
+              [211, 4],
+              [211, 12],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "- qlmArkdown 预览 Markdown",
+            lineTextOffset: 0,
+            range: [
+              [211, 18],
+              [211, 18],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+        ],
+      },
+      {
+        filePath:
+          "/Users/palmcivet/Documents/Develop/Dealing/PKM/测试笔记/环境与工具/生产工具/VS Code/使用 - 扩展.md",
+        matches: [
+          {
+            matchText: "Markdown",
+            lineText: "- 高亮 Markdown",
+            lineTextOffset: 0,
+            range: [
+              [222, 5],
+              [222, 13],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+        ],
+      },
+      {
+        filePath:
+          "/Users/palmcivet/Documents/Develop/Dealing/PKM/测试笔记/环境与工具/Markdown/Markdown 语法.md",
+        matches: [
+          {
+            matchText: "Markdown",
+            lineText: "- 数字加点`.`，空一格 ` `再填写内容，可嵌套 Markdown 语法\r",
+            lineTextOffset: 0,
+            range: [
+              [35, 27],
+              [35, 35],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [37, 3],
+              [37, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "- 可多层嵌套 Markdown 语法\r",
+            lineTextOffset: 0,
+            range: [
+              [53, 8],
+              [53, 16],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [55, 3],
+              [55, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [77, 3],
+              [77, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [101, 3],
+              [101, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [111, 3],
+              [111, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [119, 3],
+              [119, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "Markdown 兼容 *HTML* 标记语言，可使用 *HTML* 的 `div` 标签\r",
+            lineTextOffset: 0,
+            range: [
+              [125, 0],
+              [125, 8],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "### Markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [154, 4],
+              [154, 12],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "```Markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [155, 3],
+              [155, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "- 支持子列表嵌套 Markdown 语法\r",
+            lineTextOffset: 0,
+            range: [
+              [203, 10],
+              [203, 18],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [205, 3],
+              [205, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "- [ ] **Markdown 开发**\r",
+            lineTextOffset: 0,
+            range: [
+              [206, 8],
+              [206, 16],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "- [ ] **Markdown 开发**\r",
+            lineTextOffset: 0,
+            range: [
+              [217, 8],
+              [217, 16],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "Markdown",
+            lineText: "*Visual Studio Code* 插件 Markdown Preview Enhanced\r",
+            lineTextOffset: 0,
+            range: [
+              [252, 24],
+              [252, 32],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+          {
+            matchText: "markdown",
+            lineText: "        ```markdown\r",
+            lineTextOffset: 0,
+            range: [
+              [256, 11],
+              [256, 19],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+        ],
+      },
+      {
+        filePath:
+          "/Users/palmcivet/Documents/Develop/Dealing/PKM/测试笔记/环境与工具/Markdown/Pandoc 参考.md",
+        matches: [
+          {
+            matchText: "markdown",
+            lineText: "```markdown",
+            lineTextOffset: 0,
+            range: [
+              [39, 3],
+              [39, 11],
+            ],
+            leadingContextLines: [],
+            trailingContextLines: [],
+          },
+        ],
+      },
+    ]);
+    const onSearch = async (newValue: string) => {
+      keyword.value = newValue;
 
-  isExclude = false;
-
-  isCaseSensitive = false;
-
-  isWholeWord = false;
-
-  isRegexp = false;
-
-  searchExclusions: Array<string> = [];
-
-  searchInclusions: Array<string> = [];
-
-  ripgrepDirectorySearcher = new RipgrepDirectorySearcher(join(__static, "bin/rg"));
-
-  keyword = "";
-
-  searchResult: any = [];
-
-  searcherRunning = false;
-
-  // TODO 提示
-  searchErrorString = "";
-
-  searchPromise!: Promise<void>;
-
-  trailPath(path: string) {
-    const dirs = path.split("/");
-    return dirs[dirs.length - 1];
-  }
-
-  searcherCancelCallback() {
-    this.searchResult = [];
-    this.searchPromise.cancel && this.searchPromise.cancel();
-  }
-
-  handleSearch() {
-    if (this.isEmptyFolder) return;
-
-    if (this.searcherRunning) this.searcherCancelCallback();
-
-    this.searchErrorString = "";
-
-    if (!this.keyword) {
-      this.searchResult = [];
-      this.searcherRunning = false;
-      return;
-    }
-
-    const newSearchResult: any = [];
-
-    this.searcherRunning = true;
-
-    this.searchPromise = this.ripgrepDirectorySearcher
-      .search([this.folderDir], this.keyword, {
-        didMatch: (searchResult: IRipgrepSearchResult) => {
-          if (!this.searcherRunning) return;
-          newSearchResult.push(searchResult);
-        },
-        didSearchPaths: (numPathsFound: number) => {
-          // More than 100 files with (multiple) matches were found.
-          if (this.searcherRunning && numPathsFound > 100) {
-            this.searcherRunning = false;
-            this.searchPromise.cancel && this.searchPromise.cancel();
-            this.searchErrorString = "Search was limited to 100 files.";
-          }
-        },
-        isCaseSensitive: this.isCaseSensitive,
-        isWholeWord: this.isWholeWord,
-        isRegexp: this.isRegexp,
-        inclusions: this.searchInclusions,
-        exclusions: this.searchExclusions,
-
-        // TODO 参数选项
-        /**
-         * noIgnore: this.searchNoIgnore,
-         * includeHidden: this.searchIncludeHidden,
-         * followSymlinks: this.searchFollowSymlinks,
-         */
-      })
-      .then(() => {
-        this.searchResult = newSearchResult;
-        this.searcherRunning = false;
-      })
-      .catch((err) => {
-        this.searchPromise.cancel && this.searchPromise.cancel();
-        this.searcherRunning = false;
-        this.searchErrorString = err.message;
+      const result = await useDisk().externalRipgrep([cabinPath.value], keyword.value, {
+        isCaseSensitive: parameter.isCaseSensitive,
+        isWholeWord: parameter.isWholeWord,
+        isRegexp: parameter.isRegexp,
+        inclusions: toRaw(searchInclusions.value),
+        exclusions: toRaw(searchExclusions.value),
       });
-  }
+      searchResultList.value = result;
+    };
+    const onClearSearch = () => {
+      keyword.value = "";
+    };
 
-  handleReveal(path: string, range: [[number, number], [number, number]]) {
-    const route = path.slice(this.folderDir.length).split("/");
-    ipcRenderer.emit(IPC_FILE.OPEN, null, route);
-    // TODO 调整位置
-    this.$bus.emit(BUS_EDITOR.REVEAL_SECTION, [range[0][0], range[0][0] + 1]);
-  }
-}
+    const parameter = reactive({
+      isCaseSensitive: false,
+      isWholeWord: false,
+      isRegexp: false,
+      isInclude: false,
+      isExclude: false,
+    });
+
+    const searchInclusions = ref<Array<string>>([]);
+    const searchExclusions = ref<Array<string>>([]);
+
+    return {
+      keyword,
+      searchResultList,
+
+      onSearch,
+      onClearSearch,
+
+      parameter,
+
+      searchInclusions,
+      searchExclusions,
+    };
+  },
+
+  methods: {
+    onReveal(path: string, range: [[number, number], [number, number]]) {
+      console.log(path, range);
+    },
+  },
+});
 </script>
 
 <style lang="less" scoped>
-@import "~@/renderer/styles/vars.less";
+@import "./style.less";
 
-::v-deep(.view) {
-  display: flex;
-  flex-direction: column;
-}
-
-.tool-bar {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  padding: 0 3px;
-
-  .controls {
+.browser-search {
+  .browser-container {
     display: flex;
-    width: 100%;
-    justify-content: space-around;
+    flex-direction: column;
 
-    > div {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      text-align: center;
+    .search-widget {
+      .widget-wrapper {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
 
-      i {
-        line-height: 20px;
-      }
+        div {
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+          text-align: center;
 
-      &:hover {
-        color: #efefef; // DEV
-      }
+          i {
+            line-height: 20px;
+          }
 
-      &.active {
-        color: var(--sideBarItem-hoverFg);
-        background: #414958; // DEV
+          &:hover {
+            color: #efefef; // DEV
+          }
+
+          &.active {
+            color: var(--sideBarItem-hoverFg);
+            background: #414958; // DEV
+          }
+        }
       }
     }
-  }
 
-  input[type="text"] {
-    width: -webkit-fill-available;
-    margin: 3px 0;
-    height: 1.5em;
-    font-size: 1.05em;
-    color: var(--inputBox-Fg);
-    background: #404552; // DEV
-    font-family: @normal-font-family;
+    .search-result {
+      height: 100%;
+      overflow-y: overlay;
+    }
   }
 }
 </style>

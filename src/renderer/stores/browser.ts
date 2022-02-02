@@ -6,7 +6,7 @@ export default defineStore({
 
   state: () =>
     ({
-      browserType: EBrowserType.FILE,
+      browserType: EBrowserType.SEARCH,
       isShowBrowser: true,
     } as IBrowserState),
 

@@ -29,5 +29,3 @@ export function execPandoc(from: string, to: string, ...args: Array<string>) {
 
   return converter;
 }
-
-export function execRipgrep() {}

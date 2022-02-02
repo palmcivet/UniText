@@ -3,6 +3,7 @@ import { ipcMain } from "electron";
 import { join, basename } from "path";
 import { ITreeNodeFile, ITreeNodeFolder } from "@palmcivet/unitext-tree-view";
 import { deleteAll } from "@/main/utils/file";
+import { execRipgrepSearchInDirectory, IRipgrepOptions, IRipgrepSearchResult } from "@/main/utils/ripgrep";
 import { IPathRoute } from "@/shared/typings/renderer";
 import { IPC_CHANNEL } from "@/shared/channel";
 
@@ -153,6 +154,56 @@ ipcMain.handle(IPC_CHANNEL.DISK_STAT, (event, route: IPathRoute) => {
   const location = join(...route);
   return fse.stat(location);
 });
+
+let _searchRunning: boolean = false;
+let _searchPromise: (Promise<void> & { cancel(): void }) | null;
+const MAX_FILE = 100;
+
+/**
+ * @description 搜索
+ */
+ipcMain.handle(
+  IPC_CHANNEL.EXTERNAL_RIPGREP,
+  async (event, route: IPathRoute, keyword: string, options: IRipgrepOptions) => {
+    if (_searchRunning) {
+      _searchRunning = false;
+    }
+
+    const searchResultList: Array<IRipgrepSearchResult> = [];
+    const directories = join(...route);
+
+    _searchRunning = true;
+
+    try {
+      _searchPromise = execRipgrepSearchInDirectory(
+        directories,
+        keyword,
+        {
+          ...options,
+          didMatch: (searchResult) => {
+            if (!_searchRunning) {
+              return;
+            }
+            searchResultList.push(searchResult);
+          },
+          didSearchPaths: (numPathsFound: number) => {
+            if (_searchRunning && numPathsFound > MAX_FILE) {
+              _searchRunning = false;
+              _searchPromise?.cancel();
+            }
+          },
+        },
+        { num: 0 }
+      );
+
+      await _searchPromise;
+    } catch (error) {
+    } finally {
+      _searchRunning = false;
+      return searchResultList;
+    }
+  }
+);
 
 /* 目录监视器 */
 

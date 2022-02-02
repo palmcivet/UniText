@@ -1,5 +1,6 @@
 import { BrowserWindow, PrintToPDFOptions } from "electron";
 import { writeFile } from "fs-extra";
+import { join } from "path";
 
 import Logger from "@/main/backend/Logger";
 import Service, { Inject } from "@/main/service/Service";
@@ -7,7 +8,6 @@ import SettingService from "@/main/service/SettingService";
 import { isDev } from "@/main/utils/env";
 import { IPC_CHANNEL } from "@/shared/channel";
 import { IPathRoute } from "@/shared/typings/renderer";
-import { join } from "path";
 
 export default class WindowService extends Service {
   private _window: any;

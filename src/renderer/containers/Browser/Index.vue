@@ -11,7 +11,7 @@ import { defineComponent } from "vue";
 
 import useBrowser from "@/renderer/stores/browser";
 import BrowserBookmark from "./BrowserBookmark.vue";
-// import BrowserSearch from "./BrowserSearch.vue";
+import BrowserSearch from "./BrowserSearch.vue";
 import BrowserFile from "./BrowserFile.vue";
 import BrowserTag from "./BrowserTag.vue";
 import { storeToRefs } from "pinia";
@@ -21,7 +21,7 @@ export default defineComponent({
 
   components: {
     BrowserBookmark,
-    // BrowserSearch,
+    BrowserSearch,
     BrowserFile,
     BrowserTag,
   },

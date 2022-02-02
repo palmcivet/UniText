@@ -1,7 +1,7 @@
 <template>
   <div class="browser-files">
     <template v-if="false">
-      <div class="title-blank">
+      <div class="toolbar-blank">
         <span>{{ $t("sidebar.files_empty") }}</span>
       </div>
 
@@ -13,7 +13,7 @@
     </template>
 
     <template v-else>
-      <div class="title-opened">
+      <div class="toolbar-opened">
         <span>{{ $t("sidebar.files_title") }}</span>
         <i
           class="ri-checkbox-indeterminate-line"
@@ -71,8 +71,8 @@ export default defineComponent({
     width: fit-content;
   }
 
-  .title-opened,
-  .title-blank {
+  .toolbar-opened,
+  .toolbar-blank {
     width: 100%;
     user-select: none;
     display: inline-flex;

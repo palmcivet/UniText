@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue-demi";
+import { computed, defineComponent } from "vue";
 
 export default defineComponent({
   name: "Message",

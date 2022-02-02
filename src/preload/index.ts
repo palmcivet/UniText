@@ -1,5 +1,7 @@
 import { shell, clipboard, ipcRenderer, contextBridge } from "electron";
+import { IRipgrepOptions, IRipgrepSearchResult } from "@/main/utils/ripgrep";
 import { IPC_CHANNEL } from "@/shared/channel";
+import { IPathRoute } from "@/shared/typings/renderer";
 
 const _ipcRenderer = {
   invoke: (channel: string, ...args: any) => ipcRenderer.invoke(channel, ...args),
@@ -103,6 +105,13 @@ const _disk = {
   },
   stat(...args: any[]) {
     return ipcRenderer.invoke(IPC_CHANNEL.DISK_STAT, ...args);
+  },
+  externalRipgrep(
+    directories: IPathRoute,
+    regexp: string,
+    options: Omit<IRipgrepOptions, "didMatch" | "didSearchPaths">
+  ): Promise<Array<IRipgrepSearchResult>> {
+    return ipcRenderer.invoke(IPC_CHANNEL.EXTERNAL_RIPGREP, directories, regexp, options);
   },
 };
 
