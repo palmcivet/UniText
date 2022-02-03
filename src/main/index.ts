@@ -6,7 +6,7 @@ import { join } from "path";
 import Logger from "./backend/Logger";
 import Container from "./service";
 import EnvService from "./service/EnvService";
-// import MenuService from "./service/MenuService";
+import MenuService from "./service/MenuService";
 import ImageService from "./service/ImageService";
 import WindowService from "./service/WindowService";
 import SettingService from "./service/SettingService";
@@ -23,7 +23,7 @@ const _container = new Container();
 
 /* TODO 窗口管理器 */
 async function createMainWindow(): Promise<BrowserWindow> {
-  // const menuService = _container.getService("MenuService");
+  const menuService = _container.getService("MenuService");
   const settingService = _container.getService("SettingService");
 
   const mainWindow = new BrowserWindow({
@@ -47,7 +47,7 @@ async function createMainWindow(): Promise<BrowserWindow> {
   mainWindow.setSheetOffset(24); /* @layout-titlebar-height */
 
   const lang = EI18n[settingService.getSetting("system", "launch.language")] as unknown as number;
-  // menuService.bootstrap(lang);
+  menuService.bootstrap();
 
   const URL_HOST = isDev ? `http://localhost:${process.env.PORT_RENDERER}` : `file://${__dirname}`;
   await mainWindow.loadURL(`${URL_HOST}/?${EWindowType.NORMAL}`);
@@ -117,7 +117,7 @@ function main(): void {
   _container.setService("EnvService", envService);
   _container.setService("SettingService", new SettingService(logger, envService.resolveCabinFile("SETTING")));
   _container.setService("KeybindingService", new KeybindingService(logger));
-  // _container.setService("MenuService", new MenuService(logger));
+  _container.setService("MenuService", new MenuService(logger));
   _container.setService("ImageService", new ImageService(logger, envService.resolveCabinFile("IMAGE")));
   _container.setService("WindowService", new WindowService(logger));
 
