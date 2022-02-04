@@ -14,7 +14,7 @@ const _commom = {
   "open-project": "打开笔记库",
 };
 
-export const localesView = {
+const localesView = {
   sidebar: {
     files: _commom.files,
     files_title: "文件管理",
@@ -69,7 +69,7 @@ export const localesView = {
   },
 };
 
-export const localesMenu = {
+const localesMenu = {
   system: {
     "label": "",
     "about-unitext": "关于 UniText",
@@ -192,4 +192,9 @@ export const localesMenu = {
   },
 
   tray: {},
+};
+
+export default {
+  ...localesMenu,
+  ...localesView,
 };

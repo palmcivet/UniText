@@ -4,12 +4,12 @@ import { createI18n } from "vue-i18n";
 
 import Index from "@/renderer/Index.vue";
 import createModel from "@/renderer/models";
-import { localesView, localesMenu } from "@/shared/i18n/ZH_CN";
 import { EWindowType } from "@/shared/typings/main";
 
 import "remixicon/fonts/remixicon.css";
 import "@palmcivet/unitext-tree-view/dist/style.css";
 import "@/renderer/styles/main.less";
+import { useService } from "./composables";
 
 async function renderer() {
   /**
@@ -22,9 +22,8 @@ async function renderer() {
   }
 
   /* ì18n begin */
-  const messages = {
-    "zh-CN": { ...localesView, ...localesMenu },
-  };
+
+  const messages = await useService("LanguageService").getLocaleMessages();
 
   const i18n = createI18n({
     legacy: false,
@@ -39,6 +38,8 @@ async function renderer() {
   app.use(i18n);
 
   app.config.globalProperties.$t = i18n.global.t;
+
+  // TODO 弃用
   app.config.globalProperties.$g = (options: Array<string>) => options[0];
 
   await createModel().invoke(app);

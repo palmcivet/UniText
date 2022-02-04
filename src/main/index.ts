@@ -10,10 +10,10 @@ import MenuService from "./service/MenuService";
 import ImageService from "./service/ImageService";
 import WindowService from "./service/WindowService";
 import SettingService from "./service/SettingService";
+import LanguageService from "./service/LanguageService";
 import KeybindingService from "./service/KeybindingService";
 import { isOsx, isWin, isDev } from "@/main/utils/env";
 import { URL_PATH, URL_PROTOCOL } from "@/shared/pattern";
-import { EI18n } from "@/shared/typings/setting/preference";
 import { EWindowType } from "@/shared/typings/main";
 
 import "./backend/Dialog";
@@ -46,7 +46,7 @@ async function createMainWindow(): Promise<BrowserWindow> {
   mainWindow.setTitle("UniText");
   mainWindow.setSheetOffset(24); /* @layout-titlebar-height */
 
-  const lang = EI18n[settingService.getSetting("system", "launch.language")] as unknown as number;
+  const lang = settingService.getSetting("system", "launch.language");
   menuService.bootstrap();
 
   const URL_HOST = isDev ? `http://localhost:${process.env.PORT_RENDERER}` : `file://${__dirname}`;
@@ -114,8 +114,12 @@ function main(): void {
   const logger = new Logger();
   logger.initialize(logPath);
 
+  const settingService = new SettingService(logger, envService.resolveCabinFile("SETTING"));
+  const languageService = new LanguageService(logger, settingService.getSetting("system", "launch.language"));
+
   _container.setService("EnvService", envService);
-  _container.setService("SettingService", new SettingService(logger, envService.resolveCabinFile("SETTING")));
+  _container.setService("SettingService", settingService);
+  _container.setService("LanguageService", languageService);
   _container.setService("KeybindingService", new KeybindingService(logger));
   _container.setService("MenuService", new MenuService(logger));
   _container.setService("ImageService", new ImageService(logger, envService.resolveCabinFile("IMAGE")));

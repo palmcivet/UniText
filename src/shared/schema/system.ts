@@ -1,6 +1,6 @@
 import { ISchema, IGroup, reduceType, reduceSchema } from "./_";
+import { SYSTEM_LOCALE } from "@/shared/constant";
 import { ETitleBar, ISystemLaunch, ISystemWindow, ISystem } from "@/shared/typings/setting/system";
-import { EI18n } from "@/shared/typings/setting/preference";
 
 const sLaunch: IGroup<ISystemLaunch> = {
   type: "Group",
@@ -9,7 +9,7 @@ const sLaunch: IGroup<ISystemLaunch> = {
   properties: {
     language: {
       type: "DropDown",
-      enum: reduceType(EI18n).filter((v) => isNaN(Number.parseInt(v))),
+      enum: reduceType(SYSTEM_LOCALE),
       default: "ZH_CN",
       title: ["界面语言"],
       description: ["软件界面所呈现的语言"],

@@ -1,8 +1,8 @@
 import { app, BrowserWindow, IpcMainEvent, Menu, MenuItem } from "electron";
 
 import { isOsx } from "@/main/utils/env";
-
 import KeybindingService from "./KeybindingService";
+import LanguageService from "./LanguageService";
 import Service, { Inject } from "./Service";
 
 type TSerializableMenuItem = {
@@ -60,8 +60,6 @@ type TSerializableMenuItem = {
 
 type TSerializableMenuItems = Array<TSerializableMenuItem>;
 
-const lang = (raw: string) => raw;
-
 const counter = (() => {
   let id = 0;
   return () => (id += 1).toString();
@@ -70,6 +68,9 @@ const counter = (() => {
 export default class MenuService extends Service {
   @Inject("KeybindingService")
   private readonly _keybindingService!: KeybindingService;
+
+  @Inject("LanguageService")
+  private readonly _languageservice!: LanguageService;
 
   public bootstrap(): void {
     this._setAppMenu();
@@ -115,12 +116,12 @@ export default class MenuService extends Service {
         // Sub Menu
         menuItem = new MenuItem({
           submenu: this._createMenu(item.submenu),
-          label: lang(item.id),
+          label: this._languageservice.translate(item.id),
         });
       } else {
         // Normal Menu Item
         menuItem = new MenuItem({
-          label: lang(item.id),
+          label: this._languageservice.translate(item.id),
           type: item.type,
           role: item.role,
           accelerator: this._keybindingService.getKeybinding(item.id as any),

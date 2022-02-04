@@ -1,10 +1,9 @@
 import { readJsonSync } from "fs-extra";
 
 import Logger from "@/main/backend/Logger";
-import { localesMenu } from "@/shared/i18n/ZH_CN";
 import Service from "./Service";
 
-type TCommand = MapGet<typeof localesMenu>;
+type TCommand = string;
 type TKeybinding = string;
 type TWhen = string;
 type TArgs = string;

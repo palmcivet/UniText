@@ -1,14 +1,6 @@
 import { IMDConfig, ITXTFormat } from "../document";
 
 /**
- * @deprecated
- */
-export enum EI18n {
-  ZH_CN,
-  EN_US,
-}
-
-/**
  * @deprecated 更改为 EWorkbenchType
  * @enum { EStartup } 启动后呈现的内容
  */

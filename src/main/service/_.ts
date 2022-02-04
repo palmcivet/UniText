@@ -6,4 +6,5 @@ export type IKeyService =
   | "ImageService"
   | "WindowService"
   | "SettingService"
+  | "LanguageService"
   | "KeybindingService";

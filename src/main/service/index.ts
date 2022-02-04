@@ -5,6 +5,7 @@ import MenuService from "./MenuService";
 import ImageService from "./ImageService";
 import WindowService from "./WindowService";
 import SettingService from "./SettingService";
+import LanguageService from "./LanguageService";
 import KeybindingService from "./KeybindingService";
 import { INJECTIONS_SYMBOL, IKeyService } from "./_";
 import { IPC_CHANNEL } from "@/shared/channel";
@@ -20,6 +21,7 @@ export interface IServiceMap {
   ImageService: ImageService;
   WindowService: WindowService;
   SettingService: SettingService;
+  LanguageService: LanguageService;
   KeybindingService: KeybindingService;
 }
 

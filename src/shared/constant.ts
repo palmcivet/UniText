@@ -19,6 +19,11 @@ export const FORMAT = {
   IMAGE: ".image",
 };
 
+export const SYSTEM_LOCALE = {
+  ZH_CN: "ZH_CN",
+  EN_US: "EN_US",
+};
+
 export const SYSTEM_PATH = {
   BOOT_FILE: "boot.json",
   DEFAULT_DIR: "Default",
