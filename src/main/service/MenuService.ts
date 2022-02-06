@@ -4,6 +4,7 @@ import { isOsx } from "@/main/utils/env";
 import KeybindingService from "./KeybindingService";
 import LanguageService from "./LanguageService";
 import Service, { Inject } from "./Service";
+import Logger from "../backend/Logger";
 
 type TSerializableMenuItem = {
   id: string;
@@ -71,6 +72,10 @@ export default class MenuService extends Service {
 
   @Inject("LanguageService")
   private readonly _languageservice!: LanguageService;
+
+  constructor(logger: Logger) {
+    super(logger);
+  }
 
   public bootstrap(): void {
     this._setAppMenu();

@@ -45,8 +45,6 @@ async function createMainWindow(): Promise<BrowserWindow> {
 
   mainWindow.setTitle("UniText");
   mainWindow.setSheetOffset(24); /* @layout-titlebar-height */
-
-  const lang = settingService.getSetting("system", "launch.language");
   menuService.bootstrap();
 
   const URL_HOST = isDev ? `http://localhost:${process.env.PORT_RENDERER}` : `file://${__dirname}`;

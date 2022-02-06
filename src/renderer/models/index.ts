@@ -1,6 +1,7 @@
 import { App } from "vue";
 import { EventBus } from "@palmcivet/unitext-tree-view";
 
+import { i18n } from "@/renderer/i18n";
 import useGeneral from "@/renderer/stores/general";
 import { useService } from "@/renderer/composables";
 import { ISetting } from "@/shared/typings/setting";
@@ -23,6 +24,14 @@ const _markdownEngine = new MarkdownEngine(_bus);
 async function register() {
   const allSetting = useService("SettingService").getAll() as unknown;
   const all = (await allSetting) as ISetting;
+
+  /* 更改 renderer locale */
+  await useService("LanguageService").setLocale(all.system.launch.language);
+  const messages = await useService("LanguageService").getLocaleMessages();
+  Object.entries(messages).forEach(([locale, message]) => {
+    i18n.global.setLocaleMessage(locale, message);
+  });
+  i18n.global.locale.value = all.system.launch.language;
 
   /* 注入 IGeneralState（即 IPreference） */
   useGeneral().FILL_STORE(all.preference);

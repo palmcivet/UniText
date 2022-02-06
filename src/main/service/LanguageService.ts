@@ -16,11 +16,7 @@ export default class LanguageService extends Service {
 
   constructor(logger: Logger, locale: TLocale) {
     super(logger);
-
-    this._message = {
-      ZH_CN: ZH_CN,
-    };
-
+    this._message = { ZH_CN };
     this._rawI18n = createI18n({
       legacy: true,
       locale,
