@@ -1,4 +1,4 @@
-import { app, BrowserWindow, IpcMainEvent, Menu, MenuItem } from "electron";
+import { app, Menu, MenuItem } from "electron";
 
 import { isOsx } from "@/main/utils/env";
 import KeybindingService from "./KeybindingService";
@@ -61,11 +61,6 @@ type TSerializableMenuItem = {
 
 type TSerializableMenuItems = Array<TSerializableMenuItem>;
 
-const counter = (() => {
-  let id = 0;
-  return () => (id += 1).toString();
-})();
-
 export default class MenuService extends Service {
   @Inject("KeybindingService")
   private readonly _keybindingService!: KeybindingService;
@@ -84,8 +79,6 @@ export default class MenuService extends Service {
   }
 
   public popupContextMenu(
-    event: IpcMainEvent,
-    contextMenuId: number,
     items: TSerializableMenuItems,
     options?: {
       x?: number;
@@ -96,13 +89,10 @@ export default class MenuService extends Service {
     const menu = this._createMenu(items);
 
     menu.popup({
-      window: BrowserWindow.fromWebContents(event.sender)!,
       x: options ? options.x : undefined,
       y: options ? options.y : undefined,
       positioningItem: options ? options.positioningItem : undefined,
-      callback: () => {
-        event.sender.send("menu-close", contextMenuId);
-      },
+      callback: () => {},
     });
   }
 
@@ -129,7 +119,7 @@ export default class MenuService extends Service {
           label: this._languageservice.translate(item.id),
           type: item.type,
           role: item.role,
-          accelerator: this._keybindingService.getKeybinding(item.id as any),
+          accelerator: this._keybindingService.getKeybinding(item.id),
           checked: item.checked,
           enabled: item.enabled,
           visible: item.visible,
@@ -154,7 +144,7 @@ export default class MenuService extends Service {
         submenu: [
           { id: "system.about-unitext", role: "about" },
           { id: "system.check-for-updates" },
-          { id: counter(), type: "separator" },
+          { id: "", type: "separator" },
           {
             id: "system.setting",
             submenu: [
@@ -174,12 +164,12 @@ export default class MenuService extends Service {
               { id: "system.theme.icon" },
             ],
           },
-          { id: counter(), type: "separator" },
+          { id: "", type: "separator" },
           { id: "system.services", role: "services" },
-          { id: counter(), type: "separator" },
+          { id: "", type: "separator" },
           { id: "system.hide", role: "hide" },
           { id: "system.hide-others", role: "hideOthers" },
-          { id: counter(), type: "separator" },
+          { id: "", type: "separator" },
           { id: "system.quit", role: "quit" },
         ],
       });
@@ -191,19 +181,19 @@ export default class MenuService extends Service {
       submenu: [
         { id: "file.open-project" },
         { id: "file.close-project" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "file.add-mark" },
         { id: "file.del-mark" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "file.new-file" },
         { id: "file.new-folder" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "file.read-file" },
         { id: "file.edit-file" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "file.save" },
         { id: "file.save-as" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "file.reveal" },
         { id: "file.export" },
         { id: "file.transmit" },
@@ -216,13 +206,13 @@ export default class MenuService extends Service {
       submenu: [
         { id: "edit.undo", role: "undo" },
         { id: "edit.redo", role: "redo" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "edit.cut", role: "cut" },
         { id: "edit.copy", role: "copy" },
         { id: "edit.paste", role: "paste" },
         { id: "edit.delete", role: "delete" },
         { id: "edit.select-all", role: "selectAll" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "edit.find", role: "selectAll" },
         { id: "edit.find-next", role: "selectAll" },
         { id: "edit.find-previous", role: "selectAll" },
@@ -238,10 +228,10 @@ export default class MenuService extends Service {
         { id: "view.sidebar" },
         { id: "view.sidepanel" },
         { id: "view.command-palette" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "view.preview" },
         { id: "view.source" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "view.auto-wrap" },
         { id: "view.show-minimap" },
         { id: "view.show-space" },
@@ -256,7 +246,7 @@ export default class MenuService extends Service {
         { id: "format.head-down" },
         { id: "format.order-list" },
         { id: "format.unorder-list" },
-        { id: counter(), type: "separator" },
+        { id: "", type: "separator" },
         { id: "format.bold" },
         { id: "format.italic" },
         { id: "format.sup" },

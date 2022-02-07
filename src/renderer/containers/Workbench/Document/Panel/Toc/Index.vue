@@ -27,6 +27,7 @@ import { storeToRefs } from "pinia";
 import { computed, defineComponent, ref } from "vue";
 import useWorkbench from "@/renderer/stores/workbench";
 import { BUS_CHANNEL } from "@/shared/channel";
+import { useService } from "@/renderer/composables";
 
 export default defineComponent({
   name: "Toc",
@@ -51,7 +52,14 @@ export default defineComponent({
       this.$bus.emit(BUS_CHANNEL.EDITOR_REVEAL_SECTION, event);
     },
 
-    onContext() {},
+    onContext() {
+      useService("MenuService").popupContextMenu([
+        { id: "toc.titleup" },
+        { id: "toc.titledown" },
+        { id: "", type: "separator" },
+        { id: "toc.retitle" },
+      ]);
+    },
   },
 });
 </script>

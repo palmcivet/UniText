@@ -66,7 +66,7 @@ export default defineComponent({
     },
 
     onContext(index: number, event: any) {
-      // TODO context
+      this.$workbench.doContextTab(index);
     },
 
     onCreate() {

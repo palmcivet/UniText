@@ -1,5 +1,6 @@
 import { TreeView, ITreeNodeFolder, EventBus } from "@palmcivet/unitext-tree-view";
-import { useDisk, useDialog } from "@/renderer/composables";
+import { TreeNodeFile } from "@palmcivet/unitext-tree-view/dist/TreeView/treemodel";
+import { useDisk, useDialog, useService } from "@/renderer/composables";
 import { BUS_CHANNEL } from "@/shared/channel";
 import { arrayHasElements } from "@/shared/utils";
 import { ISystemLaunch } from "@/shared/typings/setting/system";
@@ -59,6 +60,7 @@ export default class Browser implements IDisposable {
 
     this.treeview.on("u-open", this.onOpenFile.bind(this));
     this.treeview.on("u-move", this.onMoveFile.bind(this));
+    this.treeview.on("contextmenu", this.onContextMenu.bind(this));
     this.treeview.invoke();
     this._openProject();
   }
@@ -110,6 +112,43 @@ export default class Browser implements IDisposable {
   }
 
   private onMoveFile(): void {}
+
+  private onContextMenu(event: TreeNodeFile): void {
+    console.log(event.getNodePath());
+
+    useService("MenuService").popupContextMenu(
+      false
+        ? [
+            { id: "file.read" },
+            { id: "file.edit" },
+            { id: "", type: "separator" },
+            { id: "edit.copy" },
+            { id: "edit.cut" },
+            { id: "", type: "separator" },
+            { id: "edit.rename" },
+            { id: "edit.reicon" },
+            { id: "", type: "separator" },
+            { id: "file.reveal" },
+            { id: "", type: "separator" },
+            { id: "edit.delete" },
+          ]
+        : [
+            { id: "file.new_file" },
+            { id: "file.new_folder" },
+            { id: "", type: "separator" },
+            { id: "edit.copy" },
+            { id: "edit.cut" },
+            { id: "edit.paste" },
+            { id: "", type: "separator" },
+            { id: "edit.rename" },
+            { id: "edit.reicon" },
+            { id: "", type: "separator" },
+            { id: "file.reveal" },
+            { id: "", type: "separator" },
+            { id: "edit.delete" },
+          ]
+    );
+  }
 
   private onSelectItem(): void {}
 

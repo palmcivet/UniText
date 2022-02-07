@@ -312,6 +312,19 @@ export default class Workbench implements IDisposable {
 
   public doMoveTab(src: number, dst: number): void {}
 
+  public doContextTab(index: number): void {
+    useService("MenuService").popupContextMenu([
+      { id: "tab.closecurrent" },
+      { id: "tab.closesaved" },
+      { id: "tab.closeall" },
+      { id: "tab.saveall" },
+      { id: "", type: "separator" },
+      { id: "tab.pin" },
+      { id: "", type: "separator" },
+      { id: "tab.preview" },
+    ]);
+  }
+
   /* Tab operation end */
 
   public doChangeMarkdown({ config, format }: { config: IMDConfig; format: ITXTFormat }): void {
