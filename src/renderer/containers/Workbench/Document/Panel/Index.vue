@@ -6,7 +6,9 @@
           class="panel-title-icon"
           :class="activePanel !== com ? 'ri-arrow-right-s-line' : 'ri-arrow-down-s-line'"
         />
-        <div class="panel-title-text">{{ com.toUpperCase() }}</div>
+        <div class="panel-title-text">
+          {{ $t(`view.panel.${com.toUpperCase()}.label`) }}
+        </div>
       </div>
       <div class="panel-wrapper" :style="activePanel !== com ? { height: '0' } : {}">
         <component :is="com" />

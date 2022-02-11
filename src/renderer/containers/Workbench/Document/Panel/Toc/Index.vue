@@ -54,10 +54,10 @@ export default defineComponent({
 
     onContext() {
       useService("MenuService").popupContextMenu([
-        { id: "toc.titleup" },
-        { id: "toc.titledown" },
-        { id: "", type: "separator" },
-        { id: "toc.retitle" },
+        { id: "context.toc.setHeadUp" },
+        { id: "context.toc.setHeadDown" },
+        { type: "-" },
+        { id: "context.toc.renameTitle" },
       ]);
     },
   },

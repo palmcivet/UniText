@@ -1,7 +1,7 @@
 <template>
   <div class="export-specific">
     <label class="export-form-item">
-      <div class="export-form-label">导出格式</div>
+      <div class="export-form-label">{{ $t("view.panel.EXPORT.grammarSpecific") }}</div>
       <FormSelect
         :value="filledFormMarkdown.scheme"
         :options="markdownOption"
@@ -29,7 +29,7 @@ export default defineComponent({
     const markdownOption = [
       { value: "gfm", label: "GitHub Flavored" },
       { value: "cmk", label: "CommonMark" },
-      { value: "yd", label: "有道云笔记" },
+      { value: "yd", label: "Youdao Note" },
     ];
     const filledFormMarkdown = reactive({
       scheme: markdownOption[0].value,

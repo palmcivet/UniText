@@ -1,16 +1,16 @@
 <template>
   <div class="browser-search">
     <div class="browser-toolbar">
-      <div class="toolbar-label">{{ $t("sidebar.search") }}</div>
+      <div class="toolbar-label">{{ $t("view.browser.search.label") }}</div>
       <div class="toolbar-controls">
         <i
           class="ri-refresh-line"
-          :title="$t('sidebar.search_refresh')"
+          :title="$t('view.browser.search.refresh')"
           @click="onSearch()"
         />
         <i
           class="ri-filter-off-line"
-          :title="$t('sidebar.search_clear')"
+          :title="$t('view.browser.search.clear')"
           @click="onClearSearch()"
         />
       </div>

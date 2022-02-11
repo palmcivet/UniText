@@ -1,6 +1,6 @@
 <template>
   <div class="startup" @dblclick.stop="onCreate()">
-    <span class="startup-tips">双击新建文件</span>
+    <span class="startup-tips">{{ $t("view.workbench.startup.tips") }}</span>
   </div>
 </template>
 

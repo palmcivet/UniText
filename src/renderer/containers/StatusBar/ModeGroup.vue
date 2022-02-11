@@ -38,11 +38,11 @@ export default defineComponent({
       return {
         true: {
           icon: "ri-eye-line",
-          title: this.$t("status.present_preview"),
+          title: this.$t("view.statusBar.previewMode"),
         },
         false: {
           icon: "ri-edit-line",
-          title: this.$t("status.present_edit"),
+          title: this.$t("view.statusBar.editMode"),
         },
       }[this.interface.readMode ? "true" : "false"];
     },
@@ -51,21 +51,21 @@ export default defineComponent({
       return {
         false: {
           false: {
-            title: "富文本",
+            title: this.$t("view.statusBar.WYSIWYGMode"),
             icon: "ri-text",
           },
           true: {
-            title: "源码",
+            title: this.$t("view.statusBar.sourceCodeMode"),
             icon: "ri-code-s-slash-line",
           },
         },
         true: {
           false: {
-            title: "源码",
+            title: this.$t("view.statusBar.sourceView"),
             icon: "ri-code-s-slash-line",
           },
           true: {
-            title: "对照",
+            title: this.$t("view.statusBar.columnView"),
             icon: "ri-layout-column-fill",
           },
         },
@@ -77,11 +77,11 @@ export default defineComponent({
     showPanelGroup(): IGroup {
       return {
         false: {
-          title: "侧边栏",
+          title: this.$t("view.statusBar.showPanel"),
           icon: "ri-layout-right-2-line",
         },
         true: {
-          title: "侧边栏",
+          title: this.$t("view.statusBar.hidePanel"),
           icon: "ri-layout-right-2-fill",
         },
       }[this.interface.showPanel ? "true" : "false"];

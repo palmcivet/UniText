@@ -116,38 +116,19 @@ export default class Browser implements IDisposable {
   private onContextMenu(event: TreeNodeFile): void {
     console.log(event.getNodePath());
 
-    useService("MenuService").popupContextMenu(
-      false
-        ? [
-            { id: "file.read" },
-            { id: "file.edit" },
-            { id: "", type: "separator" },
-            { id: "edit.copy" },
-            { id: "edit.cut" },
-            { id: "", type: "separator" },
-            { id: "edit.rename" },
-            { id: "edit.reicon" },
-            { id: "", type: "separator" },
-            { id: "file.reveal" },
-            { id: "", type: "separator" },
-            { id: "edit.delete" },
-          ]
-        : [
-            { id: "file.new_file" },
-            { id: "file.new_folder" },
-            { id: "", type: "separator" },
-            { id: "edit.copy" },
-            { id: "edit.cut" },
-            { id: "edit.paste" },
-            { id: "", type: "separator" },
-            { id: "edit.rename" },
-            { id: "edit.reicon" },
-            { id: "", type: "separator" },
-            { id: "file.reveal" },
-            { id: "", type: "separator" },
-            { id: "edit.delete" },
-          ]
-    );
+    useService("MenuService").popupContextMenu([
+      { id: "app.file.readFile" },
+      { id: "app.file.editFile" },
+      { type: "-" },
+      { id: "app.edit.copy" },
+      { id: "app.edit.cut" },
+      { type: "-" },
+      { id: "app.file.renameFile" },
+      { type: "-" },
+      { id: "app.file.revealFile" },
+      { type: "-" },
+      { id: "app.edit.delete" },
+    ]);
   }
 
   private onSelectItem(): void {}

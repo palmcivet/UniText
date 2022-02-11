@@ -1,7 +1,7 @@
 <template>
   <div class="export-specific">
     <label class="export-form-item">
-      <div class="export-form-label">页面大小</div>
+      <div class="export-form-label">{{ $t("view.panel.EXPORT.pageSize") }}</div>
       <FormSelect
         :options="pageSizeOption"
         :value="pageSizeSelect"
@@ -11,7 +11,7 @@
 
     <template v-if="isPageSizeCustom">
       <label class="export-row">
-        <div class="export-row-label">宽度</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.pageWidth") }}</div>
         <FormInput
           type="number"
           :value="pageSizeInput.width"
@@ -19,7 +19,7 @@
         />
       </label>
       <label class="export-row">
-        <div class="export-row-label">宽度</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.pageHeight") }}</div>
         <FormInput
           type="number"
           :value="pageSizeInput.height"
@@ -29,7 +29,7 @@
     </template>
 
     <label class="export-form-item">
-      <div class="export-form-label">方向</div>
+      <div class="export-form-label">{{ $t("view.panel.EXPORT.direction") }}</div>
       <div class="export-form-radio">
         <FormRadio
           :options="landscapeOption"
@@ -40,10 +40,10 @@
     </label>
 
     <label class="export-form-item">
-      <div class="export-form-label">页边距</div>
+      <div class="export-form-label">{{ $t("view.panel.EXPORT.pageMargin") }}</div>
 
       <label class="export-row">
-        <div class="export-row-label">单位</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.marginUnit") }}</div>
         <FormSelect
           :options="marginUnitOption"
           :value="marginUnit"
@@ -52,17 +52,17 @@
       </label>
 
       <label class="export-row">
-        <div class="export-row-label">上边距</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.marginTop") }}</div>
         <FormInput
           type="number"
           :value="marginCSS.top"
-          @form-change="margin.top = $event"
+          @form-change="marginCSS.top = $event"
         />
         <div class="export-row-unit">{{ marginUnit }}</div>
       </label>
 
       <label class="export-row">
-        <div class="export-row-label">下边距</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.marginBottom") }}</div>
         <FormInput
           type="number"
           :value="marginCSS.bottom"
@@ -72,7 +72,7 @@
       </label>
 
       <label class="export-row">
-        <div class="export-row-label">左边距</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.marginLeft") }}</div>
         <FormInput
           type="number"
           :value="marginCSS.left"
@@ -82,7 +82,7 @@
       </label>
 
       <label class="export-row">
-        <div class="export-row-label">右边距</div>
+        <div class="export-row-label">{{ $t("view.panel.EXPORT.marginRight") }}</div>
         <FormInput
           type="number"
           :value="marginCSS.right"
@@ -100,6 +100,7 @@ import FormSelect from "@/renderer/components/Form/FormSelect.vue";
 import FormInput from "@/renderer/components/Form/FormInput.vue";
 import FormRadio from "@/renderer/components/Form/FormRadio.vue";
 import { TMarginCSS, TPageSize, TPageSizeNumber } from "@/shared/typings/export";
+import { i18n } from "@/renderer/i18n";
 
 export default defineComponent({
   name: "ExportPDF",
@@ -113,9 +114,11 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const { t } = i18n.global;
+
     const landscapeOption = [
-      { value: false, label: "纵向" },
-      { value: true, label: "横向" },
+      { value: false, label: t("view.panel.EXPORT.vertical") },
+      { value: true, label: t("view.panel.EXPORT.horizontal") },
     ];
     const landscape = ref(false);
 
@@ -126,7 +129,7 @@ export default defineComponent({
       { value: "Legal", label: "Legal" },
       { value: "Letter", label: "Letter" },
       { value: "Tabloid", label: "Tabloid" },
-      { value: "Custom", label: "自定义：mm" },
+      { value: "Custom", label: t("view.panel.EXPORT.customUnit") },
     ];
     const pageSizeSelect = ref<TPageSize>("A4");
     const pageSizeInput = ref<TPageSizeNumber>({ width: 210, height: 297 });

@@ -10,7 +10,7 @@
 
     <div v-else>
       <span class="major">{{ time.slice(8, 10) }}</span>
-      <span>{{ ` ${monthMap[parseInt(date.slice(5, 7))]} ` }}</span>
+      <span>{{ ` ${monthMap[Number.parseInt(time.slice(5, 7))]} ` }}</span>
       <span class="minor">{{ time.slice(12, 16) }}</span>
     </div>
 

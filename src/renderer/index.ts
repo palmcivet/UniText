@@ -3,7 +3,6 @@ import { createPinia } from "pinia";
 
 import Index from "@/renderer/Index.vue";
 import createModel from "@/renderer/models";
-import { useService } from "@/renderer/composables";
 import { EWindowType } from "@/shared/typings/main";
 import { i18n } from "./i18n";
 

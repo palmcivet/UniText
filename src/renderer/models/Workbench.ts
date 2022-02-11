@@ -3,6 +3,7 @@ import * as MonacoEditor from "monaco-editor";
 import { MonacoMarkdownExtension } from "monaco-markdown-extension";
 import { EventBus } from "@palmcivet/unitext-tree-view";
 
+import { i18n } from "@/renderer/i18n";
 import useGeneral from "@/renderer/stores/general";
 import useWorkbench from "@/renderer/stores/workbench";
 import useEnvironment from "@/renderer/stores/environment";
@@ -314,14 +315,14 @@ export default class Workbench implements IDisposable {
 
   public doContextTab(index: number): void {
     useService("MenuService").popupContextMenu([
-      { id: "tab.closecurrent" },
-      { id: "tab.closesaved" },
-      { id: "tab.closeall" },
-      { id: "tab.saveall" },
-      { id: "", type: "separator" },
-      { id: "tab.pin" },
-      { id: "", type: "separator" },
-      { id: "tab.preview" },
+      { id: "context.tab.closeCurrentTab" },
+      { id: "context.tab.closeSavedTab" },
+      { id: "context.tab.closeAllTab" },
+      { id: "context.tab.saveAllTab" },
+      { type: "-" },
+      { id: "context.tab.preview" },
+      { type: "-" },
+      { id: "context.tab.pinTab" },
     ]);
   }
 
@@ -356,7 +357,7 @@ export default class Workbench implements IDisposable {
     if (index === -1) {
       this._addTab({
         type,
-        title: type,
+        title: i18n.global.t(`view.workbench.${type.toLowerCase()}`),
         isModified: false,
         isActivated: true,
       });

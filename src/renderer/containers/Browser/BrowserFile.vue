@@ -1,23 +1,23 @@
 <template>
-  <div class="browser-files">
+  <div class="browser-file">
     <template v-if="false">
       <div class="toolbar-blank">
-        <span>{{ $t("sidebar.files_empty") }}</span>
+        <span>{{ $t("view.browser.file.emptyCabin") }}</span>
       </div>
 
       <div class="container-blank">
         <button class="unitext-button" @click="onOpenProject()">
-          {{ $t("sidebar.files_button") }}
+          {{ $t("view.browser.file.openCabin") }}
         </button>
       </div>
     </template>
 
     <template v-else>
       <div class="toolbar-opened">
-        <span>{{ $t("sidebar.files_title") }}</span>
+        <span>{{ $t("view.browser.file.title") }}</span>
         <i
           class="ri-checkbox-indeterminate-line"
-          :title="$t('sidebar.files_toggle')"
+          :title="$t('view.browser.file.toggleFolder')"
           @click="onToggleAll()"
         />
       </div>
@@ -31,7 +31,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Files",
+  name: "File",
 
   inject: ["$browser"],
 
@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.browser-files {
+.browser-file {
   height: 100%;
   display: flex;
   flex-direction: column;

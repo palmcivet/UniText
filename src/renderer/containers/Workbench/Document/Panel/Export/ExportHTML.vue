@@ -1,7 +1,7 @@
 <template>
   <div class="export-specific">
     <label class="export-form-item">
-      <div class="export-form-label">HTML 标题</div>
+      <div class="export-form-label">{{ $t("view.panel.EXPORT.htmlTitle") }}</div>
       <FormInput
         type="text"
         :clearable="false"
@@ -27,7 +27,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const filledFormHTML = reactive({
-      title: "未命名",
+      title: "Untitled",
     });
 
     const onChange = () => {

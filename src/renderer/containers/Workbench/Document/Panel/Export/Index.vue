@@ -8,7 +8,7 @@
             :value="checkedOption.grammar"
             @form-change="checkedOption.grammar = $event"
           />
-          <div class="export-form-label">执行语法检查</div>
+          <div class="export-form-label">{{ $t("view.panel.EXPORT.checkGramma") }}</div>
         </label>
 
         <label class="export-form-item">
@@ -17,7 +17,9 @@
             :value="checkedOption.reference"
             @form-change="checkedOption.reference = $event"
           />
-          <div class="export-form-label">执行引用检查</div>
+          <div class="export-form-label">
+            {{ $t("view.panel.EXPORT.checkReference") }}
+          </div>
         </label>
 
         <label class="export-form-item">
@@ -26,7 +28,7 @@
             :value="checkedOption.reveal"
             @form-change="checkedOption.reveal = $event"
           />
-          <div class="export-form-label">完成后打开文件夹</div>
+          <div class="export-form-label">{{ $t("view.panel.EXPORT.openFolder") }}</div>
         </label>
 
         <label class="export-form-item">
@@ -35,7 +37,7 @@
             :value="checkedOption.theme"
             @form-change="checkedOption.theme = $event"
           />
-          <div class="export-form-label">自定义样式</div>
+          <div class="export-form-label">{{ $t("view.panel.EXPORT.customTheme") }}</div>
         </label>
 
         <label
@@ -43,7 +45,7 @@
           :style="{ height: checkedOption.theme ? '24px' : '0' }"
         >
           <FormSelect
-            tips="选择主题"
+            :tips="$t('view.panel.EXPORT.selectTheme')"
             :value="selectedTheme"
             :options="themeList"
             @form-change="selectedTheme = $event"
@@ -56,7 +58,7 @@
             :value="checkedOption.script"
             @form-change="checkedOption.script = $event"
           />
-          <div class="export-form-label">完成后执行脚本</div>
+          <div class="export-form-label">{{ $t("view.panel.EXPORT.executeScript") }}</div>
         </label>
 
         <label
@@ -64,7 +66,7 @@
           :style="{ height: checkedOption.script ? '24px' : '0' }"
         >
           <FormSelect
-            tips="选择脚本"
+            :tips="$t('view.panel.EXPORT.selectScript')"
             :value="selectedScript"
             :options="scriptList"
             @form-change="selectedScript = $event"
@@ -74,7 +76,7 @@
 
       <div class="export-format">
         <label class="export-form-item">
-          <div class="export-form-label">导出类型</div>
+          <div class="export-form-label">{{ $t("view.panel.EXPORT.exportFormat") }}</div>
           <FormSelect
             :value="selectedFormat"
             :options="formatList"
@@ -100,7 +102,9 @@
     </div>
 
     <div class="panel-export__controls">
-      <button class="unitext-button" @click="onExport()">导出</button>
+      <button class="unitext-button" @click="onExport()">
+        {{ $t("view.panel.EXPORT.exportButton") }}
+      </button>
     </div>
   </div>
 </template>
@@ -133,7 +137,7 @@ export default defineComponent({
       { value: FORMAT.MD, label: "Markdown" },
       { value: FORMAT.HTML, label: "HTML" },
       { value: FORMAT.PDF, label: "PDF" },
-      { value: FORMAT.IMAGE, label: "图片" },
+      { value: FORMAT.IMAGE, label: "Image" },
       { value: FORMAT.DOCX, label: "Word" },
     ];
     const selectedFormat = ref(formatList[2].value);

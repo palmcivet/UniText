@@ -8,6 +8,7 @@ import { SYSTEM_LOCALE } from "@/shared/constant";
 
 export type TLocale = keyof typeof SYSTEM_LOCALE;
 export type TLocaleMessage = Partial<Record<TLocale, TMessage>>;
+export type TActionAccessID = ChainedAccessUnion<TMessage>;
 
 // TODO IXxxx 改为 ISettingXxxx
 

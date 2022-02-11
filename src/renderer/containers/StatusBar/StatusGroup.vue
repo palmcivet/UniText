@@ -10,15 +10,15 @@
   </ul>
 
   <ul class="editor-list">
-    <li title="缩进">空格：{{ indent }}</li>
-    <li title="编码">{{ encoding }}</li>
-    <li title="行尾序列">{{ endOfLine }}</li>
+    <li :title="$t('view.panel.INFO.indent')">{{ indent }}</li>
+    <li :title="$t('view.panel.INFO.encoding')">{{ encoding }}</li>
+    <li :title="$t('view.panel.INFO.endOfLine')">{{ endOfLine }}</li>
   </ul>
 
   <ul class="tag-list">
     <!-- ri-price-tag-3-line -->
     <li v-for="(tag, index) in tagList" :key="index" :title="tag"># {{ tag }}</li>
-    <li :title="$t('status.tag_add')"><i class="ri-add-line" /></li>
+    <li :title="$t('view.statusBar.addTag')"><i class="ri-add-line" /></li>
   </ul>
 </template>
 

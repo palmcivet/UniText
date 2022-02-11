@@ -48,22 +48,22 @@ export default defineComponent({
       browserList: [
         {
           icon: "ri-folders-line",
-          title: this.$t("sidebar.files"),
+          title: this.$t("view.browser.file.label"),
           type: EBrowserType.FILE,
         },
         {
           icon: "ri-search-line",
-          title: this.$t("sidebar.search"),
+          title: this.$t("view.browser.search.label"),
           type: EBrowserType.SEARCH,
         },
         {
           icon: "ri-bookmark-3-line",
-          title: this.$t("sidebar.marks"),
+          title: this.$t("view.browser.bookmark.label"),
           type: EBrowserType.BOOKMARK,
         },
         {
           icon: "ri-price-tag-3-line",
-          title: this.$t("sidebar.tags"),
+          title: this.$t("view.browser.tag.label"),
           type: EBrowserType.TAG,
         },
       ],
@@ -71,27 +71,27 @@ export default defineComponent({
       workbenchList: [
         {
           icon: "ri-dashboard-3-line",
-          title: "数据面板",
+          title: this.$t("view.workbench.dashboard"),
           type: EWorkbenchType.DASHBOARD,
         },
         {
           icon: "ri-mind-map",
-          title: "知识图谱",
+          title: this.$t("view.workbench.graphview"),
           type: EWorkbenchType.GRAPHVIEW,
         },
         {
           icon: "ri-calendar-check-line",
-          title: "计划安排",
+          title: this.$t("view.workbench.schedule"),
           type: EWorkbenchType.SCHEDULE,
         },
         {
           icon: "ri-pie-chart-line",
-          title: "每日提醒",
+          title: this.$t("view.workbench.reminder"),
           type: EWorkbenchType.REMINDER,
         },
         {
           icon: "ri-settings-line",
-          title: this.$t("sidebar.settings"),
+          title: this.$t("view.workbench.setting"),
           type: EWorkbenchType.SETTING,
         },
       ],

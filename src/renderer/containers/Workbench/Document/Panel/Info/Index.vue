@@ -1,28 +1,28 @@
 <template>
   <div class="panel-info">
-    <InfoCardDate :raw="meta.cTime" :remark="$t('panel.created')" />
-    <InfoCardDate :raw="meta.mTime" :remark="$t('panel.modified')" />
+    <InfoCardDate :raw="meta.cTime" :isCN="isCN" :remark="$t('view.panel.INFO.created')" />
+    <InfoCardDate :raw="meta.mTime" :isCN="isCN" :remark="$t('view.panel.INFO.modified')" />
 
     <div class="info-grid">
       <InfoCardNormal
         class="info-grid-cell"
         :raw="computable.wordCount"
-        :remark="$t('panel.word_count')"
+        :remark="$t('view.panel.INFO.wordCount')"
       />
       <InfoCardNormal
         class="info-grid-cell"
         :raw="computable.charCount"
-        :remark="$t('panel.char_count')"
+        :remark="$t('view.panel.INFO.charCount')"
       />
       <InfoCardTime
         class="info-grid-cell"
         :raw="meta.editTime"
-        :remark="$t('panel.edit_time')"
+        :remark="$t('view.panel.INFO.editTime')"
       />
       <InfoCardTime
         class="info-grid-cell"
         :raw="computable.readTime"
-        :remark="$t('panel.read_time')"
+        :remark="$t('view.panel.INFO.readTime')"
       />
     </div>
 
@@ -30,7 +30,7 @@
 
     <ul class="info-form">
       <li class="info-form-item">
-        <div class="info-form-label">缩进方式</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.indent") }}</div>
         <FormSelect
           class="info-form-value"
           :value="format.indent"
@@ -40,7 +40,7 @@
       </li>
 
       <li class="info-form-item">
-        <div class="info-form-label">编码方式</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.encoding") }}</div>
         <FormSelect
           class="info-form-value"
           :value="format.encoding"
@@ -50,7 +50,7 @@
       </li>
 
       <li class="info-form-item">
-        <div class="info-form-label">行尾序列</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.endOfLine") }}</div>
         <FormSelect
           class="info-form-value"
           :value="format.endOfLine"
@@ -62,7 +62,7 @@
       <div class="info-form-divider"></div>
 
       <li class="info-form-item">
-        <div class="info-form-label">状态</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.status") }}</div>
         <label class="info-form-value info-form-complete">
           <FormInput
             type="checkbox"
@@ -70,13 +70,17 @@
             @form-change="onChangeConfig('complete', $event)"
           />
           <span class="info-form-complete__label">
-            {{ config.complete ? "已完成" : "未完成" }}
+            {{
+              config.complete
+                ? $t("view.panel.INFO.finished")
+                : $t("view.panel.INFO.unFinished")
+            }}
           </span>
         </label>
       </li>
 
       <li class="info-form-item">
-        <div class="info-form-label">标签</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.tags") }}</div>
         <ul class="info-form-value info-form-tag">
           <li
             class="info-form-tag__item"
@@ -90,7 +94,7 @@
       </li>
 
       <li class="info-form-item">
-        <div class="info-form-label">图片方案</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.picture") }}</div>
         <FormSelect
           class="info-form-value"
           :value="config.picture"
@@ -100,7 +104,7 @@
       </li>
 
       <li class="info-form-item">
-        <div class="info-form-label">备注</div>
+        <div class="info-form-label">{{ $t("view.panel.INFO.remarks") }}</div>
         <div class="info-form-value">
           <FormTextarea
             :value="config.remark"
@@ -124,7 +128,9 @@ import useWorkbench from "@/renderer/stores/workbench";
 import FormTextarea from "@/renderer/components/Form/FormTextarea.vue";
 import FormSelect from "@/renderer/components/Form/FormSelect.vue";
 import FormInput from "@/renderer/components/Form/FormInput.vue";
+import { i18n } from "@/renderer/i18n";
 import { EMDPicture, ETXTCoding, ETXTEoL, ETXTIndent } from "@/shared/typings/document";
+import { SYSTEM_LOCALE } from "@/shared/constant";
 
 function mapEnumToSelectOption(rawEnum: any): Array<{ label: string; value: any }> {
   return Object.entries(rawEnum).map(([label, value]) => ({ label, value }));
@@ -159,6 +165,7 @@ export default defineComponent({
       optionsCoding: mapEnumToSelectOption(ETXTCoding),
       optionsEoL: mapEnumToSelectOption(ETXTEoL),
       optionsPicture: mapEnumToSelectOption(EMDPicture),
+      isCN: computed(() => i18n.global.locale.value === SYSTEM_LOCALE.ZH_CN),
     };
   },
 

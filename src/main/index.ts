@@ -113,7 +113,8 @@ function main(): void {
   logger.initialize(logPath);
 
   const settingService = new SettingService(logger, envService.resolveCabinFile("SETTING"));
-  const languageService = new LanguageService(logger, settingService.getSetting("system", "launch.language"));
+  const languageService = new LanguageService(logger);
+  languageService.setLocale(settingService.getSetting("system", "launch.language"));
 
   _container.setService("EnvService", envService);
   _container.setService("SettingService", settingService);

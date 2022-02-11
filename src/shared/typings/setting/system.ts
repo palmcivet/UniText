@@ -1,7 +1,4 @@
-/**
- * @type i18n 字符串，出现于文件中，以易于读写
- */
-export type TI18n = "ZH_CN" | "EN_US";
+import { TLocale } from ".";
 
 /**
  * @enum { ETitleBar } 标题栏样式
@@ -17,7 +14,7 @@ export interface ISystemLaunch {
   /**
    * @field 界面语言
    */
-  language: TI18n;
+  language: TLocale;
   /**
    * @field 显示系统托盘
    */

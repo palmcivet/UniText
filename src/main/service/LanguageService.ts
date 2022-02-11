@@ -4,6 +4,7 @@ import Logger from "@/main/backend/Logger";
 import Service from "@/main/service/Service";
 import ZH_CN from "@/shared/locales/ZH_CN";
 import { TLocale, TLocaleMessage } from "@/shared/typings/setting";
+import { SYSTEM_LOCALE } from "@/shared/constant";
 
 export default class LanguageService extends Service {
   private _rawI18n: I18n<TLocaleMessage, {}, {}, "ZH_CN", true>;
@@ -14,12 +15,12 @@ export default class LanguageService extends Service {
 
   private _message: TLocaleMessage;
 
-  constructor(logger: Logger, locale: TLocale) {
+  constructor(logger: Logger) {
     super(logger);
     this._message = { ZH_CN };
     this._rawI18n = createI18n({
       legacy: true,
-      locale,
+      locale: SYSTEM_LOCALE.ZH_CN,
       messages: this._message,
     });
   }

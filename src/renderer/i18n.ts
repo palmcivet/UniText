@@ -1,8 +1,8 @@
 import { createI18n } from "vue-i18n";
-import { TLocale } from "@/shared/typings/setting";
+import { SYSTEM_LOCALE } from "@/shared/constant";
 
 export const i18n = createI18n({
   legacy: false,
-  locale: "ZH_CN" as TLocale,
+  locale: SYSTEM_LOCALE.ZH_CN,
   messages: {},
 });

@@ -1,63 +1,70 @@
 import { app, Menu, MenuItem } from "electron";
 
 import { isOsx } from "@/main/utils/env";
-import KeybindingService from "./KeybindingService";
-import LanguageService from "./LanguageService";
-import Service, { Inject } from "./Service";
-import Logger from "../backend/Logger";
+import Logger from "@/main/backend/Logger";
+import Service, { Inject } from "@/main/service/Service";
+import KeybindingService from "@/main/service/KeybindingService";
+import LanguageService from "@/main/service/LanguageService";
+import { TActionAccessID } from "@/shared/typings/setting";
 
-type TSerializableMenuItem = {
-  id: string;
-  type?: "normal" | "separator" | "submenu" | "checkbox" | "radio";
-  role?:
-    | "undo"
-    | "redo"
-    | "cut"
-    | "copy"
-    | "paste"
-    | "pasteAndMatchStyle"
-    | "delete"
-    | "selectAll"
-    | "reload"
-    | "forceReload"
-    | "toggleDevTools"
-    | "resetZoom"
-    | "zoomIn"
-    | "zoomOut"
-    | "toggleSpellChecker"
-    | "togglefullscreen"
-    | "window"
-    | "minimize"
-    | "close"
-    | "help"
-    | "about"
-    | "services"
-    | "hide"
-    | "hideOthers"
-    | "unhide"
-    | "quit"
-    | "startSpeaking"
-    | "stopSpeaking"
-    | "zoom"
-    | "front"
-    | "appMenu"
-    | "fileMenu"
-    | "editMenu"
-    | "viewMenu"
-    | "shareMenu"
-    | "recentDocuments"
-    | "toggleTabBar"
-    | "selectNextTab"
-    | "selectPreviousTab"
-    | "mergeAllWindows"
-    | "clearRecentDocuments"
-    | "moveTabToNewWindow"
-    | "windowMenu";
-  enabled?: boolean;
-  visible?: boolean;
-  checked?: boolean;
-  submenu?: TSerializableMenuItem[];
-};
+type TMenuRole =
+  | "undo"
+  | "redo"
+  | "cut"
+  | "copy"
+  | "paste"
+  | "pasteAndMatchStyle"
+  | "delete"
+  | "selectAll"
+  | "reload"
+  | "forceReload"
+  | "toggleDevTools"
+  | "resetZoom"
+  | "zoomIn"
+  | "zoomOut"
+  | "toggleSpellChecker"
+  | "togglefullscreen"
+  | "window"
+  | "minimize"
+  | "close"
+  | "help"
+  | "about"
+  | "services"
+  | "hide"
+  | "hideOthers"
+  | "unhide"
+  | "quit"
+  | "startSpeaking"
+  | "stopSpeaking"
+  | "zoom"
+  | "front"
+  | "appMenu"
+  | "fileMenu"
+  | "editMenu"
+  | "viewMenu"
+  | "shareMenu"
+  | "recentDocuments"
+  | "toggleTabBar"
+  | "selectNextTab"
+  | "selectPreviousTab"
+  | "mergeAllWindows"
+  | "clearRecentDocuments"
+  | "moveTabToNewWindow"
+  | "windowMenu";
+
+type TSerializableMenuItem =
+  | {
+      id: TActionAccessID;
+      type?: "normal" | "submenu" | "checkbox" | "radio";
+      role?: TMenuRole;
+      enabled?: boolean;
+      visible?: boolean;
+      checked?: boolean;
+      submenu?: TSerializableMenuItem[];
+    }
+  | {
+      type: "-";
+    };
 
 type TSerializableMenuItems = Array<TSerializableMenuItem>;
 
@@ -102,10 +109,10 @@ export default class MenuService extends Service {
     items.forEach((item) => {
       let menuItem: MenuItem;
 
-      if (item.type === "separator") {
+      if (item.type === "-") {
         // Separator
         menuItem = new MenuItem({
-          type: item.type,
+          type: "separator",
         });
       } else if (Array.isArray(item.submenu)) {
         // Sub Menu
@@ -119,7 +126,7 @@ export default class MenuService extends Service {
           label: this._languageservice.translate(item.id),
           type: item.type,
           role: item.role,
-          accelerator: this._keybindingService.getKeybinding(item.id),
+          accelerator: this._keybindingService.getKeybinding(item.id as TActionAccessID),
           checked: item.checked,
           enabled: item.enabled,
           visible: item.visible,
@@ -139,137 +146,128 @@ export default class MenuService extends Service {
     if (isOsx) {
       /* UniText */
       appMenu.push({
-        id: "unitext.label",
+        id: "app.system.label",
         role: "appMenu",
         submenu: [
-          { id: "system.about-unitext", role: "about" },
-          { id: "system.check-for-updates" },
-          { id: "", type: "separator" },
-          {
-            id: "system.setting",
-            submenu: [
-              { id: "system.setting.system" },
-              { id: "system.setting.preference" },
-              { id: "system.setting.keybinding" },
-              { id: "system.setting.markdown" },
-              { id: "system.setting.snippet" },
-            ],
-          },
-          {
-            id: "system.theme",
-            submenu: [
-              { id: "system.theme.appearance" },
-              { id: "system.theme.editor" },
-              { id: "system.theme.view" },
-              { id: "system.theme.icon" },
-            ],
-          },
-          { id: "", type: "separator" },
-          { id: "system.services", role: "services" },
-          { id: "", type: "separator" },
-          { id: "system.hide", role: "hide" },
-          { id: "system.hide-others", role: "hideOthers" },
-          { id: "", type: "separator" },
-          { id: "system.quit", role: "quit" },
+          { id: "app.system.aboutApp", role: "about" },
+          { id: "app.system.checkForUpdates" },
+          { type: "-" },
+          { id: "view.workbench.setting" },
+          { id: "view.workbench.dashboard" },
+          { id: "view.workbench.graphview" },
+          { id: "view.workbench.schedule" },
+          { id: "view.workbench.reminder" },
+          { type: "-" },
+          { id: "app.system.services", role: "services" },
+          { type: "-" },
+          { id: "app.system.hideWindow", role: "hide" },
+          { id: "app.system.hideOthers", role: "hideOthers" },
+          { type: "-" },
+          { id: "app.system.quitApp", role: "quit" },
         ],
       });
     }
 
     /* File */
     appMenu.push({
-      id: "file.label",
+      id: "app.file.label",
       submenu: [
-        { id: "file.open-project" },
-        { id: "file.close-project" },
-        { id: "", type: "separator" },
-        { id: "file.add-mark" },
-        { id: "file.del-mark" },
-        { id: "", type: "separator" },
-        { id: "file.new-file" },
-        { id: "file.new-folder" },
-        { id: "", type: "separator" },
-        { id: "file.read-file" },
-        { id: "file.edit-file" },
-        { id: "", type: "separator" },
-        { id: "file.save" },
-        { id: "file.save-as" },
-        { id: "", type: "separator" },
-        { id: "file.reveal" },
-        { id: "file.export" },
-        { id: "file.transmit" },
+        { id: "app.file.openCabin" },
+        { id: "app.file.closeCabin" },
+        { type: "-" },
+        { id: "app.file.addBookmark" },
+        { id: "app.file.deleteBookmark" },
+        { type: "-" },
+        { id: "app.file.newFile" },
+        { id: "app.file.newFolder" },
+        { type: "-" },
+        { id: "app.file.readFile" },
+        { id: "app.file.editFile" },
+        { id: "app.file.renameFile" },
+        { type: "-" },
+        { id: "app.file.saveFile" },
+        { id: "app.file.saveFileAs" },
+        { type: "-" },
+        { id: "app.file.revealFile" },
+        { id: "app.file.exportFile" },
+        { id: "app.file.transmitCabin" },
       ],
     });
 
     /* Edit */
     appMenu.push({
-      id: "edit.label",
+      id: "app.edit.label",
       submenu: [
-        { id: "edit.undo", role: "undo" },
-        { id: "edit.redo", role: "redo" },
-        { id: "", type: "separator" },
-        { id: "edit.cut", role: "cut" },
-        { id: "edit.copy", role: "copy" },
-        { id: "edit.paste", role: "paste" },
-        { id: "edit.delete", role: "delete" },
-        { id: "edit.select-all", role: "selectAll" },
-        { id: "", type: "separator" },
-        { id: "edit.find", role: "selectAll" },
-        { id: "edit.find-next", role: "selectAll" },
-        { id: "edit.find-previous", role: "selectAll" },
-        { id: "edit.replace", role: "selectAll" },
+        { id: "app.edit.undo", role: "undo" },
+        { id: "app.edit.redo", role: "redo" },
+        { type: "-" },
+        { id: "app.edit.cut", role: "cut" },
+        { id: "app.edit.copy", role: "copy" },
+        { id: "app.edit.paste", role: "paste" },
+        { id: "app.edit.delete", role: "delete" },
+        { id: "app.edit.selectAll", role: "selectAll" },
+        { type: "-" },
+        { id: "app.edit.find" },
+        { id: "app.edit.replace" },
       ],
     });
 
     /* View */
     appMenu.push({
-      id: "view.label",
+      id: "app.view.label",
       submenu: [
-        { id: "view.statusbar" },
-        { id: "view.sidebar" },
-        { id: "view.sidepanel" },
-        { id: "view.command-palette" },
-        { id: "", type: "separator" },
-        { id: "view.preview" },
-        { id: "view.source" },
-        { id: "", type: "separator" },
-        { id: "view.auto-wrap" },
-        { id: "view.show-minimap" },
-        { id: "view.show-space" },
+        { id: "app.view.fullScreen" },
+        { id: "app.view.showStatusbar" },
+        { id: "app.view.showBrowser" },
+        { id: "app.view.showPanel" },
+        { id: "app.view.togglePalette" },
+        { type: "-" },
+        { id: "app.view.togglePreview" },
+        { id: "app.view.toggleSource" },
+        { type: "-" },
+        { id: "app.view.autoWrap" },
+        { id: "app.view.showMinimap" },
+        { id: "app.view.showSpaces" },
       ],
     });
 
     /* Format */
     appMenu.push({
-      id: "format.label",
+      id: "app.format.label",
       submenu: [
-        { id: "format.head-up" },
-        { id: "format.head-down" },
-        { id: "format.order-list" },
-        { id: "format.unorder-list" },
-        { id: "", type: "separator" },
-        { id: "format.bold" },
-        { id: "format.italic" },
-        { id: "format.sup" },
-        { id: "format.sub" },
-        { id: "format.mark" },
-        { id: "format.delete" },
-        { id: "format.img" },
+        { id: "app.format.setHeadUp" },
+        { id: "app.format.setHeadDown" },
+        { type: "-" },
+        { id: "app.format.insertOrderedList" },
+        { id: "app.format.insertUnorderedList" },
+        { type: "-" },
+        { id: "app.format.insertSup" },
+        { id: "app.format.insertSub" },
+        { type: "-" },
+        { id: "app.format.insertImage" },
+        { id: "app.format.insertLink" },
+        { id: "app.format.insertTOC" },
+        { type: "-" },
+        { id: "app.format.toggleBold" },
+        { id: "app.format.toggleItalic" },
+        { id: "app.format.toggleMark" },
+        { id: "app.format.toggleStrikethrough" },
       ],
     });
 
     /* Window */
     appMenu.push({
-      id: "window.label",
+      id: "app.window.label",
       role: "windowMenu",
     });
 
     /* Help */
     appMenu.push({
-      id: "help.label",
+      id: "app.help.label",
       submenu: [
-        { id: "help.learn-more" },
-        { id: "help.report" },
-        { id: "help.toggle-devtools", role: "toggleDevTools" },
+        { id: "app.help.moreInfo" },
+        { id: "app.help.reportBugs" },
+        { id: "app.help.toggleDevTools", role: "toggleDevTools" },
       ],
     });
 
@@ -279,7 +277,7 @@ export default class MenuService extends Service {
 
   private _setDockMenu(): void {
     if (isOsx) {
-      const menu = this._createMenu([{ id: "dock.new-window" }, { id: "dock.new-note" }, { id: "dock.new-agenda" }]);
+      const menu = this._createMenu([{ id: "dock.newWindow" }, { id: "dock.newNote" }, { id: "dock.newAgenda" }]);
       app.dock.setMenu(menu);
     }
   }

@@ -1,9 +1,10 @@
 import { readJsonSync } from "fs-extra";
 
 import Logger from "@/main/backend/Logger";
-import Service from "./Service";
+import Service from "@/main/service/Service";
+import { TActionAccessID } from "@/shared/typings/setting";
 
-type TCommand = string;
+type TCommand = TActionAccessID;
 type TKeybinding = string;
 type TWhen = string;
 type TArgs = string;
@@ -18,7 +19,7 @@ type TSerializableKeybindingItem = {
 type TKeybindingItem = Omit<TSerializableKeybindingItem, "cmd">;
 
 export default class KeybindingService extends Service {
-  private readonly _dataSet!: Map<TKeybinding, TKeybindingItem>;
+  private readonly _dataSet!: Map<TCommand, TKeybindingItem>;
 
   constructor(logger: Logger) {
     super(logger);
@@ -30,7 +31,7 @@ export default class KeybindingService extends Service {
       ["system.setting.markdown", { key: "" }],
       ["system.setting.preference", { key: "CmdOrCtrl+," }],
       ["system.setting.keybinding", { key: "" }],
-      ["system.setting.snippet", { key: "" }],
+      ["system.settings.theme", { key: "" }],
       ["system.theme.appearance", { key: "" }],
       ["system.theme.editor", { key: "" }],
       ["system.theme.view", { key: "" }],
