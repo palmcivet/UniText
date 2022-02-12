@@ -1,6 +1,6 @@
 import { StatsBase } from "fs";
 import * as MonacoEditor from "monaco-editor";
-import { MonacoMarkdownExtension } from "monaco-markdown-extension";
+import { MonacoMarkdownExtension } from "@/library/markdown.pre.extension";
 import { EventBus } from "@palmcivet/unitext-tree-view";
 
 import { i18n } from "@/renderer/i18n";
@@ -176,8 +176,8 @@ export default class Workbench implements IDisposable {
       extension.activate(this.editorInstance);
 
       this.editorInstance.onDidChangeModelContent(this.onMonacoModelContent);
-      this.editorInstance.addCommand(MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KEY_V, this.onMonacoPaste);
-      this.editorInstance.addCommand(MonacoEditor.KeyMod.Alt | MonacoEditor.KeyCode.KEY_Z, this.onMonacoChangeWordWrap);
+      this.editorInstance.addCommand(MonacoEditor.KeyMod.CtrlCmd | MonacoEditor.KeyCode.KeyV, this.onMonacoPaste);
+      this.editorInstance.addCommand(MonacoEditor.KeyMod.Alt | MonacoEditor.KeyCode.KeyZ, this.onMonacoChangeWordWrap);
 
       this.bus.on(BUS_CHANNEL.BROWSER_OPEN_MD, this.onOpenMarkdown.bind(this));
       this.bus.on(BUS_CHANNEL.BROWSER_SAVE_MD, this.onSaveMarkdown.bind(this));
@@ -322,7 +322,7 @@ export default class Workbench implements IDisposable {
       { type: "-" },
       { id: "context.tab.preview" },
       { type: "-" },
-      { id: "context.tab.pinTab" },
+      { id: "context.tab.pinCurrentTab" },
     ]);
   }
 

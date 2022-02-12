@@ -116,10 +116,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = i18n.global;
 
-    const landscapeOption = [
+    const landscapeOption = computed(() => [
       { value: false, label: t("view.panel.EXPORT.vertical") },
       { value: true, label: t("view.panel.EXPORT.horizontal") },
-    ];
+    ]);
     const landscape = ref(false);
 
     const pageSizeOption = [

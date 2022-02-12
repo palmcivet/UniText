@@ -163,6 +163,7 @@ export default class MenuService extends Service {
           { id: "app.system.hideWindow", role: "hide" },
           { id: "app.system.hideOthers", role: "hideOthers" },
           { type: "-" },
+          { id: "app.system.closeWindow", role: "close" },
           { id: "app.system.quitApp", role: "quit" },
         ],
       });
@@ -188,7 +189,7 @@ export default class MenuService extends Service {
         { id: "app.file.saveFile" },
         { id: "app.file.saveFileAs" },
         { type: "-" },
-        { id: "app.file.revealFile" },
+        { id: "app.file.revealInOs" },
         { id: "app.file.exportFile" },
         { id: "app.file.transmitCabin" },
       ],

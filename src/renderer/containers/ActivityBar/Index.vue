@@ -43,9 +43,9 @@ export default defineComponent({
 
   inject: ["$workbench"],
 
-  data() {
-    return {
-      browserList: [
+  computed: {
+    browserList() {
+      return [
         {
           icon: "ri-folders-line",
           title: this.$t("view.browser.file.label"),
@@ -66,9 +66,11 @@ export default defineComponent({
           title: this.$t("view.browser.tag.label"),
           type: EBrowserType.TAG,
         },
-      ],
+      ];
+    },
 
-      workbenchList: [
+    workbenchList() {
+      return [
         {
           icon: "ri-dashboard-3-line",
           title: this.$t("view.workbench.dashboard"),
@@ -94,8 +96,8 @@ export default defineComponent({
           title: this.$t("view.workbench.setting"),
           type: EWorkbenchType.SETTING,
         },
-      ],
-    };
+      ];
+    },
   },
 
   setup() {

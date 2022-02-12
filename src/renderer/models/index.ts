@@ -19,8 +19,6 @@ const _workbench = new Workbench(_bus);
 const _themeEngine = new ThemeEngine(_bus);
 const _markdownEngine = new MarkdownEngine(_bus);
 
-(window as any).stack = _workbench;
-
 async function register() {
   const allSetting = useService("SettingService").getAll() as unknown;
   const all = (await allSetting) as ISetting;

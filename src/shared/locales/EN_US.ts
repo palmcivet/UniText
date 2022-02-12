@@ -27,7 +27,7 @@ export default {
       renameFile: "Rename File",
       saveFile: "Save",
       saveFileAs: "Save As",
-      revealFile: "Reveal in File Explorer",
+      revealInOs: "Reveal in File Explorer",
       exportFile: "Export File",
     },
 

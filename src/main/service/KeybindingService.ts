@@ -2,9 +2,8 @@ import { readJsonSync } from "fs-extra";
 
 import Logger from "@/main/backend/Logger";
 import Service from "@/main/service/Service";
-import { TActionAccessID } from "@/shared/typings/setting";
 
-type TCommand = TActionAccessID;
+type TCommand = string;
 type TKeybinding = string;
 type TWhen = string;
 type TArgs = string;

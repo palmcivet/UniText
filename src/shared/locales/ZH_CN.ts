@@ -28,7 +28,7 @@ export default {
       renameFile: "重命名",
       saveFile: "保存",
       saveFileAs: "另存为",
-      revealFile: "在文件管理器中显示",
+      revealInOs: "在文件管理器中显示",
       exportFile: "导出文档",
     },
 

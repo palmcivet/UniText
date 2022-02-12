@@ -49,6 +49,7 @@ export default class Browser implements IDisposable {
     if (this.treeview !== null) {
       // TODO 实时更新设置
       this.treeview.updateOptions();
+    } else {
       this._openProject();
     }
   }
@@ -125,7 +126,7 @@ export default class Browser implements IDisposable {
       { type: "-" },
       { id: "app.file.renameFile" },
       { type: "-" },
-      { id: "app.file.revealFile" },
+      { id: "app.file.revealInOs" },
       { type: "-" },
       { id: "app.edit.delete" },
     ]);
