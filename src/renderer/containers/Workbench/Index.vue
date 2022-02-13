@@ -2,9 +2,7 @@
   <div class="workbench">
     <Startup v-show="showStartup" />
 
-    <div v-show="!showStartup" class="workbench-controls">
-      <i class="ri-split-cells-horizontal"></i>
-    </div>
+    <div v-show="!showStartup" class="workbench-controls"></div>
 
     <div v-show="!showStartup" class="workbench-pane">
       <TabBar class="pane-tabs" />
@@ -35,7 +33,6 @@ export default defineComponent({
   components: {
     Dashboard: defineAsyncComponent(() => import("./Dashboard/Index.vue")),
     Graphview: defineAsyncComponent(() => import("./Graphview/Index.pre.vue")),
-    Reminder: defineAsyncComponent(() => import("./Reminder/Index.pre.vue")),
     Schedule: defineAsyncComponent(() => import("./Schedule/Index.pre.vue")),
     Setting: defineAsyncComponent(() => import("./Setting/Index.vue")),
     Editor: defineAsyncComponent(() => import("./Document/Index.vue")),
@@ -68,20 +65,8 @@ export default defineComponent({
     display: flex;
     align-items: center;
     right: 0;
-    background-color: whitesmoke;
     height: @tabBar-height + @tabBar-underline-width;
     z-index: 9;
-
-    i {
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-
-      &:hover {
-        color: whitesmoke;
-        background-color: #4a6a85;
-      }
-    }
   }
 
   &-pane {

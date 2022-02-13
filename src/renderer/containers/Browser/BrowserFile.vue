@@ -1,11 +1,14 @@
 <template>
-  <div class="browser-file">
+  <div class="browser-container">
     <template v-if="false">
-      <div class="toolbar-blank">
-        <span>{{ $t("view.browser.file.emptyCabin") }}</span>
+      <div class="browser-title">
+        <div class="title-label">
+          <span>{{ $t("view.browser.file.emptyCabin") }}</span>
+        </div>
+        <div class="title-actions"></div>
       </div>
 
-      <div class="container-blank">
+      <div class="browser-view file-blank">
         <button class="unitext-button" @click="onOpenProject()">
           {{ $t("view.browser.file.openCabin") }}
         </button>
@@ -13,16 +16,20 @@
     </template>
 
     <template v-else>
-      <div class="toolbar-opened">
-        <span>{{ $t("view.browser.file.title") }}</span>
-        <i
-          class="ri-checkbox-indeterminate-line"
-          :title="$t('view.browser.file.toggleFolder')"
-          @click="onToggleAll()"
-        />
+      <div class="browser-title">
+        <div class="title-label">
+          <span>{{ $t("view.browser.file.label") }}</span>
+        </div>
+        <div class="title-actions">
+          <i
+            class="unitext-icon ri-checkbox-indeterminate-line"
+            :title="$t('view.browser.file.toggleFolder')"
+            @click="onToggleAll()"
+          />
+        </div>
       </div>
 
-      <div class="container-opened" ref="treeviewRef" />
+      <div class="browser-view" ref="treeviewRef" />
     </template>
   </div>
 </template>
@@ -57,10 +64,18 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.browser-file {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+@import "./style.less";
+
+.browser-container {
+  .file-blank {
+    width: 100%;
+    position: relative;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary-fg); // DEV
+    background-color: var(--hover-bg); // DEV
+  }
 
   .unitext-button {
     top: 50%;
@@ -69,24 +84,6 @@ export default defineComponent({
     transform: translate(-50%, -50%);
     padding: 0.4rem;
     width: fit-content;
-  }
-
-  .toolbar-opened,
-  .toolbar-blank {
-    width: 100%;
-    user-select: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2px 4px;
-    color: var(--primary-fg); // DEV
-    background-color: var(--hover-bg); // DEV
-  }
-
-  .container-opened,
-  .container-blank {
-    position: relative;
-    height: 100%;
   }
 
   ::v-deep(.u-treeview) {

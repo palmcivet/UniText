@@ -1,16 +1,16 @@
 <template>
-  <div class="browser-tag">
-    <template v-if="true">
-      <div class="toolbar-blank">标签</div>
-      <div class="container-blank"></div>
-    </template>
+  <div class="browser-container">
+    <template v-if="false"></template>
 
     <template v-else>
-      <div class="toolbar-opened">
-        <span>{{ $t("sidebar.files_title") }}</span>
+      <div class="browser-title">
+        <div class="title-label">
+          <span>{{ $t("view.browser.tag.label") }}</span>
+        </div>
+        <div class="title-actions"></div>
       </div>
 
-      <div class="container-opened" ref="listview" />
+      <div class="browser-view" ref="listview" />
     </template>
   </div>
 </template>
@@ -26,3 +26,7 @@ export default defineComponent({
   setup() {},
 });
 </script>
+
+<style lang="less" scoped>
+@import "./style.less";
+</style>

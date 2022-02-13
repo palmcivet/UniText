@@ -87,11 +87,6 @@ export default defineComponent({
           type: EWorkbenchType.SCHEDULE,
         },
         {
-          icon: "ri-pie-chart-line",
-          title: this.$t("view.workbench.reminder"),
-          type: EWorkbenchType.REMINDER,
-        },
-        {
           icon: "ri-settings-line",
           title: this.$t("view.workbench.setting"),
           type: EWorkbenchType.SETTING,

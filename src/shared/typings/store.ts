@@ -31,7 +31,6 @@ export enum EWorkbenchType {
   EDITOR = "Editor",
   SETTING = "Setting",
   SCHEDULE = "Schedule",
-  REMINDER = "Reminder",
   GRAPHVIEW = "Graphview",
   DASHBOARD = "Dashboard",
 }

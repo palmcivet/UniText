@@ -131,22 +131,21 @@ export default {
 
     browser: {
       file: {
-        label: "文件",
-        title: "文件管理",
+        label: "文件管理",
         toggleFolder: "收起",
         emptyCabin: "无打开的笔记库",
         openCabin: "打开笔记库",
       },
       search: {
-        label: "搜索",
+        label: "查找替换",
         clear: "清除筛选",
         refresh: "刷新筛选",
       },
       bookmark: {
-        label: "书签",
+        label: "书签管理",
       },
       tag: {
-        label: "标签",
+        label: "标签管理",
       },
     },
 
