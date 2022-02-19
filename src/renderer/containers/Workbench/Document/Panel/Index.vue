@@ -74,6 +74,8 @@ export default defineComponent({
     font-weight: bold;
     display: flex;
     align-items: center;
+    color: var(--u-workbench-panel-title-fg);
+    background-color: var(--u-workbench-panel-title-bg);
 
     &-icon {
       font-size: 16px;
@@ -88,8 +90,8 @@ export default defineComponent({
   &-wrapper {
     height: calc(100% - v-bind(panelListLength) * @title-height);
     transition: height 0.3s ease-in-out;
-    color: var(--sidePanel-Fg);
-    background: var(--sidePanel-Bg);
+    color: var(--u-workbench-panel-fg);
+    background-color: var(--u-workbench-panel-bg);
   }
 }
 </style>

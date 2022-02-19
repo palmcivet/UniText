@@ -59,6 +59,8 @@ export default defineComponent({
 .workbench {
   width: 100%;
   height: 100%;
+  color: var(--u-workbench-fg);
+  background-color: var(--u-workbench-bg);
 
   &-controls {
     position: absolute;
@@ -74,7 +76,6 @@ export default defineComponent({
 
     .pane-tabs {
       height: @tabBar-height + @tabBar-underline-width;
-      background-color: #5a5f66;
     }
 
     .pane-type {

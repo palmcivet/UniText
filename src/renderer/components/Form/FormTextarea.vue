@@ -52,7 +52,7 @@ export default defineComponent({
     const canClear = computed(() => props.clearable && currentValue.value?.length !== 0);
     const onClear = () => {
       currentValue.value = "";
-      onChange()
+      onChange();
     };
 
     return {
@@ -77,8 +77,10 @@ export default defineComponent({
   &__textarea {
     margin: 0;
     width: 100%;
-    color: var(--inputBox-Fg);
-    background: var(--inputBox-Bg);
+    color: var(--u-form-fg);
+    background-color: var(--u-form-bg);
+    border-radius: var(--u-border-radius);
+    border: 1px solid var(--u-form-outline-bg);
   }
 
   &__clear {

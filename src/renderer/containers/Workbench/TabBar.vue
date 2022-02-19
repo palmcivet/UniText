@@ -85,6 +85,7 @@ export default defineComponent({
   width: 100%;
   overflow-x: overlay;
   line-height: @tabBar-height;
-  background: var(--tabBar-Bg);
+  color: var(--u-workbench-tab-fg);
+  background-color: var(--u-workbench-tab-bg);
 }
 </style>

@@ -2,31 +2,32 @@
 
 .unitext-button {
   cursor: pointer;
-  color: var(--button-Fg);
-  background: var(--button-Bg);
-  border-color: transparent;
-  outline-style: none;
+  border: none;
+  outline: none;
   user-select: none;
   padding: 0.3em 0.4em;
   text-align: center;
   vertical-align: baseline;
+  color: var(--u-button-fg);
+  background-color: var(--u-button-bg);
+  border-radius: var(--u-border-radius);
 
   &:hover {
-    color: var(--button-hoverFg);
-    background: var(--button-hoverBg);
+    color: var(--u-button-hover-fg);
+    background-color: var(--u-button-hover-bg);
   }
 }
 
 .unitext-icon {
   cursor: pointer;
-  border-radius: 4px; // DEV
-  padding: 2px;
-  color: #b3b3b3; // DEV
-  background-color: transparent;
   text-align: center;
+  padding: 2px;
+  color: var(--u-icon-fg);
+  background-color: var(--u-icon-bg);
+  border-radius: var(--u-border-radius);
 
   &:hover {
-    color: #d6d6d6; // DEV
-    background-color: #656d81; // DEV
+    color: var(--u-icon-hover-fg);
+    background-color: var(--u-icon-hover-bg);
   }
 }

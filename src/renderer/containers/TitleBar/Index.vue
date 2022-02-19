@@ -39,9 +39,10 @@ export default defineComponent({
   user-select: none;
   text-align: center;
   -webkit-app-region: drag;
+  color: var(--u-titleBar-active-fg);
+  background-color: var(--u-titleBar-active-bg);
 
   .window-title {
-    color: var(--titleBar-activeFg);
     font-size: @titleBar-font-size;
     line-height: @layout-titlebar-height - 1;
   }
@@ -53,11 +54,6 @@ export default defineComponent({
     width: 100px;
     right: 0;
     top: 0;
-
-    i {
-      color: var(--titleBar-activeFg);
-      line-height: @layout-titlebar-height;
-    }
   }
 }
 </style>

@@ -5,7 +5,8 @@ import { PATH_SEPARATE, URL_PROTOCOL } from "@/shared/pattern";
 import { THEME_PRESET, THEME_CSS, PUBLIC } from "@/shared/constant";
 import { IDisposable } from "@/shared/typings/renderer";
 import { ITheme, IThemeCustom } from "@/shared/typings/setting/theme";
-import { useService } from "../composables";
+import { useDisk, useIpc, useService } from "../composables";
+import { IPC_CHANNEL } from "@/shared/channel";
 
 export default class ThemeEngine implements IDisposable {
   /**
@@ -13,8 +14,11 @@ export default class ThemeEngine implements IDisposable {
    */
   private readonly bus: EventBus;
 
+  private watchDir: string;
+
   constructor(bus: EventBus) {
     this.bus = bus;
+    this.watchDir = "";
   }
 
   public invoke(): void {}
@@ -41,11 +45,20 @@ export default class ThemeEngine implements IDisposable {
     }
   }
 
-  public dispose(): void {}
+  public dispose(): void {
+    this.stopDebug();
+  }
 
-  public startDebug(): void {}
+  public startDebug(): void {
+    this.watchDir = useService("EnvService").resolveCabinFolder("THEMES");
+    useDisk().watcherStart([this.watchDir], this.watchDir);
 
-  public stopDebug(): void {}
+    useIpc().on(IPC_CHANNEL.DISK_WATCHER_NOTIFY, () => {});
+  }
+
+  public stopDebug(): void {
+    useDisk().watcherClose(this.watchDir);
+  }
 
   public async getSelectedTheme() {
     return (await useService("EnvService").resolveThemeList()).concat(...THEME_PRESET);

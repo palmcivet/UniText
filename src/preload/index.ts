@@ -113,6 +113,12 @@ const _disk = {
   ): Promise<Array<IRipgrepSearchResult>> {
     return ipcRenderer.invoke(IPC_CHANNEL.EXTERNAL_RIPGREP, directories, regexp, options);
   },
+  watcherStart(route: IPathRoute, key: string) {
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_WATCHER_START, route, key);
+  },
+  watcherClose(key: string) {
+    return ipcRenderer.invoke(IPC_CHANNEL.DISK_WATCHER_CLOSE, key);
+  },
 };
 
 const _electron = {

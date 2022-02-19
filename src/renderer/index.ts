@@ -9,6 +9,7 @@ import { i18n } from "./i18n";
 import "remixicon/fonts/remixicon.css";
 import "@palmcivet/unitext-tree-view/dist/style.css";
 import "@/renderer/styles/main.less";
+import "../../scripts/theme/OneDarkPro/appearance.less";
 
 async function renderer() {
   /**

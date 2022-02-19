@@ -3,9 +3,6 @@
 
 body {
   margin: 0;
-
-  // DEV 校验样式粒度
-  color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
   font-family: @interface-font-family;
 }
@@ -54,6 +51,11 @@ textarea {
 
 ::-webkit-scroll-track {
   display: none;
+  background-color: var(--u-scroll-track);
+
+  &:hover {
+    background-color: var(--u-scroll-track-hover);
+  }
 }
 
 ::-webkit-scrollbar-track-piece {
@@ -61,11 +63,11 @@ textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollBar-Bg);
   border-radius: 1px;
+  background-color: var(--u-scroll-bar);
 
   &:hover {
-    background: var(--scrollBar-hoverBg);
+    background-color: var(--u-scroll-bar-hover);
   }
 }
 

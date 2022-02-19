@@ -182,10 +182,16 @@ export default defineComponent({
         line-height: 20px;
 
         &.active {
-          color: var(--sideBarItem-hoverFg);
-          background: #414958; // DEV
+          color: var(--u-icon-hover-fg);
+          background-color: var(--u-icon-hover-bg);
         }
       }
+    }
+
+    .widget-wrapper,
+    .form-input {
+      margin-top: 3px;
+      padding: 0 3px;
     }
   }
 

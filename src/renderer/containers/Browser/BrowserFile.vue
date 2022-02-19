@@ -73,8 +73,8 @@ export default defineComponent({
     user-select: none;
     display: inline-flex;
     align-items: center;
-    color: var(--primary-fg); // DEV
-    background-color: var(--hover-bg); // DEV
+    color: var(--u-browser-fg);
+    background-color: var(--u-browser-bg);
   }
 
   .unitext-button {
@@ -90,11 +90,10 @@ export default defineComponent({
     .u-listview {
       .u-list__item {
         padding: 0 4px;
-        color: var(--tertiary-fg);
 
         &:hover {
-          color: var(--primary-fg);
-          background-color: var(--primary-bg);
+          color: var(--u-browser-item-hover-fg);
+          background-color: var(--u-browser-item-hover-bg);
         }
 
         .u-label {
@@ -103,7 +102,7 @@ export default defineComponent({
       }
 
       &:hover .u-indent div {
-        border-color: #868e977a; // DEV
+        border-color: var(--u-browser-indent-fg);
       }
     }
 
@@ -113,7 +112,8 @@ export default defineComponent({
       }
 
       &-dst {
-        background-color: #465a6a;
+        color: var(--u-browser-item-drag-fg);
+        background-color: var(--u-browser-item-drag-bg);
       }
     }
   }

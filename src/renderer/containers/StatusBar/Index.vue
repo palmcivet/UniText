@@ -45,8 +45,8 @@ export default defineComponent({
   justify-content: space-between;
   position: relative;
   padding: 0 0.5em;
-  color: var(--statusBar-Fg);
-  background: var(--statusBar-Bg);
+  color: var(--u-statusBar-fg);
+  background-color: var(--u-statusBar-bg);
 
   &-left,
   &-right {
@@ -65,8 +65,8 @@ export default defineComponent({
       line-height: @layout-statusbar-height;
 
       &:hover {
-        color: var(--statusBar-hoverFg);
-        background: var(--statusBar-hoverBg);
+        color: var(--u-statusBar-hover-fg);
+        background-color: var(--u-statusBar-hover-bg);
       }
 
       i {

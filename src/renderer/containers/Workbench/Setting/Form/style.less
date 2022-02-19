@@ -22,8 +22,8 @@
   select {
     height: @input-height;
     font-size: @font-size-normal;
-    color: var(--inputBox-Fg);
-    background: var(--inputBox-Bg);
+    color: var(--u-form-fg);
+    background-color: var(--u-form-bg);
   }
 
   input[type="text"],
@@ -32,14 +32,14 @@
     font-family: @normal-font-family;
 
     &:focus {
-      color: var(--inputBox-hoverFg);
-      background: var(--inputBox-hoverBg);
+      color: var(--u-form-active-fg);
+      background: var(--u-form-active-bg);
     }
 
     &:disabled {
       cursor: not-allowed;
-      color: var(--inputBox-disabledFg);
-      background: var(--inputBox-disabledBg);
+      color: var(--u-form-disable-fg);
+      background-color: var(--u-form-disable-bg);
     }
   }
 }

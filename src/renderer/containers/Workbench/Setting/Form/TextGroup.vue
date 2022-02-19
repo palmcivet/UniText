@@ -120,7 +120,8 @@ div.text-item.unedit {
   padding-left: 2px;
 
   &:hover {
-    background: var(--formGroupTitle-Bg);
+    color: var(--u-form-hover-fg);
+    background-color: var(--u-form-hover-bg);
   }
 }
 </style>

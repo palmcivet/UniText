@@ -165,20 +165,19 @@ export default defineComponent({
   display: flex;
   position: relative;
 
-  @sash-width: 4px;
-
   &__sash {
-    width: 1px; // DEV
+    width: var(--u-sash-width);
     height: 100%;
     position: absolute;
-    left: calc(v-bind(leftWidth) - @sash-width / 2);
     top: 0;
+    left: calc(v-bind(leftWidth) - var(--u-sash-hover-width) / 2);
     cursor: col-resize;
-    background: transparent;
+    background-color: transparent;
 
     &:hover {
-      width: @sash-width; // DEV
-      background: var(--sash-hoverFg);
+      z-index: 9;
+      width: var(--u-sash-hover-width);
+      background-color: var(--u-sash-fg);
     }
   }
 }

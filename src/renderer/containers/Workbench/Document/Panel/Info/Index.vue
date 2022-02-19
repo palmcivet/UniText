@@ -1,7 +1,15 @@
 <template>
   <div class="panel-info">
-    <InfoCardDate :raw="meta.cTime" :isCN="isCN" :remark="$t('view.panel.INFO.created')" />
-    <InfoCardDate :raw="meta.mTime" :isCN="isCN" :remark="$t('view.panel.INFO.modified')" />
+    <InfoCardDate
+      :raw="meta.cTime"
+      :isCN="isCN"
+      :remark="$t('view.panel.INFO.created')"
+    />
+    <InfoCardDate
+      :raw="meta.mTime"
+      :isCN="isCN"
+      :remark="$t('view.panel.INFO.modified')"
+    />
 
     <div class="info-grid">
       <InfoCardNormal
@@ -267,14 +275,16 @@ export default defineComponent({
 
       &__item {
         cursor: pointer;
-        border-radius: 8px;
-        padding-right: 5px;
         display: flex;
         align-items: center;
-        background-color: #153f58;
+        padding-right: 3px;
+        border-radius: var(--u-border-radius);
+        color: var(--u-workbench-info-tag-fg);
+        background-color: var(--u-workbench-info-tag-bg);
 
         &:hover {
-          background-color: #244c80;
+          color: var(--u-workbench-info-tag-hover-fg);
+          background-color: var(--u-workbench-info-tag-hover-bg);
         }
       }
 

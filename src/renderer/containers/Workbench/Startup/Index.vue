@@ -24,10 +24,10 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .startup {
-  display: flex;
-  flex-direction: column;
   height: 100%;
+  display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: space-around;
   user-select: none;
 
@@ -36,6 +36,7 @@ export default defineComponent({
     font-weight: bolder;
     width: 200px;
     text-align: center;
+    color: var(--u-browser-title-fg);
   }
 }
 </style>

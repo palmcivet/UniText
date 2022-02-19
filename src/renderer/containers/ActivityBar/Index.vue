@@ -7,8 +7,8 @@
         :class="['browser-list__item', { active: browserType === item.type }]"
         @click="onSwitchBrowser(item.type)"
       >
-        <i :class="['ri-lg', item.icon]" />
-        <span>{{ item.title }}</span>
+        <i :class="['item-icon', 'ri-lg', item.icon]" />
+        <span class="item-label">{{ item.title }}</span>
       </li>
     </ul>
 
@@ -21,8 +21,8 @@
         class="workbench-list__item"
         @click="onSwitchWorkbench(item.type)"
       >
-        <i :class="['ri-lg', item.icon]" />
-        <span>{{ item.title }}</span>
+        <i :class="['item-icon', 'ri-lg', item.icon]" />
+        <span class="item-label">{{ item.title }}</span>
       </li>
     </ul>
 
@@ -130,57 +130,47 @@ export default defineComponent({
 .activity-bar {
   display: flex;
   flex-direction: column;
-
-  @padding-width: 4px;
-  @radius-value: 4px;
-  padding: 0 @padding-width;
+  padding: 0 var(--u-border-radius);
+  color: var(--u-activityBar-fg);
+  background-color: var(--u-activityBar-bg);
+  padding-top: 5px;
 
   .activity-divider {
-    margin: calc(5px) 10px;
-    border-top: 1px solid var(--activityBar-dividerFg);
+    margin: 5px 10px;
+    border-top: 1px solid var(--u-activityBar-divider-fg);
   }
 
-  .browser-list__item,
-  .workbench-list__item {
-    width: 100%;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--activityBar-inactiveFg);
-    padding: 4px calc(10px - @padding-width);
-    margin: calc(2px + @padding-width / 2) 0;
-    border-radius: @radius-value;
-
-    span {
-      margin-left: 8px;
-      user-select: none;
-    }
-  }
-
+  .workbench-list,
   .browser-list {
-    margin-top: 4px;
-
     &__item {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 20px;
+      padding: 4px;
+      margin: calc(3px + var(--u-border-radius) / 2) 0;
+      border-radius: var(--u-border-radius);
+
+      .item-label {
+        margin-left: 8px;
+        user-select: none;
+      }
+
       &:hover {
-        color: var(--activityBar-hoverFg);
-        background-color: var(--activityBar-hoverBg);
+        color: var(--u-activityBar-hover-fg);
       }
 
       &.active {
-        color: var(--activityBar-activeFg);
-        background-color: var(--activityBar-activeBg);
+        color: var(--u-activityBar-active-fg);
+        background-color: var(--u-activityBar-active-bg);
       }
     }
   }
 
-  .workbench-list {
-    &__item {
-      &:hover {
-        color: var(--activityBar-activeFg);
-      }
-    }
+  .browser-list__item:hover {
+    background-color: var(--u-activityBar-hover-bg);
   }
 }
 </style>

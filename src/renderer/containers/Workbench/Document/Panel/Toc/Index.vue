@@ -87,15 +87,15 @@ export default defineComponent({
   .toc-item {
     cursor: pointer;
     padding: 3px 0;
-    font-size: 16px; // DEV
+    font-size: 16px;
     width: 100%;
     font-family: @normal-font-family;
     user-select: none;
     .ellipsis();
 
     &:hover {
-      color: var(--sidePanelItem-hoverFg);
-      background: var(--sidePanelItem-hoverBg);
+      color: var(--u-workbench-toc-hover-fg);
+      background-color: var(--u-workbench-toc-hover-bg);
     }
 
     &__indent {

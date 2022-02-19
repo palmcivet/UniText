@@ -55,19 +55,19 @@ export default defineComponent({
   padding: 0 1.8em 0 0.8em;
   position: relative;
 
-  color: var(--tabBarTab-Fg);
-  background: var(--tabBarTab-Bg);
   height: @tabBar-height;
-  border-right: 1px solid var(--tabBarRightBorder-Color);
+  color: var(--u-workbench-tab-active-fg);
+  background-color: var(--u-workbench-tab-active-bg);
+  border-right: 1px solid var(--u-workbench-tab-divider-v-bg);
 
   &:hover {
     opacity: 0.9;
-    color: var(--tabBarTab-hoverFg);
-    background: var(--tabBarTab-hoverBg);
+    color: var(--u-workbench-tab-hover-fg);
+    background-color: var(--u-workbench-tab-hover-bg);
   }
 
   &.active {
-    border-bottom: @tabBar-underline-width solid var(--tabBarUnderline-Color);
+    border-bottom: @tabBar-underline-width solid var(--u-workbench-tab-divider-h-bg);
   }
 
   &.inactive {
@@ -76,8 +76,8 @@ export default defineComponent({
 
   &.ghost {
     opacity: 0.5;
-    color: var(--tabBarTab-Fg);
-    background: var(--tabBar-inactiveBg);
+    color: var(--u-workbench-tab-drag-fg);
+    background-color: var(--u-workbench-tab-drag-bg);
   }
 
   .tar-bar-item__text {
@@ -98,7 +98,6 @@ export default defineComponent({
 
     &:hover {
       opacity: 1;
-      background: var(--tabBarTab-hoverBg);
     }
   }
 }

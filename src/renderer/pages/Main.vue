@@ -72,12 +72,10 @@ export default defineComponent({
 .layout-main {
   .layout-titlebar {
     height: @layout-titlebar-height;
-    background: var(--titleBar-activeBg);
   }
 
   .layout-statusbar {
     height: @layout-statusbar-height;
-    background: var(--statusBar-Bg);
   }
 
   main {
@@ -87,7 +85,6 @@ export default defineComponent({
     .layout-activitybar {
       height: 100%;
       width: @layout-activitybar-width;
-      background: var(--activityBar-Bg);
     }
 
     .splitview {
@@ -96,14 +93,10 @@ export default defineComponent({
 
     .layout-browser {
       height: 100%;
-      color: var(--workBench-Fg);
-      background: var(--sideBar-Bg);
     }
 
     .layout-workbench {
       height: 100%;
-      color: var(--workBench-Fg);
-      background: var(--workBench-Bg);
     }
   }
 }
