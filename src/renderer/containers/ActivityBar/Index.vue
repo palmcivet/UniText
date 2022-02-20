@@ -133,10 +133,10 @@ export default defineComponent({
   padding: 0 var(--u-border-radius);
   color: var(--u-activityBar-fg);
   background-color: var(--u-activityBar-bg);
-  padding-top: 5px;
+  padding-top: 4px;
 
   .activity-divider {
-    margin: 5px 10px;
+    margin: 4px 20px;
     border-top: 1px solid var(--u-activityBar-divider-fg);
   }
 
@@ -144,18 +144,24 @@ export default defineComponent({
   .browser-list {
     &__item {
       width: 100%;
+      padding: 4px;
       display: inline-flex;
       align-items: center;
       cursor: pointer;
-      font-size: 14px;
-      line-height: 20px;
-      padding: 4px;
-      margin: calc(3px + var(--u-border-radius) / 2) 0;
+      margin: calc(var(--u-border-radius) / 2) 0;
       border-radius: var(--u-border-radius);
+
+      .item-icon {
+        font-size: @icon-font-size-normal;
+        line-height: @line-height-normal;
+      }
 
       .item-label {
         margin-left: 8px;
         user-select: none;
+        font-size: @font-size-normal;
+        line-height: @line-height-normal;
+        opacity: 0.8;
       }
 
       &:hover {

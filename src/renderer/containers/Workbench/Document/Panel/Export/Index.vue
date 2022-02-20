@@ -195,13 +195,15 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/vars.less";
 @import "./style.less";
 
 .panel-export {
   width: 100%;
   height: 100%;
   overflow-y: hidden;
-  font-size: 14px;
+  font-size: @font-size-normal;
+  opacity: 0.9;
 
   @controls-height: 40px;
 

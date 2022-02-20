@@ -89,7 +89,7 @@ export default defineComponent({
     padding: 3px 0;
     font-size: 16px;
     width: 100%;
-    font-family: @normal-font-family;
+    font-family: var(--normal-font-family);
     user-select: none;
     .ellipsis();
 

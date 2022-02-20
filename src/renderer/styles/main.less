@@ -4,7 +4,7 @@
 body {
   margin: 0;
   font-size: 14px;
-  font-family: @interface-font-family;
+  font-family: "PingFang SC", "-apple-system", "SF UI Text", "Lucida Grande", "STheiti", "Microsoft YaHei", "sans-serif";
 }
 
 /* Clear default styles */
@@ -16,6 +16,7 @@ ul,
 li,
 a {
   box-sizing: border-box;
+  line-height: @line-height-normal;
 }
 
 ol,
@@ -25,6 +26,14 @@ figure {
   padding: 0;
   outline: none;
   list-style: none;
+}
+
+a {
+  background-color: transparent;
+}
+
+img {
+  border-style: none;
 }
 
 input,

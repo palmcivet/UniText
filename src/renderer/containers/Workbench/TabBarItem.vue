@@ -51,14 +51,17 @@ export default defineComponent({
 @import "~@/renderer/styles/mixins.less";
 
 .tab-bar-item {
-  cursor: pointer;
-  padding: 0 1.8em 0 0.8em;
-  position: relative;
+  @padding: 10px;
 
+  cursor: pointer;
+  box-sizing: content-box;
+  padding: 0 calc(@padding + @line-height-normal) 0 @padding;
+  position: relative;
   height: @tabBar-height;
   color: var(--u-workbench-tab-active-fg);
   background-color: var(--u-workbench-tab-active-bg);
   border-right: 1px solid var(--u-workbench-tab-divider-v-bg);
+  border-bottom: @tabBar-underline-width solid transparent;
 
   &:hover {
     opacity: 0.9;
@@ -67,7 +70,7 @@ export default defineComponent({
   }
 
   &.active {
-    border-bottom: @tabBar-underline-width solid var(--u-workbench-tab-divider-h-bg);
+    border-bottom-style: var(--u-workbench-tab-divider-h-bg);
   }
 
   &.inactive {
@@ -83,16 +86,19 @@ export default defineComponent({
   .tar-bar-item__text {
     display: inline-block;
     user-select: none;
+    padding-top: 0.5px;
     max-width: 200px;
+    font-size: @font-size-normal;
+    line-height: @tabBar-height;
     .ellipsis();
   }
 
   .tar-bar-item__icon {
-    line-height: 12px;
-    font-size: 12px;
+    font-size: @icon-font-size-normal;
+    line-height: @tabBar-height;
     border-radius: 50%;
     position: absolute;
-    right: 0.6em;
+    right: @padding;
     top: 50%;
     transform: translateY(-50%);
 

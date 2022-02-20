@@ -94,7 +94,7 @@ li {
   list-style: none;
   max-width: @input-width;
   padding-left: 10px;
-  font-family: @normal-font-family;
+  font-family: var(--normal-font-family);
 }
 
 .text-item {

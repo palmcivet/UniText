@@ -71,24 +71,24 @@ export default defineComponent({
 
 .layout-main {
   .layout-titlebar {
-    height: @layout-titlebar-height;
+    height: @layout-titleBar-height;
   }
 
   .layout-statusbar {
-    height: @layout-statusbar-height;
+    height: @layout-statusBar-height;
   }
 
   main {
     display: flex;
-    height: calc(100vh - @layout-titlebar-height - @layout-statusbar-height);
+    height: calc(100vh - @layout-titleBar-height - @layout-statusBar-height);
 
     .layout-activitybar {
       height: 100%;
-      width: @layout-activitybar-width;
+      width: @layout-activityBar-width;
     }
 
     .splitview {
-      width: calc(100vw - @layout-activitybar-width);
+      width: calc(100vw - @layout-activityBar-width);
     }
 
     .layout-browser {

@@ -44,7 +44,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   position: relative;
-  padding: 0 0.5em;
+  padding: 0 8px;
   color: var(--u-statusBar-fg);
   background-color: var(--u-statusBar-bg);
 
@@ -55,14 +55,14 @@ export default defineComponent({
 
     ::v-deep(ul) {
       display: flex;
-      padding: 0 0.5em;
+      padding: 0 8px;
     }
 
     ::v-deep(li) {
-      padding: 0 0.3em;
+      padding: 0 4px;
       cursor: pointer;
       user-select: none;
-      line-height: @layout-statusbar-height;
+      line-height: @layout-statusBar-height;
 
       &:hover {
         color: var(--u-statusBar-hover-fg);
@@ -70,8 +70,8 @@ export default defineComponent({
       }
 
       i {
-        line-height: 24px;
-        font-size: 16px;
+        font-size: @icon-font-size-normal;
+        line-height: @layout-statusBar-height;
       }
     }
   }

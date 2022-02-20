@@ -1,36 +1,38 @@
-/* -------------------------- Fonts -------------------------- */
+/* -------------------------- Font size --------------------------*/
 
-@interface-font-family: "PingFang SC", "-apple-system", "SF UI Text", "Lucida Grande",
-  "STheiti", "Microsoft YaHei", "sans-serif";
-@normal-font-family: "Source Code Pro", "STZhongSong", "PingFang SC";
-@char-font-family: "STZhongSong", "PingFang SC", "Microsoft YaHei";
-@code-font-family: "Source Code Pro", "Monaco", "Consolas", "Menlo", "Courier New",
-  "monospace";
+@font-size-small: 12px;
+@font-size-normal: 13px;
+@font-size-large: 14px;
+
+@font-weight-thin: 300;
+@font-weight-normal: 400;
+@font-weight-bold: 600;
+
+@line-height-normal: 22px;
+@line-height-large: 24px;
+
+@icon-font-size-small: 14px;
+@icon-font-size-normal: 16px;
 
 /* -------------------------- Layout --------------------------*/
 
-@layout-titlebar-height: 24px;
-@layout-activitybar-width: 125px;
-@layout-statusbar-height: 24px;
+@layout-titleBar-height: 24px;
+@layout-activityBar-width: 110px;
+@layout-statusBar-height: 24px;
 
 /* ------------------------ Appearance ------------------------- */
 
 /* TitleBar */
-@titleBar-font-size: 13px;
-@statusBar-font-size: 13px;
+@titleBar-font-size: @font-size-small;
+@statusBar-font-size: @font-size-small;
 
 /* SideBar */
-@sideBar-header-height: 25px;
-@sideBar-item-height: 1.5rem;
+@sideBar-header-height: @tabBar-height + @tabBar-underline-width;
+@sideBar-item-height: @line-height-normal;
 
 /* TabBar */
-@tabBar-height: 25px;
+@tabBar-height: 29px;
 @tabBar-underline-width: 1px;
-
-/* WorkBench */
-@preview-font-size: 15px;
-
-/* StatusBar */
 
 /* -------------------------- Widgets -------------------------- */
 

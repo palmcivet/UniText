@@ -64,6 +64,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/vars.less";
 @import "./style.less";
 
 .browser-container {
@@ -82,7 +83,7 @@ export default defineComponent({
     left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
-    padding: 0.4rem;
+    padding: 8px;
     width: fit-content;
   }
 
@@ -97,7 +98,8 @@ export default defineComponent({
         }
 
         .u-label {
-          font-size: 15px;
+          opacity: 0.8;
+          font-size: @font-size-large;
         }
       }
 

@@ -1,0 +1,108 @@
+:root {
+  /* 变量 */
+
+  @primary: rgb(57, 115, 251);
+  @primary-dark: darken(@primary, 5%);
+  @primary-light: lighten(@primary, 5%);
+  @fg: hsl(0, 0%, 47%);
+  @fg-dark: darken(@fg, 20%);
+  @fg-light: lighten(@fg, 20%);
+  @bg: hsl(240, 19%, 22%);
+  @bg-dark: darken(@bg, 10%);
+  @bg-light: lighten(@bg, 10%);
+
+  /* 全局 */
+
+  --u-border-radius: 2px;
+
+  --ui-font-family: "PingFang SC", "SF UI Text", "Lucida Grande", "STheiti", "Microsoft YaHei", "sans-serif";
+  --normal-font-family: "Source Code Pro", "STZhongSong", "PingFang SC";
+  --code-font-family: "Source Code Pro", "Monaco", "Consolas", "Menlo", "Courier New", "monospace";
+
+  --u-sash-width: 1px;
+  --u-sash-hover-width: 3px;
+  --u-sash-fg: @primary;
+  --u-button-fg: #c0bdbd;
+  --u-button-bg: #30333d;
+  --u-button-hover-fg: #c0bdbd;
+  --u-button-hover-bg: #404754;
+  --u-icon-fg: @primary-light;
+  --u-icon-bg: transparent;
+  --u-icon-hover-fg: @primary;
+  --u-icon-hover-bg: darken(@bg-dark, 5%);
+  --u-scroll-bar: #4e566660;
+  --u-scroll-bar-hover: #5a637580;
+  --u-scroll-track: transparent;
+  --u-scroll-track-hover: #747d9180;
+
+  --u-form-fg: @fg-light;
+  --u-form-bg: #1d1f23;
+  --u-form-hover-fg: @fg;
+  --u-form-hover-bg: @bg;
+  --u-form-active-fg: @fg-dark;
+  --u-form-active-bg: @bg-dark;
+  --u-form-disable-fg: darken(@fg-light, 5%);
+  --u-form-disable-bg: darken(@bg-light, 5%);
+  --u-form-outline-bg: #c0bdbd65;
+
+  /* 组件 */
+
+  --u-titleBar-active-fg: #9da5b4;
+  --u-titleBar-active-bg: #23272e;
+  --u-titleBar-inactive-fg: #6b717d;
+  --u-titleBar-inactive-bg: #1e2227;
+
+  --u-statusBar-fg: #9da5b4;
+  --u-statusBar-bg: #1e2227;
+  --u-statusBar-hover-fg: #9da5b4;
+  --u-statusBar-hover-bg: #2c313a;
+
+  --u-activityBar-fg: #d7dae0;
+  --u-activityBar-bg: #23272e;
+  --u-activityBar-active-fg: hsl(220, 13%, 90%);
+  --u-activityBar-active-bg: hsl(220, 17%, 24%);
+  --u-activityBar-hover-fg: hsl(220, 13%, 96%);
+  --u-activityBar-hover-bg: hsl(220, 12%, 30%);
+  --u-activityBar-divider-fg: #9da5b498;
+
+  --u-browser-fg: #abb2bf;
+  --u-browser-bg: #1e2227;
+  --u-browser-title-fg: #abb2bf;
+  --u-browser-title-bg: #23272e;
+  --u-browser-item-fg: #d7dae0;
+  --u-browser-item-bg: #2c313a;
+  --u-browser-item-active-fg: #323842;
+  --u-browser-item-active-bg: #f0f0f0;
+  --u-browser-item-hover-fg: #ffffff;
+  --u-browser-item-hover-bg: #2c313a;
+  --u-browser-item-drag-fg: #d7dae0;
+  --u-browser-item-drag-bg: #323842;
+  --u-browser-indent-fg: #c8c8c859;
+  --u-browser-indent-inactive-fg: #3b4048;
+
+  --u-palette-bg: @bg;
+  --u-palette-fg: @fg;
+
+  --u-workbench-fg: #abb2bf;
+  --u-workbench-bg: #23272e;
+  --u-workbench-tab-fg: #23272e;
+  --u-workbench-tab-bg: #1e2227;
+  --u-workbench-tab-active-fg: #dcdcdc;
+  --u-workbench-tab-active-bg: #23272e;
+  --u-workbench-tab-hover-fg: #dcdcdc;
+  --u-workbench-tab-hover-bg: #323842;
+  --u-workbench-tab-drag-fg: lighten(@fg, 2%);
+  --u-workbench-tab-drag-bg: lighten(@bg, 2%);
+  --u-workbench-tab-divider-h-bg: #181a1f;
+  --u-workbench-tab-divider-v-bg: #181a1f;
+  --u-workbench-panel-fg: #dcdcdc;
+  --u-workbench-panel-bg: #1e2227;
+  --u-workbench-panel-title-fg: @primary;
+  --u-workbench-panel-title-bg: @bg-dark;
+  --u-workbench-toc-hover-fg: @primary-light;
+  --u-workbench-toc-hover-bg: lighten(@bg-dark, 5%);
+  --u-workbench-info-tag-fg: @primary-light;
+  --u-workbench-info-tag-bg: lighten(@bg-dark, 5%);
+  --u-workbench-info-tag-hover-fg: @primary;
+  --u-workbench-info-tag-hover-bg: @bg-dark;
+}

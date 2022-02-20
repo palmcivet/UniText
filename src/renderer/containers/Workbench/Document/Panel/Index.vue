@@ -61,24 +61,24 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/vars.less";
+
 .panel {
   height: 100%;
   overflow-y: auto;
 
-  @title-height: 22px;
-
   &-title {
-    height: @title-height;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
+    height: @line-height-normal;
+    font-size: @font-size-large;
+    font-weight: @font-weight-bold;
     display: flex;
     align-items: center;
     color: var(--u-workbench-panel-title-fg);
     background-color: var(--u-workbench-panel-title-bg);
 
     &-icon {
-      font-size: 16px;
+      font-size: @icon-font-size-normal;
     }
 
     &-text {
@@ -88,7 +88,7 @@ export default defineComponent({
   }
 
   &-wrapper {
-    height: calc(100% - v-bind(panelListLength) * @title-height);
+    height: calc(100% - v-bind(panelListLength) * @line-height-normal);
     transition: height 0.3s ease-in-out;
     color: var(--u-workbench-panel-fg);
     background-color: var(--u-workbench-panel-bg);

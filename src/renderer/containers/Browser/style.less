@@ -12,19 +12,22 @@
     align-items: center;
     justify-content: space-between;
     padding: 1px 4px;
-    font-weight: 500;
+    height: @sideBar-header-height;
+    line-height: @sideBar-header-height;
     color: var(--u-browser-title-fg);
     background-color: var(--u-browser-title-bg);
 
     .title-label {
       user-select: none;
-      line-height: 24px;
+      line-height: @line-height-large;
+      font-size: @icon-font-size-small;
+      font-weight: @font-weight-bold;
     }
 
     .title-actions {
-      font-size: 16px;
-      height: 24px;
-      line-height: 24px;
+      height: @line-height-large;
+      line-height: @line-height-large;
+      font-size: @icon-font-size-normal;
     }
   }
 

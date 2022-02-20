@@ -210,6 +210,7 @@ export default defineComponent({
   height: 100%;
   overflow-y: overlay;
   padding: 0 @cell-gap;
+  opacity: 0.9;
 
   .info-card {
     margin: @cell-gap 0;

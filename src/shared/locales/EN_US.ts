@@ -119,7 +119,7 @@ export default {
   view: {
     workbench: {
       dashboard: "Dashboard",
-      graphview: "Graph View",
+      graphview: "Graphview",
       schedule: "Schedule",
       reminder: "Reminder",
       setting: "Setting",

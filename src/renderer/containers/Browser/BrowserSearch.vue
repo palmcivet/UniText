@@ -166,6 +166,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/vars.less";
 @import "./style.less";
 
 .browser-view {
@@ -177,9 +178,9 @@ export default defineComponent({
       justify-content: space-around;
 
       .unitext-icon {
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
+        width: @line-height-normal;
+        height: @line-height-normal;
+        line-height: @line-height-normal;
 
         &.active {
           color: var(--u-icon-hover-fg);
@@ -190,8 +191,8 @@ export default defineComponent({
 
     .widget-wrapper,
     .form-input {
-      margin-top: 3px;
-      padding: 0 3px;
+      margin-top: 4px;
+      padding: 0 4px;
     }
   }
 

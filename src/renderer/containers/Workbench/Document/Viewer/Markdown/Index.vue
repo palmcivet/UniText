@@ -44,7 +44,7 @@ export default defineComponent({
   overflow: auto;
   padding: 1em;
   box-sizing: border-box;
-  font-family: @normal-font-family;
-  font-size: @preview-font-size;
+  font-family: var(--normal-font-family);
+  font-size: 15px; // DEV 用户主题自定义
 }
 </style>

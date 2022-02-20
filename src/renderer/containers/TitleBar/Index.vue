@@ -44,13 +44,13 @@ export default defineComponent({
 
   .window-title {
     font-size: @titleBar-font-size;
-    line-height: @layout-titlebar-height - 1;
+    line-height: @layout-titleBar-height - 1;
   }
 
   .window-controls {
     text-align: right;
     position: absolute;
-    height: @layout-titlebar-height;
+    height: @layout-titleBar-height;
     width: 100px;
     right: 0;
     top: 0;

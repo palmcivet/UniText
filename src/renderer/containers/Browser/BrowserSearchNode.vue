@@ -64,11 +64,11 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@import "~@/renderer/styles/vars.less";
 @import "~@/renderer/styles/mixins.less";
 
 .search-node {
   @icon-width: 16px;
-  @node-height: 24px;
 
   &-group {
     display: flex;
@@ -92,15 +92,16 @@ export default defineComponent({
 
   i {
     width: @icon-width;
-    height: @node-height;
-    line-height: @node-height;
+    height: @sideBar-item-height;
+    line-height: @sideBar-item-height;
     text-align: center;
   }
 
   .node-label {
     max-width: calc(100% - @icon-width * 3);
     user-select: none;
-    line-height: @node-height;
+    line-height: @sideBar-item-height;
+    font-size: @font-size-normal;
     .ellipsis();
   }
 
