@@ -34,6 +34,8 @@ import { IRipgrepSearchResult } from "@/main/utils/ripgrep";
 export default defineComponent({
   name: "BrowserSearchNode",
 
+  emits: ["node-reveal"],
+
   props: {
     result: { type: Object as PropType<IRipgrepSearchResult>, required: true },
   },
@@ -94,6 +96,7 @@ export default defineComponent({
     width: @icon-width;
     height: @sideBar-item-height;
     line-height: @sideBar-item-height;
+    font-size: @icon-font-size-normal;
     text-align: center;
   }
 

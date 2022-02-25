@@ -203,7 +203,6 @@ export default defineComponent({
   height: 100%;
   overflow-y: hidden;
   font-size: @font-size-normal;
-  opacity: 0.9;
 
   @controls-height: 40px;
 

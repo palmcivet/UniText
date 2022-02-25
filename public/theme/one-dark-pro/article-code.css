@@ -1,0 +1,203 @@
+#markdown-preview {
+  /* highlight */
+}
+#markdown-preview pre {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  margin: 0.5em 0;
+  overflow: auto;
+  line-height: 1.5;
+  tab-size: 4;
+  hyphens: none;
+  color: hsl(220, 14%, 71%);
+  background-color: hsl(220, 13%, 22%) !important;
+  border: hsl(220, 13%, 34%);
+}
+#markdown-preview pre[class*="language-"] {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+#markdown-preview code[class*="language-"],
+#markdown-preview pre[class*="language-"] {
+  /*
+.token.punctuation {
+  color: #96CBFE;
+}
+*/
+  /*
+.token.property {
+}
+*/
+  /*
+.token.deleted {
+}
+
+.token.inserted {
+}
+*/
+  /*
+.token.builtin {
+  color: @green;
+}
+
+.token.entity {
+  color: #FFD2A7;
+}
+*/
+  /*
+&.line-numbers {
+  .line-numbers-rows>span:before {
+  }
+}
+*/
+}
+#markdown-preview code[class*="language-"] .token.comment,
+#markdown-preview pre[class*="language-"] .token.comment,
+#markdown-preview code[class*="language-"] .token.prolog,
+#markdown-preview pre[class*="language-"] .token.prolog,
+#markdown-preview code[class*="language-"] .token.doctype,
+#markdown-preview pre[class*="language-"] .token.doctype,
+#markdown-preview code[class*="language-"] .token.cdata,
+#markdown-preview pre[class*="language-"] .token.cdata {
+  color: hsl(220, 10%, 40%);
+}
+#markdown-preview code[class*="language-"] .namespace,
+#markdown-preview pre[class*="language-"] .namespace {
+  opacity: 0.7;
+}
+#markdown-preview code[class*="language-"] .token.constant,
+#markdown-preview pre[class*="language-"] .token.constant {
+  color: hsl(29, 54%, 61%);
+}
+#markdown-preview code[class*="language-"] .token.boolean,
+#markdown-preview pre[class*="language-"] .token.boolean,
+#markdown-preview code[class*="language-"] .token.number,
+#markdown-preview pre[class*="language-"] .token.number,
+#markdown-preview code[class*="language-"] .token.function-name,
+#markdown-preview pre[class*="language-"] .token.function-name {
+  color: hsl(29, 54%, 61%);
+}
+#markdown-preview code[class*="language-"] .token.tag,
+#markdown-preview pre[class*="language-"] .token.tag {
+  color: hsl(355, 65%, 65%);
+}
+#markdown-preview code[class*="language-"] .token.symbol,
+#markdown-preview pre[class*="language-"] .token.symbol {
+  color: hsl(187, 47%, 55%);
+}
+#markdown-preview code[class*="language-"] .token.selector,
+#markdown-preview pre[class*="language-"] .token.selector {
+  color: hsl(286, 60%, 67%);
+}
+#markdown-preview code[class*="language-"] .token.attr-name,
+#markdown-preview pre[class*="language-"] .token.attr-name {
+  color: hsl(29, 54%, 61%);
+}
+#markdown-preview code[class*="language-"] .token.string,
+#markdown-preview pre[class*="language-"] .token.string {
+  color: hsl(95, 38%, 62%);
+}
+#markdown-preview code[class*="language-"] .token.char,
+#markdown-preview pre[class*="language-"] .token.char {
+  color: hsl(187, 47%, 55%);
+}
+#markdown-preview code[class*="language-"] .token.url,
+#markdown-preview pre[class*="language-"] .token.url {
+  color: hsl(187, 47%, 55%);
+}
+#markdown-preview code[class*="language-"] .token.operator,
+#markdown-preview pre[class*="language-"] .token.operator {
+  color: hsl(220, 14%, 71%);
+}
+#markdown-preview code[class*="language-"] .token.atrule,
+#markdown-preview pre[class*="language-"] .token.atrule,
+#markdown-preview code[class*="language-"] .token.attr-value,
+#markdown-preview pre[class*="language-"] .token.attr-value,
+#markdown-preview code[class*="language-"] .token.keyword,
+#markdown-preview pre[class*="language-"] .token.keyword {
+  color: hsl(286, 60%, 67%);
+}
+#markdown-preview code[class*="language-"] .token.function,
+#markdown-preview pre[class*="language-"] .token.function {
+  color: hsl(207, 82%, 66%);
+}
+#markdown-preview code[class*="language-"] .token.class-name,
+#markdown-preview pre[class*="language-"] .token.class-name {
+  color: hsl(39, 67%, 69%);
+}
+#markdown-preview code[class*="language-"] .token.variable,
+#markdown-preview pre[class*="language-"] .token.variable {
+  color: hsl(29, 54%, 61%);
+}
+#markdown-preview code[class*="language-"] .token.regex,
+#markdown-preview pre[class*="language-"] .token.regex {
+  color: hsl(187, 47%, 55%);
+}
+#markdown-preview code[class*="language-"] .token.important,
+#markdown-preview pre[class*="language-"] .token.important {
+  color: hsl(355, 65%, 65%);
+}
+#markdown-preview code[class*="language-"] .token.important,
+#markdown-preview pre[class*="language-"] .token.important,
+#markdown-preview code[class*="language-"] .token.bold,
+#markdown-preview pre[class*="language-"] .token.bold {
+  font-weight: bold;
+}
+#markdown-preview code[class*="language-"] .token.italic,
+#markdown-preview pre[class*="language-"] .token.italic {
+  font-style: italic;
+}
+#markdown-preview code[class*="language-"] .token.entity,
+#markdown-preview pre[class*="language-"] .token.entity {
+  cursor: help;
+}
+#markdown-preview pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+#markdown-preview pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+#markdown-preview pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%, 0.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%, 0.1) 70%, hsla(24, 20%, 50%, 0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+#markdown-preview pre[data-line] .line-highlight:before,
+#markdown-preview pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: 0.4em;
+  left: 0.6em;
+  min-width: 1em;
+  padding: 0 0.5em;
+  background-color: hsla(24, 20%, 50%, 0.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: 0.3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+#markdown-preview pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: 0.4em;
+}

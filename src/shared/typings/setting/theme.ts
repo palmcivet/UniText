@@ -19,7 +19,7 @@ export interface IThemeCustom {
   /**
    * @field 外观主题
    */
-  appearance: string;
+  appStyle: string;
   /**
    * @field 编辑器主题
    */
@@ -27,11 +27,11 @@ export interface IThemeCustom {
   /**
    * @field 渲染代码主题
    */
-  renderCode: string;
+  articleCode: string;
   /**
    * @field 渲染文章主题
    */
-  renderView: string;
+  articleBody: string;
 }
 
 export interface ITheme {

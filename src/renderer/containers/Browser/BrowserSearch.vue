@@ -82,6 +82,7 @@
           v-for="(result, index) in searchResultList"
           :key="index"
           :result="result"
+          @node-reveal="onReveal"
         />
       </ul>
     </div>

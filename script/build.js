@@ -8,7 +8,7 @@ const { BuildPath } = require("./config/environment");
 const mainConfig = require("./config/webpack.main");
 const preloadConfig = require("./config/webpack.preload");
 const rendererConfig = require("./config/webpack.renderer");
-const { getLicenses } = require("./tools/thirdParty");
+const { getLicenses } = require("./tools/third-party");
 
 const okayLog = chalk.bgGreen.white(" OKAY ") + " ";
 const doneLog = chalk.bgBlue.white(" DONE ") + " ";
@@ -31,17 +31,17 @@ const filterPkg = [
 ];
 
 async function preBuild() {
-  console.log(chalk.greenBright.bold("UniText Building"));
+  console.info(chalk.greenBright.bold("UniText Building"));
 
   await fse.remove(BuildPath.build());
-  console.log(`${doneLog}Clean up dist folder`);
+  console.info(`${doneLog}Clean up dist folder`);
 }
 
 async function copyResources() {
   const from = BuildPath.public();
   const to = BuildPath.build();
   await fse.copy(from, to);
-  console.log(`${okayLog}Copy resources`);
+  console.info(`${okayLog}Copy resources`);
 }
 
 function copyPackages() {
@@ -52,7 +52,7 @@ function copyPackages() {
       filter: (src, dst) => !filterPkg.some((item) => src.indexOf(item) !== -1),
     });
   });
-  console.log(`${okayLog}Copy packages`);
+  console.info(`${okayLog}Copy packages`);
 }
 
 async function getPackageJson() {
@@ -67,7 +67,7 @@ async function getPackageJson() {
   delete pkgJson["lint-staged"];
 
   await fse.writeFile(BuildPath.build("package.json"), JSON.stringify(pkgJson));
-  console.log(`${okayLog}Truncate package.json`);
+  console.info(`${okayLog}Truncate package.json`);
 }
 
 function build(config) {
@@ -105,30 +105,30 @@ function build(config) {
 
   await build(preloadConfig)
     .then((result) => {
-      console.log(`${okayLog}Preload script built successfully`);
+      console.info(`${okayLog}Preload script built successfully`);
     })
     .catch((err) => {
-      console.log(`\n  ${errorLog}failed to build preload script`);
+      console.info(`\n  ${errorLog}failed to build preload script`);
       console.error(`\n${err}\n`);
       process.exit(1);
     });
 
   await build(mainConfig)
     .then((result) => {
-      console.log(`${okayLog}Main process built successfully`);
+      console.info(`${okayLog}Main process built successfully`);
     })
     .catch((err) => {
-      console.log(`\n${errorLog}failed to build main process`);
+      console.info(`\n${errorLog}failed to build main process`);
       console.error(`\n${err}`);
       process.exit(1);
     });
 
   await build(rendererConfig)
     .then((result) => {
-      console.log(`${okayLog}Renderer process built successfully`);
+      console.info(`${okayLog}Renderer process built successfully`);
     })
     .catch((err) => {
-      console.log(`\n  ${errorLog}failed to build renderer process`);
+      console.info(`\n  ${errorLog}failed to build renderer process`);
       console.error(`\n${err}\n`);
       process.exit(1);
     });
@@ -140,6 +140,6 @@ function build(config) {
   await getPackageJson();
 
   getLicenses(process.cwd(), BuildPath.build("THIRD-PARTY-LICENSES.txt"), () => {
-    console.log(`${okayLog}Generate License statement`);
+    console.info(`${okayLog}Generate License statement`);
   });
 })();

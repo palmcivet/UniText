@@ -1,13 +1,13 @@
 export const ID_PREVIEW = "markdown-preview";
 
-export const THEME_CSS = ["appearance", "renderView", "renderCode"];
-export const THEME_JS = ["monacoEditor"];
-export const THEME_PRESET = ["OneDarkPro", "CyberLight", "CyberDark", "Custom"];
+export const THEME_CSS = ["app-style", "article-code", "article-body", "article-export"];
+export const THEME_JS = ["monaco-editor"];
+export const THEME_PRESET = ["one-dark-pro", "Custom"];
 
 export const PUBLIC = {
-  BIN: "bin",
-  LIB: "lib",
-  THEME: "themes",
+  BIN: "binary",
+  LIB: "library",
+  THEME: "theme",
 };
 
 export const FORMAT = {

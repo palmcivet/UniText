@@ -89,6 +89,9 @@ export default defineComponent({
 
   ::v-deep(.u-treeview) {
     .u-listview {
+      color: var(--u-browser-item-fg);
+      background-color: var(--u-browser-item-bg);
+
       .u-list__item {
         padding: 0 4px;
 
@@ -98,7 +101,6 @@ export default defineComponent({
         }
 
         .u-label {
-          opacity: 0.8;
           font-size: @font-size-large;
         }
       }

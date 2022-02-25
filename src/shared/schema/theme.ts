@@ -26,7 +26,7 @@ const tCustom: IGroup<IThemeCustom> = {
   type: "Group",
   title: ["自定义"],
   properties: {
-    appearance: {
+    appStyle: {
       type: "TextBox",
       title: ["外观主题"],
       description: ["外观的默认主题"],
@@ -38,13 +38,13 @@ const tCustom: IGroup<IThemeCustom> = {
       description: ["Monaco 编辑器的主题"],
       default: "",
     },
-    renderCode: {
+    articleCode: {
       type: "TextBox",
       title: ["渲染代码主题"],
       description: ["渲染代码主题"],
       default: "",
     },
-    renderView: {
+    articleBody: {
       type: "TextBox",
       title: ["渲染文章主题"],
       description: ["渲染文章主题"],

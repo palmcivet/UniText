@@ -37,7 +37,7 @@ function logStats(proc, data) {
 
   log += chalk.yellow.bold(`┗ ${new Array(28 + 1).join("-")}`);
 
-  console.log(log);
+  console.info(log);
 }
 
 function electronLog(data, color) {
@@ -47,7 +47,7 @@ function electronLog(data, color) {
     log += `  ${line}\n`;
   });
   if (/[0-9A-z]+/.test(log)) {
-    console.log(
+    console.info(
       chalk[color].bold("┏ Electron -------------------") +
         "\n" +
         log +
@@ -93,7 +93,7 @@ function startMain() {
 
     preloadCompiler.watch({}, (error, stats) => {
       if (error) {
-        console.log(error);
+        console.info(error);
         return;
       }
 
@@ -107,7 +107,7 @@ function startMain() {
     });
     mainCompiler.watch({}, (error, stats) => {
       if (error) {
-        console.log(error);
+        console.info(error);
         return;
       }
 
@@ -152,7 +152,7 @@ function startElectron() {
 }
 
 (() => {
-  console.log(chalk.greenBright.bold("UniText Serve"));
+  console.info(chalk.greenBright.bold("UniText Serve"));
 
   Promise.all([startRenderer(), startMain()])
     .then(() => {

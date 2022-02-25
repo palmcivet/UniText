@@ -161,7 +161,6 @@ export default defineComponent({
         user-select: none;
         font-size: @font-size-normal;
         line-height: @line-height-normal;
-        opacity: 0.8;
       }
 
       &:hover {

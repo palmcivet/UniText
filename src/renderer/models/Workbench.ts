@@ -1,6 +1,6 @@
 import { StatsBase } from "fs";
 import * as MonacoEditor from "monaco-editor";
-import { MonacoMarkdownExtension } from "@/library/markdown.pre.extension";
+import { MonacoMarkdownExtension } from "@/library/markdown-extension";
 import { EventBus } from "@palmcivet/unitext-tree-view";
 
 import { i18n } from "@/renderer/i18n";

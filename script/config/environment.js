@@ -12,11 +12,13 @@ if (env.error) {
 
 const isDev = process.env.NODE_ENV !== "prod";
 
+const rootPath = join(__dirname, "../", "../");
 const BuildPath = {
   cwd: (...dir) => join(process.cwd(), ...dir),
-  src: (...dir) => join(__dirname, "../", "../", "src", ...dir),
-  build: (...dir) => join(__dirname, "../", "../", "dist", "build", ...dir),
-  public: (...dir) => join(__dirname, "../", "../", "public", ...dir),
+  src: (...dir) => join(rootPath, "src", ...dir),
+  theme: (...dir) => join(rootPath, "theme", ...dir),
+  build: (...dir) => join(rootPath, "dist", "build", ...dir),
+  public: (...dir) => join(rootPath, "public", ...dir),
 };
 
 function git(command) {

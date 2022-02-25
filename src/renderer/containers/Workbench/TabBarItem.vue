@@ -64,7 +64,6 @@ export default defineComponent({
   border-bottom: @tabBar-underline-width solid transparent;
 
   &:hover {
-    opacity: 0.9;
     color: var(--u-workbench-tab-hover-fg);
     background-color: var(--u-workbench-tab-hover-bg);
   }
@@ -73,12 +72,8 @@ export default defineComponent({
     border-bottom-style: var(--u-workbench-tab-divider-h-bg);
   }
 
-  &.inactive {
-    opacity: 0.5;
-  }
-
   &.ghost {
-    opacity: 0.5;
+    opacity: 0.6;
     color: var(--u-workbench-tab-drag-fg);
     background-color: var(--u-workbench-tab-drag-bg);
   }

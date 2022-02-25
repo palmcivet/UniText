@@ -1,0 +1,289 @@
+#markdown-preview {
+  color: hsl(220, 24%, 85%);
+  background-color: hsl(219, 16%, 21%);
+  font-family: "Source Code Pro", "STZhongSong", "PingFang SC";
+  font-size: 16px;
+  line-height: 1.6;
+  padding-left: 2em;
+  padding-right: 2em;
+  /* Article */
+  /* Widgets */
+  /* Prismjs Plugins */
+}
+#markdown-preview h1,
+#markdown-preview h2,
+#markdown-preview h3,
+#markdown-preview h4,
+#markdown-preview h5,
+#markdown-preview h6 {
+  margin: 16px 0;
+  font-weight: 700;
+  padding-top: 16px;
+  color: whitesmoke;
+  padding-top: 0;
+}
+#markdown-preview h1 {
+  font-size: 2em;
+  text-align: center;
+}
+#markdown-preview h2 {
+  font-size: 1.83em;
+}
+#markdown-preview h3 {
+  font-size: 1.58em;
+}
+#markdown-preview h4 {
+  font-size: 1.42em;
+}
+#markdown-preview h5 {
+  font-size: 1.26em;
+}
+#markdown-preview h6 {
+  font-size: 1.1em;
+}
+#markdown-preview hr {
+  display: block;
+  border: 0;
+  margin: 2.24em auto 2.86em;
+}
+#markdown-preview hr:before {
+  color: hsl(220, 24%, 85%);
+  font-size: 1.1em;
+  display: block;
+  content: "* * *";
+  text-align: center;
+}
+#markdown-preview a {
+  color: hsl(220, 24%, 85%);
+  word-wrap: break-word;
+  text-decoration: none;
+  border-bottom: 1px solid hsl(220, 24%, 85%);
+}
+#markdown-preview a:hover {
+  color: hsl(219, 22%, 95%);
+  border-bottom: 1px solid hsl(219, 22%, 95%);
+}
+#markdown-preview img {
+  display: block;
+  max-width: 100%;
+  border-radius: 2px;
+  margin: 24px auto;
+}
+#markdown-preview p {
+  line-height: 1.62;
+  margin-bottom: 1.12em;
+  letter-spacing: 0.05em;
+  hyphens: auto;
+}
+#markdown-preview p,
+#markdown-preview li {
+  line-height: 1.62;
+}
+#markdown-preview p code,
+#markdown-preview li code {
+  font-family: "Source Code Pro", "Monaco", "Consolas", "Menlo", "Courier New", "monospace";
+  line-height: initial;
+  word-wrap: break-word;
+  color: #fff5f5;
+  background-color: #6191e247;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  margin-left: 0.125em;
+  margin-right: 0.125em;
+}
+#markdown-preview pre {
+  background: #f7f6f3;
+}
+#markdown-preview pre code {
+  font-family: "Source Code Pro", "Monaco", "Consolas", "Menlo", "Courier New", "monospace";
+  background-color: unset;
+}
+#markdown-preview blockquote {
+  color: #9a9a9a;
+  position: relative;
+  padding: 0.4em 0 0 2.2em;
+  font-size: 0.96em;
+}
+#markdown-preview blockquote:before {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  content: "\201c";
+  font: 700 62px/1 serif;
+  color: rgba(0, 0, 0, 0.1);
+}
+#markdown-preview mark {
+  background: #faf089;
+  color: #744210;
+}
+#markdown-preview kbd {
+  color: hsl(220, 24%, 85%);
+  border: 1px solid #6191e2;
+  border-bottom: 2px solid #477fdd;
+  padding: 2px 4px;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 #bbb, -1px 0 0 #bbb;
+}
+#markdown-preview table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  width: 100%;
+}
+#markdown-preview table tr {
+  border-top: 1px solid #dfe2e5;
+}
+#markdown-preview table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+#markdown-preview table td,
+#markdown-preview table th {
+  border: 1px solid #dfe2e5;
+  padding: 0.6em 1em;
+}
+#markdown-preview ul,
+#markdown-preview ol {
+  padding-left: 35px;
+  line-height: 1.62;
+  margin-bottom: 16px;
+}
+#markdown-preview ol {
+  list-style: decimal !important;
+}
+#markdown-preview ul {
+  list-style: circle !important;
+}
+#markdown-preview .toc-list {
+  list-style: none;
+}
+#markdown-preview .contains-task-list {
+  list-style-type: none;
+  padding-left: 30px;
+}
+#markdown-preview .contains-task-list .task-list-item {
+  position: relative;
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox {
+  position: absolute;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 4px 0 0;
+  top: -1px;
+  left: -22px;
+  transform-origin: center;
+  transform: rotate(-90deg);
+  transition: all 0.2s ease;
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox:checked {
+  transform: rotate(0);
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox:checked:before {
+  border: transparent;
+  background-color: #9ae6b4;
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox:checked:after {
+  transform: rotate(-45deg) scale(1);
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox:checked + .task-list-item-label {
+  color: #999;
+  text-decoration: line-through;
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox:before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  display: inline-block;
+  border: 1px solid #9ae6b4;
+  border-radius: 2px;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.2s ease;
+}
+#markdown-preview .contains-task-list .task-list-item .task-list-item-checkbox:after {
+  content: "";
+  transform: rotate(-45deg) scale(0);
+  width: 9px;
+  height: 5px;
+  border: 1px solid #22543d;
+  border-top: none;
+  border-right: none;
+  position: absolute;
+  display: inline-block;
+  top: 4px;
+  left: 4px;
+  transition: all 0.2s ease;
+}
+#markdown-preview .footnotes {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 760px;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+#markdown-preview .footnotes:before {
+  content: "";
+  display: block;
+  border-top: 4px solid rgba(0, 0, 0, 0.1);
+  width: 50%;
+  max-width: 100px;
+  margin: 40px 0 20px;
+}
+#markdown-preview .code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+#markdown-preview .code-toolbar:focus-within > .toolbar {
+  opacity: 1;
+}
+#markdown-preview .code-toolbar > .toolbar {
+  position: absolute;
+  top: 0.3em;
+  right: 0.2em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+#markdown-preview .code-toolbar > .toolbar .toolbar-item {
+  display: inline-block;
+}
+#markdown-preview .code-toolbar > .toolbar a {
+  cursor: pointer;
+}
+#markdown-preview .code-toolbar > .toolbar button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  user-select: none;
+}
+#markdown-preview .code-toolbar > .toolbar a,
+#markdown-preview .code-toolbar > .toolbar button,
+#markdown-preview .code-toolbar > .toolbar span {
+  color: #bbb;
+  font-size: 0.8em;
+  padding: 0 0.5em;
+  background: #f5f2f0;
+  background: rgba(224, 224, 224, 0.2);
+  box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0.3em;
+}
+#markdown-preview .code-toolbar > .toolbar a:hover,
+#markdown-preview .code-toolbar > .toolbar a:focus,
+#markdown-preview .code-toolbar > .toolbar button:hover,
+#markdown-preview .code-toolbar > .toolbar button:focus,
+#markdown-preview .code-toolbar > .toolbar span:hover,
+#markdown-preview .code-toolbar > .toolbar span:focus {
+  color: inherit;
+  text-decoration: none;
+}
+#markdown-preview .code-toolbar > .line-numbers {
+  padding-left: 3.5em;
+}
+#markdown-preview .code-toolbar > .line-numbers .line-numbers-rows {
+  border-right: none;
+}

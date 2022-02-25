@@ -1,7 +1,7 @@
 {
   "name": "unitext",
   "productName": "UniText",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A personal knowledge manager.",
   "keywords": [
     "Markdown",
@@ -18,10 +18,10 @@
   "main": "background.js",
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
-    "dev:build": "node scripts/build.js",
-    "dev:serve": "node scripts/dev.js",
-    "release:mac": "NODE_ENV=prod node scripts/build.js && electron-builder build --mac dmg",
-    "release:all": "NODE_ENV=prod node scripts/build.js && electron-builder build --mac --win --linux --x64"
+    "dev:build": "node script/build.js",
+    "dev:serve": "node script/dev.js",
+    "release:mac": "NODE_ENV=prod node script/build.js && electron-builder build --mac dmg",
+    "release:all": "NODE_ENV=prod node script/build.js && electron-builder build --mac --win --linux --x64"
   },
   "external": [
     "electron-updater",
@@ -32,6 +32,7 @@
   "dependencies": {
     "@iktakahiro/markdown-it-katex": "^4.0.1",
     "@palmcivet/unitext-tree-view": "^0.2.3",
+    "@vscode/ripgrep": "^1.14.2",
     "clone": "^2.1.2",
     "electron-store": "^8.0.1",
     "electron-updater": "^4.6.1",

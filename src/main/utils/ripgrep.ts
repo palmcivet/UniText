@@ -24,7 +24,9 @@
  */
 
 import { spawn, ChildProcessWithoutNullStreams } from "child_process";
-import path from "path";
+import { rgPath } from "@vscode/ripgrep";
+import path, { normalize } from "path";
+import { isDev } from "./env";
 
 /* type begin */
 
@@ -333,9 +335,11 @@ function isMultilineRegexp(regexpStr: string): boolean {
 /* helpers end */
 
 function getCommand(): string {
-  // TODO 跨平台
-  // eslint-disable-next-line no-undef
-  return path.join(__static, "bin/rg");
+  if (isDev) {
+    return rgPath.replace(normalize("dist/bin/rg"), normalize("node_modules/@vscode/ripgrep/bin/rg"));
+  } else {
+    return rgPath.replace(/\bnode_modules\.asar\b/, "node_modules.asar.unpacked");
+  }
 }
 
 /**
@@ -479,6 +483,8 @@ export function execRipgrepSearchInDirectory(
 
   let child: ChildProcessWithoutNullStreams | null = null;
   try {
+    console.log(getCommand());
+
     child = spawn(getCommand(), args, {
       cwd: directoryPath,
       stdio: ["pipe", "pipe", "pipe"],
