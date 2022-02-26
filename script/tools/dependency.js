@@ -1,7 +1,7 @@
 const { execSync } = require("child_process");
 const { dependencies, devDependencies, optionalDependencies } = require("../../package.json");
 
-const ignoredDependencies = ["monaco-editor", "@palmcivet/unitext-tree-view"];
+const ignoredDependencies = ["monaco-editor", "@palmcivet/unitext-tree-view", "got"];
 
 const _dependencies = Object.keys(dependencies)
   .filter((dep) => !ignoredDependencies.includes(dep))
