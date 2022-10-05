@@ -1,8 +1,8 @@
 import { createI18n, I18n } from "vue-i18n";
 
-import Logger from "@/main/backend/Logger";
-import Service from "@/main/service/Service";
-import ZH_CN from "@/shared/locales/ZH_CN";
+import Logger from "@/main/utils/logger";
+import Service from "@/main/service/_";
+import ZH_CN from "@/shared/locales/zh-cn";
 import { TLocale, TLocaleMessage } from "@/shared/typings/setting";
 import { SYSTEM_LOCALE } from "@/shared/constant";
 

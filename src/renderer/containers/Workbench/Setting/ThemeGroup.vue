@@ -62,7 +62,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import { schemaTheme } from "@/shared/schema/theme";
+import { schemaTheme } from "@/shared/schemas/schema-theme";
 import CheckBox from "./Form/CheckBox.vue";
 import DropDown from "./Form/DropDown.vue";
 import TextBox from "./Form/TextBox.vue";

@@ -10,6 +10,10 @@ import "remixicon/fonts/remixicon.css";
 import "@palmcivet/unitext-tree-view/dist/style.css";
 import "@/renderer/styles/main.less";
 
+import "@/shared/themes/one-dark-pro/app-style.less";
+import "@/shared/themes/one-dark-pro/article-code.less";
+import "@/shared/themes/one-dark-pro/article-body.less";
+
 async function renderer() {
   /**
    * 解析参数，传入 props，动态渲染 Pages
@@ -21,7 +25,8 @@ async function renderer() {
   }
 
   const app = createApp(Index, {});
-  app.use(createPinia());
+  const pinia = createPinia();
+  app.use(pinia);
   app.use(i18n);
 
   app.config.globalProperties.$t = i18n.global.t;

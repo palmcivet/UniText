@@ -1,7 +1,7 @@
 import { readJsonSync } from "fs-extra";
 
-import Logger from "@/main/backend/Logger";
-import Service from "@/main/service/Service";
+import Logger from "@/main/utils/logger";
+import Service from "@/main/service/_";
 
 type TCommand = string;
 type TKeybinding = string;

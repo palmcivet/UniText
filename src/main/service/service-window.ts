@@ -2,9 +2,9 @@ import { BrowserWindow, PrintToPDFOptions } from "electron";
 import { writeFile } from "fs-extra";
 import { join } from "path";
 
-import Logger from "@/main/backend/Logger";
-import Service, { Inject } from "@/main/service/Service";
-import SettingService from "@/main/service/SettingService";
+import Logger from "@/main/utils/logger";
+import Service, { Inject } from "@/main/service/_";
+import SettingService from "@/main/service/service-setting";
 import { isDev } from "@/main/utils/env";
 import { IPC_CHANNEL } from "@/shared/channel";
 import { IPathRoute } from "@/shared/typings/renderer";

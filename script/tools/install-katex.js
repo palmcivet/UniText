@@ -1,7 +1,9 @@
+"use strict";
+
 const axios = require("axios").default;
 const chalk = require("chalk");
 const jszip = require("jszip");
-const path = require("node:path");
+const path = require("node");
 const fse = require("fs-extra");
 
 const { BuildPath } = require("../config/environment");

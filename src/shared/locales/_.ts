@@ -1,3 +1,3 @@
-import locale from "./EN_US";
+import locale from "./en-us";
 
 export type TMessage = typeof locale;

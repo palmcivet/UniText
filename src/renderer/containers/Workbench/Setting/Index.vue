@@ -96,11 +96,11 @@
 import { defineComponent, onBeforeMount, ref } from "vue";
 
 import { useShell, useService } from "@/renderer/composables";
-import { schemaTheme } from "@/shared/schema/theme";
-import { schemaSystem } from "@/shared/schema/system";
-import { schemaSnippet } from "@/shared/schema/snippet";
-import { schemaMarkdown } from "@/shared/schema/markdown";
-import { schemaPreference } from "@/shared/schema/preference";
+import { schemaTheme } from "@/shared/schemas/schema-theme";
+import { schemaSystem } from "@/shared/schemas/schema-system";
+import { schemaSnippet } from "@/shared/schemas/schema-snippet";
+import { schemaMarkdown } from "@/shared/schemas/schema-markdown";
+import { schemaPreference } from "@/shared/schemas/schema-preference";
 import { BUS_CHANNEL } from "@/shared/channel";
 import { ISetting } from "@/shared/typings/setting";
 import Range from "./Form/Range.vue";

@@ -3,21 +3,21 @@ import { autoUpdater } from "electron-updater";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 import { join } from "path";
 
-import Logger from "./backend/Logger";
-import Container from "./service";
-import EnvService from "./service/EnvService";
-import MenuService from "./service/MenuService";
-import ImageService from "./service/ImageService";
-import WindowService from "./service/WindowService";
-import SettingService from "./service/SettingService";
-import LanguageService from "./service/LanguageService";
-import KeybindingService from "./service/KeybindingService";
+import Container from "@/main/service";
+import EnvService from "@/main/service/service-env";
+import MenuService from "@/main/service/service-menu";
+import ImageService from "@/main/service/service-image";
+import WindowService from "@/main/service/service-window";
+import SettingService from "@/main/service/service-setting";
+import LanguageService from "@/main/service/service-language";
+import KeybindingService from "@/main/service/service-keybinding";
+import Logger from "@/main/utils/logger";
 import { isOsx, isWin, isDev } from "@/main/utils/env";
 import { URL_PATH, URL_PROTOCOL } from "@/shared/pattern";
 import { EWindowType } from "@/shared/typings/main";
 
-import "./backend/Dialog";
-import "./backend/Disk";
+import "@/main/backend/dialog";
+import "@/main/backend/disk";
 
 const _container = new Container();
 

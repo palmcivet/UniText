@@ -4,13 +4,13 @@ import { EventBus } from "@palmcivet/unitext-tree-view";
 import { i18n } from "@/renderer/i18n";
 import useGeneral from "@/renderer/stores/general";
 import { useService } from "@/renderer/composables";
+import Viewer from "@/renderer/models/model-viewer";
+import Browser from "@/renderer/models/model-browser";
+import Workbench from "@/renderer/models/model-workbench";
+import ThemeEngine from "@/renderer/models/engine-theme";
+import MarkdownEngine from "@/renderer/models/engine-markdown";
 import { ISetting } from "@/shared/typings/setting";
 import { BUS_CHANNEL } from "@/shared/channel";
-import Viewer from "./Viewer";
-import Browser from "./Browser";
-import Workbench from "./Workbench";
-import ThemeEngine from "./ThemeEngine";
-import MarkdownEngine from "./MarkdownEngine";
 
 const _bus = new EventBus();
 const _viewer = new Viewer(_bus);

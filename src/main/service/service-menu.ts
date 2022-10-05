@@ -1,10 +1,10 @@
 import { app, Menu, MenuItem } from "electron";
 
 import { isOsx } from "@/main/utils/env";
-import Logger from "@/main/backend/Logger";
-import Service, { Inject } from "@/main/service/Service";
-import KeybindingService from "@/main/service/KeybindingService";
-import LanguageService from "@/main/service/LanguageService";
+import Logger from "@/main/utils/logger";
+import Service, { Inject } from "@/main/service/_";
+import KeybindingService from "@/main/service/service-keybinding";
+import LanguageService from "@/main/service/service-language";
 import { TActionAccessID } from "@/shared/typings/setting";
 
 type TMenuRole =

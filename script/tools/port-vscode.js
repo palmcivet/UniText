@@ -1,8 +1,10 @@
-const fs = require("fs");
+"use strict";
+
+const fse = require("fs-extra");
 const path = require("path");
 
 const readJSON = async (path) => {
-  if (!fs.existsSync(path)) {
+  if (!fse.existsSync(path)) {
     console.error("File not exist");
     return;
   }
@@ -10,7 +12,7 @@ const readJSON = async (path) => {
   let res = null;
 
   try {
-    res = fs.readFileSync(path, { encoding: "utf8" });
+    res = fse.readFileSync(path, { encoding: "utf8" });
     try {
       return JSON.parse(res);
     } catch (e) {
@@ -105,5 +107,5 @@ const parseTheme = (input) => {
 
   const res = parseTheme(data);
 
-  fs.writeFileSync(outPath, JSON.stringify(res));
+  fse.writeFileSync(outPath, JSON.stringify(res));
 })(process.argv);

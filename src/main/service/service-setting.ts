@@ -1,10 +1,10 @@
 import Store from "electron-store";
 import { basename, dirname } from "path";
 
-import Logger from "@/main/backend/Logger";
-import schema from "@/shared/schema";
+import Service from "@/main/service/_";
+import Logger from "@/main/utils/logger";
+import schema from "@/shared/schemas";
 import { ISetting } from "@/shared/typings/setting";
-import Service from "./Service";
 
 export default class SettingService extends Service {
   private readonly _dataSet: Store<ISetting>;

@@ -1,3 +1,5 @@
+"use strict";
+
 const { execSync } = require("child_process");
 const { dependencies, devDependencies, optionalDependencies } = require("../../package.json");
 

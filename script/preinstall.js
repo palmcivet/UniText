@@ -1,3 +1,5 @@
+"use strict";
+
 const nodeMajor = Number(process.versions.node.match(/^(\d+)\./)[1]);
 
 if (nodeMajor < 14) {

@@ -7,9 +7,9 @@ import level, { LevelDB } from "level";
 import { URL_PATH } from "@/shared/pattern";
 import { hashBinary } from "@/shared/utils";
 import { hashString } from "@/shared/utils";
-import Logger from "@/main/backend/Logger";
-import Service, { Inject } from "./Service";
-import EnvService from "./EnvService";
+import Logger from "@/main/utils/logger";
+import Service, { Inject } from "@/main/service/_";
+import EnvService from "./service-env";
 
 function httpGet(url: string, dest: string): Promise<void> {
   return new Promise((resolve, reject) => {

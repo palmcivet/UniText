@@ -1,12 +1,12 @@
 import { ipcMain } from "electron";
 
-import EnvService from "./EnvService";
-import MenuService from "./MenuService";
-import ImageService from "./ImageService";
-import WindowService from "./WindowService";
-import SettingService from "./SettingService";
-import LanguageService from "./LanguageService";
-import KeybindingService from "./KeybindingService";
+import EnvService from "./service-env";
+import MenuService from "./service-menu";
+import ImageService from "./service-image";
+import WindowService from "./service-window";
+import SettingService from "./service-setting";
+import LanguageService from "./service-language";
+import KeybindingService from "./service-keybinding";
 import { INJECTIONS_SYMBOL, IKeyService } from "./_";
 import { IPC_CHANNEL } from "@/shared/channel";
 

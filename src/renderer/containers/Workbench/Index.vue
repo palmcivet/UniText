@@ -32,8 +32,8 @@ export default defineComponent({
 
   components: {
     Dashboard: defineAsyncComponent(() => import("./Dashboard/Index.vue")),
-    Graphview: defineAsyncComponent(() => import("./Graphview/Index.pre.vue")),
-    Schedule: defineAsyncComponent(() => import("./Schedule/Index.pre.vue")),
+    Graphview: defineAsyncComponent(() => import("./Graphview/Index.vue")),
+    Schedule: defineAsyncComponent(() => import("./Schedule/Index.vue")),
     Setting: defineAsyncComponent(() => import("./Setting/Index.vue")),
     Editor: defineAsyncComponent(() => import("./Document/Index.vue")),
     Startup: defineAsyncComponent(() => import("./Startup/Index.vue")),

@@ -5,8 +5,8 @@ import { PATH_SEPARATE, URL_PROTOCOL } from "@/shared/pattern";
 import { THEME_PRESET, THEME_CSS, PUBLIC } from "@/shared/constant";
 import { IDisposable } from "@/shared/typings/renderer";
 import { ITheme, IThemeCustom } from "@/shared/typings/setting/theme";
-import { useDisk, useIpc, useService } from "../composables";
 import { IPC_CHANNEL } from "@/shared/channel";
+import { useDisk, useIpc, useService } from "@/renderer/composables";
 
 export default class ThemeEngine implements IDisposable {
   /**

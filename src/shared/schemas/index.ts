@@ -1,7 +1,7 @@
-import propertiesTheme from "./theme";
-import propertiesSystem from "./system";
-import propertiesMarkdown from "./markdown";
-import propertiesPreference from "./preference";
+import propertiesTheme from "./schema-theme";
+import propertiesSystem from "./schema-system";
+import propertiesMarkdown from "./schema-markdown";
+import propertiesPreference from "./schema-preference";
 
 export default {
   theme: {
